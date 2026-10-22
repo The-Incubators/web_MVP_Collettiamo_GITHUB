@@ -2,69 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * UX_V4 — «Expressive Warmth» nella versione esportata da Stitch (Pagine_UX_V4/…/expressive_warmth/DESIGN.md).
+ * I nomi dei token sono quelli di sempre, così ogni pagina prende i colori nuovi senza toccarla; cambiano
+ * i valori. Come il design system, V4 non ha un tema scuro: i colori restano chiari anche col sistema in scuro.
+ *
+ * - `accent` è il verde del marchio (#033922): bottoni principali, selezioni, barre.
+ * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
+ *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (18 px in grassetto), che è come lo
+ *   usa la variante «azione» di Bottone, non per il testo piccolo.
+ */
 :root {
-  --field: #edf1ee;
+  --field: #f6fbf4;
   --surface: #ffffff;
-  --surface-2: #f6f9f7;
-  --ink: #16241f;
-  --ink-soft: #5b6d66;
-  --line: #dbe3de;
-  --accent: #0f7a63;
-  --accent-2: #0b5e4c;
+  --surface-2: #f0f5ee;
+  --ink: #181d19;
+  --ink-soft: #414943;
+  --line: #dfe4dd;
+  --line-forte: #c0c9c1;
+  --accent: #033922;
+  --accent-2: #002212;
   --on-accent: #ffffff;
-  --accent-field: #e6f2ee;
-  --gold: #a8701f;
-  --gold-field: #fbf1df;
-  --gold-line: #e8d3ac;
-  --ok: #2e7d59;
-  --ok-field: #e4f2ea;
-  --error: #b3261e;
-  --error-field: #fdecea;
+  --accent-field: #e3f2e7;
+  --cta: #fd5d17;
+  --cta-2: #e14d0b;
+  --on-cta: #ffffff;
+  --cta-field: #ffdbcf;
+  --gold: #614000;
+  --gold-vivo: #fdb022;
+  --gold-field: #ffddb1;
+  --gold-line: #ffba48;
+  --ok: #1f5037;
+  --ok-field: #baefcc;
+  --error: #ba1a1a;
+  --error-field: #ffdad6;
   color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --field: #0e1613;
-    --surface: #18211d;
-    --surface-2: #1e2925;
-    --ink: #e7efea;
-    --ink-soft: #9aada5;
-    --line: #2b3833;
-    --accent: #43ac8e;
-    --accent-2: #5bc2a3;
-    --on-accent: #08130f;
-    --accent-field: #172a24;
-    --gold: #d7a458;
-    --gold-field: #2a2318;
-    --gold-line: #453722;
-    --ok: #5cbe92;
-    --ok-field: #17291f;
-    --error: #ff9a91;
-    --error-field: #3a1f1d;
-    color-scheme: dark;
-  }
-}
-
-:root[data-theme="dark"] {
-  --field: #0e1613;
-  --surface: #18211d;
-  --surface-2: #1e2925;
-  --ink: #e7efea;
-  --ink-soft: #9aada5;
-  --line: #2b3833;
-  --accent: #43ac8e;
-  --accent-2: #5bc2a3;
-  --on-accent: #08130f;
-  --accent-field: #172a24;
-  --gold: #d7a458;
-  --gold-field: #2a2318;
-  --gold-line: #453722;
-  --ok: #5cbe92;
-  --ok-field: #17291f;
-  --error: #ff9a91;
-  --error-field: #3a1f1d;
-  color-scheme: dark;
 }
 
 /*
@@ -188,7 +160,7 @@
     font-variant-numeric: tabular-nums;
   }
   .contenitore {
-    @apply rounded-contenitore border border-line bg-surface;
+    @apply rounded-contenitore border border-line bg-surface shadow-carta;
   }
   .gutter {
     @apply px-4;

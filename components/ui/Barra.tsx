@@ -16,9 +16,13 @@ export function Barra({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={valore}
-      className={`w-full overflow-hidden rounded-full bg-accent-field ${alta ? "h-4" : "h-3"}`}
+      className={`w-full overflow-hidden rounded-full bg-line ${alta ? "h-4" : "h-3"}`}
     >
-      <div className="h-full rounded-full bg-accent transition-[width] duration-500" style={{ width: `${valore}%` }} />
+      {/* dal verde del marchio all'arancio mentre si raccoglie; all'obiettivo diventa oro, il colore dei traguardi */}
+      <div
+        className={`h-full rounded-full bg-gradient-to-r from-accent transition-[width] duration-500 ${valore >= 100 ? "to-gold-vivo" : "to-cta"}`}
+        style={{ width: `${valore}%` }}
+      />
     </div>
   );
 }

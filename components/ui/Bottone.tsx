@@ -2,17 +2,29 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { REL_LINK_PRODOTTO } from "@/lib/dominio/amazon";
 
-export type VarianteBottone = "primario" | "secondario" | "testuale";
+/**
+ * - `primario`: pillola verde del marchio, l'azione principale di una schermata.
+ * - `azione`: pillola arancio, solo per le conversioni (Partecipo, Firma, Apri la raccolta…). Il testo resta
+ *   grande anche nella misura piccola: il bianco sull'arancio regge il contrasto solo da 18 px in grassetto.
+ * - `secondario`: pillola chiara con bordo. `testuale`: solo testo.
+ */
+export type VarianteBottone = "primario" | "azione" | "secondario" | "testuale";
 export type DimensioneBottone = "normale" | "piccolo";
 
 export function classiBottone(variante: VarianteBottone = "primario", dimensione: DimensioneBottone = "normale", extra = ""): string {
   const base =
-    "inline-flex min-h-tocco select-none items-center justify-center gap-2 rounded-controllo font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50";
-  const misura = dimensione === "piccolo" ? "px-3 text-sm" : "px-5 text-base";
+    "inline-flex select-none items-center justify-center gap-2 rounded-full font-bold transition-[background-color,border-color,transform] active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0";
+  const misura =
+    variante === "testuale"
+      ? "min-h-tocco px-2 text-base"
+      : dimensione === "piccolo"
+        ? `min-h-tocco px-4 ${variante === "azione" ? "text-lg" : "text-sm"}`
+        : `min-h-azione px-6 ${variante === "azione" ? "text-lg" : "text-base"}`;
   const colori = {
     primario: "bg-accent text-on-accent hover:bg-accent-2",
-    secondario: "border border-line bg-surface text-ink hover:bg-surface-2",
-    testuale: "text-accent-2 underline-offset-4 hover:underline",
+    azione: "bg-cta text-on-cta shadow-sollevata hover:bg-cta-2",
+    secondario: "border-[1.5px] border-line bg-surface text-accent hover:border-accent",
+    testuale: "text-accent underline-offset-4 hover:underline",
   }[variante];
   return `${base} ${misura} ${colori} ${extra}`.trim();
 }

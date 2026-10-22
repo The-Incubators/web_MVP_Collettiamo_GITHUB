@@ -21,14 +21,14 @@ export function SchedaScelta({
       role="radio"
       aria-checked={selezionata}
       onClick={onSeleziona}
-      className={`flex min-h-tocco w-full items-start gap-3 rounded-contenitore border p-4 text-left transition-colors ${
-        selezionata ? "border-accent bg-accent-field" : "border-line bg-surface hover:bg-surface-2"
+      className={`flex min-h-tocco w-full items-start gap-3 rounded-contenitore p-4 text-left shadow-carta transition-colors ${
+        selezionata ? "border-2 border-accent bg-accent-field" : "border-2 border-line bg-surface hover:border-line-forte"
       }`}
     >
       <span
         aria-hidden="true"
         className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${
-          selezionata ? "border-accent bg-accent text-on-accent" : "border-line bg-surface"
+          selezionata ? "border-accent bg-accent text-on-accent" : "border-line-forte bg-surface"
         }`}
       >
         {selezionata ? <IconaSpunta width={16} height={16} /> : null}
