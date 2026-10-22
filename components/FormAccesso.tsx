@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "./AppProvider";
 import { BottoneGoogle } from "./BottoneGoogle";
-import { Avviso, Bottone, Campo } from "./ui";
+import { Avviso, Bottone, Campo, Icona } from "./ui";
 import { leggiLocale, scriviLocale } from "@/lib/auth/tipi";
 
 const CHIAVE_DOPO = "colletta.dopoAccesso";
@@ -88,11 +88,19 @@ export function FormAccesso() {
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-md flex-col gap-6">
-      <h1 className="text-center text-3xl">Accedi per organizzare la colletta</h1>
+    <div className="mx-auto flex w-full max-w-md flex-col gap-6 rounded-3xl bg-surface p-6 shadow-carta">
+      <div className="flex flex-col items-center gap-3 text-center">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ok-field text-accent">
+          <Icona nome="redeem" dimensione={32} />
+        </span>
+        <h1 className="text-[28px] font-bold leading-tight text-accent-2">Accedi per organizzare</h1>
+        <p className="text-sm text-ink-soft">Un attimo, con il tuo account Google.</p>
+      </div>
 
       {modalita === "firestore" ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-5">
+          {/* il nome si legge al tocco di «Sign in with Google»: per questo il campo viene prima */}
+          {campoNome}
           <div className="flex flex-col items-center gap-3">
             <BottoneGoogle onClick={() => void google()} disabled={occupato} />
             {errore ? (
@@ -101,7 +109,6 @@ export function FormAccesso() {
               </p>
             ) : null}
           </div>
-          {campoNome}
         </div>
       ) : inviata ? (
         <Avviso tono="positivo" titolo="Controlla la posta" live>

@@ -9,7 +9,7 @@ export default async function Preferiti() {
   // Il catalogo si legge sul server; quali prodotti sono preferiti lo sa il browser (o l'account).
   const prodotti = await datiServer().elencaProdotti();
   return (
-    <div className="gutter pb-32 pt-6">
+    <div className="gutter pb-10 pt-4">
       <ElencoPreferiti prodotti={prodotti} />
     </div>
   );

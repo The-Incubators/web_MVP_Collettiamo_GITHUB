@@ -120,3 +120,14 @@ Serve da lista di controllo durante l'implementazione.
 | Foto nel messaggio della colletta | C1.g | medio: nuovo dato e caricamento | rimandare |
 | Campo «Ruolo o parentela» per chi firma | E3, D5 | medio: nuovo dato | rimandare |
 | Sollecito al singolo invitato (icona invio) | B2 | medio: non abbiamo i recapiti | sostituire con «copia messaggio personale» |
+
+## 5. Avanzamento dell'implementazione (branch `ux-v4`)
+
+| Gruppo | Stato | Note |
+|---|---|---|
+| Fondamenta | ✅ | Palette V4 sui token di sempre, niente tema scuro, Plus Jakarta Sans, icone Material, pulsanti a pillola (arancio = «azione», testo a 19 px per il contrasto), intestazione con profilo, barra in basso |
+| A · Scoperta | ✅ | Home, catalogo (ricerca, filtri in un foglio, «Simula per N invitati», 24 alla volta), scheda prodotto e popup, Trova il regalo (riscritto senza il CSS del sito di partenza), preferiti, accesso |
+| C · Chi partecipa | ✅ | Manca la **foto nel messaggio** del biglietto (nuova funzione decisa: nuovi dati, regole e test) |
+| B · Organizzatore | ⏳ | Wizard a 5 passi, dashboard, chiusura, dati, le mie collette |
+| D/E · Biglietto | ⏳ | Più il campo «Ruolo o parentela» (nuova funzione decisa) |
+| F · Servizio | ⏳ | Privacy, 404, Scegli UX, area riservata |
