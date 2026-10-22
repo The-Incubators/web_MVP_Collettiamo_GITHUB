@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-tertiary-container": "#ce8c00", "on-secondary": "#ffffff", "primary": "#002212", "on-surface": "#181d19", "surface-bright": "#f6fbf4", "surface-container-lowest": "#ffffff", "secondary": "#aa3700", "surface-container-low": "#f0f5ee", "surface": "#f6fbf4", "surface-container-high": "#e5e9e3", "on-tertiary-fixed-variant": "#614000", "tertiary-fixed-dim": "#ffba48", "inverse-surface": "#2d322d", "on-primary-fixed": "#002111", "tertiary-fixed": "#ffddb1", "secondary-fixed": "#ffdbcf", "on-primary-fixed-variant": "#1f5037", "background": "#f6fbf4", "secondary-fixed-dim": "#ffb59b", "tertiary-container": "#452c00", "error-container": "#ffdad6", "on-error": "#ffffff", "on-tertiary-fixed": "#291800", "tertiary": "#291900", "on-tertiary": "#ffffff", "inverse-primary": "#9fd2b1", "error": "#ba1a1a", "on-background": "#181d19", "surface-container-highest": "#dfe4dd", "surface-dim": "#d7dbd5", "on-primary": "#ffffff", "outline": "#717972", "secondary-container": "#ff5e18", "on-secondary-fixed": "#380d00", "on-secondary-container": "#541700", "inverse-on-surface": "#edf2eb", "primary-fixed": "#baefcc", "surface-variant": "#dfe4dd", "on-error-container": "#93000a", "primary-fixed-dim": "#9fd2b1", "surface-container": "#ebefe8", "surface-tint": "#38684d", "on-secondary-fixed-variant": "#822800", "on-surface-variant": "#414943", "on-primary-container": "#72a485", "outline-variant": "c0c9c1", "primary-container": "#033922" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "margin-md": "2rem", "space-xl": "2rem", "margin": "1rem", "space-md": "1rem", "gutter": "1rem", "gutter-md": "1.5rem", "space-lg": "1.5rem", "space-xs": "0.25rem", "margin-lg": "3rem", "space-sm": "0.5rem" }, fontFamily: { "label-sm": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Bricolage Grotesque"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "headline-sm": ["Bricolage Grotesque"], "headline-lg": ["Bricolage Grotesque"], "headline-md": ["Bricolage Grotesque"], "label-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "display-counter": ["Bricolage Grotesque"], "display-lg": ["Bricolage Grotesque"] }, fontSize: { "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "headline-sm": ["20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "display-counter": ["44px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "display-lg": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#f6fbf4;color:#181d19;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-on-surface antialiased flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-16 px-gutter flex items-center justify-between"><button class="min-h-[44px] min-w-[44px] -ml-space-xs flex items-center gap-space-xs text-primary font-label-lg text-label-lg transition-transform active:scale-95" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[20px]">arrow_back</span><span class="hidden sm:inline">Le mie collette</span></button><div class="flex flex-col items-center justify-center"><div class="flex items-center gap-space-xs"><div class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center text-on-primary"><span class="material-symbols-outlined text-[12px]">redeem</span></div><span class="font-label-md text-label-md text-on-surface-variant font-bold tracking-tight">Regaloop</span></div><h1 class="font-headline-sm text-headline-sm text-primary tracking-tight leading-none">Gestione Colletta</h1></div><div class="min-w-[44px] flex justify-end items-center"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full px-gutter pt-16 pb-safe bg-surface"><div class="flex flex-col w-full pb-10 space-y-space-md">
+<!-- Celebration Milestone Card -->
+<div class="relative overflow-hidden bg-primary-container text-on-primary rounded-lg p-space-lg shadow-md">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-secondary-container/20 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex flex-col gap-space-xs relative z-10">
+<div class="inline-flex items-center gap-space-xs self-start bg-on-primary/10 backdrop-blur-sm px-3 py-1 rounded-full text-primary-fixed">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-md text-label-md">8 di 8 confermati · Raccolta completata</span>
+</div>
+<h2 class="font-headline-md text-headline-md font-bold tracking-tight mt-space-xs">
+        Hai tutto quello che serve! 🎉
+      </h2>
+<p class="font-body-md text-body-md text-primary-fixed/90 leading-snug">
+        Obiettivo raggiunto: <strong class="text-on-primary font-bold">120,00 €</strong> raccolti su 116,65 € previsti.
+      </p>
+</div>
+</div>
+<!-- Step 1: Compra il regalo su Amazon -->
+<section class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm space-y-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">1</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">Compra il regalo su Amazon</h3>
+</div>
+<!-- Product Summary Card -->
+<div class="flex gap-space-md bg-surface-container-low p-space-md rounded-DEFAULT items-center">
+<div class="w-20 h-20 rounded-DEFAULT overflow-hidden bg-surface-container-highest shrink-0">
+<img class="w-full h-full object-cover" data-alt="Design cactus coat hanger in forest green metal minimal Italian modern furniture style standing on warm cream studio backdrop soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0qANf9haGfcdUVtnYNFz6C_qaAslwnifrwK2ny9ZXucfSZXnGiFp8QzM9Ea8945COAD-8TI53Sw3caS950F4pwmUjtwIcjwc5I5549XTqCi7Bsvn_wQx1a91wqEnz-LceqaRn54zx0O-sLemW9_Pfm7gXGApQOJ3yoz_NXm3Ja7Tin8YC02vgSrZvwDdfBC8qSEq_dMNSsddVc-VHRtCsRUxMOS1IRaCh9Iph0O5eSJ8fdEIybBLN"/>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant tracking-wider">Kriptonite Milano</span>
+<h4 class="font-headline-sm text-headline-sm text-on-surface truncate font-bold">Appendiabiti Cactus</h4>
+<div class="flex items-baseline gap-space-xs mt-0.5">
+<span class="font-display-counter text-[22px] leading-tight text-primary font-bold">116,65 €</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">prezzo stimato</span>
+</div>
+</div>
+</div>
+<!-- Amazon CTA -->
+<a class="flex items-center justify-center gap-space-xs w-full min-h-[48px] px-space-md rounded-full bg-surface-container-high text-primary font-label-lg text-label-lg active:scale-[0.98] transition-transform" href="https://amazon.it" rel="noopener noreferrer" target="_blank">
+<span>Compra su Amazon.it</span>
+<span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</a>
+<!-- Effective Price Input & Receipt Upload -->
+<div class="space-y-space-sm pt-space-xs">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1.5" for="actual-price">
+          Quanto hai speso effettivamente?
+        </label>
+<div class="relative flex items-center">
+<input class="w-full h-[50px] bg-surface-container-low rounded-DEFAULT px-space-md text-primary font-headline-sm text-headline-sm focus:outline-none" id="actual-price" step="0.01" type="number" value="116.65"/>
+<span class="absolute right-space-md font-headline-sm text-headline-sm text-on-surface-variant font-bold">€</span>
+</div>
+</div>
+<!-- Receipt Upload Box -->
+<div>
+<span class="block font-label-md text-label-md text-on-surface-variant mb-1.5">Ricevuta o fattura d'acquisto</span>
+<div class="flex items-center justify-between p-space-sm pl-space-md bg-surface-container-low rounded-DEFAULT" id="receipt-box">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="material-symbols-outlined text-secondary-container text-[20px]">receipt_long</span>
+<span class="font-label-md text-label-md text-on-surface truncate">Scontrino_Amazon_14Nov.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant shrink-0">(1.2 MB)</span>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-error transition-colors" title="Rimuovi" type="button">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Step 2: Gestione Avanzo -->
+<section class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm space-y-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs">
+<span class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">2</span>
+<h3 class="font-headline-sm text-headline-sm text-primary">C'è un avanzo di +3,35 €</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pl-8">
+        Scegli cosa fare dei soldi extra rimasti:
+      </p>
+</div>
+<!-- 3 Large Selectable Options -->
+<div class="space-y-space-sm" id="surplus-options">
+<!-- Option 1: Selected -->
+<div class="surplus-card relative flex items-start gap-space-md p-space-md rounded-DEFAULT bg-primary-container/5 cursor-pointer transition-all active:scale-[0.99]" data-action="packaging" onclick="selectOption(this, 'Stampa biglietto &amp; confezione')">
+<div class="w-6 h-6 mt-0.5 rounded-full bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px] card-check">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-primary font-bold">Lo tengo per biglietto e confezione 🎁</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ideale per carta regalo, nastro pregiato o stampa cartoncino.</span>
+</div>
+</div>
+<!-- Option 2 -->
+<div class="surplus-card relative flex items-start gap-space-md p-space-md rounded-DEFAULT bg-surface-container-low cursor-pointer transition-all active:scale-[0.99]" data-action="refund" onclick="selectOption(this, 'Rimborso quote')">
+<div class="w-6 h-6 mt-0.5 rounded-full bg-surface-container-highest text-transparent flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px] card-check">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-primary font-bold">Lo restituisco al gruppo 💸</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Circa 0,28 € a testa via PayPal o Satispay.</span>
+</div>
+</div>
+<!-- Option 3 -->
+<div class="surplus-card relative flex items-start gap-space-md p-space-md rounded-DEFAULT bg-surface-container-low cursor-pointer transition-all active:scale-[0.99]" data-action="extra" onclick="selectOption(this, 'Extra per brindisi')">
+<div class="w-6 h-6 mt-0.5 rounded-full bg-surface-container-highest text-transparent flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px] card-check">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-lg text-label-lg text-primary font-bold">Aggiungo un extra al regalo 🍫</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Cioccolatini o una bottiglia per il brindisi comune.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Biglietto Reminder Banner -->
+<div class="flex items-center gap-space-md p-space-md bg-secondary-container/10 rounded-DEFAULT">
+<div class="w-12 h-12 rounded-full bg-secondary-container/20 text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[24px]">drafts</span>
+</div>
+<div class="flex flex-col min-w-0">
+<h4 class="font-label-lg text-label-lg text-primary font-bold">Biglietto pronto per la stampa</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">9 dediche raccolte, pronto in formato A4 fronte/retro con le firme del gruppo.</p>
+</div>
+</div>
+<!-- Transparency & Rendiconto Preview -->
+<section class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-sm text-headline-sm text-primary">Rendiconto per il gruppo</h4>
+<span class="font-label-sm text-label-sm uppercase bg-surface-container px-2 py-0.5 rounded text-on-surface-variant font-bold">Pubblico</span>
+</div>
+<div class="bg-surface-container-low rounded-DEFAULT p-space-md space-y-space-xs font-body-sm text-body-sm">
+<div class="flex justify-between items-center text-on-surface">
+<span>Totale raccolto (8 quote)</span>
+<span class="font-bold text-primary">120,00 €</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span>Costo regalo Amazon</span>
+<span class="font-bold text-primary">-116,65 €</span>
+</div>
+<div class="flex justify-between items-center text-on-surface">
+<span id="summary-surplus-label">Destinazione avanzo: Stampa biglietto &amp; confezione</span>
+<span class="font-bold text-secondary-container">+3,35 €</span>
+</div>
+<div class="pt-space-xs mt-space-xs bg-surface-container-highest h-[1px]"></div>
+<div class="flex justify-between items-center font-label-lg text-label-lg text-primary pt-1">
+<span>Totale finale da saldare</span>
+<span class="font-headline-sm text-headline-sm text-primary font-extrabold">0,00 €</span>
+</div>
+</div>
+</section>
+<!-- Fallback / Alternative Scenarios (Accordion) -->
+<div class="rounded-DEFAULT bg-surface-container-low p-space-sm px-space-md">
+<button class="flex items-center justify-between w-full py-1 text-left text-on-surface-variant font-label-md text-label-md" onclick="toggleFallback()" type="button">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+        E se mancano dei soldi o il prezzo cambia?
+      </span>
+<span class="material-symbols-outlined text-[18px] transition-transform" id="fallback-chevron">expand_more</span>
+</button>
+<div class="hidden pt-space-sm space-y-2 font-body-sm text-body-sm text-on-surface-variant" id="fallback-content">
+<div class="p-space-xs">
+<strong class="text-primary font-bold">1. Ci metto io la differenza:</strong> Salda l'importo mancante per sbloccare l'acquisto immediato.
+      </div>
+<div class="p-space-xs">
+<strong class="text-primary font-bold">2. Scegli un regalo alternativo:</strong> Torna al catalogo e orientati su una variante conforme al budget.
+      </div>
+<div class="p-space-xs">
+<strong class="text-primary font-bold">3. Rimanda di 24h:</strong> Invia un promemoria rapido automatico via WhatsApp a chi non ha ancora versato.
+      </div>
+</div>
+</div>
+<!-- Primary Sticky/Action Zone -->
+<div class="pt-space-sm space-y-space-xs">
+<button class="w-full min-h-[52px] rounded-full bg-secondary-container text-on-secondary font-label-lg text-label-lg shadow-md active:translate-y-[1px] active:scale-[0.99] transition-all flex items-center justify-center gap-space-xs" onclick="completeCollection()" type="button">
+<span>Ho comprato il regalo: chiudi la colletta</span>
+<span class="material-symbols-outlined text-[20px]">done_all</span>
+</button>
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant px-space-md">
+      Chiudendo la colletta, i partecipanti riceveranno il rendiconto trasparente e la copia stampabile del biglietto.
+    </p>
+</div>
+</div>
+<script>
+  function selectOption(el, label) {
+    const cards = document.querySelectorAll('.surplus-card');
+    cards.forEach(card => {
+      card.classList.remove('bg-primary-container/5');
+      card.classList.add('bg-surface-container-low');
+      const badge = card.querySelector('div');
+      badge.classList.remove('bg-primary-container', 'text-on-primary');
+      badge.classList.add('bg-surface-container-highest', 'text-transparent');
+    });
+
+    el.classList.remove('bg-surface-container-low');
+    el.classList.add('bg-primary-container/5');
+    const badge = el.querySelector('div');
+    badge.classList.remove('bg-surface-container-highest', 'text-transparent');
+    badge.classList.add('bg-primary-container', 'text-on-primary');
+
+    const summaryLabel = document.getElementById('summary-surplus-label');
+    if (summaryLabel) {
+      summaryLabel.textContent = 'Destinazione avanzo: ' + label;
+    }
+  }
+
+  function toggleFallback() {
+    const content = document.getElementById('fallback-content');
+    const chevron = document.getElementById('fallback-chevron');
+    if (content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      chevron.classList.add('rotate-180');
+    } else {
+      content.classList.add('hidden');
+      chevron.classList.remove('rotate-180');
+    }
+  }
+
+  function completeCollection() {
+    alert('Colletta completata con successo! Notifiche e rendiconto inviati a tutti i partecipanti.');
+  }
+</script></main></body></html>

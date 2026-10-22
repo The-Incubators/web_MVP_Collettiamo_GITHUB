@@ -33,16 +33,18 @@ Serve da lista di controllo durante l'implementazione.
 | B1.5 Chi partecipa | — | ❌ |
 | B1.6 Invita | `b1.6_crea_invita_il_gruppo_e_lancio` | ✅ (ha spostato qui la modalità sorpresa) |
 | B2 Dashboard | `b2_dashboard_raccolta_organizzatore` | ⚠️ mancano: contanti da ricevere, blocco link, votazione, «Chiudi le adesioni» |
-| B3 Chiusura | — | ❌ **importante** |
+| B3 Chiusura | `b3_chiusura_colletta` | ✅ (lo stato «mancano soldi» è solo un riquadro espandibile: va reso uno stato completo) |
 | B4 Dati | — | ❌ |
 | B5 Le mie collette | — | ❌ |
 | C1.a Prima schermata | `c1.a_pagina_colletta_partecipante` | ✅ |
-| C1.b Votazione · C1.c Il gruppo ha scelto | — | ❌ |
+| C1.b Votazione | `c1.b_votazione_in_corso` | ✅ |
+| C1.c Il gruppo ha scelto | — | ❌ (si ricava) |
 | C1.d Nome | — | ❌ |
 | C1.e + C1.f Metodo e «Hai pagato?» | `c1.e_f_paga_e_dichiara_la_quota` | ✅ **uniti in una schermata** (manca il campo importo per la quota libera) |
 | C1.g Biglietto | `c1.g_firma_il_biglietto_di_gruppo` | ✅ |
 | C1.h Il tuo stato | `c1.h_stato_del_partecipante` | ✅ |
-| C1.i Scaduta · C1.j Chiusa/rendiconto | — | ❌ |
+| C1.i Scaduta | — | ❌ (si ricava) |
+| C1.j Chiusa/rendiconto | `c1.j_rendiconto_colletta_chiusa` | ✅ |
 | C2 Biglietto stampabile | — | ❌ |
 | D1 Nuovo biglietto | `d1_nuovo_biglietto_di_gruppo` | ✅ |
 | D2 Dettagli | `d2_dettagli_del_biglietto` | ✅ (molti testi da correggere) |
@@ -52,7 +54,7 @@ Serve da lista di controllo durante l'implementazione.
 | E1–E4 Firmatario | `e1`…`e4` | ✅ tutte e quattro |
 | F1–F4 Servizio | — | ❌ (pagine semplici) |
 
-**Totale:** 20 schermate presenti su circa 50 stati del brief. I gruppi **E (chi firma)** e **D (biglietto)** sono quasi completi, mentre **B (organizzatore)** e **C (chi partecipa)** hanno buchi importanti.
+**Totale:** 23 schermate presenti su circa 50 stati del brief; le altre si ricavano dai componenti V4. I gruppi **E (chi firma)** e **D (biglietto)** sono quasi completi, mentre **B (organizzatore)** e **C (chi partecipa)** hanno buchi importanti.
 
 ## 3. Contenuti inventati o sbagliati da correggere
 
@@ -92,6 +94,12 @@ Serve da lista di controllo durante l'implementazione.
 - **D5:** «A4 pieghevole / Continua» → le opzioni vere sono 1, 2 o 3 colonne.
 - **E2:** limite «400 caratteri» → quello vero è 1000; lo stile «Festoso» si chiama «Decorativo»; mancano i controlli **Colore** e **Dimensione**.
 - **E3:** manca **Cognome (facoltativo)**.
+
+### Le tre schermate aggiunte dopo (B3, C1.b, C1.j)
+
+- **B3:** «Rimanda di 24h: invia un promemoria **automatico** via WhatsApp» → non mandiamo nulla da soli: prepariamo il messaggio e lo inoltra chi organizza. «I partecipanti **riceveranno** il rendiconto» → lo vedono aprendo il link (nessuna notifica). «A4 fronte/retro» → A5.
+- **C1.b:** il pulsante «Salva i miei voti» è un passo in più: oggi ogni stella si salva al tocco. Si tiene il salvataggio immediato e al posto del pulsante una conferma discreta. La quota stimata per idea («~14 € / testa») e «7 amici hanno già votato» si calcolano dai dati veri. Va tolta l'icona profilo.
+- **C1.j:** «Ricevuta verificata» e «Ordine confermato» → non verifichiamo nulla: «Ricevuta» con link. Il badge «Trasparente 100%» va tolto. Il testo sulla destinazione dell'avanzo deve essere quello vero, non il dettaglio inventato «carta regalo, nastro, stampa A4 a colori».
 
 ### Intestazioni
 
