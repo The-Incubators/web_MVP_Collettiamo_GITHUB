@@ -1,34 +1,19 @@
 "use client";
 
-// Il percorso «Trova il regalo»: quattro tappe (destinatario, occasione, interessi, risultati).
-// Testi, markup, classi, ruoli e tempi sono quelli del percorso di partenza (js/gift-finder/gift-finder.js);
-// i risultati però sono i prodotti del nostro catalogo, con la nostra scheda (SchedaProdotto).
+// Il percorso «Trova il regalo»: quattro tappe (destinatario, occasione, interessi, risultati), nel disegno di
+// UX_V4. Le domande, le 36 scelte d'interesse, il punteggio e la ripresa dalla sessione sono quelli di sempre
+// (lib/regalo); i risultati sono i prodotti del nostro catalogo, con la nostra scheda (SchedaProdotto).
 //
-// Differenze volute rispetto all'originale:
-// - i prodotti arrivano già con la pagina, quindi non c'è nessuna richiesta che possa fallire: niente «Riprova».
-// - l'originale rimetteva a fuoco il pulsante appena premuto perché riscriveva tutto l'HTML; qui i nodi
-//   restano gli stessi e il fuoco non si perde da sé.
+// - I prodotti arrivano già con la pagina, quindi non c'è nessuna richiesta che possa fallire: niente «Riprova».
+// - La pausa con l'animazione prima dei risultati è voluta, non un'attesa di rete.
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { SchedaProdotto } from "@/components/SchedaProdotto";
-import { Avanzamento, Chip, Icona, RiepilogoScelte, SceltaCerchio, SchedaOccasione } from "@/components/regalo/parti";
-import {
-  CATEGORIE_INTERESSI,
-  GENERI,
-  INTERESSI,
-  MAX_INTERESSI,
-  MIN_INTERESSI,
-  OCCASIONI_REGALO,
-} from "@/lib/regalo/dati";
-import {
-  FASCIA_TUTTE,
-  ORDINI,
-  filtriIniziali,
-  ordinaProdotti,
-  type FiltriRisultati,
-  type IdOrdine,
-} from "@/lib/regalo/punteggio";
+import { Avanzamento, Chip, Icona, SceltaScheda } from "@/components/regalo/parti";
+import { Bottone, Icona as IconaSito } from "@/components/ui";
+import { CATEGORIE_INTERESSI, GENERI, INTERESSI, MAX_INTERESSI, MIN_INTERESSI, OCCASIONI_REGALO } from "@/lib/regalo/dati";
+import { FASCIA_TUTTE, ORDINI, filtriIniziali, ordinaProdotti, type FiltriRisultati, type IdOrdine } from "@/lib/regalo/punteggio";
 import {
   avanza,
   cambiaInteresse,
@@ -45,36 +30,16 @@ import {
 import { FASCE_PREZZO, type Prodotto } from "@/lib/tipi";
 
 const ATTESA_MS = 1100;
+/** I risultati sono tutto il catalogo ordinato per affinità: se ne mostrano 24 alla volta. */
+const PER_PAGINA = 24;
 
-const TESTI: Record<number, { titolo: string; nota?: string; testo: React.ReactNode; aiuto?: string }> = {
-  1: {
-    titolo: "Qualche domanda",
-    nota: "(30 sec)",
-    testo: "Per trovare il regalo giusto, abbiamo bisogno di qualche informazione",
-    aiuto: "Seleziona un’opzione per continuare",
-  },
-  2: {
-    titolo: "Occasione",
-    testo: (
-      <>
-        Stai cercando idee regalo speciali per qualcuno? Raccontaci qual è l’<strong>occasione</strong> da festeggiare.
-      </>
-    ),
-    aiuto: "Scegli un’occasione per continuare",
-  },
+const TESTI: Record<1 | 2 | 3, { titolo: string; testo: string; aiuto: string }> = {
+  1: { titolo: "Per chi è il regalo?", testo: "Un uomo o una donna?", aiuto: "Seleziona un’opzione per continuare" },
+  2: { titolo: "Qual è l’occasione?", testo: "Scegli cosa si festeggia.", aiuto: "Scegli un’occasione per continuare" },
   3: {
-    titolo: "Interessi",
-    testo: (
-      <>
-        Troviamo i regali giusti per ogni persona. Aiutaci selezionando dai {MIN_INTERESSI} ai {MAX_INTERESSI} dei suoi{" "}
-        <strong>interessi principali</strong>.
-      </>
-    ),
+    titolo: "Cosa le appassiona?",
+    testo: `Scegli da ${MIN_INTERESSI} a ${MAX_INTERESSI} interessi.`,
     aiuto: `Scegli almeno ${MIN_INTERESSI} interessi per continuare`,
-  },
-  4: {
-    titolo: "Ecco il risultato",
-    testo: "Ti presentiamo i regali che più rispecchiano i gusti della persona a cui stai pensando.",
   },
 };
 
@@ -82,14 +47,12 @@ const motoRidotto = () => globalThis.matchMedia?.("(prefers-reduced-motion: redu
 
 export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   const [stato, setStato] = useState<StatoRicerca>(statoIniziale);
-  const [categoria, setCategoria] = useState<string>(CATEGORIE_INTERESSI[0].id);
   const [filtri, setFiltri] = useState<FiltriRisultati>(filtriIniziali);
-  const [filtriAperti, setFiltriAperti] = useState(false);
   const [inAttesa, setInAttesa] = useState(false);
   const [avviato, setAvviato] = useState(false);
   const [messaggio, setMessaggio] = useState("");
+  const [mostra, setMostra] = useState(PER_PAGINA);
   const titolo = useRef<HTMLHeadingElement>(null);
-  const guscio = useRef<HTMLDivElement>(null);
   const vistaMostrata = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -97,8 +60,8 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   // Chi riprende un percorso già cominciato salta la scelta e torna dov'era.
   const mostraAvvio = !avviato && stato.tappa === 1 && !stato.genere;
 
-  // Il percorso lasciato a metà si riprende dalla sessione del browser. Non si può leggere durante il primo
-  // render (il server non ha sessionStorage): si recupera subito dopo, come faceva l'originale all'avvio.
+  // Il percorso lasciato a metà si riprende dalla sessione del browser, subito dopo il primo render
+  // (il server non ha sessionStorage).
   useEffect(() => {
     const ripreso = leggiDallaSessione();
     if (ripreso.tappa !== 1 || ripreso.genere) setStato(ripreso);
@@ -106,9 +69,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
 
   useEffect(() => () => clearTimeout(timer.current), []);
 
-  // Quando cambia ciò che si vede nel pannello, il titolo prende il fuoco e il pannello torna in vista,
-  // come nell'originale. Vale anche fra la scelta d'avvio e la prima tappa: se no, premendo «Rispondi alle
-  // 3 domande» il pulsante sparisce e il fuoco finisce sul corpo della pagina.
+  // Quando cambia ciò che si vede, il titolo prende il fuoco e la pagina torna in cima.
   const vista = inAttesa ? "attesa" : mostraAvvio ? "avvio" : `tappa-${stato.tappa}`;
   useEffect(() => {
     if (inAttesa) return;
@@ -116,7 +77,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
     vistaMostrata.current = vista;
     if (!cambiata) return;
     titolo.current?.focus({ preventScroll: true });
-    guscio.current?.scrollIntoView({ behavior: motoRidotto() ? "auto" : "smooth", block: "start" });
+    window.scrollTo({ top: 0, behavior: motoRidotto() ? "auto" : "smooth" });
   }, [vista, inAttesa]);
 
   function aggiorna(prossimo: StatoRicerca) {
@@ -124,19 +85,12 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
     scriviNellaSessione(prossimo);
   }
 
-  function vaiA(tappa: number) {
-    aggiorna(vaiAllaTappa(stato, tappa));
-  }
+  const vaiA = (tappa: number) => aggiorna(vaiAllaTappa(stato, tappa));
 
-  /**
-   * «Ripeti la ricerca»: si riparte davvero da zero. Si buttano via le risposte (anche quelle salvate nella
-   * sessione, se no tornerebbero ricaricando la pagina) e i filtri dei risultati, e si torna alla scelta
-   * d'avvio: chi ricomincia può di nuovo decidere fra le 3 domande e il catalogo.
-   */
+  /** «Ripeti la ricerca»: si riparte davvero da zero, scelta d'avvio compresa (e si svuota la sessione). */
   function ricominciaDaCapo() {
-    setFiltriAperti(false);
     setFiltri(filtriIniziali());
-    setCategoria(CATEGORIE_INTERESSI[0].id);
+    setMostra(PER_PAGINA);
     setMessaggio("");
     setAvviato(false);
     aggiorna(statoIniziale());
@@ -145,7 +99,6 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   function avanti() {
     if (!puoAvanzare(stato)) return;
     if (stato.tappa === 3) {
-      // La pausa con l'animazione fa parte del percorso: i prodotti ci sono già.
       setInAttesa(true);
       clearTimeout(timer.current);
       timer.current = setTimeout(
@@ -162,267 +115,236 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
 
   function scegliInteresse(id: string) {
     if (!stato.interessi.includes(id) && limiteInteressiRaggiunto(stato)) {
-      setMessaggio(`Puoi scegliere al massimo ${MAX_INTERESSI} interessi. Rimuovine uno per sceglierne un altro.`);
+      setMessaggio(`Puoi scegliere al massimo ${MAX_INTERESSI} interessi. Togline uno per sceglierne un altro.`);
       return;
     }
     setMessaggio("");
     aggiorna(cambiaInteresse(stato, id));
   }
 
-  function corpoTappa() {
-    if (stato.tappa === 1) {
-      return (
-        <>
-          <p className="gf-domanda" id="gf-domanda-genere">
-            Il regalo è per un uomo o per una donna?
-          </p>
-          <div className="gf-genders" role="group" aria-labelledby="gf-domanda-genere">
-            {GENERI.map((g) => (
-              <SceltaCerchio
-                key={g.id}
-                etichetta={g.etichetta}
-                icona={g.icona}
-                scelto={stato.genere === g.id}
-                onClick={() => aggiorna(scegliGenere(stato, g.id))}
-              />
-            ))}
-          </div>
-        </>
-      );
-    }
-    if (stato.tappa === 2) {
-      return (
-        <div className="gf-occasions" role="group" aria-label="Occasione">
-          {OCCASIONI_REGALO.map((o) => (
-            <SchedaOccasione
-              key={o.id}
-              etichetta={o.etichetta}
-              icona={o.icona}
-              scelta={stato.occasione === o.id}
-              onClick={() => aggiorna(scegliOccasione(stato, o.id))}
-            />
-          ))}
-        </div>
-      );
-    }
-    return (
-      <>
-        <RiepilogoScelte stato={stato} togli={(id) => { setMessaggio(""); aggiorna(cambiaInteresse(stato, id)); }} />
-        <div className="gf-chips gf-categories" role="group" aria-label="Categorie di interessi">
-          {CATEGORIE_INTERESSI.map((c) => (
-            <Chip
-              key={c.id}
-              etichetta={c.etichetta}
-              scelto={categoria === c.id}
-              tono="verde"
-              conteggio={stato.interessi.filter((id) => INTERESSI.find((x) => x.id === id)?.categoria === c.id).length}
-              onClick={() => setCategoria(c.id)}
-            />
-          ))}
-        </div>
-        <div className="gf-interests" role="group" aria-label="Interessi">
-          {INTERESSI.filter((x) => x.categoria === categoria).map((x) => (
-            <SceltaCerchio
-              key={x.id}
-              etichetta={x.etichetta}
-              icona={x.icona}
-              scelto={stato.interessi.includes(x.id)}
-              grande
-              onClick={() => scegliInteresse(x.id)}
-            />
-          ))}
-        </div>
-      </>
-    );
-  }
+  const genere = GENERI.find((g) => g.id === stato.genere);
+  const occasione = OCCASIONI_REGALO.find((o) => o.id === stato.occasione);
 
-  function rigaScelte() {
-    const interessi = stato.interessi.map((id) => INTERESSI.find((x) => x.id === id)?.etichetta).filter(Boolean);
-    const occasione = OCCASIONI_REGALO.find((o) => o.id === stato.occasione)?.etichetta;
-    const destinatario = GENERI.find((g) => g.id === stato.genere)?.etichetta;
-    return [destinatario, occasione, interessi.join(", ")].filter(Boolean).join(" · ");
-  }
-
-  if (inAttesa) {
+  /** Le risposte già date, in alto: toccandole si torna a cambiarle. */
+  function risposteDate() {
+    if (!genere && !occasione) return null;
     return (
-      <div className="gf" data-phase="loading">
-        <div className="gf-loading" role="status">
-          <div className="gf-orb" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </div>
-          <p>Stiamo cercando i regali giusti…</p>
-        </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold text-ink-soft">Le tue risposte:</span>
+        {genere ? (
+          <button type="button" onClick={() => vaiA(1)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
+            <Icona nome={genere.icona} className="h-4 w-4 text-cta-2" />
+            Per {genere.etichetta.toLowerCase()}
+            <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
+            <span className="sr-only">: cambia</span>
+          </button>
+        ) : null}
+        {occasione && stato.tappa > 2 ? (
+          <button type="button" onClick={() => vaiA(2)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
+            <Icona nome={occasione.icona} className="h-4 w-4 text-cta-2" />
+            {occasione.etichetta}
+            <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
+            <span className="sr-only">: cambia</span>
+          </button>
+        ) : null}
       </div>
     );
   }
 
-  if (stato.tappa === 4) {
-    const risultati = ordinaProdotti(prodotti, stato, filtri);
+  const messaggioVivo = (
+    <p className="sr-only" role="status" aria-live="polite">
+      {messaggio}
+    </p>
+  );
+
+  if (inAttesa) {
     return (
-      <div className="gf" data-phase="results" onKeyDown={(e) => e.key === "Escape" && setFiltriAperti(false)}>
-        <div className="gf-shell" data-step={4} ref={guscio}>
-          <Avanzamento stato={stato} vaiA={vaiA} />
-          <section className="gf-panel gf-results" aria-labelledby="gf-heading">
-            <h2 id="gf-heading" tabIndex={-1} ref={titolo}>
-              {TESTI[4].titolo}
-            </h2>
-            <p className="gf-lead">{TESTI[4].testo}</p>
-            <p className="gf-selection">{rigaScelte()}</p>
-            <div className="gf-toolbar">
-              <button
-                type="button"
-                className="gf-button"
-                aria-expanded={filtriAperti}
-                aria-controls="gf-filters"
-                onClick={() => setFiltriAperti((a) => !a)}
-              >
-                <Icona nome="filter" />
-                Filtri
-              </button>
-              <button type="button" className="gf-button gf-button-secondary" onClick={ricominciaDaCapo}>
-                <Icona nome="refresh" />
-                Ripeti la ricerca
-              </button>
-            </div>
-            <div className="gf-filters" id="gf-filters" hidden={!filtriAperti}>
-              <div className="gf-filter-group" role="group" aria-label="Fascia di prezzo">
-                <strong>Fascia di prezzo</strong>
-                <div className="gf-chips">
-                  <Chip
-                    etichetta="Tutti i prezzi"
-                    scelto={filtri.fascia === FASCIA_TUTTE}
-                    onClick={() => setFiltri((f) => ({ ...f, fascia: FASCIA_TUTTE }))}
-                  />
-                  {FASCE_PREZZO.map((f) => (
-                    <Chip
-                      key={f.id}
-                      etichetta={f.etichetta}
-                      scelto={filtri.fascia === f.id}
-                      onClick={() => setFiltri((x) => ({ ...x, fascia: f.id }))}
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="gf-filter-group" role="group" aria-label="Ordinamento">
-                <strong>Ordina per</strong>
-                <div className="gf-chips">
-                  {ORDINI.map((o) => (
-                    <Chip
-                      key={o.id}
-                      etichetta={o.etichetta}
-                      scelto={filtri.ordine === o.id}
-                      onClick={() => setFiltri((x) => ({ ...x, ordine: o.id as IdOrdine }))}
-                    />
-                  ))}
-                </div>
-              </div>
-              <button
-                type="button"
-                className="gf-link"
-                onClick={() => {
-                  setFiltri(filtriIniziali());
-                  setMessaggio("Filtri azzerati.");
-                }}
-              >
-                Reset filtri
-              </button>
-            </div>
-            {risultati.length ? (
-              <ul className="gf-grid">
-                {risultati.map((p) => (
-                  <li key={p.slug}>
-                    <div>
-                      <SchedaProdotto prodotto={p} />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="gf-empty">
-                <h3>Nessuna idea in questa fascia</h3>
-                <p>Prova a cambiare i filtri.</p>
-                <button type="button" className="gf-button gf-button-secondary" onClick={() => setFiltri(filtriIniziali())}>
-                  Reset filtri
-                </button>
-              </div>
-            )}
-          </section>
-        </div>
-        <p className="gf-message" role="status" aria-live="polite">
-          {messaggio}
-        </p>
+      <div role="status" className="mx-auto flex w-full max-w-lg flex-col items-center gap-4 rounded-3xl bg-surface p-10 text-center shadow-carta">
+        <span aria-hidden="true" className="h-12 w-12 animate-spin rounded-full border-4 border-line border-t-cta" />
+        <p className="font-display text-xl font-semibold text-accent-2">Cerco i regali giusti…</p>
       </div>
     );
   }
 
   if (mostraAvvio) {
     return (
-      <div className="gf" data-phase="questions">
-        <div className="gf-shell" data-step={1} ref={guscio}>
-          <Avanzamento stato={stato} vaiA={vaiA} />
-          <section className="gf-panel" aria-labelledby="gf-heading">
-            {/* Il pannello non ha un titolo visibile: questo serve a chi usa uno screen reader e al fuoco. */}
-            <h2 id="gf-heading" tabIndex={-1} ref={titolo} className="gf-sr">
-              Come vuoi cercare il regalo?
-            </h2>
-            <div className="gf-avvio">
-              <button type="button" className="gf-pillola" onClick={() => setAvviato(true)}>
-                Rispondi alle 3 domande
-              </button>
-              <p>..o sfoglia direttamente il nostro catalogo</p>
-              <Link href="/catalogo" className="gf-pillola">
-                Vai al catalogo regali
-              </Link>
-            </div>
-          </section>
+      <section aria-labelledby="titolo-regalo" className="mx-auto flex w-full max-w-lg flex-col gap-5">
+        <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-6 text-center shadow-carta">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cta-field text-cta-2">
+            <Icona nome="gift" className="h-8 w-8" />
+          </span>
+          <h1 id="titolo-regalo" ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
+            Trova il regalo perfetto
+          </h1>
+          <p className="text-ink-soft">Tre domande, trenta secondi.</p>
+          <Bottone variante="azione" pieno onClick={() => setAvviato(true)} className="mt-2">
+            Rispondi alle 3 domande <IconaSito nome="arrow_forward" dimensione={22} />
+          </Bottone>
+          <Link href="/catalogo" className="inline-flex min-h-tocco items-center gap-0.5 text-sm font-bold text-accent">
+            …o sfoglia tutto il catalogo <IconaSito nome="chevron_right" dimensione={18} />
+          </Link>
         </div>
+      </section>
+    );
+  }
+
+  if (stato.tappa === 4) {
+    const risultati = ordinaProdotti(prodotti, stato, filtri);
+    const interessi = stato.interessi.map((id) => INTERESSI.find((x) => x.id === id)?.etichetta).filter(Boolean);
+    return (
+      <div className="flex flex-col gap-4">
+        <Avanzamento stato={stato} vaiA={vaiA} />
+        <div className="flex flex-col gap-1">
+          <h1 ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
+            Ecco le idee giuste
+          </h1>
+          <p className="text-sm text-ink-soft">{[genere?.etichetta, occasione?.etichetta, interessi.join(", ")].filter(Boolean).join(" · ")}</p>
+        </div>
+        <div className="flex flex-col gap-2">
+          <div role="group" aria-label="Fascia di prezzo" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+            <Chip etichetta="Tutti i prezzi" scelto={filtri.fascia === FASCIA_TUTTE} onClick={() => setFiltri((f) => ({ ...f, fascia: FASCIA_TUTTE }))} />
+            {FASCE_PREZZO.map((f) => (
+              <Chip key={f.id} etichetta={f.etichetta} scelto={filtri.fascia === f.id} onClick={() => setFiltri((x) => ({ ...x, fascia: f.id }))} />
+            ))}
+          </div>
+          <div role="group" aria-label="Ordina per" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+            {ORDINI.map((o) => (
+              <Chip key={o.id} etichetta={o.etichetta} scelto={filtri.ordine === o.id} onClick={() => setFiltri((x) => ({ ...x, ordine: o.id as IdOrdine }))} />
+            ))}
+          </div>
+        </div>
+        {risultati.length ? (
+          <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            {risultati.slice(0, mostra).map((p) => (
+              <li key={p.slug}>
+                <SchedaProdotto prodotto={p} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
+            <p className="font-semibold">Nessuna idea in questa fascia di prezzo.</p>
+            <Bottone variante="secondario" onClick={() => setFiltri(filtriIniziali())}>
+              Mostra tutti i prezzi
+            </Bottone>
+          </div>
+        )}
+        {risultati.length > mostra ? (
+          <button
+            type="button"
+            onClick={() => setMostra((m) => m + PER_PAGINA)}
+            className="inline-flex min-h-12 items-center gap-1 self-center rounded-full bg-surface-2 px-6 text-sm font-bold hover:bg-line"
+          >
+            <IconaSito nome="expand_more" dimensione={20} />
+            Mostra altre {Math.min(PER_PAGINA, risultati.length - mostra)} idee
+          </button>
+        ) : null}
+        <Bottone variante="secondario" onClick={ricominciaDaCapo} className="self-center">
+          <Icona nome="refresh" className="h-5 w-5" />
+          Ripeti la ricerca
+        </Bottone>
+        {messaggioVivo}
       </div>
     );
   }
 
-  const testi = TESTI[stato.tappa];
+  const tappa = stato.tappa as 1 | 2 | 3;
+  const testi = TESTI[tappa];
   const bloccato = !puoAvanzare(stato);
+  const nInteressi = stato.interessi.length;
+
   return (
-    <div className="gf" data-phase="questions">
-      <div className="gf-shell" data-step={stato.tappa} ref={guscio}>
-        <Avanzamento stato={stato} vaiA={vaiA} />
-        <section className="gf-panel" aria-labelledby="gf-heading">
-          <h2 id="gf-heading" tabIndex={-1} ref={titolo}>
-            {testi.titolo}
-            {testi.nota ? <span className="gf-nota"> {testi.nota}</span> : null}
-          </h2>
-          <p className="gf-lead">{testi.testo}</p>
-          <div className="gf-body">{corpoTappa()}</div>
-          <div className="gf-footer">
-            {stato.tappa > 1 ? (
-              <button type="button" className="gf-back" onClick={() => vaiA(stato.tappa - 1)}>
-                <Icona nome="arrow-left" />
-                <span>Indietro</span>
-              </button>
-            ) : (
-              <span />
-            )}
-            <span className="gf-hint" id="gf-hint">
-              {bloccato ? testi.aiuto : ""}
-            </span>
+    <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
+      <Avanzamento stato={stato} vaiA={vaiA} />
+      {risposteDate()}
+
+      <div className="flex flex-col gap-2 rounded-3xl bg-surface p-5 shadow-carta">
+        <h1 ref={titolo} tabIndex={-1} className="text-[26px] font-bold leading-tight text-accent-2 outline-none">
+          {tappa === 3 && genere?.id === "uomo" ? "Cosa lo appassiona?" : testi.titolo}
+        </h1>
+        <p className="text-sm text-ink-soft">{testi.testo}</p>
+        {tappa === 3 ? (
+          <p className={`inline-flex items-center gap-1.5 self-start rounded-full px-3 py-1 text-xs font-bold ${nInteressi >= MIN_INTERESSI ? "bg-ok-field text-ok" : "bg-surface-2"}`}>
+            <IconaSito nome="check_circle" dimensione={16} />
+            {nInteressi} di {MAX_INTERESSI} selezionati
+            {nInteressi >= MIN_INTERESSI ? " · Ottimo mix!" : ` · minimo ${MIN_INTERESSI}`}
+          </p>
+        ) : null}
+      </div>
+
+      {tappa === 1 ? (
+        <div role="group" aria-label={testi.titolo} className="grid grid-cols-2 gap-3">
+          {GENERI.map((g) => (
+            <SceltaScheda key={g.id} etichetta={g.etichetta} icona={g.icona} grande scelto={stato.genere === g.id} onClick={() => aggiorna(scegliGenere(stato, g.id))} />
+          ))}
+        </div>
+      ) : null}
+
+      {tappa === 2 ? (
+        <div role="group" aria-label={testi.titolo} className="grid grid-cols-2 gap-2">
+          {OCCASIONI_REGALO.map((o) => (
+            <SceltaScheda key={o.id} etichetta={o.etichetta} icona={o.icona} scelto={stato.occasione === o.id} onClick={() => aggiorna(scegliOccasione(stato, o.id))} />
+          ))}
+        </div>
+      ) : null}
+
+      {tappa === 3
+        ? CATEGORIE_INTERESSI.map((c) => {
+            const lista = INTERESSI.filter((x) => x.categoria === c.id);
+            const scelti = lista.filter((x) => stato.interessi.includes(x.id)).length;
+            return (
+              <section key={c.id} aria-labelledby={`cat-${c.id}`} className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <h2 id={`cat-${c.id}`} className="text-lg font-semibold text-accent-2">
+                    {c.etichetta}
+                  </h2>
+                  {scelti > 0 ? <span className="text-xs font-bold text-cta-2">{scelti === 1 ? "1 selezionato" : `${scelti} selezionati`}</span> : null}
+                </div>
+                <div role="group" aria-label={c.etichetta} className="grid grid-cols-2 gap-2">
+                  {lista.map((x) => (
+                    <SceltaScheda key={x.id} etichetta={x.etichetta} icona={x.icona} scelto={stato.interessi.includes(x.id)} onClick={() => scegliInteresse(x.id)} />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        : null}
+
+      {messaggio ? (
+        <p role="alert" className="rounded-2xl bg-gold-field p-3 text-sm font-semibold">
+          {messaggio}
+        </p>
+      ) : null}
+
+      {/* La barra dei pulsanti resta in fondo allo schermo, sopra la navigazione. */}
+      <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-col gap-1 bg-field/95 px-4 pb-2 pt-3 backdrop-blur md:bottom-0">
+        <div className="flex items-center gap-2">
+          {tappa > 1 ? (
             <button
               type="button"
-              className="gf-next"
-              aria-label={stato.tappa === 3 ? "Vai ai risultati" : "Avanti"}
-              aria-describedby="gf-hint"
-              disabled={bloccato}
-              onClick={avanti}
+              onClick={() => vaiA(tappa - 1)}
+              aria-label="Indietro"
+              className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-surface shadow-carta"
             >
-              <Icona nome="arrow-right" />
+              <IconaSito nome="arrow_back" />
             </button>
-          </div>
-        </section>
+          ) : null}
+          <Bottone pieno onClick={avanti} disabled={bloccato} aria-describedby="aiuto-regalo">
+            {tappa === 3 ? "Trova i regali perfetti" : "Avanti"}
+            {tappa === 3 && nInteressi > 0 ? (
+              <span className="cifre flex h-6 min-w-6 items-center justify-center rounded-full bg-cta px-1.5 text-xs text-accent-2">{nInteressi}</span>
+            ) : null}
+            <IconaSito nome="arrow_forward" dimensione={20} />
+          </Bottone>
+        </div>
+        <p id="aiuto-regalo" className="text-center text-xs font-semibold text-ink-soft">
+          {bloccato ? testi.aiuto : ""}
+        </p>
+        <Link href="/catalogo" className="inline-flex min-h-tocco items-center justify-center gap-0.5 text-xs font-bold text-ink-soft">
+          …oppure salta e vai a tutto il catalogo <IconaSito nome="chevron_right" dimensione={16} />
+        </Link>
       </div>
-      <p className="gf-message" role="status" aria-live="polite">
-        {messaggio}
-      </p>
+      {messaggioVivo}
     </div>
   );
 }

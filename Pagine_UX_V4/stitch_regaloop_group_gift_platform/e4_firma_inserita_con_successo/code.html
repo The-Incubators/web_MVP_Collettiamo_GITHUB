@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_blank" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#ebefe8", "primary-container": "#033922", "secondary": "#aa3700", "tertiary": "#291900", "tertiary-fixed": "#ffddb1", "outline-variant": "#c0c9c1", "on-secondary": "#ffffff", "on-primary-container": "#72a485", "surface-container-low": "#f0f5ee", "surface": "#f6fbf4", "on-primary-fixed-variant": "#1f5037", "secondary-container": "#ff5e18", "outline": "#717972", "on-tertiary": "#ffffff", "surface-variant": "#dfe4dd", "on-secondary-fixed-variant": "#822800", "surface-container-high": "#e5e9e3", "on-primary": "#ffffff", "on-error-container": "#93000a", "on-tertiary-container": "#ce8c00", "inverse-surface": "#2d322d", "surface-container-lowest": "#ffffff", "background": "#f6fbf4", "error-container": "#ffdad6", "secondary-fixed-dim": "#ffb59b", "surface-tint": "#38684d", "on-error": "#ffffff", "secondary-fixed": "#ffdbcf", "on-secondary-fixed": "#380d00", "surface-container-highest": "#dfe4dd", "surface-bright": "#f6fbf4", "primary-fixed-dim": "#9fd2b1", "on-primary-fixed": "#002111", "on-surface-variant": "#414943", "tertiary-container": "#452c00", "on-background": "#181d19", "inverse-primary": "#9fd2b1", "primary": "#002212", "on-tertiary-fixed": "#291800", "on-tertiary-fixed-variant": "#614000", "primary-fixed": "#baefcc", "inverse-on-surface": "#edf2eb", "surface-dim": "#d7dbd5", "tertiary-fixed-dim": "#ffba48", "error": "#ba1a1a", "on-surface": "#181d19", "on-secondary-container": "#541700" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "margin-lg": "3rem", "margin-md": "2rem", "margin": "1rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter": "1rem", "gutter-md": "1.5rem", "space-md": "1rem", "space-xl": "2rem" }, fontFamily: { "headline-sm": ["Bricolage Grotesque"], "label-sm": ["Plus Jakarta Sans"], "headline-lg": ["Bricolage Grotesque"], "headline-md": ["Bricolage Grotesque"], "body-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Bricolage Grotesque"], "display-lg": ["Bricolage Grotesque"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "display-counter": ["Bricolage Grotesque"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"] }, fontSize: { "headline-sm": ["20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "display-lg": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "display-counter": ["44px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }] } } } };</script><style>@layer base{html,body{width:100%;min-height:100%;margin:0;padding:0;}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed pt-safe pb-safe"><main class="flex-1 flex flex-col relative w-full bg-surface"><div class="flex flex-col w-full px-margin pb-margin-lg space-y-space-md">
+<!-- Dynamic Confetti Canvas & Celebration Blast -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col items-center text-center">
+<div class="absolute inset-0 pointer-events-none overflow-hidden" id="confetti-container"></div>
+<!-- Festive Badge with Checkmark -->
+<div class="relative flex items-center justify-center w-20 h-20 rounded-full bg-primary-fixed mb-space-sm shadow-md animate-bounce">
+<div class="absolute inset-0 rounded-full bg-secondary-container opacity-20 scale-125 animate-ping"></div>
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1, 'wght' 700;">
+        check_circle
+      </span>
+<span class="absolute -top-1 -right-1 text-2xl">🎉</span>
+</div>
+<!-- Joyful Header -->
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight">
+      Sei sul biglietto di Nicola!
+    </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-xs max-w-xs">
+      Il tuo messaggio e la foto sono stati aggiunti con successo.
+    </p>
+<!-- Mini Status Pill -->
+<div class="inline-flex items-center gap-space-xs bg-surface-container-high px-space-md py-1.5 rounded-full mt-space-sm text-primary">
+<span class="material-symbols-outlined text-sm text-secondary-container" style="font-variation-settings: 'FILL' 1;">
+        favorite
+      </span>
+<span class="font-label-sm text-label-sm font-semibold">
+        Firma #14 nel Biglietto Collettivo
+      </span>
+</div>
+</div>
+<!-- Tangible Stationery Dedication Preview -->
+<div class="relative bg-surface-container-low rounded-lg p-space-md shadow-sm">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-base" style="font-variation-settings: 'FILL' 1;">
+          drafts
+        </span>
+<span class="font-label-md text-label-md text-on-surface font-bold uppercase tracking-wider">
+          La tua dedica sul biglietto
+        </span>
+</div>
+<button class="inline-flex items-center gap-1 bg-surface-container-lowest text-primary px-space-sm py-1 rounded-full shadow-sm hover:bg-surface-variant transition active:scale-95" id="btn-edit">
+<span class="font-label-sm text-label-sm font-semibold">✏️ Modifica messaggio</span>
+</button>
+</div>
+<!-- Physical Paper Greeting Card Look -->
+<div class="relative bg-surface-container-lowest rounded p-space-md shadow-sm">
+<div class="flex flex-col gap-space-md">
+<!-- Message content -->
+<div class="relative">
+<span class="text-3xl text-secondary-fixed-dim absolute -top-3 -left-2 select-none opacity-50 font-serif">“</span>
+<p class="font-body-md text-body-md text-on-surface italic pl-space-sm pt-space-xs leading-relaxed">
+            Nico! 30 anni volati tra risate, verifiche di matematica disperate e mille avventure insieme. Che questo nuovo capitolo sia stracolmo di sogni realizzati e birrette fresche! Ti vogliamo un bene infinito!
+          </p>
+</div>
+<!-- Attached Polaroid Photo -->
+<div class="flex items-start gap-space-md bg-surface-container-high p-space-sm rounded-lg shadow-inner">
+<div class="relative w-24 h-28 bg-surface-container-lowest p-1 shadow-md rotate-[-2deg] shrink-0">
+<img class="w-full h-20 object-cover rounded-xs" data-alt="Vintage Polaroid film snapshot showing a joyous group of young Italian high-school friends laughing under warm golden hour sunlight, festive and nostalgic celebration vibe, warm earthy tones, fine grain stationery aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsxx6Cfv7faNOmb2th4GvemF2yxLRuWr_Fg9eqODIr5zNgF3DR4iXdEyy2KzJCi9hQYYjZI5r7YHaZBw9LyxgIpwKc6dtwS_7Lq2P1Y6NZZ-AeOeM1oiIgwEM6z3fG3S5Bjl5kSzhPPMJnp8Azizlar_n4q5xSr23ayzzRb0uS58FI0H8L-fahvkgrRO8qoyksorYzihKN4KXWAsgsCkloyyXv3wuF84K0I5B1j8400saXdqRgymdv"/>
+<div class="w-full text-center mt-1">
+<span class="font-label-sm text-label-sm text-outline tracking-tighter">Liceo 2012 ✨</span>
+</div>
+</div>
+<div class="flex flex-col justify-center self-center">
+<span class="font-label-lg text-label-lg text-primary font-bold">
+              Elena
+            </span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+              Amica del liceo
+            </span>
+<div class="flex items-center gap-1 text-secondary-container mt-space-xs font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+<span>1 foto ricordo allegata</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Community Boost / Mancano ancora amici? -->
+<div class="bg-surface-container rounded-lg p-space-md shadow-sm space-y-space-md">
+<div class="flex items-start gap-space-sm">
+<div class="p-2 bg-secondary-fixed rounded-full text-on-secondary-fixed shrink-0">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">
+          group_add
+        </span>
+</div>
+<div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">
+          Mancano ancora degli amici?
+        </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+          Aiuta Marco a raccogliere tutti gli auguri prima della scadenza del 14 novembre!
+        </p>
+</div>
+</div>
+<!-- Quick link field + Copy button -->
+<div class="flex items-center justify-between bg-surface-container-lowest rounded-full p-1.5 shadow-inner">
+<div class="flex items-center gap-space-xs pl-space-sm overflow-hidden min-w-0">
+<span class="material-symbols-outlined text-outline text-lg">link</span>
+<span class="font-body-sm text-body-sm text-on-surface truncate" id="share-link-text">
+          regaloop.it/b/nicola-30
+        </span>
+</div>
+<button class="shrink-0 bg-primary-container text-on-primary px-space-md py-2 rounded-full font-label-md text-label-md transition active:scale-95 shadow-sm" id="btn-copy" onclick="copyLinkAction()">
+        Copia link
+      </button>
+</div>
+<!-- WhatsApp Forward Button -->
+<a class="flex items-center justify-center gap-space-xs w-full min-h-[50px] bg-primary text-on-primary rounded-full font-label-lg text-label-lg shadow-md active:translate-y-0.5 transition" href="https://api.whatsapp.com/send?text=Ciao!%20Stiamo%20firmando%20il%20biglietto%20di%20compleanno%20per%20Nicola!%20Aggiungi%20il%20tuo%20messaggio%20qui:%20https://regaloop.it/b/nicola-30" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">
+        chat
+      </span>
+<span>Inoltra nel gruppo WhatsApp</span>
+</a>
+</div>
+<!-- Viral Loop / Create Card CTA -->
+<div class="bg-surface-container-low rounded-lg p-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm text-center sm:text-left">
+<div class="space-y-0.5">
+<p class="font-headline-sm text-headline-sm text-on-surface">
+        Organizzi anche tu una festa o un regalo?
+      </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Crea ricordi indimenticabili senza stress e quote perse.
+      </p>
+</div>
+<button class="shrink-0 bg-secondary-container text-on-secondary px-space-lg py-3 rounded-full font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-95 transition">
+      Crea un biglietto gratis
+    </button>
+</div>
+</div>
+<script>
+  function copyLinkAction() {
+    const btn = document.getElementById('btn-copy');
+    navigator.clipboard?.writeText('https://regaloop.it/b/nicola-30').catch(() => {});
+    if (btn) {
+      const originalText = btn.innerText;
+      btn.innerText = 'Copiato! ✓';
+      btn.classList.add('bg-secondary-container');
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('bg-secondary-container');
+      }, 2000);
+    }
+  }
+
+  // Micro confetti generation for expressive warmth delight
+  (function burstConfetti() {
+    const container = document.getElementById('confetti-container');
+    if (!container) return;
+    const colors = ['#ff5e18', '#baefcc', '#ffba48', '#033922', '#ffdbcf'];
+    for (let i = 0; i < 28; i++) {
+      const piece = document.createElement('div');
+      const size = Math.random() * 8 + 4;
+      piece.className = 'absolute rounded-full opacity-80';
+      piece.style.width = `${size}px`;
+      piece.style.height = `${size}px`;
+      piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.top = `${Math.random() * 40}%`;
+      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+      piece.style.transition = `all ${1.2 + Math.random()}s cubic-bezier(0.2, 0.8, 0.2, 1)`;
+      container.appendChild(piece);
+      
+      requestAnimationFrame(() => {
+        piece.style.top = `${60 + Math.random() * 40}%`;
+        piece.style.opacity = '0';
+        piece.style.transform = `scale(0.4) rotate(${Math.random() * 720}deg)`;
+      });
+    }
+  })();
+</script></main></body></html>

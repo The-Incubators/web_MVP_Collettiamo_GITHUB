@@ -33,12 +33,12 @@ export function PaginaDati({ slug }: { slug: string }) {
   const massimo = imbuto ? Math.max(1, ...imbuto.passi.map((p) => p.numero)) : 1;
 
   return (
-    <div className="mx-auto flex max-w-dashboard flex-col gap-8">
+    <div className="mx-auto flex max-w-dashboard flex-col gap-5">
       <header className="flex flex-col gap-2">
-        <Link href={`/gestisci/${slug}`} className="inline-flex min-h-tocco items-center self-start text-sm font-semibold text-accent-2 underline underline-offset-4">
+        <Link href={`/gestisci/${slug}`} className="inline-flex min-h-10 items-center gap-1 self-start rounded-full bg-surface-2 px-4 text-sm font-bold">
           Torna alla raccolta
         </Link>
-        <h1 className="text-3xl">I dati della colletta</h1>
+        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Statistiche</h1>
         <p className="text-ink-soft">Persone distinte, non clic. Nessuno strumento di terze parti, nessun cookie di tracciamento.</p>
       </header>
 
@@ -54,12 +54,12 @@ export function PaginaDati({ slug }: { slug: string }) {
 
       {imbuto ? (
         <>
-          <section aria-labelledby="metrica" className="rounded-contenitore border border-accent bg-accent-field p-5">
+          <section aria-labelledby="metrica" className="rounded-3xl bg-accent p-5 text-on-accent">
             <h2 id="metrica" className="text-lg">
               La metrica che conta
             </h2>
             <p className="cifre mt-1 text-4xl font-bold">
-              {imbuto.dichiarazioniSpontanee} <span className="text-xl font-medium text-ink-soft">su {imbuto.dichiarazioniTotali}</span>
+              {imbuto.dichiarazioniSpontanee} <span className="text-xl font-medium opacity-80">su {imbuto.dichiarazioniTotali}</span>
             </p>
             <p className="text-sm">
               {imbuto.dichiarazioniTotali === 0
@@ -70,7 +70,7 @@ export function PaginaDati({ slug }: { slug: string }) {
           </section>
 
           <section aria-labelledby="imbuto" className="flex flex-col gap-3">
-            <h2 id="imbuto" className="text-xl">
+            <h2 id="imbuto" className="text-xl font-semibold text-accent-2">
               Dall’apertura al biglietto
             </h2>
             <div className="contenitore overflow-x-auto">

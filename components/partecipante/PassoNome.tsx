@@ -59,7 +59,10 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
 
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-2xl">Come ti chiami?</h2>
+      <div className="flex flex-col gap-1">
+        <h2 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Come ti chiami?</h2>
+        <p className="text-ink-soft">{colletta.listaAperta ? "È l’unica cosa che ti chiediamo." : "Tocca il tuo nome nell’elenco."}</p>
+      </div>
 
       {colletta.listaAperta ? (
         <form onSubmit={aderisciConNome} className="flex flex-col gap-4" noValidate>
@@ -70,7 +73,6 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
             autoComplete="given-name"
             autoFocus
             errore={errore}
-            suggerimento="È l’unica cosa che ti chiediamo."
           />
           <Bottone type="submit" pieno disabled={occupato}>
             {occupato ? "Un attimo…" : "Avanti"}
@@ -78,18 +80,17 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
         </form>
       ) : (
         <div className="flex flex-col gap-3">
-          <p className="text-ink-soft">Tocca il tuo nome nell’elenco.</p>
           {righe === null ? <p className="text-ink-soft">Carico l’elenco…</p> : null}
           {righe !== null && liberi.length === 0 ? (
             <Avviso>
               <p>Non vedo altri nomi liberi nell’elenco. Se manchi, chiedi a {colletta.organizzatoreNome} di aggiungerti.</p>
             </Avviso>
           ) : null}
-          <ul className="flex flex-col gap-2">
+          <ul className="flex flex-wrap gap-2">
             {liberi.map((r) => (
               <li key={r.id}>
-                <Bottone variante="secondario" pieno disabled={occupato} onClick={() => void rivendica(r)}>
-                  Sono {r.nome}
+                <Bottone variante="secondario" disabled={occupato} onClick={() => void rivendica(r)}>
+                  {r.nome}
                 </Bottone>
               </li>
             ))}
@@ -104,7 +105,7 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
             <Campo etichetta="Il nome con cui avevi partecipato" value={ricerca} onChange={(e) => setRicerca(e.target.value)} autoComplete="given-name" />
             {ricerca.trim() && trovati.length === 0 ? <p className="text-sm text-ink-soft">Non trovo nessuno con questo nome.</p> : null}
             {trovati.map((r) => (
-              <div key={r.id} className="flex flex-col gap-2 rounded-controllo border border-line bg-surface-2 p-3">
+              <div key={r.id} className="flex flex-col gap-2 rounded-2xl bg-surface-2 p-4">
                 <p>Sei <strong>{r.nome}</strong>? Ha già partecipato con questo nome.</p>
                 <Bottone dimensione="piccolo" disabled={occupato} onClick={() => void rivendica(r)}>
                   Sì, sono io
@@ -113,7 +114,7 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
             ))}
           </div>
         ) : (
-          <button type="button" onClick={() => setCerco(true)} className="min-h-tocco text-sm font-semibold text-accent-2 underline underline-offset-4">
+          <button type="button" onClick={() => setCerco(true)} className="min-h-tocco text-sm font-semibold text-accent underline underline-offset-4">
             Hai già partecipato? Continua con il tuo nome
           </button>
         )}

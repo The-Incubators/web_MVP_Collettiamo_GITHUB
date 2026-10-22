@@ -1,21 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, IBM_Plex_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google";
 import { AppProvider } from "@/components/AppProvider";
 import { PreferitiProvider } from "@/components/PreferitiProvider";
-import { Avviso } from "@/components/ui";
+import { Avviso, URL_FONT_ICONE } from "@/components/ui";
 import { baseUrl, modalitaDati } from "@/lib/config";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["500", "700", "800"],
   variable: "--font-display",
   display: "swap",
 });
 
-const testo = IBM_Plex_Sans({
+const testo = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-testo",
   display: "swap",
 });
@@ -31,16 +31,17 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#EDF1EE" },
-    { media: "(prefers-color-scheme: dark)", color: "#0E1613" },
-  ],
+  themeColor: "#F6FBF4",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const modalita = modalitaDati();
   return (
     <html lang="it" className={`${display.variable} ${testo.variable}`}>
+      <head>
+        {/* font delle icone, ridotto all'elenco di components/ui/Icona.tsx */}
+        <link rel="stylesheet" href={URL_FONT_ICONE} />
+      </head>
       <body>
         {modalita === "memoria" ? (
           <div className="no-stampa gutter pt-2">

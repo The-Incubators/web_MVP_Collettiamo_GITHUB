@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface-container": "#ebefe8", "primary-container": "#033922", "secondary": "#aa3700", "tertiary": "#291900", "tertiary-fixed": "#ffddb1", "outline-variant": "#c0c9c1", "on-secondary": "#ffffff", "on-primary-container": "#72a485", "surface-container-low": "#f0f5ee", "surface": "#f6fbf4", "on-primary-fixed-variant": "#1f5037", "secondary-container": "#ff5e18", "outline": "#717972", "on-tertiary": "#ffffff", "surface-variant": "#dfe4dd", "on-secondary-fixed-variant": "#822800", "surface-container-high": "#e5e9e3", "on-primary": "#ffffff", "on-error-container": "#93000a", "on-tertiary-container": "#ce8c00", "inverse-surface": "#2d322d", "surface-container-lowest": "#ffffff", "background": "#f6fbf4", "error-container": "#ffdad6", "secondary-fixed-dim": "#ffb59b", "surface-tint": "#38684d", "on-error": "#ffffff", "secondary-fixed": "#ffdbcf", "on-secondary-fixed": "#380d00", "surface-container-highest": "#dfe4dd", "surface-bright": "#f6fbf4", "primary-fixed-dim": "#9fd2b1", "on-primary-fixed": "#002111", "on-surface-variant": "#414943", "tertiary-container": "#452c00", "on-background": "#181d19", "inverse-primary": "#9fd2b1", "primary": "#002212", "on-tertiary-fixed": "#291800", "on-tertiary-fixed-variant": "#614000", "primary-fixed": "#baefcc", "inverse-on-surface": "#edf2eb", "surface-dim": "#d7dbd5", "tertiary-fixed-dim": "#ffba48", "error": "#ba1a1a", "on-surface": "#181d19", "on-secondary-container": "#541700" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "margin-lg": "3rem", "margin-md": "2rem", "margin": "1rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-xs": "0.25rem", "gutter": "1rem", "gutter-md": "1.5rem", "space-md": "1rem", "space-xl": "2rem" }, fontFamily: { "headline-sm": ["Bricolage Grotesque"], "label-sm": ["Plus Jakarta Sans"], "headline-lg": ["Bricolage Grotesque"], "headline-md": ["Bricolage Grotesque"], "body-md": ["Plus Jakarta Sans"], "display-lg-mobile": ["Bricolage Grotesque"], "display-lg": ["Bricolage Grotesque"], "body-lg": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "display-counter": ["Bricolage Grotesque"], "label-lg": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"] }, fontSize: { "headline-sm": ["20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "700" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "display-lg": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "display-counter": ["44px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }] } } } };</script><style>@layer base{html,body{width:100%;min-height:100%;margin:0;padding:0;}body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased selection:bg-secondary-fixed selection:text-on-secondary-fixed"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/85 backdrop-blur-xl shadow-[0_1px_12px_rgba(3,57,34,0.04)]"><div class="h-14 px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><button aria-label="Chiudi o torna indietro" class="w-11 h-11 -ml-space-xs rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors" onclick="if(window.history.length&gt;1){window.history.back();}else{window.close();}" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button><div class="flex items-center gap-space-xs select-none"><span class="material-symbols-outlined text-secondary text-[20px]">all_inclusive</span><span class="font-headline-sm text-headline-sm tracking-tight text-primary">regaloop</span></div></div><div class="flex items-center gap-space-sm"><div class="text-right hidden sm:block"><span class="font-label-sm text-label-sm text-on-surface-variant block">Aggiungi Dedica</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-sm"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-14 bg-surface pb-safe"><div class="flex flex-col w-full pb-28">
+<div class="px-gutter pt-space-md flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+        Passo 2 di 3
+      </span>
+<span class="font-label-sm text-label-sm text-outline">· Biglietto di Gruppo</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary mt-space-xs">
+      Il tuo pensiero per Nicola
+    </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+      Apparirà all'interno del biglietto stampato su carta materica di cotone.
+    </p>
+</div>
+<div class="px-gutter mt-space-md">
+<div class="relative bg-surface-container-lowest rounded-lg p-space-md shadow-sm transition-all duration-200">
+<div class="flex items-center justify-between pb-space-sm">
+<div class="flex items-center gap-space-xs">
+<div class="w-7 h-7 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-fixed text-[16px]">draw</span>
+</div>
+<span class="font-label-md text-label-md text-primary">Facciata interna</span>
+</div>
+<button class="flex items-center gap-1 font-label-sm text-label-sm text-on-surface-variant hover:text-primary transition-colors" id="toggle-guide-btn" type="button">
+<span class="material-symbols-outlined text-[15px]">straighten</span>
+<span>Linee guida</span>
+</button>
+</div>
+<div class="relative w-full rounded min-h-[140px] p-space-sm bg-surface-container-low transition-colors focus-within:bg-surface-container-lowest">
+<div class="pointer-events-none absolute inset-0 opacity-15 rounded" id="lined-guide" style="background-image: repeating-linear-gradient(transparent, transparent 27px, #717972 28px);"></div>
+<textarea class="relative w-full bg-transparent resize-none outline-none font-body-md text-body-md text-primary placeholder:text-outline/70 leading-7 font-['Bricolage_Grotesque']" id="dedica-input" maxlength="400" placeholder="Scrivi qui il tuo messaggio, un aneddoto divertente o un augurio sincero..." rows="4">Nico! Chi l'avrebbe mai detto che saresti arrivato ai 30 così in forma? Grazie per tutte le avventure insieme, ti vogliamo un bene infinito! 🎉🍻</textarea>
+</div>
+<div class="flex items-center justify-between pt-space-sm mt-space-xs">
+<div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-full">
+<button aria-label="Grassetto" class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-surface-container transition-transform active:scale-95" id="btn-bold" type="button">
+<span class="font-headline-sm text-headline-sm text-[15px] font-bold">B</span>
+</button>
+<button aria-label="Corsivo" class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-surface-container transition-transform active:scale-95" id="btn-italic" type="button">
+<span class="font-body-md text-body-md italic text-[15px] font-serif">I</span>
+</button>
+<button aria-label="Sottolineato" class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-surface-container transition-transform active:scale-95" id="btn-underline" type="button">
+<span class="text-[15px] underline underline-offset-2 font-semibold">U</span>
+</button>
+<div class="relative">
+<button aria-label="Inserisci Emoji" class="w-8 h-8 rounded-full flex items-center justify-center text-primary hover:bg-surface-container transition-transform active:scale-95" id="btn-emoji" type="button">
+<span class="material-symbols-outlined text-[18px]">sentiment_satisfied</span>
+</button>
+<div class="hidden absolute left-0 bottom-10 z-20 bg-surface-container-lowest shadow-md rounded-full px-2 py-1 flex items-center gap-1.5 animate-fadeIn" id="quick-emoji-bar">
+<button class="hover:scale-125 transition-transform text-[18px]" data-emoji="🎉" type="button">🎉</button>
+<button class="hover:scale-125 transition-transform text-[18px]" data-emoji="🥂" type="button">🥂</button>
+<button class="hover:scale-125 transition-transform text-[18px]" data-emoji="❤️" type="button">❤️</button>
+<button class="hover:scale-125 transition-transform text-[18px]" data-emoji="✨" type="button">✨</button>
+<button class="hover:scale-125 transition-transform text-[18px]" data-emoji="🔥" type="button">🔥</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-1 text-right">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono" id="char-counter">185 / 400 caratteri</span>
+</div>
+</div>
+</div>
+</div>
+<div class="px-gutter mt-space-md">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-md text-label-md text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">match_case</span>
+        Stile grafia nel biglietto
+      </span>
+<span class="font-label-sm text-label-sm text-secondary">Effetto inchiostro</span>
+</div>
+<div class="flex gap-space-xs overflow-x-auto pb-1 no-scrollbar">
+<button class="font-selector flex-shrink-0 px-3.5 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all" data-font="sans" type="button">
+        Senza grazie
+      </button>
+<button class="font-selector flex-shrink-0 px-3.5 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all font-serif" data-font="serif" type="button">
+        Con grazie
+      </button>
+<button class="font-selector active-font-chip flex-shrink-0 px-3.5 py-2 rounded-full font-label-md text-label-md bg-primary text-on-primary shadow-sm transition-all flex items-center gap-1" data-font="handwritten" type="button">
+<span class="material-symbols-outlined text-[14px]">check</span>
+        Scritto a mano
+      </button>
+<button class="font-selector flex-shrink-0 px-3.5 py-2 rounded-full font-label-md text-label-md bg-surface-container-low text-on-surface-variant hover:bg-surface-container transition-all" data-font="festive" type="button">
+        Festoso 🎈
+      </button>
+</div>
+</div>
+<div class="px-gutter mt-space-md">
+<div class="bg-surface-container-low rounded-lg p-space-md flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">photo_camera</span>
+<span class="font-label-md text-label-md text-primary">Foto ricordo o GIF</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Stampata nel tuo riquadro</span>
+</div>
+<div class="relative bg-surface-container-lowest p-2.5 rounded shadow-sm flex items-center gap-space-md group" id="polaroid-wrapper">
+<div class="relative w-20 h-20 rounded overflow-hidden flex-shrink-0 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A candid, warm Polaroid style snapshot of a cheerful group of four smiling friends at a sunlit Mediterranean beach during golden hour, holding summer drinks with happy authentic laughter and vintage subtle grain." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACiXQ8meKPORVmnfRbeGqEjyIkdx4fnm9Irk43M86oSCFezT-FS-1pFf46T6aKkICzAr8J9wvJpKhJA23wIlpM5Pf_TjSDHgsnqddN73zsJJ-3CF7Vn0gaOqX7ImtfOW5pXUS1T5xTmDJOPF82H8NwUbBciFWEDkrN1ze4vMkZnOut09vbyxjKNqVqKhmGEmBXjydtVaQ4gexhHofifjb_NcjAT_a9mir7It6Wle2Vt06ztXHjxwtC"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
+</div>
+<div class="flex-1 min-w-0 pr-2">
+<div class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[15px] text-secondary">verified</span>
+<span class="font-headline-sm text-[15px] leading-tight font-semibold truncate">Noi al mare 2024</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 truncate">
+            JPG ad alta risoluzione · Pronta per la stampa
+          </p>
+<div class="flex items-center gap-space-xs mt-2">
+<button class="font-label-sm text-label-sm text-primary hover:text-secondary underline transition-colors" id="replace-photo-btn" type="button">
+              Cambia foto
+            </button>
+</div>
+</div>
+<button aria-label="Rimuovi foto allegata" class="w-8 h-8 rounded-full bg-surface-container hover:bg-error-container text-on-surface hover:text-error flex items-center justify-center transition-colors" id="remove-photo-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="hidden flex-col items-center justify-center p-space-md rounded bg-surface-container-lowest text-center" id="empty-photo-box">
+<span class="material-symbols-outlined text-outline text-[28px]">add_a_photo</span>
+<span class="font-label-md text-label-md text-primary mt-1">Carica uno scatto ricordo</span>
+<button class="mt-2 px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm" id="undo-remove-btn" type="button">
+          Ripristina "Noi al mare 2024"
+        </button>
+</div>
+</div>
+</div>
+<div class="px-gutter mt-space-md mb-space-sm flex justify-center">
+<button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-md text-label-md transition-all active:scale-95 shadow-sm" id="open-modal-preview" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">visibility</span>
+<span>Guarda anteprima nel biglietto</span>
+</button>
+</div>
+<div class="fixed bottom-0 left-0 right-0 z-40 p-gutter bg-surface/90 backdrop-blur-md pb-safe">
+<div class="max-w-md mx-auto flex flex-col gap-1.5">
+<button class="w-full h-13 py-3.5 px-space-lg rounded-full bg-secondary-container hover:opacity-95 text-on-secondary font-label-lg text-label-lg shadow-md flex items-center justify-center gap-2 transition-transform active:translate-y-0.5 active:scale-[0.99]" id="continue-button" type="button">
+<span>Continua con la firma</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<div class="flex items-center justify-center gap-1.5 text-center text-outline font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[13px] text-primary">lock</span>
+<span>Potrai rileggere il tuo testo prima della stampa finale</span>
+</div>
+</div>
+</div>
+<div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 animate-fadeIn" id="preview-modal">
+<div class="relative w-full max-w-sm bg-surface-container-lowest rounded-lg p-space-lg shadow-xl flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_activity</span>
+<span class="font-headline-sm text-headline-sm text-primary">Anteprima di Stampa</span>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary" id="close-modal-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<div class="relative bg-surface-container-low rounded p-space-md flex flex-col gap-space-sm shadow-inner">
+<div class="flex items-center justify-between pb-2">
+<span class="font-label-sm text-label-sm text-outline">Nicola's 30th Birthday</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">celebration</span>
+</div>
+<p class="font-headline-sm text-headline-sm text-primary text-[17px] leading-relaxed" id="modal-text-target">
+          Nico! Chi l'avrebbe mai detto che saresti arrivato ai 30 così in forma? Grazie per tutte le avventure insieme, ti vogliamo un bene infinito! 🎉🍻
+        </p>
+<div class="w-24 h-24 rounded overflow-hidden mt-1 self-start shadow-sm bg-surface-container" id="modal-photo-preview">
+<img class="w-full h-full object-cover" data-alt="A vintage style small square group photograph of close companions sharing a toast with warm smiles in soft natural evening lighting, ready for album keepsake." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuh4C9CqkXvMP58D1xpQ1KB8Hg_0mY5cYiMJvv5LKyiMFzqvMTQz8ljaPrsEE9GLExoDz2EeR8Qul7HctPnuinsDBgBBWoXakqRjhA2uZMHak7l0OV25DY6GqGZ6pgA7vMpbv4Gjgky3NwE-gxpnsLb52o00bip6DgmB1v7aivkelksrDlv5G9bEpFuQP5S0WPwwd9pUGMyoj9EDDdR9eGG5bkVShPI8a6wX8zFzN9p6NbT3j3KPgP"/>
+</div>
+<div class="pt-2 text-right">
+<span class="font-headline-sm text-headline-sm text-[15px] text-primary italic">~ Da Marco &amp; Giulia</span>
+</div>
+</div>
+<button class="w-full py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm" id="confirm-modal-btn" type="button">
+        Sembra perfetto!
+      </button>
+</div>
+</div>
+</div>
+<script>
+  (function initCardEditor() {
+    const textarea = document.getElementById('dedica-input');
+    const counter = document.getElementById('char-counter');
+    const linedGuide = document.getElementById('lined-guide');
+    const toggleGuideBtn = document.getElementById('toggle-guide-btn');
+    const fontChips = document.querySelectorAll('.font-selector');
+    const emojiBtn = document.getElementById('btn-emoji');
+    const quickEmojiBar = document.getElementById('quick-emoji-bar');
+    const removePhotoBtn = document.getElementById('remove-photo-btn');
+    const polaroidWrapper = document.getElementById('polaroid-wrapper');
+    const emptyPhotoBox = document.getElementById('empty-photo-box');
+    const undoRemoveBtn = document.getElementById('undo-remove-btn');
+    const modal = document.getElementById('preview-modal');
+    const openModalBtn = document.getElementById('open-modal-preview');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const confirmModalBtn = document.getElementById('confirm-modal-btn');
+    const modalTextTarget = document.getElementById('modal-text-target');
+    const modalPhotoPreview = document.getElementById('modal-photo-preview');
+
+    if (!textarea || !counter) return;
+
+    function updateCounter() {
+      const len = textarea.value.length;
+      counter.textContent = `${len} / 400 caratteri`;
+    }
+
+    textarea.addEventListener('input', updateCounter);
+
+    if (toggleGuideBtn && linedGuide) {
+      toggleGuideBtn.addEventListener('click', () => {
+        linedGuide.classList.toggle('hidden');
+      });
+    }
+
+    fontChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        fontChips.forEach((c) => {
+          c.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+          c.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+          const chk = c.querySelector('.material-symbols-outlined');
+          if (chk) chk.remove();
+        });
+
+        chip.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+        chip.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+        
+        const checkIcon = document.createElement('span');
+        checkIcon.className = 'material-symbols-outlined text-[14px]';
+        checkIcon.textContent = 'check';
+        chip.prepend(checkIcon);
+
+        const fontType = chip.getAttribute('data-font');
+        textarea.classList.remove('font-sans', 'font-serif', 'italic', 'font-[\'Bricolage_Grotesque\']');
+
+        if (fontType === 'serif') {
+          textarea.classList.add('font-serif');
+        } else if (fontType === 'sans') {
+          textarea.classList.add('font-sans');
+        } else if (fontType === 'festive') {
+          textarea.classList.add('font-[\'Bricolage_Grotesque\']', 'italic');
+        } else {
+          textarea.classList.add('font-[\'Bricolage_Grotesque\']');
+        }
+      });
+    });
+
+    if (emojiBtn && quickEmojiBar) {
+      emojiBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        quickEmojiBar.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!quickEmojiBar.contains(e.target) && e.target !== emojiBtn) {
+          quickEmojiBar.classList.add('hidden');
+        }
+      });
+
+      quickEmojiBar.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const char = btn.getAttribute('data-emoji');
+          textarea.setRangeText(char, textarea.selectionStart, textarea.selectionEnd, 'end');
+          textarea.focus();
+          updateCounter();
+          quickEmojiBar.classList.add('hidden');
+        });
+      });
+    }
+
+    if (removePhotoBtn && polaroidWrapper && emptyPhotoBox && undoRemoveBtn) {
+      removePhotoBtn.addEventListener('click', () => {
+        polaroidWrapper.classList.add('hidden');
+        emptyPhotoBox.classList.remove('hidden');
+        emptyPhotoBox.classList.add('flex');
+        if (modalPhotoPreview) modalPhotoPreview.classList.add('hidden');
+      });
+
+      undoRemoveBtn.addEventListener('click', () => {
+        emptyPhotoBox.classList.add('hidden');
+        emptyPhotoBox.classList.remove('flex');
+        polaroidWrapper.classList.remove('hidden');
+        if (modalPhotoPreview) modalPhotoPreview.classList.remove('hidden');
+      });
+    }
+
+    if (openModalBtn && modal && closeModalBtn && confirmModalBtn && modalTextTarget) {
+      openModalBtn.addEventListener('click', () => {
+        modalTextTarget.textContent = textarea.value || 'Il tuo pensiero apparirà qui...';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      });
+
+      const hideModal = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+
+      closeModalBtn.addEventListener('click', hideModal);
+      confirmModalBtn.addEventListener('click', hideModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+      });
+    }
+  })();
+</script></main></body></html>

@@ -40,7 +40,7 @@ export function Dialogo({ aperto, onChiudi, children }: { aperto: boolean; onChi
         aria-modal="true"
         aria-describedby={idTesto}
         onClick={(e) => e.stopPropagation()}
-        className="relative flex w-full max-w-sm flex-col items-center gap-3 rounded-contenitore border border-line bg-surface p-6 pt-8 text-center shadow-xl"
+        className="relative flex w-full max-w-sm flex-col items-center gap-3 rounded-contenitore border border-line bg-surface p-6 pt-8 text-center shadow-sollevata"
       >
         <button
           ref={chiudi}

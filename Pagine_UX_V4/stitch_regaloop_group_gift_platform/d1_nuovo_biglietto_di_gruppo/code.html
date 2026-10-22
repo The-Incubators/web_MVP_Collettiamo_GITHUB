@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html lang="it"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "surface": "#f6fbf4", "on-secondary-container": "#541700", "on-primary-container": "#72a485", "tertiary-fixed": "#ffddb1", "on-primary-fixed": "#002111", "secondary-fixed-dim": "#ffb59b", "on-secondary-fixed-variant": "#822800", "inverse-on-surface": "#edf2eb", "on-surface": "#181d19", "surface-variant": "#dfe4dd", "on-tertiary": "#ffffff", "surface-dim": "#d7dbd5", "surface-container": "#ebefe8", "outline-variant": "#c0c9c1", "tertiary-fixed-dim": "#ffba48", "tertiary": "#291900", "background": "#f6fbf4", "secondary-container": "#ff5e18", "surface-container-low": "#f0f5ee", "inverse-primary": "#9fd2b1", "on-background": "#181d19", "secondary-fixed": "#ffdbcf", "on-primary-fixed-variant": "#1f5037", "on-primary": "#ffffff", "on-error": "#ffffff", "primary-fixed": "#baefcc", "error-container": "#ffdad6", "inverse-surface": "#2d322d", "surface-container-lowest": "#ffffff", "on-secondary": "#ffffff", "error": "#ba1a1a", "surface-container-highest": "#dfe4dd", "on-surface-variant": "#414943", "primary": "#002212", "surface-container-high": "#e5e9e3", "on-tertiary-container": "#ce8c00", "secondary": "#aa3700", "on-secondary-fixed": "#380d00", "primary-container": "#033922", "on-error-container": "#93000a", "on-tertiary-fixed": "#291800", "surface-tint": "#38684d", "tertiary-container": "#452c00", "primary-fixed-dim": "#9fd2b1", "on-tertiary-fixed-variant": "#614000", "surface-bright": "#f6fbf4", "outline": "#717972" }, borderRadius: { "DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px" }, spacing: { "margin-md": "2rem", "space-xs": "0.25rem", "space-xl": "2rem", "gutter": "1rem", "space-lg": "1.5rem", "space-md": "1rem", "gutter-md": "1.5rem", "space-sm": "0.5rem", "margin": "1rem", "margin-lg": "3rem" }, fontFamily: { "headline-lg": ["Bricolage Grotesque"], "body-lg": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Bricolage Grotesque"], "display-lg": ["Bricolage Grotesque"], "display-counter": ["Bricolage Grotesque"], "body-md": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "headline-sm": ["Bricolage Grotesque"], "body-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-md": ["Bricolage Grotesque"] }, fontSize: { "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }], "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "display-lg-mobile": ["38px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "display-lg": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.03em", "fontWeight": "800" }], "display-counter": ["44px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600" }], "headline-sm": ["20px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "600" }], "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "700" }] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface font-body-md text-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between"><div class="flex items-center gap-space-sm"><button aria-label="Indietro" class="w-11 h-11 flex items-center justify-center rounded-full text-on-surface hover:bg-surface-container active:scale-95 transition-all" onclick="history.back()"><span class="material-symbols-outlined text-[22px]">arrow_back</span></button><div class="flex items-center gap-space-xs"><div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-secondary-container"><span class="material-symbols-outlined text-[16px]">featured_seasonal_and_gifts</span></div><span class="font-headline-sm text-headline-sm text-primary tracking-tight hidden xs:inline">Regaloop</span></div></div><div class="flex-1 text-center px-space-xs"><h1 class="font-headline-sm text-headline-sm text-on-surface truncate">Nuovo Biglietto</h1></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="flex flex-col relative w-full pt-16 bg-surface min-h-screen px-gutter pb-safe"><div class="flex flex-col w-full pb-24">
+<!-- Stepper Indicator -->
+<div class="flex items-center justify-between mb-space-md pt-space-xs">
+<div class="flex items-center gap-space-xs">
+<span class="px-3 py-1 rounded-full bg-primary-container text-primary-fixed font-label-sm text-label-sm uppercase tracking-wider">Passo 1 di 4</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant font-medium">Scelta formula</span>
+</div>
+<div class="flex items-center gap-1.5">
+<div class="w-7 h-2 rounded-full bg-secondary-container transition-all duration-300"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-highest"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-highest"></div>
+<div class="w-2 h-2 rounded-full bg-surface-container-highest"></div>
+</div>
+</div>
+<!-- Header Section -->
+<div class="flex flex-col mb-space-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mb-space-xs">
+      Voglio invitare il gruppo a...
+    </h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+      Scegli se raccogliere solo firme o fare anche la colletta regalo.
+    </p>
+</div>
+<!-- Choice Cards Container -->
+<div class="flex flex-col gap-space-md mb-space-md" id="card-selection-group">
+<!-- Option A: Solo Biglietto (Initially Selected) -->
+<div class="group relative flex flex-col p-space-md rounded-2xl bg-surface-container-lowest shadow-md cursor-pointer transition-all duration-200 active:scale-[0.99] overflow-hidden" id="option-a" onclick="selectOption('a')">
+<!-- Selection Indicator Strip -->
+<div class="absolute top-0 left-0 right-0 h-1 bg-secondary-container" id="badge-indicator-a"></div>
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-2xl bg-primary-container text-primary-fixed flex items-center justify-center shrink-0 shadow-sm transition-colors" id="icon-box-a">
+<span class="material-symbols-outlined text-[26px]">mark_email_read</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Firmare un biglietto</h3>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+              100% GRATIS
+            </span>
+</div>
+</div>
+<!-- Radio Marker -->
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-primary-fixed shrink-0" id="radio-a">
+<span class="material-symbols-outlined text-[16px] font-bold">check</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pl-0.5">
+        Ognuno aggiunge il suo messaggio e foto.
+      </p>
+<!-- Decorative subtle preview strip -->
+<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low px-space-sm py-2 rounded-xl">
+<div class="flex -space-x-2 overflow-hidden items-center">
+<img class="inline-block h-6 w-6 rounded-full object-cover" data-alt="Close up warm portrait of a smiling young woman with natural light and soft green background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDF9NUe1wo09TS05AZCvRiLNlBZMxlfxhgtO3eFq5tsWPXJ1krpfqFDpCbunZvkMM0hDVxfIPtyh8Qnk8UfGceTGSrFa4kExP98aBnV6lPF2KINv55xf6P76BXgmaQBibK2rlssAJow2zJeBPa8FKLem8TVa-ShaMMcgtRRTPVgJnxKfjOvkRg7EXA8-qF62GOFduQZO2Cawvtc7mtxLrrbyhaHqRxfLR1K8Eld1HqOkl0Y80KjfUFL"/>
+<img class="inline-block h-6 w-6 rounded-full object-cover" data-alt="Portrait of an energetic man laughing outdoors on a sunny day with warm tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4oEltt3C5Fge9IFs_ZtHmo30Vu-7nQrIVNY1D6aYnZvudkJzSzAquH_Lm2lkiW1nULGDrzf6WeZVjNzE0wzhOJHeX4DUyqS45HcTg6h0-U06fP_xlkNysyPYbvRLzpH9bwndxWCtJCtcxugSzaEsqdS-LzrexqW6xiTT9E8dsehBW_h5O5UaqY-uUEQDMkNbSrcp9YXT2v75-6n-O8svdopUoYvrtJsmANhZhFUthjNtbhy5wfvLN"/>
+<img class="inline-block h-6 w-6 rounded-full object-cover" data-alt="Cozy candid portrait of a friend wearing a warm knit scarf in soft golden hour light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3IWLJLca1GWdc8uzkTIE61ol3emVqk_aQTNY5wn-UtC482KbAEVc4V1WmMbRGer9G7C1tGoUgG1iCj6Ov8nWt_4yORzhvbAN11h4Tpzrub-GW2LQm0gtkpS2kQP3Xs6qcKB-KsCQOuVvNZTzFSpxYJjlqcD5Kb5YfDL-yQw_aWS8Y69p-3Qx2kv2fN5MBKrP-ZRIN3A3mrA056HrVQHV7ZUH9xitDIkpqU5Tch8F8INXgienFJ8Gc"/>
+<div class="h-6 w-6 rounded-full bg-surface-container-highest text-on-surface flex items-center justify-center font-label-sm text-label-sm font-semibold">+18</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">draw</span>
+          Dediche illimitate
+        </span>
+</div>
+</div>
+<!-- Option B: Regalo + Biglietto -->
+<div class="group relative flex flex-col p-space-md rounded-2xl bg-surface-container-lowest shadow-sm cursor-pointer transition-all duration-200 active:scale-[0.99] overflow-hidden opacity-90 hover:opacity-100" id="option-b" onclick="selectOption('b')">
+<!-- Selection Indicator Strip (Hidden initially) -->
+<div class="hidden absolute top-0 left-0 right-0 h-1 bg-secondary-container" id="badge-indicator-b"></div>
+<div class="flex items-start justify-between gap-space-sm mb-space-sm">
+<div class="flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-2xl bg-surface-container text-on-surface flex items-center justify-center shrink-0 shadow-sm transition-colors" id="icon-box-b">
+<span class="material-symbols-outlined text-[26px]">redeem</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Fare un regalo insieme e firmare</h3>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 mt-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[13px]">group</span>
+              Colletta + Biglietto
+            </span>
+</div>
+</div>
+<!-- Radio Marker -->
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0" id="radio-b">
+<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant pl-0.5">
+        Quota per il regalo Amazon + biglietto di auguri congiunto.
+      </p>
+<!-- Mini visual hint -->
+<div class="mt-space-md pt-space-xs flex items-center justify-between bg-surface-container-low px-space-sm py-2 rounded-xl">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface">
+<span class="material-symbols-outlined text-secondary text-[16px]">savings</span>
+<span>Zero commissioni di raccolta</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold">Amazon Pay &amp; Carte</span>
+</div>
+</div>
+</div>
+<!-- Reassurance Pill Banner -->
+<div class="flex items-center gap-space-xs px-space-md py-2.5 bg-surface-container rounded-full mb-space-lg shadow-sm">
+<div class="w-5 h-5 rounded-full bg-primary-container text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[14px]">favorite</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium truncate">
+      Il biglietto digitale e stampabile è sempre gratuito.
+    </span>
+</div>
+<!-- Secondary Discovery Card: Catalog Teaser -->
+<div class="relative overflow-hidden rounded-2xl bg-surface-container-low p-space-md shadow-sm mb-space-lg">
+<div class="flex items-start justify-between gap-space-sm relative z-10">
+<div class="flex-1">
+<div class="flex items-center gap-1.5 text-secondary-container mb-1">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span>
+<span class="font-label-sm text-label-sm uppercase font-bold tracking-wider">Ispirazione</span>
+</div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-space-xs">
+          Cerchi un’idea regalo originale?
+        </h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Dai cofanetti weekend ai gadget tech di tendenza, trova il pensiero perfetto per il festeggiato.
+        </p>
+<button class="inline-flex items-center gap-1.5 px-space-md py-2.5 rounded-full bg-surface-container-lowest text-primary font-label-lg text-label-lg shadow-sm hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span>Sfoglia il catalogo regali</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="w-20 h-20 shrink-0 rounded-2xl overflow-hidden shadow-sm relative rotate-3 hidden sm:block">
+<img class="w-full h-full object-cover" data-alt="Artistic aesthetic still life of beautifully wrapped eco-friendly gifts with dried flowers, twine ribbons, and warm natural morning lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-hLG7fnXC_oj9jrS_6h4Nouu_KCWHAdxOspXcR_waGiqgYUhwZM7iuJ3kH_nw5LR_uRmxRIuqVwMVa8UOO57peh7zJMGxHy1nqfLmMMJIHf_WnMf-2qIMN9dPXnKkNWvHC1rtoq4_oL6VPBP2sc-Tn7h2_c4kbxPhWcB1nlkJOdqeRyDAwADQDzhWnUd7AHHCqHv-2nRN06_2LpiXFSRFMZHphTiE-dwKEDO6CxwKgCYS4qOcJafR"/>
+</div>
+</div>
+</div>
+<!-- Floating Sticky Bottom Pill CTA -->
+<div class="fixed bottom-0 left-0 right-0 p-gutter bg-gradient-to-t from-surface via-surface/95 to-transparent z-40 flex flex-col items-center">
+<div class="w-full max-w-md">
+<button class="w-full h-14 rounded-full bg-secondary-container text-on-secondary font-label-lg text-label-lg flex items-center justify-center gap-space-xs shadow-lg hover:brightness-105 active:translate-y-0.5 transition-all" id="cta-submit" onclick="proceedNext()" type="button">
+<span id="cta-text">Avanti: Dettagli biglietto</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  let currentSelection = 'a';
+
+  function selectOption(option) {
+    currentSelection = option;
+    const cardA = document.getElementById('option-a');
+    const cardB = document.getElementById('option-b');
+    const badgeA = document.getElementById('badge-indicator-a');
+    const badgeB = document.getElementById('badge-indicator-b');
+    const iconBoxA = document.getElementById('icon-box-a');
+    const iconBoxB = document.getElementById('icon-box-b');
+    const radioA = document.getElementById('radio-a');
+    const radioB = document.getElementById('radio-b');
+    const ctaText = document.getElementById('cta-text');
+
+    if (option === 'a') {
+      // Activate A
+      cardA.classList.add('shadow-md', 'opacity-100');
+      cardA.classList.remove('opacity-90', 'shadow-sm');
+      badgeA.classList.remove('hidden');
+      iconBoxA.className = 'w-12 h-12 rounded-2xl bg-primary-container text-primary-fixed flex items-center justify-center shrink-0 shadow-sm transition-colors';
+      radioA.className = 'w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-primary-fixed shrink-0';
+      radioA.innerHTML = '<span class="material-symbols-outlined text-[16px] font-bold">check</span>';
+
+      // Deactivate B
+      cardB.classList.add('opacity-90', 'shadow-sm');
+      cardB.classList.remove('shadow-md', 'opacity-100');
+      badgeB.classList.add('hidden');
+      iconBoxB.className = 'w-12 h-12 rounded-2xl bg-surface-container text-on-surface flex items-center justify-center shrink-0 shadow-sm transition-colors';
+      radioB.className = 'w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0';
+      radioB.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>';
+
+      ctaText.textContent = 'Avanti: Dettagli biglietto';
+    } else {
+      // Activate B
+      cardB.classList.add('shadow-md', 'opacity-100');
+      cardB.classList.remove('opacity-90', 'shadow-sm');
+      badgeB.classList.remove('hidden');
+      iconBoxB.className = 'w-12 h-12 rounded-2xl bg-secondary-container text-on-secondary flex items-center justify-center shrink-0 shadow-sm transition-colors';
+      radioB.className = 'w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary shrink-0';
+      radioB.innerHTML = '<span class="material-symbols-outlined text-[16px] font-bold">check</span>';
+
+      // Deactivate A
+      cardA.classList.add('opacity-90', 'shadow-sm');
+      cardA.classList.remove('shadow-md', 'opacity-100');
+      badgeA.classList.add('hidden');
+      iconBoxA.className = 'w-12 h-12 rounded-2xl bg-surface-container text-on-surface flex items-center justify-center shrink-0 shadow-sm transition-colors';
+      radioA.className = 'w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center shrink-0';
+      radioA.innerHTML = '<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>';
+
+      ctaText.textContent = 'Avanti: Regalo & Biglietto';
+    }
+  }
+
+  function proceedNext() {
+    const ctaBtn = document.getElementById('cta-submit');
+    ctaBtn.classList.add('scale-95');
+    setTimeout(() => {
+      ctaBtn.classList.remove('scale-95');
+      if (currentSelection === 'a') {
+        window.location.href = '#step2-biglietto';
+      } else {
+        window.location.href = '#step2-regalo';
+      }
+    }, 150);
+  }
+</script></main></body></html>

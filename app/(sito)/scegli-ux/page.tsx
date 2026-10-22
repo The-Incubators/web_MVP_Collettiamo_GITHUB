@@ -16,14 +16,11 @@ export default async function PaginaSceltaUx() {
   const attiva = varianteUx((await cookies()).get(COOKIE_UX)?.value);
 
   return (
-    <div className="gutter pb-16 pt-6">
-      <div className="mx-auto flex max-w-dashboard flex-col gap-6">
-        <header className="flex flex-col gap-2">
-          <h1 className="text-3xl">Scegli UX</h1>
-          <p className="text-ink-soft">
-            Stiamo provando modi diversi di far navigare il sito. Qui scegli quale usare: la scelta resta su questo dispositivo e si può
-            cambiare quando vuoi. I tuoi dati — collette, preferiti, lista dei regali — sono gli stessi in tutte le varianti.
-          </p>
+    <div className="gutter pb-10 pt-4">
+      <div className="mx-auto flex max-w-dashboard flex-col gap-4">
+        <header className="flex flex-col gap-1">
+          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Scegli UX</h1>
+          <p className="text-ink-soft">Varianti di interfaccia in prova. I tuoi dati sono gli stessi in tutte.</p>
         </header>
         <SceltaUx attiva={attiva.id} />
       </div>

@@ -105,7 +105,7 @@ export function SezioneVotazione({
   return (
     <div className="flex flex-col gap-8">
       <section aria-labelledby="voto-stato" className="contenitore flex flex-col gap-4 p-5">
-        <h2 id="voto-stato" className="text-xl">
+        <h2 id="voto-stato" className="text-xl font-semibold text-accent-2">
           Votazione in corso
         </h2>
         <p className="text-lg font-semibold" aria-live="polite">
@@ -144,7 +144,7 @@ export function SezioneVotazione({
       ) : null}
 
       <section aria-labelledby="classifica" className="flex flex-col gap-3">
-        <h2 id="classifica" className="text-xl">
+        <h2 id="classifica" className="text-xl font-semibold text-accent-2">
           Classifica provvisoria ({proposte.length})
         </h2>
         {proposte.length === 0 ? <p className="text-ink-soft">Nessuna proposta: aggiungine una.</p> : null}
@@ -167,7 +167,7 @@ export function SezioneVotazione({
                 </p>
                 <div className="flex flex-wrap items-center gap-3">
                   {x.proposta.prodotto.urlEsterno ? (
-                    <a className="inline-flex min-h-tocco items-center gap-1 text-sm font-semibold text-accent-2 underline underline-offset-4" href={urlPerAcquisto(x.proposta.prodotto.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
+                    <a className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-cta-2 underline underline-offset-4" href={urlPerAcquisto(x.proposta.prodotto.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
                       Vedi sul negozio <IconaEsterno width={16} height={16} />
                     </a>
                   ) : null}
@@ -193,7 +193,7 @@ export function SezioneVotazione({
       </section>
 
       <section aria-labelledby="aggiungi-org" className="flex flex-col gap-4">
-        <h2 id="aggiungi-org" className="text-xl">
+        <h2 id="aggiungi-org" className="text-xl font-semibold text-accent-2">
           Aggiungi un regalo
         </h2>
         <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} avvisoLink={false} />

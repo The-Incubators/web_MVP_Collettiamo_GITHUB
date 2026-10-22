@@ -1,9 +1,9 @@
 /**
  * Le varianti di front-end del sito, fra cui si sceglie da «Scegli UX».
  *
- * Il sito di oggi è **UX_V1** e non cambia: le varianti nuove si aggiungono qui e vivono nelle loro rotte,
- * così nessuna può rompere le altre. Quando arriverà UX_V2 basta metterla in elenco con `disponibile: true`
- * e il suo `percorso`.
+ * Il sito di oggi è **UX_V4**, sulle rotte di sempre: ha sostituito UX_V1 (che resta nell'etichetta git
+ * `ux-v1`). Le varianti di prova UX_V2 e UX_V3 sono state tolte quando è arrivata V4 (restano nella storia
+ * di git). Una variante nuova vive nelle sue rotte e si aggiunge qui con `disponibile: true` e il suo `percorso`.
  *
  * La scelta sta in un **cookie** e non in `localStorage` perché così la può leggere anche il server, e la
  * pagina giusta si costruisce subito, senza il lampo della variante sbagliata. Non è un dato sensibile:
@@ -35,30 +35,14 @@ export interface VarianteUx {
 
 export const VARIANTI_UX: VarianteUx[] = [
   {
-    id: "v1",
-    nome: "UX_V1",
-    sommario: "Il sito come lo conosci",
+    // UX_V4 ha preso il posto di UX_V1 sulle rotte di sempre (V1 resta nell'etichetta git `ux-v1`).
+    // Un cookie rimasto a «v1» non trova più la sua voce e ricade qui, che è la stessa rotta.
+    id: "v4",
+    nome: "UX_V4",
+    sommario: "Il sito di oggi, più semplice",
     descrizione:
-      "Catalogo con i filtri, scheda prodotto in un popup, percorso a domande «Trova il regalo», lista dei regali e preferiti. È la navigazione attuale, quella che usi adesso.",
+      "Meno testo, una sola azione per schermata, barra in basso sul telefono. Catalogo, «Trova il regalo», colletta e biglietto nel disegno nuovo.",
     percorso: "/",
-    disponibile: true,
-  },
-  {
-    id: "v2",
-    nome: "UX_V2",
-    sommario: "Expressive Warmth, pensata per il telefono",
-    descrizione:
-      "Fondo crema, barra di navigazione in basso sempre a portata di pollice e creazione della colletta guidata in tre passi. È in costruzione: per ora ci sono la home e il primo passo della creazione, il resto del percorso continua in UX_V1.",
-    percorso: "/v2",
-    disponibile: true,
-  },
-  {
-    id: "v3",
-    nome: "UX_V3",
-    sommario: "Interactive Action: simula la quota e parti",
-    descrizione:
-      "Stessi colori di UX_V2, interazione diversa: in home un simulatore che calcola la quota mentre scrivi, catalogo con filtri veri e due modi di sfogliare (griglia o una card alla volta), creazione in tre passi su una pagina sola con l'anteprima del messaggio.",
-    percorso: "/v3",
     disponibile: true,
   },
 ];

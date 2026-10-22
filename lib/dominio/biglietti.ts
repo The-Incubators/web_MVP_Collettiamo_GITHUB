@@ -41,6 +41,8 @@ export async function suggerisciSlug(base: string, occupato: (s: string) => Prom
 
 export const MAX_TESTO_MESSAGGIO = 1000;
 export const MAX_MESSAGGIO_GRUPPO = 2000;
+/** Il ruolo o la parentela sotto la firma («Amica del liceo»). */
+export const MAX_RUOLO = 40;
 
 const TAG_PERMESSI: Record<string, "b" | "i" | "u" | "br"> = { b: "b", strong: "b", i: "i", em: "i", u: "u", br: "br" };
 const TAG_BLOCCO = new Set(["div", "p", "li"]);

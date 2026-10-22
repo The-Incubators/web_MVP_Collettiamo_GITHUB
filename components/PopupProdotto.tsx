@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { Icona } from "./ui/Icona";
 
 /**
  * Il popup che mostra la scheda di un prodotto sopra il catalogo, senza lasciare la pagina.
@@ -67,11 +68,9 @@ export function PopupProdotto({ children, titolo }: { children: React.ReactNode;
               onClick={chiudi}
               aria-label="Chiudi e torna al catalogo"
               autoFocus
-              className="flex h-12 w-12 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-lg transition-colors hover:bg-surface-2"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-accent text-on-accent shadow-sollevata transition-colors hover:bg-accent-2"
             >
-              <svg viewBox="0 0 24 24" width={24} height={24} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden="true">
-                <path d="M6 6l12 12M18 6 6 18" />
-              </svg>
+              <Icona nome="close" />
             </button>
           </div>
           <div className="px-4 pb-16 sm:px-0">{children}</div>

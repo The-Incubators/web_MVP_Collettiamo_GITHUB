@@ -10,36 +10,23 @@ import { useApp } from "@/components/AppProvider";
 import { Logo } from "@/components/ui";
 import { giaVisto, segnaVisto } from "@/lib/biglietti/client";
 
-/** Barra a segmenti con un pallino sorridente sulla posizione corrente (percento 0–100). */
+/**
+ * I passi del biglietto (UX_V4): «Passo N di M» e un segmento per passo, verdi quelli fatti, arancio il corrente.
+ * `percento` (0–100) dice dove si è; il passo corrente è quello che contiene la posizione.
+ */
 export function BarraSegmentata({ segmenti, percento }: { segmenti: number; percento: number }) {
   const p = Math.max(0, Math.min(100, percento));
+  const corrente = Math.min(segmenti, Math.floor((p / 100) * segmenti) + 1);
   return (
-    <div className="relative h-[10px] w-full" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(p)} aria-label="Avanzamento">
-      <div className="absolute inset-0 flex gap-[3px] overflow-hidden rounded-full">
-        {Array.from({ length: segmenti }, (_, i) => {
-          const da = (i / segmenti) * 100;
-          const a = ((i + 1) / segmenti) * 100;
-          const pieno = Math.max(0, Math.min(1, (p - da) / (a - da)));
-          return (
-            <div key={i} className="relative h-full flex-1 bg-accent-field">
-              <div className="absolute inset-y-0 left-0 bg-accent transition-[width] duration-500" style={{ width: `${pieno * 100}%` }} />
-            </div>
-          );
-        })}
+    <div className="flex flex-col gap-1.5" role="progressbar" aria-valuemin={1} aria-valuemax={segmenti} aria-valuenow={corrente} aria-label={`Passo ${corrente} di ${segmenti}`}>
+      <p className="text-[11px] font-bold uppercase tracking-widest" aria-hidden="true">
+        Passo {corrente} di {segmenti}
+      </p>
+      <div aria-hidden="true" className="flex gap-1.5">
+        {Array.from({ length: segmenti }, (_, k) => (
+          <span key={k} className={`h-1.5 flex-1 rounded-full transition-colors ${k + 1 < corrente ? "bg-accent" : k + 1 === corrente ? "bg-cta" : "bg-line"}`} />
+        ))}
       </div>
-      <svg
-        viewBox="0 0 22 22"
-        width={22}
-        height={22}
-        aria-hidden="true"
-        className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 transition-[left] duration-500"
-        style={{ left: `clamp(11px, ${p}%, calc(100% - 11px))` }}
-      >
-        <circle cx="11" cy="11" r="10" fill="var(--accent)" stroke="var(--surface)" strokeWidth="2" />
-        <circle cx="8" cy="9.5" r="1.2" fill="var(--on-accent)" />
-        <circle cx="14" cy="9.5" r="1.2" fill="var(--on-accent)" />
-        <path d="M7.5 13c1 1.6 2.2 2.3 3.5 2.3s2.5-.7 3.5-2.3" stroke="var(--on-accent)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-      </svg>
     </div>
   );
 }
@@ -73,7 +60,7 @@ export function IntestazioneWizard({
     </svg>
   );
   return (
-    <header className="no-stampa sticky top-0 z-30 border-b border-line bg-surface">
+    <header className="no-stampa sticky top-0 z-30 bg-field/90 pt-safe backdrop-blur-xl">
       <div className={`gutter mx-auto ${larghezza} pb-3`}>
         <div className="grid grid-cols-[44px_1fr_auto] items-center py-1">
           {indietro === null ? (
@@ -88,7 +75,7 @@ export function IntestazioneWizard({
             </Link>
           )}
           {titolo ? (
-            <h1 className="text-center font-display text-xl font-bold">{titolo}</h1>
+            <h1 className="text-center font-display text-xl font-bold text-accent-2">{titolo}</h1>
           ) : (
             <Link href="/" className="mx-auto inline-flex min-h-tocco items-center" aria-label="Regaloop, vai alla home">
               <Logo />
@@ -96,7 +83,7 @@ export function IntestazioneWizard({
           )}
           <span className="flex min-w-11 justify-end">
             {accedi && pronto && !utente ? (
-              <Link href={`/accedi?next=${encodeURIComponent(percorso)}`} className="inline-flex min-h-tocco items-center text-sm font-semibold underline underline-offset-4">
+              <Link href={`/accedi?next=${encodeURIComponent(percorso)}`} className="inline-flex min-h-tocco items-center text-sm font-bold text-accent underline underline-offset-4">
                 Accedi
               </Link>
             ) : null}
@@ -108,12 +95,12 @@ export function IntestazioneWizard({
   );
 }
 
-/** Pulsante primario a pillola, a tutta larghezza (~56 px). Disabilitato: grigio chiaro. */
+/** Pulsante principale a pillola arancio, a tutta larghezza (~56 px). Disabilitato: grigio chiaro. */
 export function BottonePillola({ className = "", pieno = true, children, ...resto }: ButtonHTMLAttributes<HTMLButtonElement> & { pieno?: boolean }) {
   return (
     <button
       type="button"
-      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-full px-8 text-base font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-accent enabled:text-on-accent enabled:hover:bg-accent-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
+      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-full px-8 text-[19px] font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-cta enabled:text-on-cta enabled:shadow-sollevata enabled:hover:bg-cta-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
       {...resto}
     >
       {children}
@@ -212,7 +199,7 @@ export function useCoachmark(chiave: string, attivo: boolean): [boolean, () => v
 export function SchedaRadio({ nome, valore, scelto, onScegli, etichetta, info }: { nome: string; valore: string; scelto: boolean; onScegli: () => void; etichetta: string; info?: string }) {
   return (
     <label
-      className={`flex min-h-20 cursor-pointer items-center gap-3 rounded-contenitore border bg-surface pl-4 pr-1 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent ${scelto ? "border-accent ring-1 ring-accent" : "border-line hover:border-ink-soft"}`}
+      className={`flex min-h-16 cursor-pointer items-center gap-3 rounded-2xl pl-4 pr-1 transition-colors focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-accent ${scelto ? "bg-surface shadow-carta ring-2 ring-accent" : "bg-surface-2 hover:bg-line"}`}
     >
       <input type="radio" name={nome} value={valore} checked={scelto} onChange={onScegli} className="sr-only" />
       <span aria-hidden="true" className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${scelto ? "border-accent" : "border-ink-soft"}`}>
@@ -228,7 +215,7 @@ export function SchedaRadio({ nome, valore, scelto, onScegli, etichetta, info }:
 export function EtichettaCampo({ per, children, aiuto }: { per?: string; children: ReactNode; aiuto?: string }) {
   return (
     <div className="flex items-center gap-3">
-      <label htmlFor={per} className="font-medium">
+      <label htmlFor={per} className="font-bold">
         {children}
       </label>
       {aiuto ? <Aiuto testo={aiuto} /> : null}
@@ -237,7 +224,7 @@ export function EtichettaCampo({ per, children, aiuto }: { per?: string; childre
 }
 
 export const CLASSI_INPUT =
-  "h-16 w-full rounded-controllo border border-line bg-surface px-4 text-base text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30";
+  "h-14 w-full rounded-2xl border-[1.5px] border-transparent bg-surface-2 px-4 text-base text-ink placeholder:text-ink-soft focus:border-accent focus:bg-surface focus:outline-none focus:ring-4 focus:ring-accent-field";
 
 /** Finestra a centro pagina con titolo e «×»: Esc chiude, il focus entra e torna dove era. */
 export function Finestra({ aperta, onChiudi, titolo, children, larga }: { aperta: boolean; onChiudi: () => void; titolo: string; children: ReactNode; larga?: boolean }) {
@@ -267,13 +254,13 @@ export function Finestra({ aperta, onChiudi, titolo, children, larga }: { aperta
         aria-modal="true"
         aria-labelledby={idTitolo}
         onClick={(e) => e.stopPropagation()}
-        className={`flex max-h-[92dvh] w-full flex-col rounded-t-[20px] bg-surface shadow-2xl sm:rounded-contenitore ${larga ? "sm:max-w-[600px]" : "sm:max-w-md"}`}
+        className={`flex max-h-[92dvh] w-full flex-col rounded-t-3xl bg-surface shadow-sollevata sm:rounded-3xl ${larga ? "sm:max-w-[600px]" : "sm:max-w-md"}`}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-line py-1 pl-5 pr-2">
-          <h2 id={idTitolo} className="font-display text-xl font-bold">
+        <div className="flex items-center justify-between gap-2 py-2 pl-5 pr-2">
+          <h2 id={idTitolo} className="font-display text-xl font-bold text-accent-2">
             {titolo}
           </h2>
-          <button ref={chiudi} type="button" onClick={onChiudi} aria-label="Chiudi" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl hover:bg-surface-2">
+          <button ref={chiudi} type="button" onClick={onChiudi} aria-label="Chiudi" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-2xl">
             <span aria-hidden="true">×</span>
           </button>
         </div>

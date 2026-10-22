@@ -2,9 +2,10 @@ import { describe, expect, it } from "vitest";
 import { UX_PREDEFINITA, VARIANTI_UX, varianteUx } from "./ux";
 
 describe("varianti di front-end", () => {
-  it("la predefinita è UX_V1, il sito di oggi", () => {
-    expect(UX_PREDEFINITA.id).toBe("v1");
-    expect(UX_PREDEFINITA.nome).toBe("UX_V1");
+  it("la predefinita è UX_V4, il sito di oggi", () => {
+    expect(UX_PREDEFINITA.id).toBe("v4");
+    expect(UX_PREDEFINITA.nome).toBe("UX_V4");
+    expect(UX_PREDEFINITA.percorso).toBe("/");
     expect(UX_PREDEFINITA.disponibile).toBe(true);
   });
 
@@ -14,8 +15,11 @@ describe("varianti di front-end", () => {
   });
 
   it("sceglie la variante chiesta quando esiste ed è pronta", () => {
-    expect(varianteUx("v1").id).toBe("v1");
-    expect(varianteUx("v2").id).toBe("v2");
+    expect(varianteUx("v4").id).toBe("v4");
+  });
+
+  it("chi aveva scelto una variante tolta (V1, V2, V3) ricade su UX_V4", () => {
+    for (const vecchia of ["v1", "v2", "v3"]) expect(varianteUx(vecchia).id).toBe("v4");
   });
 
   it("ripiega sulla predefinita se la variante non esiste o non è scelta", () => {

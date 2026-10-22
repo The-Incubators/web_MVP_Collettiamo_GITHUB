@@ -1,17 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import { Avviso, Campo, Interruttore } from "@/components/ui";
+import { useState, type ReactNode } from "react";
+import { Campo, Icona, Interruttore, type NomeIcona } from "@/components/ui";
 import { formattaIban } from "@/lib/dominio/iban";
 import type { PropsPasso } from "./tipi";
 
+/** «Come ti pagano?»: nella stessa schermata della quota, sotto. */
 export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
   const [ibanVisitato, setIbanVisitato] = useState(false);
+  const riquadro = (
+    etichetta: string,
+    icona: NomeIcona,
+    tinta: string,
+    descrizione: string,
+    attivo: boolean,
+    onCambia: (v: boolean) => void,
+    campi?: ReactNode,
+  ) => (
+    <section aria-label={etichetta} className={`flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-carta ${errori.metodi ? "ring-2 ring-error" : ""}`}>
+      <Interruttore etichetta={etichetta} descrizione={descrizione} attivo={attivo} onCambia={onCambia} icona={icona} tintaIcona={tinta} />
+      {attivo && campi ? <div className="flex flex-col gap-3">{campi}</div> : null}
+    </section>
+  );
+
   return (
-    <div className="flex flex-col gap-5">
-      <Avviso tono="positivo">
-        <p>Questi dati li vede solo chi apre il link della colletta. I soldi arrivano direttamente a te: il servizio non li tocca mai.</p>
-      </Avviso>
+    <section aria-labelledby="come-ti-pagano" className="flex flex-col gap-3 pt-2">
+      <div className="flex flex-col gap-1">
+        <h2 id="come-ti-pagano" className="text-2xl font-bold text-accent-2">
+          Come ti pagano?
+        </h2>
+        <p className="text-sm text-ink-soft">Scegli dove ricevere i soldi del gruppo.</p>
+      </div>
+      <p className="flex items-start gap-2 rounded-2xl bg-cta-field p-3 text-sm font-semibold">
+        <Icona nome="verified_user" dimensione={20} className="text-cta-2" />
+        I soldi arrivano direttamente a te: Regaloop non li tocca. Questi dati li vede solo chi apre il link.
+      </p>
 
       {errori.metodi ? (
         <p data-errore="true" role="alert" className="text-sm font-semibold text-error before:mr-1 before:content-['⚠']">
@@ -19,46 +42,66 @@ export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
         </p>
       ) : null}
 
-      <section className={`contenitore flex flex-col gap-3 p-4 ${errori.metodi ? "!border-2 !border-error !bg-error-field" : ""}`} aria-label="PayPal">
-        <Interruttore etichetta="PayPal" descrizione="Chi paga apre il tuo link paypal.me con l’importo già scritto." attivo={s.paypalAttivo} onCambia={(paypalAttivo) => cambia({ paypalAttivo })} />
-        {s.paypalAttivo ? (
-          <Campo etichetta="Nome utente o link PayPal.me" value={s.paypal} onChange={(e) => cambia({ paypal: e.target.value })} errore={errori.paypal} placeholder="marco.rossi o paypal.me/marco.rossi" autoCapitalize="none" autoCorrect="off" />
-        ) : null}
-      </section>
-
-      <section className={`contenitore flex flex-col gap-3 p-4 ${errori.metodi ? "!border-2 !border-error !bg-error-field" : ""}`} aria-label="Satispay">
-        <Interruttore etichetta="Satispay" descrizione="Chi paga vede il tuo numero e lo copia con un tocco." attivo={s.satispayAttivo} onCambia={(satispayAttivo) => cambia({ satispayAttivo })} />
-        {s.satispayAttivo ? (
-          <Campo etichetta="Numero di telefono collegato a Satispay" type="tel" inputMode="tel" value={s.satispay} onChange={(e) => cambia({ satispay: e.target.value })} errore={errori.satispay} placeholder="333 123 4567" />
-        ) : null}
-      </section>
-
-      <section className={`contenitore flex flex-col gap-3 p-4 ${errori.metodi ? "!border-2 !border-error !bg-error-field" : ""}`} aria-label="Bonifico">
-        <Interruttore etichetta="Bonifico" descrizione="IBAN, causale e importo da copiare, più un codice QR da inquadrare con la banca." attivo={s.bonificoAttivo} onCambia={(bonificoAttivo) => cambia({ bonificoAttivo })} />
-        {s.bonificoAttivo ? (
-          <>
-            <Campo
-              etichetta="IBAN"
-              value={s.iban}
-              onChange={(e) => cambia({ iban: e.target.value.toUpperCase() })}
-              onBlur={() => {
-                setIbanVisitato(true);
-                cambia({ iban: formattaIban(s.iban) });
-              }}
-              errore={ibanVisitato || errori.iban ? errori.iban : null}
-              placeholder="IT60 X054 2811 1010 0000 0123 456"
-              autoCapitalize="characters"
-              autoCorrect="off"
-              spellCheck={false}
-            />
-            <Campo etichetta="Intestatario del conto" value={s.intestatario} onChange={(e) => cambia({ intestatario: e.target.value })} errore={errori.intestatario} autoComplete="name" />
-          </>
-        ) : null}
-      </section>
-
-      <section className={`contenitore p-4 ${errori.metodi ? "!border-2 !border-error !bg-error-field" : ""}`} aria-label="Contanti">
-        <Interruttore etichetta="Contanti" descrizione="Chi sceglie i contanti ti consegna i soldi di persona: li segni tu quando li ricevi." attivo={s.contantiAttivo} onCambia={(contantiAttivo) => cambia({ contantiAttivo })} />
-      </section>
-    </div>
+      {riquadro(
+        "PayPal",
+        "payments",
+        "bg-accent-field text-accent",
+        "Link paypal.me con l’importo già scritto",
+        s.paypalAttivo,
+        (paypalAttivo) => cambia({ paypalAttivo }),
+        <Campo
+          etichetta="Nome utente o link PayPal.me"
+          value={s.paypal}
+          onChange={(e) => cambia({ paypal: e.target.value })}
+          errore={errori.paypal}
+          placeholder="marco.rossi o paypal.me/marco.rossi"
+          autoCapitalize="none"
+          autoCorrect="off"
+        />,
+      )}
+      {riquadro(
+        "Satispay",
+        "smartphone",
+        "bg-cta-field text-cta-2",
+        "Chi paga copia il tuo numero",
+        s.satispayAttivo,
+        (satispayAttivo) => cambia({ satispayAttivo }),
+        <Campo
+          etichetta="Numero collegato a Satispay"
+          type="tel"
+          inputMode="tel"
+          value={s.satispay}
+          onChange={(e) => cambia({ satispay: e.target.value })}
+          errore={errori.satispay}
+          placeholder="333 123 4567"
+        />,
+      )}
+      {riquadro(
+        "Bonifico",
+        "account_balance",
+        "bg-surface-2 text-ink",
+        "IBAN e intestatario",
+        s.bonificoAttivo,
+        (bonificoAttivo) => cambia({ bonificoAttivo }),
+        <>
+          <Campo
+            etichetta="IBAN"
+            value={s.iban}
+            onChange={(e) => cambia({ iban: e.target.value.toUpperCase() })}
+            onBlur={() => {
+              setIbanVisitato(true);
+              cambia({ iban: formattaIban(s.iban) });
+            }}
+            errore={ibanVisitato || errori.iban ? errori.iban : null}
+            placeholder="IT60 X054 2811 1010 0000 0123 456"
+            autoCapitalize="characters"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+          <Campo etichetta="Intestatario del conto" value={s.intestatario} onChange={(e) => cambia({ intestatario: e.target.value })} errore={errori.intestatario} autoComplete="name" />
+        </>,
+      )}
+      {riquadro("Contanti", "handshake", "bg-gold-field text-gold", "Te li danno di persona, li segni tu", s.contantiAttivo, (contantiAttivo) => cambia({ contantiAttivo }))}
+    </section>
   );
 }

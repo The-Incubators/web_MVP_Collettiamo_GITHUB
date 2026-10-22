@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ScegliRegalo } from "@/components/ScegliRegalo";
-import { Avviso, Bottone, Campo, IconaPiu, Interruttore, SchedaScelta } from "@/components/ui";
+import { Bottone, Campo, Icona, IconaPiu, Interruttore, SchedaScelta } from "@/components/ui";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { conRegalo } from "@/lib/dominio/regali";
 import { MAX_ORE, MIN_ORE } from "@/lib/dominio/votazione";
@@ -52,22 +52,28 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
     <div className="flex flex-col gap-5">
       <div role="radiogroup" aria-label="Chi sceglie il regalo" className="grid gap-3 sm:grid-cols-2">
         <SchedaScelta
+          icona="redeem"
           titolo="Lo scelgo io"
-          descrizione="Scegli un regalo e parti subito con la colletta. Col «+» su un prodotto puoi comunque mettere più regali in lista e far votare il gruppo."
+          descrizione="Scegli un regalo e parti subito."
           selezionata={!s.votazioneAttiva}
           onSeleziona={() => cambia({ votazioneAttiva: false })}
         />
         <SchedaScelta
+          icona="how_to_vote"
           titolo="Lo sceglie il gruppo"
-          descrizione="Proponi alcune idee: ognuno vota da 1 a 5 stelle e, a tempo scaduto, vince la più votata."
+          descrizione="Proponi alcune idee: vince la più votata."
           selezionata={s.votazioneAttiva}
           onSeleziona={attivaVotazione}
         />
       </div>
+      <p className="flex items-start gap-2 rounded-2xl bg-surface-2 p-3 text-sm text-ink-soft">
+        <Icona nome="info" dimensione={20} />
+        Se scegli la votazione, nessuno paga finché non vince un regalo.
+      </p>
 
       {!s.votazioneAttiva ? (
         <div
-          className={`flex flex-col gap-5 ${errori.prodotto ? "rounded-contenitore border-2 border-error bg-error-field p-3" : ""}`}
+          className={`flex flex-col gap-5 rounded-3xl bg-surface p-4 shadow-carta ${errori.prodotto ? "ring-2 ring-error" : ""}`}
           data-errore={errori.prodotto ? "true" : undefined}
         >
           <ScegliRegalo valore={s.prodotto} onScelta={scegliSingolo} onAggiungi={aggiungiDaCatalogo} giaInLista={s.candidati} />
@@ -81,16 +87,16 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
         <div className="flex flex-col gap-6">
           <section
             aria-labelledby="candidati"
-            className={`flex flex-col gap-3 ${errori.prodotto ? "rounded-contenitore border-2 border-error bg-error-field p-3" : ""}`}
+            className={`flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-carta ${errori.prodotto ? "ring-2 ring-error" : ""}`}
             data-errore={errori.prodotto ? "true" : undefined}
           >
-            <h2 id="candidati" className="text-xl">
-              I regali da votare ({s.candidati.length})
+            <h2 id="candidati" className="text-xl font-semibold text-accent-2">
+              Le idee da votare ({s.candidati.length})
             </h2>
             {s.candidati.length === 0 ? <p className="text-sm text-ink-soft">Ancora nessuno. Aggiungine almeno due: scegli qui sotto e tocca «Aggiungi alla lista».</p> : null}
             <ul className="flex flex-col gap-2">
               {s.candidati.map((p, i) => (
-                <li key={`${p.nome}-${i}`} className="flex items-center gap-3 rounded-controllo border border-line bg-surface p-3">
+                <li key={`${p.nome}-${i}`} className="flex items-center gap-3 rounded-2xl bg-surface-2 p-3">
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate font-semibold">{p.nome}</span>
                     <span className="cifre text-sm text-ink-soft">{formattaEuro(p.prezzoCent)}</span>
@@ -108,8 +114,8 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
             ) : null}
           </section>
 
-          <section aria-labelledby="aggiungi" className="flex flex-col gap-4">
-            <h2 id="aggiungi" className="text-xl">
+          <section aria-labelledby="aggiungi" className="flex flex-col gap-4 rounded-3xl bg-surface p-4 shadow-carta">
+            <h2 id="aggiungi" className="text-xl font-semibold text-accent-2">
               Aggiungi un regalo
             </h2>
             <ScegliRegalo key={chiave} valore={bozza} onScelta={setBozza} avvisoLink={false} onAggiungi={aggiungiDaCatalogo} giaInLista={s.candidati} />
@@ -118,8 +124,8 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
             </Bottone>
           </section>
 
-          <section aria-labelledby="durata" className="contenitore flex flex-col gap-4 p-4">
-            <h2 id="durata" className="text-xl">
+          <section aria-labelledby="durata" className="flex flex-col gap-4 rounded-3xl bg-surface p-4 shadow-carta">
+            <h2 id="durata" className="text-xl font-semibold text-accent-2">
               Quanto dura la votazione
             </h2>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Durate suggerite">
@@ -144,7 +150,7 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
               value={Number.isFinite(s.votazioneOre) ? s.votazioneOre : ""}
               onChange={(e) => cambia({ votazioneOre: e.target.value === "" ? NaN : Math.round(Number(e.target.value)) })}
               errore={errori.ore}
-              suggerimento="Parte quando apri la raccolta. A tempo scaduto vince il regalo con la media di stelle più alta e la colletta riparte da lì. Puoi chiuderla prima, o prolungarla."
+              suggerimento="Parte quando apri la raccolta. Puoi chiuderla prima, o prolungarla."
             />
             <Interruttore
               etichetta="Chi partecipa può proporre altri regali"
@@ -154,9 +160,6 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
             />
           </section>
 
-          <Avviso>
-            <p>Finché si vota nessuno paga. Quando la votazione si chiude il regalo vincente diventa quello della colletta e la quota si calcola sul suo prezzo.</p>
-          </Avviso>
         </div>
       )}
     </div>

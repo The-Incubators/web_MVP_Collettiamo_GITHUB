@@ -43,7 +43,7 @@ export function Passo1() {
       <IntestazioneWizard indietro="/" segmenti={3} percento={0} />
       <main className="gutter mx-auto flex w-full max-w-[600px] flex-col gap-6 pb-16 pt-6">
         {banner ? (
-          <div className="flex items-start gap-3 rounded-contenitore bg-surface-2 p-4 ring-1 ring-line">
+          <div className="flex items-start gap-3 rounded-3xl bg-surface-2 p-4">
             <span aria-hidden="true" className="text-xl">
               💌
             </span>
@@ -55,7 +55,7 @@ export function Passo1() {
         ) : null}
 
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-3 font-display text-2xl font-bold">Voglio invitare il gruppo a</legend>
+          <legend className="mb-3 font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Voglio invitare il gruppo a…</legend>
           <SchedaRadio nome="tipo" valore="firma" scelto={tipo === "firma"} onScegli={() => setTipo("firma")} etichetta="Firmare un biglietto" info="Ognuno aggiunge il suo messaggio a un biglietto di gruppo." />
           <SchedaRadio
             nome="tipo"
@@ -73,7 +73,7 @@ export function Passo1() {
           <span className="h-px flex-1 bg-line" />
         </div>
 
-        <Link href="/catalogo" className="flex items-center gap-4 rounded-contenitore bg-surface-2 p-4 ring-1 ring-line hover:ring-accent">
+        <Link href="/catalogo" className="flex items-center gap-4 rounded-3xl bg-surface-2 p-4 hover:ring-accent">
           <span aria-hidden="true" className="flex h-14 w-14 shrink-0 items-center justify-center rounded-controllo bg-accent-field text-3xl">
             🎁
           </span>

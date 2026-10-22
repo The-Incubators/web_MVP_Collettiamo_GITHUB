@@ -4,6 +4,7 @@ export * from "./Bottone";
 export * from "./Campo";
 export * from "./Etichetta";
 export * from "./icone";
+export * from "./Icona";
 export * from "./ImmagineProdotto";
 export * from "./Logo";
 export * from "./PannelloCopia";

@@ -1,49 +1,89 @@
 "use client";
 
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { Icona } from "./ui/Icona";
 
-/** I filtri del catalogo: all'inizio si vede solo il pulsante «Filtra»; toccandolo si apre il menu. */
+/**
+ * Il pulsante «Filtri» e il foglio che sale dal basso con i gruppi di filtri. I filtri sono collegamenti
+ * (vivono nell'indirizzo, così la pagina filtrata si può condividere): il foglio resta aperto mentre si
+ * sceglie, e «Mostra N idee» lo chiude.
+ */
 export function FiltriCatalogo({ attivi, conteggio, children }: { attivi: number; conteggio: string; children: ReactNode }) {
   const [aperto, setAperto] = useState(false);
   const id = useId();
+  const chiudi = useRef<HTMLButtonElement>(null);
+  const bottone = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!aperto) return;
+    const daRifocalizzare = bottone.current;
+    const overflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    chiudi.current?.focus();
     const tasto = (e: KeyboardEvent) => e.key === "Escape" && setAperto(false);
     document.addEventListener("keydown", tasto);
-    return () => document.removeEventListener("keydown", tasto);
+    return () => {
+      document.removeEventListener("keydown", tasto);
+      document.documentElement.style.overflow = overflow;
+      daRifocalizzare?.focus();
+    };
   }, [aperto]);
 
   return (
-    <section aria-label="Filtri" className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-3">
-        <button
-          type="button"
-          aria-expanded={aperto}
-          aria-controls={id}
-          onClick={() => setAperto((v) => !v)}
-          className={`inline-flex min-h-tocco items-center gap-2 rounded-controllo border px-4 font-semibold transition-colors ${
-            aperto ? "border-accent bg-accent-field" : "border-line bg-surface hover:bg-surface-2"
-          }`}
-        >
-          <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
-            <path d="M4 6h16M7 12h10M10 18h4" />
-          </svg>
-          Filtra
-          {attivi > 0 ? (
-            <span className="cifre flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-bold text-on-accent">
-              <span className="sr-only">filtri attivi: </span>
-              {attivi}
-            </span>
-          ) : null}
-        </button>
-        <p className="text-sm text-ink-soft" aria-live="polite">
-          {conteggio}
-        </p>
-      </div>
-      <div id={id} hidden={!aperto} className={aperto ? "contenitore flex flex-col gap-4 p-4" : "hidden"}>
-        {children}
-      </div>
-    </section>
+    <>
+      <button
+        ref={bottone}
+        type="button"
+        aria-expanded={aperto}
+        aria-controls={id}
+        onClick={() => setAperto(true)}
+        className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-accent px-4 text-sm font-bold text-on-accent"
+      >
+        <Icona nome="tune" dimensione={20} />
+        Filtri
+        {attivi > 0 ? (
+          <span className="cifre flex h-5 min-w-5 items-center justify-center rounded-full bg-cta px-1 text-[11px] font-bold text-accent-2">
+            <span className="sr-only">attivi: </span>
+            {attivi}
+          </span>
+        ) : null}
+      </button>
+      {aperto ? (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => setAperto(false)}>
+          <div
+            id={id}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Filtri del catalogo"
+            onClick={(e) => e.stopPropagation()}
+            className="flex max-h-[85dvh] w-full max-w-lg flex-col rounded-t-3xl bg-surface shadow-sollevata sm:rounded-3xl"
+          >
+            <div className="flex items-center justify-between px-5 pb-2 pt-4">
+              <h2 className="text-xl font-semibold text-accent-2">Filtri</h2>
+              <button
+                ref={chiudi}
+                type="button"
+                onClick={() => setAperto(false)}
+                aria-label="Chiudi i filtri"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-surface-2"
+              >
+                <Icona nome="close" dimensione={22} />
+              </button>
+            </div>
+            <div className="flex flex-col gap-5 overflow-y-auto px-5 py-3">{children}</div>
+            <div className="border-t border-line p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              <button
+                type="button"
+                onClick={() => setAperto(false)}
+                className="flex min-h-azione w-full items-center justify-center rounded-full bg-accent px-6 font-bold text-on-accent"
+                aria-live="polite"
+              >
+                Mostra {conteggio}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

@@ -79,7 +79,7 @@ export function Gestione({ id }: { id: string }) {
       <main className="gutter mx-auto flex w-full max-w-dashboard flex-col gap-8 pb-16 pt-6">
         <header className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-ink-soft">{STATI[b.stato]}</p>
-          <h1 className="font-display text-3xl font-bold">{b.nome}</h1>
+          <h1 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">{b.nome}</h1>
           <p className="text-ink-soft">
             Per <strong className="text-ink">{b.festeggiato}</strong> · da {b.daParteDi}
           </p>
@@ -92,8 +92,8 @@ export function Gestione({ id }: { id: string }) {
 
         <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
           <div className="flex min-w-0 flex-col gap-8">
-            <section className="flex flex-col gap-3 rounded-contenitore border border-line bg-surface p-5">
-              <h2 className="text-xl">Firme</h2>
+            <section className="flex flex-col gap-3 rounded-3xl bg-surface shadow-carta p-5">
+              <h2 className="text-xl font-semibold text-accent-2">Firme</h2>
               <p className="font-display text-4xl font-bold">{b.nFirme}</p>
               {firme === null ? (
                 <p className="text-ink-soft">Un momento…</p>
@@ -105,6 +105,7 @@ export function Gestione({ id }: { id: string }) {
                     <li key={f.id} className="flex flex-col gap-0.5 py-3">
                       <span className="font-semibold">
                         {[f.nome, f.cognome].filter(Boolean).join(" ")}
+                        {f.ruolo ? <span className="font-normal text-ink-soft"> · {f.ruolo}</span> : null}
                         {f.daParteDi && f.daParteDi !== f.nome ? <span className="font-normal text-ink-soft"> · firma «{f.daParteDi}»</span> : null}
                       </span>
                       <span className="text-sm text-ink-soft">
@@ -119,15 +120,15 @@ export function Gestione({ id }: { id: string }) {
             </section>
 
             {b.stato !== "bozza" && url ? (
-              <section className="flex flex-col gap-4 rounded-contenitore border border-line bg-surface p-5">
-                <h2 className="text-xl">Condividi</h2>
+              <section className="flex flex-col gap-4 rounded-3xl bg-surface shadow-carta p-5">
+                <h2 className="text-xl font-semibold text-accent-2">Condividi</h2>
                 <BloccoInvito url={url} messaggio={messaggioInvitoBiglietto(b, url)} />
               </section>
             ) : null}
 
             {b.stato === "aperto" && url ? (
-              <section className="flex flex-col gap-3 rounded-contenitore border border-line bg-surface p-5">
-                <h2 className="text-xl">Promemoria</h2>
+              <section className="flex flex-col gap-3 rounded-3xl bg-surface shadow-carta p-5">
+                <h2 className="text-xl font-semibold text-accent-2">Promemoria</h2>
                 <p className="text-sm text-ink-soft">Un messaggio già scritto per chi non ha ancora firmato.</p>
                 <p ref={promemoria} className="whitespace-pre-wrap rounded-controllo border border-line bg-surface-2 p-3">
                   {messaggioPromemoriaBiglietto(b, url)}
@@ -136,8 +137,8 @@ export function Gestione({ id }: { id: string }) {
               </section>
             ) : null}
 
-            <section className="flex flex-col gap-3 rounded-contenitore border border-line bg-surface p-5">
-              <h2 className="text-xl">Consegna</h2>
+            <section className="flex flex-col gap-3 rounded-3xl bg-surface shadow-carta p-5">
+              <h2 className="text-xl font-semibold text-accent-2">Consegna</h2>
               <p>
                 <span className="capitalize">{quando}</span> <span className="text-ink-soft">({nomeFuso(b.consegna.fuso)})</span>
               </p>
@@ -149,7 +150,7 @@ export function Gestione({ id }: { id: string }) {
           </div>
 
           <aside className="flex flex-col gap-4">
-            <h2 className="text-xl">Il biglietto</h2>
+            <h2 className="text-xl font-semibold text-accent-2">Il biglietto</h2>
             <div role="group" aria-label="Colonne delle pagine interne" className="flex items-center gap-2">
               <span className="text-sm font-semibold">Colonne:</span>
               {([1, 2, 3] as const).map((n) => (

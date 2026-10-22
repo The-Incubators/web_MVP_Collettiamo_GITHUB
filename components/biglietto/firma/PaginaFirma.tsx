@@ -34,6 +34,7 @@ function firmaProvvisoria(b: BozzaFirma, mia: Firma | null): Firma | null {
     stile: b.stile,
     immagine: i ? { tipo: i.tipo === "mantieni" ? "caricata" : i.tipo, url: urlAnteprima(i), larghezza: i.larghezza, altezza: i.altezza, attribuzione: ("attribuzione" in i ? i.attribuzione : null) ?? null } : null,
     daParteDi: b.daParteDi.trim() || "…",
+    ruolo: b.ruolo?.trim() || null,
     nome: b.nome,
     cognome: null,
     email: null,
@@ -51,6 +52,7 @@ function bozzaDaFirma(f: Firma): BozzaFirma {
     daParteDi: f.daParteDi,
     nome: f.nome,
     cognome: f.cognome ?? "",
+    ruolo: f.ruolo ?? "",
     email: f.email ?? "",
     modifica: true,
   };
@@ -126,14 +128,14 @@ export function PaginaFirma({
   }, [firme, mia, perId, provvisoria]);
 
   if (b.stato !== "aperto") {
-    return <p className="rounded-contenitore bg-surface-2 p-4 text-center font-semibold ring-1 ring-line">Questo biglietto è già stato consegnato.</p>;
+    return <p className="rounded-3xl bg-surface-2 p-4 text-center font-semibold">Questo biglietto è già stato consegnato.</p>;
   }
 
   const modifica = !!mia;
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center">
-        <h1 className="font-display text-3xl font-medium">{modifica ? "Il tuo messaggio" : "Firma il biglietto"}</h1>
+        <h1 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">{modifica ? "Il tuo messaggio" : "Firma il biglietto"}</h1>
         <p className="mt-1 text-ink-soft">{modifica ? "Puoi cambiarlo quando vuoi, finché il biglietto è aperto." : "Scrivi un messaggio e aggiungi una foto qui sotto."}</p>
         {!modifica && b.nFirme > 0 ? <p className="mt-2 text-sm font-semibold text-accent-2">{testoFirmatari(b.nFirme)}</p> : null}
       </div>
@@ -168,7 +170,7 @@ export function PaginaFirma({
 
       {/* l'anteprima del biglietto sta sotto l'editor: prima si scrive, poi si guarda com'è venuto */}
       <div ref={rifAnteprima} className="flex scroll-mt-24 flex-col gap-3">
-        <h2 className="text-center font-display text-xl font-medium">Anteprima del biglietto</h2>
+        <h2 className="text-center font-display text-xl font-bold text-accent-2">Anteprima del biglietto</h2>
         <div ref={rif} className="h-0 w-full" />
         <Visualizzatore
           modello={modello}

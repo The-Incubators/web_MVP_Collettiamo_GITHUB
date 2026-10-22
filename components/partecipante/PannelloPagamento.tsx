@@ -1,6 +1,6 @@
 "use client";
 
-import { Avviso, BottoneLink, PannelloCopia } from "@/components/ui";
+import { Avviso, BottoneLink, Icona, PannelloCopia } from "@/components/ui";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { formattaIban } from "@/lib/dominio/iban";
 import { payloadEpc } from "@/lib/dominio/epc";
@@ -17,7 +17,7 @@ export const NOMI_METODO: Record<Metodo, string> = {
 
 const importoPerCopia = (cent: number) => (cent / 100).toFixed(2).replace(".", ",");
 
-/** Il pannello che si apre alla scelta del metodo (sezione 10.5). */
+/** Il pannello che si apre dentro la scheda del metodo scelto (sezione 10.5). L'importo è già nel titolo della pagina. */
 export function PannelloPagamento({
   colletta,
   metodo,
@@ -34,40 +34,32 @@ export function PannelloPagamento({
 
   if (metodo === "contanti") {
     return (
-      <div className="flex flex-col gap-3">
-        <p className="text-lg">
-          Darai {importo ?? "la tua quota"} a {org} di persona, li segnerà lui.
+      <div className="flex flex-col gap-1 rounded-2xl bg-gold-field p-4">
+        <p className="font-bold">
+          Darai {importo ?? "la tua quota"} a {org} di persona.
         </p>
-        <p className="text-sm text-ink-soft">Non devi fare altro adesso: quando {org} li riceve, la tua quota risulta pagata.</p>
+        <p className="text-sm">Non devi fare altro: quando {org} li riceve, li segna lui.</p>
       </div>
     );
   }
-
-  const intestazione = importo ? (
-    <p className="text-center">
-      <span className="text-sm text-ink-soft">Importo</span>
-      <span className="cifre block text-4xl font-bold">{importo}</span>
-    </p>
-  ) : null;
 
   if (metodo === "paypal") {
     const link = linkPaypal(colletta.metodi.paypal.valore, importoCent);
     return (
       <div className="flex flex-col gap-3">
-        {intestazione}
         {link ? (
           <>
-            <BottoneLink href={link.conImporto ?? link.profilo} esterno pieno>
-              Apri PayPal{importo ? ` e paga ${importo}` : ""}
+            <BottoneLink href={link.conImporto ?? link.profilo} esterno pieno variante="azione">
+              {importo ? `Paga ${importo} con PayPal` : "Apri PayPal"} <Icona nome="open_in_new" dimensione={20} />
             </BottoneLink>
             {link.conImporto ? (
               <p className="text-sm text-ink-soft">
-                Se PayPal non mostra l’importo, <a className="font-semibold text-accent-2 underline underline-offset-4" href={link.profilo} target="_blank" rel="nofollow noopener noreferrer">apri il profilo di {org}</a> e scrivilo tu.
+                Se PayPal non mostra l’importo, <a className="font-semibold text-accent underline underline-offset-4" href={link.profilo} target="_blank" rel="nofollow noopener noreferrer">apri il profilo di {org}</a> e scrivilo tu.
               </p>
             ) : null}
           </>
         ) : (
-          <Avviso tono="attenzione">Il link PayPal non è valido. Scrivi a {org}.</Avviso>
+          <Avviso tono="attenzione">Il link PayPal non è valido: chiedi a {org} un altro modo per pagare.</Avviso>
         )}
         <PannelloCopia etichetta="Nel messaggio scrivi" valore={causale} />
       </div>
@@ -77,9 +69,8 @@ export function PannelloPagamento({
   if (metodo === "satispay") {
     return (
       <div className="flex flex-col gap-3">
-        {intestazione}
         <PannelloCopia etichetta={`Numero Satispay di ${org}`} valore={colletta.metodi.satispay.valore} copiabile={colletta.metodi.satispay.valore.replace(/[\s.-]/g, "")} grande />
-        <ol className="list-decimal pl-5 text-sm">
+        <ol className="list-decimal pl-5 text-sm text-ink-soft">
           <li>Apri Satispay e scegli «Invia denaro».</li>
           <li>Incolla il numero e scrivi {importo ?? "la tua quota"}.</li>
         </ol>
@@ -92,14 +83,13 @@ export function PannelloPagamento({
   const iban = b.valore.replace(/\s+/g, "");
   return (
     <div className="flex flex-col gap-3">
-      {intestazione}
       <p className="text-sm text-ink-soft">Intestato a <strong className="text-ink">{b.intestatario}</strong></p>
       <PannelloCopia etichetta="IBAN" valore={formattaIban(b.valore)} copiabile={iban} />
       <PannelloCopia etichetta="Causale" valore={causale} />
       {importoCent ? <PannelloCopia etichetta="Importo" valore={importoPerCopia(importoCent)} /> : null}
       {importoCent ? (
-        <details className="rounded-controllo border border-line bg-surface-2 p-3">
-          <summary className="min-h-tocco cursor-pointer py-2 font-semibold">Oppure inquadra il codice con l’app della tua banca</summary>
+        <details className="rounded-2xl bg-surface-2 px-4 py-1">
+          <summary className="min-h-tocco cursor-pointer py-3 text-sm font-bold">Oppure inquadra il QR con l’app della tua banca</summary>
           <div className="flex flex-col items-center gap-2 pt-2">
             <CodiceQr
               testo={payloadEpc({ iban, intestatario: b.intestatario, importoCent, causale })}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Icona } from "@/components/ui";
 import { modelloPerId, MODELLI_BIGLIETTO } from "@/lib/dati/modelli-biglietto";
 import { cambiaFirmatario, useApi } from "@/lib/biglietti/client";
 import type { BigliettoPubblico, Firma } from "@/lib/tipi";
@@ -32,15 +33,36 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
       .catch(() => {});
   }, [anteprima, chiuso, api, b.slug]);
 
-  const bottone = "inline-flex min-h-14 min-w-[200px] items-center justify-center rounded-full bg-accent px-8 font-semibold text-on-accent hover:bg-accent-2";
+  const bottone = "inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-cta px-8 text-[19px] font-bold text-on-cta shadow-sollevata hover:bg-cta-2";
   return (
     <div className="flex flex-col items-center gap-5 text-center">
       <div ref={rif} className="h-0 w-full" />
-      {b.nFirme > 0 ? <p className="self-end rounded-full bg-accent-field px-3 py-1 text-sm font-semibold text-accent-2">{testoFirmatari(b.nFirme)}</p> : null}
-      <h1 className="font-display text-4xl font-medium leading-tight">{b.nome}</h1>
-      {b.messaggioGruppo ? <div className="max-w-full whitespace-normal break-words text-ink-soft" dangerouslySetInnerHTML={{ __html: b.messaggioGruppo }} /> : null}
+      <div className="flex w-full items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-ink-soft">
+          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-cta" />
+          Invito privato
+        </span>
+        {b.nFirme > 0 ? <p className="rounded-full bg-gold-field px-3 py-1 text-xs font-bold">{testoFirmatari(b.nFirme)}</p> : null}
+      </div>
+      <h1 className="font-display text-[36px] font-bold leading-tight tracking-tight text-accent-2">{b.nome}</h1>
+      {b.messaggioGruppo ? (
+        <div className="w-full rounded-3xl bg-surface p-4 text-left italic shadow-carta">
+          <div className="max-w-full whitespace-normal break-words" dangerouslySetInnerHTML={{ __html: b.messaggioGruppo }} />
+        </div>
+      ) : null}
+      <div className="w-full py-2">
+        <Busta larghezza={Math.round(Math.min(larghezza, 420) * 0.72)}>
+          <Copertina modello={modello} titolo={b.copertina.titolo} sottotitolo={b.copertina.sottotitolo} immagineUrl={b.copertina.immagineUrl} larghezza={Math.round(Math.min(larghezza, 420) * 0.72)} />
+        </Busta>
+      </div>
+      {!chiuso ? (
+        <p className="flex items-center gap-1.5 rounded-full bg-surface-2 px-4 py-2 text-xs font-semibold">
+          <Icona nome="verified" dimensione={16} className="text-cta-2" />
+          Gratis e senza registrazione. Ci metti meno di un minuto.
+        </p>
+      ) : null}
       {chiuso ? (
-        <p className="rounded-contenitore bg-surface-2 p-4 font-semibold ring-1 ring-line">Questo biglietto è già stato consegnato.</p>
+        <p className="rounded-3xl bg-surface-2 p-4 font-semibold">Questo biglietto è già stato consegnato.</p>
       ) : mia && hrefFirma ? (
         <div className="flex flex-col items-center gap-3">
           <p className="font-semibold">
@@ -55,7 +77,7 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
               cambiaFirmatario(b.slug);
               router.push(hrefFirma);
             }}
-            className="min-h-tocco text-sm font-semibold text-accent-2 underline underline-offset-4"
+            className="min-h-tocco text-sm font-bold text-accent underline underline-offset-4"
           >
             Sono un’altra persona: aggiungi la mia firma
           </button>
@@ -69,11 +91,6 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
           Firma il biglietto
         </Link>
       ) : null}
-      <div className="mt-4 w-full">
-        <Busta larghezza={Math.round(Math.min(larghezza, 420) * 0.72)}>
-          <Copertina modello={modello} titolo={b.copertina.titolo} sottotitolo={b.copertina.sottotitolo} immagineUrl={b.copertina.immagineUrl} larghezza={Math.round(Math.min(larghezza, 420) * 0.72)} />
-        </Busta>
-      </div>
     </div>
   );
 }

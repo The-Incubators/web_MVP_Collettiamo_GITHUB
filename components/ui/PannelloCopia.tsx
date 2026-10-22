@@ -62,7 +62,7 @@ export function BottoneCopia({
     <button
       type="button"
       onClick={() => void copia(testo, sorgente?.current).then((ok) => ok && onCopia?.())}
-      className={`inline-flex min-h-tocco items-center justify-center gap-2 rounded-controllo border border-line bg-surface font-semibold text-ink transition-colors hover:bg-surface-2 ${
+      className={`inline-flex min-h-tocco shrink-0 items-center justify-center gap-2 rounded-full border-[1.5px] border-line bg-surface font-bold text-accent transition-colors hover:border-accent ${
         piccolo ? "px-3 text-sm" : "px-5 text-base"
       } ${pieno ? "w-full" : ""}`}
     >
@@ -87,9 +87,9 @@ export function PannelloCopia({
 }) {
   const ref = useRef<HTMLElement | null>(null);
   return (
-    <div className="flex items-center gap-3 rounded-controllo border border-line bg-surface-2 p-3">
+    <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-3 pl-4">
       <div className="flex min-w-0 flex-1 flex-col">
-        <span className="text-xs font-medium uppercase tracking-wide text-ink-soft">{etichetta}</span>
+        <span className="text-xs font-bold uppercase tracking-wide text-ink-soft">{etichetta}</span>
         <span
           ref={ref}
           className={`break-words ${grande ? "cifre text-xl font-bold" : "font-medium"}`}

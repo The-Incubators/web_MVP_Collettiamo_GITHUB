@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { Avviso, Campo, CampoSelezione, IconaPiu, IconaSpunta, ImmagineProdotto, SchedaScelta } from "@/components/ui";
+import { Avviso, Campo, CampoSelezione, Icona, IconaPiu, IconaSpunta, ImmagineProdotto } from "@/components/ui";
 import { euroPerCampo, formattaEuro, leggiEuro } from "@/lib/dominio/importi";
 import { contiene, daProdotto } from "@/lib/dominio/regali";
 import { CATEGORIE, type Categoria, type Prodotto, type ProdottoColletta } from "@/lib/tipi";
@@ -46,6 +46,8 @@ export function ScegliRegalo({
   const [prodotti, setProdotti] = useState<Prodotto[] | null>(null);
   const [erroreCatalogo, setErroreCatalogo] = useState(false);
   const [ricerca, setRicerca] = useState("");
+  // con un regalo del catalogo già scelto si vede solo la sua scheda; «Cambia regalo» riapre l'elenco
+  const [mostraElenco, setMostraElenco] = useState(false);
   const [link, setLink] = useState(() => ({
     url: daLink ? (valore?.urlEsterno ?? "") : "",
     nome: daLink ? (valore?.nome ?? "") : "",
@@ -91,12 +93,52 @@ export function ScegliRegalo({
 
   return (
     <div className="flex flex-col gap-5">
-      <div role="radiogroup" aria-label="Come scegli il regalo" className="grid gap-3 sm:grid-cols-2">
-        <SchedaScelta titolo="Dal catalogo" descrizione="Idee già pronte, con prezzo e tempi di consegna." selezionata={modo === "catalogo"} onSeleziona={() => setModo("catalogo")} />
-        <SchedaScelta titolo="Incolla un link" descrizione="Un regalo che hai già in mente, da un altro negozio." selezionata={modo === "link"} onSeleziona={() => setModo("link")} />
+      <div role="radiogroup" aria-label="Come scegli il regalo" className="grid grid-cols-2 gap-1 rounded-full bg-surface-2 p-1">
+        {(
+          [
+            { id: "catalogo", testo: "Dal catalogo" },
+            { id: "link", testo: "Incolla un link" },
+          ] as const
+        ).map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            role="radio"
+            aria-checked={modo === m.id}
+            onClick={() => setModo(m.id)}
+            className={`min-h-tocco rounded-full px-3 text-sm font-bold transition-colors ${modo === m.id ? "bg-surface shadow-carta" : "text-ink-soft"}`}
+          >
+            {m.testo}
+          </button>
+        ))}
       </div>
 
-      {modo === "catalogo" ? (
+      {modo === "catalogo" && valore?.prodottoId && !mostraElenco ? (
+        <div className="flex flex-col gap-3 rounded-2xl bg-surface-2 p-3" aria-live="polite">
+          <div className="flex items-center justify-between gap-2">
+            <span className="inline-flex items-center gap-1 rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">
+              <Icona nome="verified" dimensione={16} />
+              Selezionato
+            </span>
+            <button type="button" onClick={() => setMostraElenco(true)} className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-cta-2">
+              Cambia regalo <Icona nome="refresh" dimensione={18} />
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="w-24 shrink-0 overflow-hidden rounded-xl">
+              <ImmagineProdotto prodotto={valore} />
+            </div>
+            <div className="flex min-w-0 flex-col gap-0.5">
+              <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{valore.nome}</p>
+              <p className="cifre text-xl font-extrabold text-accent-2">{formattaEuro(valore.prezzoCent)}</p>
+              <p className="flex items-center gap-1 text-xs text-ink-soft">
+                <Icona nome="local_shipping" dimensione={16} />
+                Consegna stimata in {valore.consegnaGiorni} {valore.consegnaGiorni === 1 ? "giorno" : "giorni"}
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : modo === "catalogo" ? (
         <div className="flex flex-col gap-4">
           <Campo etichetta="Cerca nel catalogo" type="search" value={ricerca} onChange={(e) => setRicerca(e.target.value)} placeholder="Mappa, lampada, speaker…" />
           {erroreCatalogo ? <Avviso tono="attenzione">Non riesco a caricare il catalogo. Controlla la connessione e riprova.</Avviso> : null}
@@ -110,12 +152,15 @@ export function ScegliRegalo({
                 <li key={p.slug} className="relative">
                   <button
                     type="button"
-                    onClick={() => onScelta(daProdotto(p))}
+                    onClick={() => {
+                      onScelta(daProdotto(p));
+                      setMostraElenco(false);
+                    }}
                     aria-pressed={scelto}
-                    className={`flex h-full w-full flex-col overflow-hidden rounded-contenitore border text-left transition-colors ${scelto ? "border-accent ring-2 ring-accent" : "border-line bg-surface hover:bg-surface-2"}`}
+                    className={`flex h-full w-full flex-col gap-1 overflow-hidden rounded-2xl bg-surface p-2 text-left shadow-carta transition-colors ${scelto ? "ring-2 ring-accent" : "hover:bg-surface-2"}`}
                   >
-                    <ImmagineProdotto prodotto={p} />
-                    <span className="flex flex-1 flex-col gap-1 p-3">
+                    <ImmagineProdotto prodotto={p} className="rounded-xl" />
+                    <span className="flex flex-1 flex-col gap-1 px-1 pb-1">
                       <span className="text-sm leading-snug">{p.nome}</span>
                       <span className="mt-auto flex items-center justify-between">
                         <span className="cifre font-bold">{formattaEuro(p.prezzoCent)}</span>
@@ -129,8 +174,8 @@ export function ScegliRegalo({
                       disabled={dentro}
                       aria-label={dentro ? `${p.nome} è già nella lista dei regali` : `Aggiungi alla lista dei regali: ${p.nome}`}
                       onClick={() => onAggiungi(daProdotto(p))}
-                      className={`group/piu absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full border shadow-sm transition-colors ${
-                        dentro ? "border-accent bg-accent text-on-accent" : "border-line bg-surface text-ink hover:bg-accent-field"
+                      className={`group/piu absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full shadow-carta transition-colors ${
+                        dentro ? "bg-accent text-on-accent" : "bg-surface text-ink hover:bg-accent-field"
                       }`}
                     >
                       {dentro ? <IconaSpunta width={22} height={22} /> : <IconaPiu width={22} height={22} />}
@@ -166,7 +211,7 @@ export function ScegliRegalo({
         </div>
       )}
 
-      {valore ? (
+      {valore && modo === "link" ? (
         <Avviso tono="positivo" live>
           <p>
             Selezionato: <strong>{valore.nome}</strong>, {formattaEuro(valore.prezzoCent)}.

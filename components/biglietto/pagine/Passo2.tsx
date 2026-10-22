@@ -187,7 +187,7 @@ export function ModuloDettagli({
 /** S2: al posto della gift card, un riquadro facoltativo (chiuso) che rimanda al catalogo e alla colletta. */
 function RiquadroRegalo() {
   return (
-    <details className="group rounded-contenitore bg-surface-2 ring-1 ring-line">
+    <details className="group rounded-3xl bg-surface-2">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 font-semibold [&::-webkit-details-marker]:hidden">
         <span className="flex items-center gap-3">
           <span aria-hidden="true">🎁</span> Vuoi anche fare un regalo di gruppo?
@@ -221,7 +221,7 @@ export function Passo2({ id }: { id: string }) {
       <main className="gutter mx-auto flex w-full max-w-[600px] flex-col gap-6 pb-16 pt-6">
         {b ? (
           <>
-            <h2 className="text-center font-display text-3xl font-bold">Cominciamo dalle basi</h2>
+            <h2 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Cominciamo dalle basi</h2>
             <ModuloDettagli b={b} testoBottone="Avanti" chiaveSessione={`colletta.biglietto.${id}.dettagli`} onSalvato={() => router.push(`/biglietto/${id}/design`)} />
           </>
         ) : (
