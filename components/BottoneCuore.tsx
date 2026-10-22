@@ -13,8 +13,8 @@ export function BottoneCuore({ slug, nome, className = "" }: { slug: string; nom
       aria-label={dentro ? `Togli dai preferiti: ${nome}` : `Aggiungi ai preferiti: ${nome}`}
       title={dentro ? "Togli dai preferiti" : "Aggiungi ai preferiti"}
       onClick={() => toggle(slug)}
-      className={`flex h-11 w-11 items-center justify-center rounded-full border shadow-sm transition-colors ${
-        dentro ? "border-accent bg-accent text-on-accent" : "border-line bg-surface text-ink hover:bg-accent-field"
+      className={`flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta transition-colors ${
+        dentro ? "text-cta" : "text-ink hover:text-cta-2"
       } ${className}`}
     >
       <svg viewBox="0 0 24 24" width={22} height={22} aria-hidden="true" fill={dentro ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinejoin="round">

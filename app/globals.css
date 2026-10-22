@@ -9,8 +9,8 @@
  *
  * - `accent` è il verde del marchio (#033922): bottoni principali, selezioni, barre.
  * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
- *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (18 px in grassetto), che è come lo
- *   usa la variante «azione» di Bottone, non per il testo piccolo.
+ *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (da 14 pt, 18,7 px, in grassetto), che è
+ *   come lo usa la variante «azione» di Bottone (19 px), non per il testo piccolo.
  */
 :root {
   --field: #f6fbf4;

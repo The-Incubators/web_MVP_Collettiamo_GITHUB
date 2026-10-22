@@ -5,7 +5,7 @@ import { REL_LINK_PRODOTTO } from "@/lib/dominio/amazon";
 /**
  * - `primario`: pillola verde del marchio, l'azione principale di una schermata.
  * - `azione`: pillola arancio, solo per le conversioni (Partecipo, Firma, Apri la raccolta…). Il testo resta
- *   grande anche nella misura piccola: il bianco sull'arancio regge il contrasto solo da 18 px in grassetto.
+ *   grande anche nella misura piccola: il bianco sull'arancio (3,1:1) regge il contrasto solo come testo grande, cioè da 14 pt (18,7 px) in grassetto.
  * - `secondario`: pillola chiara con bordo. `testuale`: solo testo.
  */
 export type VarianteBottone = "primario" | "azione" | "secondario" | "testuale";
@@ -18,8 +18,8 @@ export function classiBottone(variante: VarianteBottone = "primario", dimensione
     variante === "testuale"
       ? "min-h-tocco px-2 text-base"
       : dimensione === "piccolo"
-        ? `min-h-tocco px-4 ${variante === "azione" ? "text-lg" : "text-sm"}`
-        : `min-h-azione px-6 ${variante === "azione" ? "text-lg" : "text-base"}`;
+        ? `min-h-tocco px-4 ${variante === "azione" ? "text-[19px]" : "text-sm"}`
+        : `min-h-azione px-6 ${variante === "azione" ? "text-[19px]" : "text-base"}`;
   const colori = {
     primario: "bg-accent text-on-accent hover:bg-accent-2",
     azione: "bg-cta text-on-cta shadow-sollevata hover:bg-cta-2",

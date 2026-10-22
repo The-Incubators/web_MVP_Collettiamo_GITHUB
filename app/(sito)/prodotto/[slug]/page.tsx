@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
-import { IconaIndietro } from "@/components/ui";
+import { Icona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 
 export const dynamic = "force-dynamic";
@@ -26,12 +26,16 @@ export default async function SchedaProdottoPagina({ params }: Props) {
   if (!p || !p.attivo) notFound();
 
   return (
-    <div className="gutter pb-16 pt-6">
+    <div className="gutter pb-10 pt-2">
       <div className="mx-auto flex max-w-catalogo flex-col gap-6">
-        <Link href="/catalogo" className="inline-flex min-h-tocco items-center gap-1 self-start text-sm font-medium text-accent-2">
-          <IconaIndietro width={16} height={16} /> Torna al catalogo
-        </Link>
-        <DettaglioProdotto p={p} />
+        <DettaglioProdotto
+          p={p}
+          indietro={
+            <Link href="/catalogo" className="inline-flex min-h-10 items-center gap-1 rounded-full bg-surface-2 pl-3 pr-4 text-sm font-bold">
+              <Icona nome="arrow_back" dimensione={18} /> Catalogo
+            </Link>
+          }
+        />
       </div>
     </div>
   );

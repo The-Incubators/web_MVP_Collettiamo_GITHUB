@@ -9,10 +9,26 @@ import { IconaPiu, IconaSpunta } from "./ui";
  * Il «+» sul riquadro di un prodotto: lo mette nella lista dei regali (e lo toglie se già c'è).
  * Con il mouse sopra compare «Aggiungi alla lista dei regali».
  */
-export function BottoneListaRegali({ prodotto, className = "", variante = "piu" }: { prodotto: ProdottoColletta; className?: string; variante?: "piu" | "testo" }) {
+export function BottoneListaRegali({ prodotto, className = "", variante = "piu" }: { prodotto: ProdottoColletta; className?: string; variante?: "piu" | "testo" | "largo" }) {
   const lista = useListaRegali();
   const dentro = contiene(lista, prodotto);
   const testo = dentro ? "Nella lista dei regali: tocca per toglierlo" : "Aggiungi alla lista dei regali";
+  if (variante === "largo") {
+    // Nella scheda prodotto: pillola chiara a tutta larghezza, sotto «Organizza la colletta».
+    return (
+      <button
+        type="button"
+        aria-pressed={dentro}
+        onClick={() => (dentro ? togliDaRegali(prodotto) : aggiungiARegali(prodotto))}
+        className={`flex min-h-azione w-full items-center justify-center gap-2 rounded-full border-[1.5px] px-5 font-bold transition-colors ${
+          dentro ? "border-accent bg-accent-field text-accent" : "border-line bg-surface text-accent hover:border-accent"
+        } ${className}`}
+      >
+        {dentro ? <IconaSpunta width={20} height={20} /> : <IconaPiu width={20} height={20} />}
+        {dentro ? "Nella lista per la votazione" : "Aggiungi alla lista per votazione"}
+      </button>
+    );
+  }
   if (variante === "testo") {
     // In fondo al riquadro del prodotto: «+» con la scritta, a tutta larghezza.
     return (
@@ -20,13 +36,13 @@ export function BottoneListaRegali({ prodotto, className = "", variante = "piu" 
         type="button"
         aria-pressed={dentro}
         onClick={() => (dentro ? togliDaRegali(prodotto) : aggiungiARegali(prodotto))}
-        className={`flex min-h-tocco w-full items-center justify-center gap-2 rounded-controllo border px-3 text-sm font-semibold transition-colors ${
-          dentro ? "border-accent bg-accent-field text-ink" : "border-line bg-surface text-ink hover:bg-surface-2"
+        className={`flex min-h-tocco w-full items-center justify-center gap-1.5 rounded-full px-3 text-xs font-bold transition-colors ${
+          dentro ? "bg-accent-field text-accent" : "bg-surface-2 text-ink hover:bg-line"
         } ${className}`}
       >
-        {dentro ? <IconaSpunta width={18} height={18} className="text-accent" /> : <IconaPiu width={18} height={18} />}
+        {dentro ? <IconaSpunta width={16} height={16} /> : <IconaPiu width={16} height={16} />}
         <span>
-          {dentro ? "Nella lista regali" : "Aggiungi alla lista regali"}
+          {dentro ? "In lista votazione" : "Lista regali"}
           <span className="sr-only">: {prodotto.nome}</span>
         </span>
       </button>
