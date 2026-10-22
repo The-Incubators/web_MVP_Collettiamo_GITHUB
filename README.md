@@ -1,0 +1,2 @@
+# web_MVP_Collettiamo_GITHUB
+Prototipo_App_Cosa_Gli_Regaliamo

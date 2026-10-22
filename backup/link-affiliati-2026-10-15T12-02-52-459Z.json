@@ -1,0 +1,792 @@
+{
+ "creatoIl": "2026-10-15T12:02:52.459Z",
+ "tag": "pacestefano77-21",
+ "voci": [
+  {
+   "percorso": "prodotti/ace-cuffie-wireless",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0D37H1T6H",
+   "dopo": "https://www.amazon.it/dp/B0D37H1T6H?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/adventure-archive-box",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CQTPMRMY",
+   "dopo": "https://www.amazon.it/dp/B0CQTPMRMY?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/aion-40-l-zaino-da-viaggio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CJX3PLLQ",
+   "dopo": "https://www.amazon.it/dp/B0CJX3PLLQ?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/alvar-aalto-vaso-ondulato",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0C4LLBF63",
+   "dopo": "https://www.amazon.it/dp/B0C4LLBF63?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/animal-bear-tavolino",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00BQZ9YFU",
+   "dopo": "https://www.amazon.it/dp/B00BQZ9YFU?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/animal-octopus-lampada-oro",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08QSCD1F6",
+   "dopo": "https://www.amazon.it/dp/B08QSCD1F6?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/animal-pig-tavolino-dorato",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DPJ1GW9L",
+   "dopo": "https://www.amazon.it/dp/B0DPJ1GW9L?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/animal-rabbit-lampada",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09MGDYPFL",
+   "dopo": "https://www.amazon.it/dp/B09MGDYPFL?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/ants-on-a-tree-appendiabiti",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07QQHFMP9",
+   "dopo": "https://www.amazon.it/dp/B07QQHFMP9?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/appendiabiti-cactus-arizona",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B073XC8634",
+   "dopo": "https://www.amazon.it/dp/B073XC8634?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/bacheca-europa-in-sughero",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0B5LHW41R",
+   "dopo": "https://www.amazon.it/dp/B0B5LHW41R?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/balloon-dance-lampada",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DKVBPKWX",
+   "dopo": "https://www.amazon.it/dp/B0DKVBPKWX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/barklamp-lampada-traforata",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07VSR82GX",
+   "dopo": "https://www.amazon.it/dp/B07VSR82GX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/bellhop-lampada-portatile",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08PGZB31N",
+   "dopo": "https://www.amazon.it/dp/B08PGZB31N?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/big-big-bang-orologio-in-ferro",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00PK3DD8S",
+   "dopo": "https://www.amazon.it/dp/B00PK3DD8S?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/blur-trolley-grafico",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DRT196LW",
+   "dopo": "https://www.amazon.it/dp/B0DRT196LW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/bubble-club-tavolino-bianco",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B004GYKS6W",
+   "dopo": "https://www.amazon.it/dp/B004GYKS6W?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/c1-proiettore-portatile",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FPM3ZJT6",
+   "dopo": "https://www.amazon.it/dp/B0FPM3ZJT6?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/century-centro-musicale-6-in-1",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FLK4WCCK",
+   "dopo": "https://www.amazon.it/dp/B0FLK4WCCK?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/cestino-temperamatite",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09QY91NWT",
+   "dopo": "https://www.amazon.it/dp/B09QY91NWT?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/chapeau-appendiabiti-con-lampada",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B085446WXR",
+   "dopo": "https://www.amazon.it/dp/B085446WXR?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/chelsea-sedia-multicolore",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07KTTK7ND",
+   "dopo": "https://www.amazon.it/dp/B07KTTK7ND?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/cindy-lampada-platino",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B002JKLMBA",
+   "dopo": "https://www.amazon.it/dp/B002JKLMBA?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/componibili-bio-contenitore-rosa",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07S359CRT",
+   "dopo": "https://www.amazon.it/dp/B07S359CRT?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/corky-sgabello-tappo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0G4NLQT68",
+   "dopo": "https://www.amazon.it/dp/B0G4NLQT68?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/crevasse-vaso-acciaio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B000Y90SWM",
+   "dopo": "https://www.amazon.it/dp/B000Y90SWM?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/cuscino-da-viaggio-verticale",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B074WJ7J1Y",
+   "dopo": "https://www.amazon.it/dp/B074WJ7J1Y?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/cycon-samurai-scrivania-da-divano",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FWRGYJ4X",
+   "dopo": "https://www.amazon.it/dp/B0FWRGYJ4X?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/diario-di-viaggio-in-lino",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CJV474ZB",
+   "dopo": "https://www.amazon.it/dp/B0CJV474ZB?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/dollar-sgabello-decorativo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00XM09APQ",
+   "dopo": "https://www.amazon.it/dp/B00XM09APQ?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/drappeggi-st-louis-sculture",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B003M0JWTK",
+   "dopo": "https://www.amazon.it/dp/B003M0JWTK?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/ebo-se-robot-telecamera-mobile",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0C4P1MF8V",
+   "dopo": "https://www.amazon.it/dp/B0C4P1MF8V?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/eclisse-rossa",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00OQ6R4TO",
+   "dopo": "https://www.amazon.it/dp/B00OQ6R4TO?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/elmetto-lampada-bianca",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B015K29P80",
+   "dopo": "https://www.amazon.it/dp/B015K29P80?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/feather-palms-piantana",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BKLBVJL4",
+   "dopo": "https://www.amazon.it/dp/B0BKLBVJL4?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/fermalibri-hidden-cat",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09BZ3WVRG",
+   "dopo": "https://www.amazon.it/dp/B09BZ3WVRG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/flamingo-road-decorazione",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07NSP1ZZQ",
+   "dopo": "https://www.amazon.it/dp/B07NSP1ZZQ?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/flapper-appendiabiti-bianco",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00HY8G2B2",
+   "dopo": "https://www.amazon.it/dp/B00HY8G2B2?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/flexible-mocca-cinque-piantana",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00MEFL1OI",
+   "dopo": "https://www.amazon.it/dp/B00MEFL1OI?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/flipper-zero",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BFXKSFNT",
+   "dopo": "https://www.amazon.it/dp/B0BFXKSFNT?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/flower-fever-pink-sedia",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GMXLVG7Q",
+   "dopo": "https://www.amazon.it/dp/B0GMXLVG7Q?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/freeclip-2-auricolari-blu",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0G49MPKCX",
+   "dopo": "https://www.amazon.it/dp/B0G49MPKCX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/giradischi-verticale-mid-century",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FBSV47DR",
+   "dopo": "https://www.amazon.it/dp/B0FBSV47DR?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/go-generation-2-kit-viola",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FLKKFGQ8",
+   "dopo": "https://www.amazon.it/dp/B0FLKKFGQ8?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/headphone-1-cuffie-bianche",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0F66XD5LF",
+   "dopo": "https://www.amazon.it/dp/B0F66XD5LF?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/hoverpen-interstellar",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09DKZCZTN",
+   "dopo": "https://www.amazon.it/dp/B09DKZCZTN?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/hummingbird-mirror",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08H5M3HCD",
+   "dopo": "https://www.amazon.it/dp/B08H5M3HCD?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/hybrid-melania-vaso",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00WRR2T3K",
+   "dopo": "https://www.amazon.it/dp/B00WRR2T3K?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/i-shine-vaso-trasparente",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00TFP4W1E",
+   "dopo": "https://www.amazon.it/dp/B00TFP4W1E?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/igloo-chair-coppia-di-sedie",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00QPFJH8A",
+   "dopo": "https://www.amazon.it/dp/B00QPFJH8A?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/instax-mini-evo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0C8HD6F5W",
+   "dopo": "https://www.amazon.it/dp/B0C8HD6F5W?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/jobby-de-kat-lampada-gatto",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07CG9MDR6",
+   "dopo": "https://www.amazon.it/dp/B07CG9MDR6?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/kaya-zaino-in-pelle",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BQCFZ816",
+   "dopo": "https://www.amazon.it/dp/B0BQCFZ816?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/kintsugi-vaso-porcellana-e-oro",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09QJ97PF2",
+   "dopo": "https://www.amazon.it/dp/B09QJ97PF2?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/la-stanza-dello-scirocco-orologio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B01DWHNY0K",
+   "dopo": "https://www.amazon.it/dp/B01DWHNY0K?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lampada-a-libro-pieghevole",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0D177Z3GF",
+   "dopo": "https://www.amazon.it/dp/B0D177Z3GF?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lampada-cubo-specchio-4d",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GG3QGXFB",
+   "dopo": "https://www.amazon.it/dp/B0GG3QGXFB?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lampada-saturno-levitante",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09L8KWM48",
+   "dopo": "https://www.amazon.it/dp/B09L8KWM48?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lite-travel-pack-30-l",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DDNQ22LD",
+   "dopo": "https://www.amazon.it/dp/B0DDNQ22LD?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lounge-s-tavolino-fucsia",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0H1CTJP2T",
+   "dopo": "https://www.amazon.it/dp/B0H1CTJP2T?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/love-in-bloom-giant",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0926XLH1B",
+   "dopo": "https://www.amazon.it/dp/B0926XLH1B?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/lsa-071-giradischi-verticale",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DP7RCXLS",
+   "dopo": "https://www.amazon.it/dp/B0DP7RCXLS?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/luggage-aluminium-valigia-rigida",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0F6V789N8",
+   "dopo": "https://www.amazon.it/dp/B0F6V789N8?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mappa-del-mondo-da-grattare-xxl",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B092VY97CY",
+   "dopo": "https://www.amazon.it/dp/B092VY97CY?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mappamondo-da-colorare",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0D41QJFXW",
+   "dopo": "https://www.amazon.it/dp/B0D41QJFXW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mappamondo-magic-nero",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B079Q58FVX",
+   "dopo": "https://www.amazon.it/dp/B079Q58FVX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mappamondo-vintage-in-sughero",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08M9D2X57",
+   "dopo": "https://www.amazon.it/dp/B08M9D2X57?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/masters-sedia-nera",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00HEOZHMG",
+   "dopo": "https://www.amazon.it/dp/B00HEOZHMG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/max-beam-sgabello-cristallo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0166AUNF4",
+   "dopo": "https://www.amazon.it/dp/B0166AUNF4?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/medusa-placca-da-parete",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B078VT54LX",
+   "dopo": "https://www.amazon.it/dp/B078VT54LX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/melted-heart-specchio-rosso",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0B8P52RKW",
+   "dopo": "https://www.amazon.it/dp/B0B8P52RKW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mini-projector-75",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B078NCG82N",
+   "dopo": "https://www.amazon.it/dp/B078NCG82N?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mini-shot-2-era-kit-giallo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CHW8W4VD",
+   "dopo": "https://www.amazon.it/dp/B0CHW8W4VD?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mini-speaker-bluetooth-a106",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07F9NGRKF",
+   "dopo": "https://www.amazon.it/dp/B07F9NGRKF?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/moka-xl-specchio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0HLLHQY5H",
+   "dopo": "https://www.amazon.it/dp/B0HLLHQY5H?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/motif-ii-anc",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CGZJDY84",
+   "dopo": "https://www.amazon.it/dp/B0CGZJDY84?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/mynd-wild-berry-speaker-portatile",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FD3TVB36",
+   "dopo": "https://www.amazon.it/dp/B0FD3TVB36?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/neopulse-trolley-cabina",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BN1PKY94",
+   "dopo": "https://www.amazon.it/dp/B0BN1PKY94?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/nessino-arancione",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00OQ6RQPQ",
+   "dopo": "https://www.amazon.it/dp/B00OQ6RQPQ?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/notepin-s-registratore-indossabile",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0G52D85M7",
+   "dopo": "https://www.amazon.it/dp/B0G52D85M7?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/onemo-2-zaino-fotografico",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BN5VZYT4",
+   "dopo": "https://www.amazon.it/dp/B0BN5VZYT4?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/opus-centrotavola",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00TPZOVFG",
+   "dopo": "https://www.amazon.it/dp/B00TPZOVFG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/orchid-white-decorazione",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07NSY2LXC",
+   "dopo": "https://www.amazon.it/dp/B07NSY2LXC?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/origami-naturale-sedia",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B019G8ZZTW",
+   "dopo": "https://www.amazon.it/dp/B019G8ZZTW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/p3-proiettore-per-disegno",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FF4P23GG",
+   "dopo": "https://www.amazon.it/dp/B0FF4P23GG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/parasaurolophus-xl-specchio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0HM7G7HZC",
+   "dopo": "https://www.amazon.it/dp/B0HM7G7HZC?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/penna-scanner-traduttore-ocr",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DQY6FB39",
+   "dopo": "https://www.amazon.it/dp/B0DQY6FB39?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/pezzo-di-me-woman-sgabello",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DQ2NBYND",
+   "dopo": "https://www.amazon.it/dp/B0DQ2NBYND?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/pigna-di-caltagirone-vaso",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0B4SZ5YVK",
+   "dopo": "https://www.amazon.it/dp/B0B4SZ5YVK?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/pillar-appendiabiti-con-sgabello",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08CYCFLZ6",
+   "dopo": "https://www.amazon.it/dp/B08CYCFLZ6?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/poldina-pro-peanuts-together",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09NCGGW8Q",
+   "dopo": "https://www.amazon.it/dp/B09NCGGW8Q?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/portagioie-da-viaggio-con-specchio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0C7Z6W7QB",
+   "dopo": "https://www.amazon.it/dp/B0C7Z6W7QB?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/portalibri-scultura-balena",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0B8C2X4JV",
+   "dopo": "https://www.amazon.it/dp/B0B8C2X4JV?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/portugal-orologio-a-ingranaggi",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DPVKXQPF",
+   "dopo": "https://www.amazon.it/dp/B0DPVKXQPF?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/pouf-burger",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GYZJP81H",
+   "dopo": "https://www.amazon.it/dp/B0GYZJP81H?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/power-bank-con-specchio-led",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B076Q7W1MX",
+   "dopo": "https://www.amazon.it/dp/B076Q7W1MX?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/rexy-lampada-dinosauro",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0FPD8RP5N",
+   "dopo": "https://www.amazon.it/dp/B0FPD8RP5N?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/rio-lamp-lampada-cane",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08L5K78CB",
+   "dopo": "https://www.amazon.it/dp/B08L5K78CB?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/scacco-matto-appendiabiti-rosso",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00KIPRQRW",
+   "dopo": "https://www.amazon.it/dp/B00KIPRQRW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/scultura-astratta-in-metallo-nero",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0BMFLWP3X",
+   "dopo": "https://www.amazon.it/dp/B0BMFLWP3X?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/scultura-lanciatore-di-fiori",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CCLJX9S2",
+   "dopo": "https://www.amazon.it/dp/B0CCLJX9S2?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/scultura-pop-art-hot-lips",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0C6TX9LFW",
+   "dopo": "https://www.amazon.it/dp/B0C6TX9LFW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/selphy-cp1500-kit-fotografico",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DZDG4MGW",
+   "dopo": "https://www.amazon.it/dp/B0DZDG4MGW?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/shanghai-vaso-trasparente",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00C6SPY5K",
+   "dopo": "https://www.amazon.it/dp/B00C6SPY5K?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/sleep-a30",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GQFRCZ8C",
+   "dopo": "https://www.amazon.it/dp/B0GQFRCZ8C?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/space-lampada-titanio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07J5PGC8W",
+   "dopo": "https://www.amazon.it/dp/B07J5PGC8W?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/spacey-tavolino-oro",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0B78BSBG9",
+   "dopo": "https://www.amazon.it/dp/B0B78BSBG9?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/sparkle-tavolino-trasparente",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B016MC7Q2E",
+   "dopo": "https://www.amazon.it/dp/B016MC7Q2E?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/speaker-bluetooth-retro-verde",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CZ4C7WCS",
+   "dopo": "https://www.amazon.it/dp/B0CZ4C7WCS?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/sprocket-34-stampante-fotografica",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B09KCN3PY9",
+   "dopo": "https://www.amazon.it/dp/B09KCN3PY9?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/star-wars-c-3po-in-cristallo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0F67KS44X",
+   "dopo": "https://www.amazon.it/dp/B0F67KS44X?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/stir-it-up-lux-giradischi-in-bambu",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CDCMFTKB",
+   "dopo": "https://www.amazon.it/dp/B0CDCMFTKB?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/stone-sgabello-cristallo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B016MC7UWK",
+   "dopo": "https://www.amazon.it/dp/B016MC7UWK?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/svuotatasche-albero-della-vita",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07RRYHSY5",
+   "dopo": "https://www.amazon.it/dp/B07RRYHSY5?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/taj-mini-lampada-azzurra",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00NPZOUE4",
+   "dopo": "https://www.amazon.it/dp/B00NPZOUE4?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/tank-case-trolley-con-tasca-pc",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08J89R99H",
+   "dopo": "https://www.amazon.it/dp/B08J89R99H?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/tavolino-pila-di-libri",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0DGX5M9GP",
+   "dopo": "https://www.amazon.it/dp/B0DGX5M9GP?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/tech-pouch-da-viaggio",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0CMQ3L1QD",
+   "dopo": "https://www.amazon.it/dp/B0CMQ3L1QD?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/teddy-specchio-senape",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0H4R8774P",
+   "dopo": "https://www.amazon.it/dp/B0H4R8774P?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/tiffany-dragonfly-piantana",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07S98M133",
+   "dopo": "https://www.amazon.it/dp/B07S98M133?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/tronco-naturale-appendiabiti",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07PY4Q8YD",
+   "dopo": "https://www.amazon.it/dp/B07PY4Q8YD?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/uno-art-vespa-trolley-cabina",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GT9KJ9P5",
+   "dopo": "https://www.amazon.it/dp/B0GT9KJ9P5?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/uovo-di-struzzo-world-map",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B00NZ3HULG",
+   "dopo": "https://www.amazon.it/dp/B00NZ3HULG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/uovo-piccolo",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B000YGP18Q",
+   "dopo": "https://www.amazon.it/dp/B000YGP18Q?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/vaso-a-levitazione-magnetica",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GRBVLBFG",
+   "dopo": "https://www.amazon.it/dp/B0GRBVLBFG?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/vaso-cranio-steampunk",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0069CH35I",
+   "dopo": "https://www.amazon.it/dp/B0069CH35I?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/vaso-in-vetro-con-luce-led",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B07MVBFXH4",
+   "dopo": "https://www.amazon.it/dp/B07MVBFXH4?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/victoria-ghost-sedia",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B01N1M2FLR",
+   "dopo": "https://www.amazon.it/dp/B01N1M2FLR?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/wonder-lamp",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B08XXYTCV5",
+   "dopo": "https://www.amazon.it/dp/B08XXYTCV5?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "prodotti/zaino-sottovuoto-2248-l-con-pompa",
+   "campo": "urlEsterno",
+   "prima": "https://www.amazon.it/dp/B0GZLKXFJY",
+   "dopo": "https://www.amazon.it/dp/B0GZLKXFJY?tag=pacestefano77-21"
+  },
+  {
+   "percorso": "collette/demo",
+   "campo": "prodotto.urlEsterno",
+   "prima": "https://www.amazon.it/dp/B073XC8634",
+   "dopo": "https://www.amazon.it/dp/B073XC8634?tag=pacestefano77-21"
+  }
+ ]
+}

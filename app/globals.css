@@ -1,0 +1,236 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --field: #edf1ee;
+  --surface: #ffffff;
+  --surface-2: #f6f9f7;
+  --ink: #16241f;
+  --ink-soft: #5b6d66;
+  --line: #dbe3de;
+  --accent: #0f7a63;
+  --accent-2: #0b5e4c;
+  --on-accent: #ffffff;
+  --accent-field: #e6f2ee;
+  --gold: #a8701f;
+  --gold-field: #fbf1df;
+  --gold-line: #e8d3ac;
+  --ok: #2e7d59;
+  --ok-field: #e4f2ea;
+  --error: #b3261e;
+  --error-field: #fdecea;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --field: #0e1613;
+    --surface: #18211d;
+    --surface-2: #1e2925;
+    --ink: #e7efea;
+    --ink-soft: #9aada5;
+    --line: #2b3833;
+    --accent: #43ac8e;
+    --accent-2: #5bc2a3;
+    --on-accent: #08130f;
+    --accent-field: #172a24;
+    --gold: #d7a458;
+    --gold-field: #2a2318;
+    --gold-line: #453722;
+    --ok: #5cbe92;
+    --ok-field: #17291f;
+    --error: #ff9a91;
+    --error-field: #3a1f1d;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --field: #0e1613;
+  --surface: #18211d;
+  --surface-2: #1e2925;
+  --ink: #e7efea;
+  --ink-soft: #9aada5;
+  --line: #2b3833;
+  --accent: #43ac8e;
+  --accent-2: #5bc2a3;
+  --on-accent: #08130f;
+  --accent-field: #172a24;
+  --gold: #d7a458;
+  --gold-field: #2a2318;
+  --gold-line: #453722;
+  --ok: #5cbe92;
+  --ok-field: #17291f;
+  --error: #ff9a91;
+  --error-field: #3a1f1d;
+  color-scheme: dark;
+}
+
+/*
+ * «Regaloop Expressive Warmth»: il design system di UX_V2 e UX_V3, che lo condividono identico
+ * (i due DESIGN.md sono lo stesso file). I token vivono solo dentro .tema-warmth, così UX_V1 non cambia
+ * di una virgola. `--surface` ed `--error` esistono anche in UX_V1: qui dentro cambia il valore, non il
+ * nome, e le classi Tailwind seguono. Nessun tema scuro: i colori restano chiari anche col sistema in scuro.
+ */
+.tema-warmth {
+  --surface: #f1fcf7;
+  --error: #ba1a1a;
+  --v2-background: #f1fcf7;
+  --v2-on-background: #141e1b;
+  --v2-surface-dim: #d1ddd8;
+  --v2-surface-bright: #f1fcf7;
+  --v2-surface-container-lowest: #ffffff;
+  --v2-surface-container-low: #ebf6f1;
+  --v2-surface-container: #e5f0eb;
+  --v2-surface-container-high: #dfebe6;
+  --v2-surface-container-highest: #dae5e0;
+  --v2-surface-variant: #dae5e0;
+  --v2-on-surface: #141e1b;
+  --v2-on-surface-variant: #404945;
+  --v2-inverse-surface: #28332f;
+  --v2-inverse-on-surface: #e8f3ee;
+  --v2-outline: #717975;
+  --v2-outline-variant: #c0c8c4;
+  --v2-primary: #00251c;
+  --v2-on-primary: #ffffff;
+  --v2-primary-container: #0a3c30;
+  --v2-on-primary-container: #78a797;
+  --v2-primary-fixed: #bceddb;
+  --v2-on-primary-fixed: #002018;
+  --v2-secondary: #ab3500;
+  --v2-on-secondary: #ffffff;
+  --v2-secondary-container: #fe6a34;
+  --v2-secondary-fixed: #ffdbd0;
+  --v2-on-secondary-fixed: #390c00;
+  --v2-tertiary: #3d1100;
+  --v2-tertiary-fixed: #ffdbce;
+  --v2-on-tertiary-fixed: #370e00;
+  --v2-canvas-cream: #f7f3eb;
+  --v2-surface-cream-card: #fffdf8;
+  --v2-border-warm: #e6dfd5;
+  --v2-forest-tint: #e8f2ee;
+  --v2-forest-hover: #072b22;
+  --v2-tangerine-tint: #fff0e8;
+  --v2-gift-gold: #fdb022;
+  --v2-gold-tint: #fef7e6;
+  --v2-text-muted: #56635e;
+  color-scheme: light;
+}
+/* Rispetta la tacca e la barra di sistema del telefono. */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+/* Le icone arrivano come legatura del font Material Symbols: senza questo si vedrebbe il nome scritto. */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer base {
+  html {
+    background: var(--field);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-field font-sans text-base text-ink antialiased;
+    min-width: 320px;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-bold;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  /* iOS Safari: il campo data non deve uscire dalla colonna né centrare il testo */
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    text-align: left;
+  }
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+  ::selection {
+    background: var(--accent-field);
+    color: var(--ink);
+  }
+}
+
+@layer components {
+  /* Cifre e importi: font di titolo con cifre tabulari. */
+  .cifre {
+    @apply font-display;
+    font-variant-numeric: tabular-nums;
+  }
+  .contenitore {
+    @apply rounded-contenitore border border-line bg-surface;
+  }
+  .gutter {
+    @apply px-4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  .no-stampa {
+    display: none !important;
+  }
+}
+
+/* Testo modificabile sul posto (titolo della copertina, editor della firma): segnaposto che sparisce al primo tasto. */
+.editabile:empty::before {
+  content: attr(data-segnaposto);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.editabile:focus {
+  outline: 2px dashed currentColor !important;
+  outline-offset: 6px;
+}
+
+@keyframes apri {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-apri {
+    animation: none !important;
+  }
+}

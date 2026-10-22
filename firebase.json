@@ -1,0 +1,20 @@
+{
+  "firestore": [
+    {
+      "database": "colletta",
+      "rules": "firestore.rules",
+      "indexes": "firestore.indexes.json"
+    }
+  ],
+  "apphosting": {
+    "backendId": "colletta",
+    "rootDir": ".",
+    "ignore": ["node_modules", ".git", "firebase-debug.log", "firebase-debug.*.log", "functions", "tests", ".next", ".env.local"]
+  },
+  "emulators": {
+    "firestore": { "port": 8080 },
+    "auth": { "port": 9099 },
+    "ui": { "enabled": false },
+    "singleProjectMode": false
+  }
+}

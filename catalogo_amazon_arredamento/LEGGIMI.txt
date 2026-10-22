@@ -1,0 +1,4 @@
+CATALOGO AMAZON.IT — ARREDAMENTO E DESIGN — 50 PRODOTTI
+Rilevazione: 15 ottobre 2026. Fascia di prezzo osservata: 150–300 €.
+
+Il file Excel contiene 50 prodotti nuovi, ID PRD-081–PRD-130. La cartella immagini/ contiene una foto per ogni ID. I prezzi possono variare nel tempo; i link puntano alle pagine Amazon.it /dp/ASIN. Le fotografie sono destinate al prototipo: verificare i diritti d’uso prima della pubblicazione sul sito.

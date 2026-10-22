@@ -1,0 +1,8 @@
+CATALOGO AMAZON.IT — 50 PRODOTTI, 150–300 EURO
+Rilevazione: 15 ottobre 2026.
+
+Contenuto:
+- catalogo_amazon_50_prodotti_150_300_euro.xlsx: 50 prodotti nuovi, ID PRD-031–PRD-080.
+- immagini/: 50 foto prodotto con nome corrispondente alla colonna Immagine locale.
+
+I prezzi sono quelli mostrati nei risultati di Amazon.it durante la raccolta e possono variare. Le schede erano acquistabili al momento della verifica. La colonna Link Amazon apre la pagina /dp/ASIN. Le fotografie sono state scaricate da Amazon per il prototipo: verificare i diritti d’uso prima della pubblicazione sul sito.

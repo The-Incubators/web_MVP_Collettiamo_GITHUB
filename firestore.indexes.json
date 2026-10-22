@@ -1,0 +1,51 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "collette",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "organizzatoreUid",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "creatoIl",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "prodotti",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "attivo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "categoria",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "prodotti",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "attivo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "occasioni",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "prezzoCent",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

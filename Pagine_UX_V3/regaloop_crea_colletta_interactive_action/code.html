@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<title>Regaloop — Il regalo di gruppo social e immediato</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed-variant": "#214f42",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#ebf6f1",
+            "tangerine-tint": "#FFF0E8",
+            "surface-container-highest": "#dae5e0",
+            "primary-fixed-dim": "#a1d0bf",
+            "surface-dim": "#d1ddd8",
+            "on-tertiary-fixed-variant": "#7e2c00",
+            "text-muted": "#56635E",
+            "surface-bright": "#f1fcf7",
+            "primary": "#00251c",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#5d1900",
+            "on-surface-variant": "#404945",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#28332f",
+            "background": "#f1fcf7",
+            "on-tertiary-fixed": "#370e00",
+            "secondary-fixed": "#ffdbd0",
+            "on-secondary": "#ffffff",
+            "secondary-fixed-dim": "#ffb59d",
+            "secondary": "#ab3500",
+            "on-error": "#ffffff",
+            "tertiary": "#3d1100",
+            "surface-container": "#e5f0eb",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#dae5e0",
+            "outline-variant": "#c0c8c4",
+            "secondary-container": "#fe6a34",
+            "surface": "#f1fcf7",
+            "on-primary-container": "#78a797",
+            "border-warm": "#E6DFD5",
+            "surface-cream-card": "#FFFDF8",
+            "tertiary-container": "#601f00",
+            "on-secondary-fixed-variant": "#832600",
+            "canvas-cream": "#F7F3EB",
+            "surface-container-high": "#dfebe6",
+            "on-surface": "#141e1b",
+            "primary-fixed": "#bceddb",
+            "forest-hover": "#072B22",
+            "outline": "#717975",
+            "on-primary-fixed": "#002018",
+            "tertiary-fixed": "#ffdbce",
+            "on-tertiary-container": "#ff7231",
+            "on-secondary-fixed": "#390c00",
+            "gift-gold": "#FDB022",
+            "on-background": "#141e1b",
+            "forest-tint": "#E8F2EE",
+            "tertiary-fixed-dim": "#ffb598",
+            "primary-container": "#0a3c30",
+            "surface-tint": "#3a6759",
+            "gold-tint": "#FEF7E6",
+            "inverse-on-surface": "#e8f3ee",
+            "inverse-primary": "#a1d0bf"
+          },
+          fontFamily: {
+            "display": ["Bricolage Grotesque", "sans-serif"],
+            "headline-lg": ["Bricolage Grotesque", "sans-serif"],
+            "headline-md": ["Bricolage Grotesque", "sans-serif"],
+            "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "label-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f1fcf7;
+        color: #141e1b;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Subtle pulsing glow for live badge */
+    @keyframes subtlePulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    .pulse-dot {
+      animation: subtlePulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen selection:bg-secondary-container/20">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-surface-container-high/60 pt-safe">
+<div class="h-16 px-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img alt="Regaloop Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1V5yu1Lv3A3U-fi-myFjYfNdvTWhz6PcyMsx062tOGb5rdEv9cJFaPWkMENd3-8tX8k3ATeDZ9I19ltcNkADdDRummuBKA2T4WSwWql14rWz_AFDVvrnDrmGItvcSXxwDALOPQBMAsedXyhNOaKyZEmhhWror2UTVDqgqUSWB72LT9K0s6FIKQbrgkZ8SQnVb6OxsuuJis4esaScu-tt_-xi3O39uxM9Q9wbyJ8Jce8Qyptu3DxAJDSyZnp"/>
+</div>
+<div class="flex items-center gap-1.5">
+<!-- Live activity pill -->
+<div class="hidden xs:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-forest-tint text-[11px] font-label-md text-primary-container font-semibold">
+<span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+<span>1.8k collette attive</span>
+</div>
+<button aria-label="Notifiche" class="w-10 h-10 flex items-center justify-center rounded-full text-primary-container hover:bg-forest-tint active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+<button aria-label="Profilo" class="w-9 h-9 rounded-full bg-primary-container text-white flex items-center justify-center shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[19px]">bolt</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Action Content -->
+<main class="flex-1 flex flex-col w-full pt-[72px] pb-28 px-4 gap-6 max-w-lg mx-auto"><div class="flex flex-col w-full gap-5">
+<!-- Top Context Header -->
+<header class="flex flex-col items-start gap-2">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tangerine-tint text-secondary font-label-sm shadow-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">bolt</span>
+<span>Crea in 30 secondi • Senza registrazione</span>
+</div>
+<div class="flex flex-col gap-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-extrabold tracking-tight">
+        Lancia la colletta. Zero sbatti.
+      </h1>
+<p class="font-body-md text-body-md text-text-muted">
+        Configura il regalo in 3 tap, genera il link e condividilo subito su WhatsApp con il gruppo.
+      </p>
+</div>
+</header>
+<!-- Interactive Action Builder Card -->
+<section class="bg-surface-cream-card rounded-2xl p-4 shadow-md flex flex-col gap-4">
+<!-- Occasion Quick Select -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-primary font-bold flex items-center gap-1.5" for="giftRecipientInput">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+          Per chi o cosa festeggiate?
+        </label>
+<span class="font-label-sm text-label-sm text-text-muted">Passo 1/3</span>
+</div>
+<div class="relative">
+<input class="w-full h-12 px-3.5 rounded-xl bg-surface-container-low text-on-surface font-body-md text-body-md outline-none focus:bg-surface-container-lowest transition-all" id="giftRecipientInput" placeholder="Es. Laurea Sara, Nascita Leo..." type="text" value="Compleanno Marco 🎂"/>
+<button aria-label="Cancella testo" class="absolute right-3 top-3 text-text-muted hover:text-primary" id="clearRecipientBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+</button>
+</div>
+<!-- Quick Preset Pills -->
+<div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+<button class="px-2.5 py-1 rounded-full bg-forest-tint text-primary-container font-label-sm text-label-sm shrink-0 hover:bg-surface-container active:scale-95 transition-all" onclick="setRecipient('Compleanno Marco 🎂', 180, 12)" type="button">
+          🎂 Compleanno Marco
+        </button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0 hover:bg-forest-tint active:scale-95 transition-all" onclick="setRecipient('Laurea Sara 🎓', 240, 16)" type="button">
+          🎓 Laurea Sara
+        </button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0 hover:bg-forest-tint active:scale-95 transition-all" onclick="setRecipient('Nascita Leo 👶', 120, 8)" type="button">
+          👶 Nascita Leo
+        </button>
+<button class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm shrink-0 hover:bg-forest-tint active:scale-95 transition-all" onclick="setRecipient('Weekend Relax ✈️', 350, 14)" type="button">
+          ✈️ Weekend Relax
+        </button>
+</div>
+</div>
+<!-- Mode Selector Tabs -->
+<div class="flex flex-col gap-2">
+<div class="bg-surface-container-low p-1 rounded-xl grid grid-cols-3 gap-1 text-center font-label-sm text-label-sm">
+<button class="py-2 px-1.5 rounded-lg bg-surface-cream-card text-primary font-bold shadow-xs transition-all" id="tabLink" onclick="switchGiftMode('link')" type="button">
+          Ho già il link
+        </button>
+<button class="py-2 px-1.5 rounded-lg text-text-muted font-medium hover:text-primary transition-all" id="tabCatalog" onclick="switchGiftMode('catalog')" type="button">
+          Dal catalogo
+        </button>
+<button class="py-2 px-1.5 rounded-lg text-text-muted font-medium hover:text-primary transition-all" id="tabFree" onclick="switchGiftMode('free')" type="button">
+          Quota libera
+        </button>
+</div>
+<!-- Mode 1: Product Link Auto-fetch -->
+<div class="flex flex-col gap-2.5 mt-1" id="modeLinkBox">
+<div class="relative flex items-center">
+<input class="w-full h-12 pl-3.5 pr-28 rounded-xl bg-surface-container-low text-on-surface font-body-sm text-body-sm outline-none focus:bg-surface-container-lowest transition-all" id="urlInput" placeholder="Incolla link Amazon, Apple, Decathlon..." type="url" value="https://amazon.it/dp/B09G9FPHY6"/>
+<button class="absolute right-1.5 h-9 px-2.5 rounded-lg bg-primary-container text-on-primary font-label-sm text-label-sm flex items-center gap-1 active:scale-95 transition-all shadow-xs" onclick="simulateAutoDetect()" type="button">
+<span class="material-symbols-outlined text-[15px] text-secondary-fixed">auto_fix_high</span>
+<span>Rileva</span>
+</button>
+</div>
+<div class="flex items-center gap-3 p-2.5 rounded-xl bg-forest-tint text-primary" id="detectedItemChip">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+<img class="w-full h-full object-cover" data-alt="A clean product shot of modern high-end headphones on a minimal warm sand background, warm studio light, editorial product photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCELEntf0p1iDb7hKjTarKedOiepQt4eAf6rQYGYw4j7n3OoPj28Cv8Mo74valjm9c3UFaNPCBgf3O_BbyIRf_t_vP1wj5gRpSd2b9wf0HZp_AkIX8slm7fAk6mhyVofD1P5icKsOQjFTfKypbOu_63zKtKNGPdity2j_NNxEE34wsnOEkcJQrguDUiKn06VbksKm80RZdJLTao1dPWdSmlj2lJACbHytiKAwTAGE0m3MbeCv0aWbcMdQ"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="font-label-md text-label-md font-bold truncate">Cuffie Wireless Noise-Cancelling</div>
+<div class="font-body-sm text-body-sm text-text-muted flex items-center gap-2">
+<span>Rilevato: 180,00 €</span>
+<span class="inline-flex items-center text-secondary font-bold text-[11px]">
+<span class="material-symbols-outlined text-[13px] mr-0.5">verified</span> Link verificato
+              </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Mode 2: Catalog picker preview (hidden by default) -->
+<div class="hidden flex-col gap-2 mt-1" id="modeCatalogBox">
+<div class="grid grid-cols-2 gap-2">
+<div class="cursor-pointer p-2.5 rounded-xl bg-surface-container-low hover:bg-forest-tint transition-all flex flex-col gap-1.5" onclick="selectPresetItem('Smart TV 4K', 299, 15)">
+<div class="w-full h-16 rounded-lg bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Modern ultra-thin 4K television on a minimal oak console in a sunny bright living room, modern European interior, warm sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmp0q6kmwfwe3XQwuwsiDvquxsTOkwzo0v9xzLDaKz4UQ8YYS9sPZhsK0AnVTOH0fXSugtOhGHm2Xd9hroTOPPf3EEjrcUhJ-dRI6MYg9HDU2h6SGPPNjkhhSVGV9jnZBrjrBVLSRuD7bJY5rblzXzdMYf0jaUBQmpbD0yh7YGCeSl9qRswziYUMfKGURC7vrNQ1Bd0aN38nkNj_ZjxcAZxH1nBxlyEgJ_2IHjIN15IkE9qshlio2nfA"/>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-primary truncate">Smart TV 50" 4K</span>
+<span class="font-body-sm text-body-sm text-secondary font-bold">299,00 €</span>
+</div>
+<div class="cursor-pointer p-2.5 rounded-xl bg-surface-container-low hover:bg-forest-tint transition-all flex flex-col gap-1.5" onclick="selectPresetItem('Set Valigie Viaggio', 160, 8)">
+<div class="w-full h-16 rounded-lg bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Set of sleek pastel sage and cream travel suitcases neatly positioned next to each other in a stylish departure lounge" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPWh0Au-HlZAeKd0IQGt5wUNZKi8n2jjcTohRgvTApipsVllK0xKA7djiRikR51HB6-050NmgaKR3K-mSfaqisWJyTbFjvFWZ782-Zhz7JSiwuVSEbCr9gi_P-opLVvOmFtDbaMjTkNgEgK1mEkAEjDH6ye4kwiEEvfHqd-54F_ChvgO1hLpsrlmpUZSH1E1-3Y6fiHG5qQnr6ExfsoZUZaHSqNwsXA1cSA2_19bKBsEKzvnGrrUAOGg"/>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-primary truncate">Set 3 Trolley Slim</span>
+<span class="font-body-sm text-secondary font-bold">160,00 €</span>
+</div>
+</div>
+</div>
+<!-- Mode 3: Open pot (hidden by default) -->
+<div class="hidden flex-col gap-1 mt-1 p-3 rounded-xl bg-surface-container-low text-text-muted font-body-sm text-body-sm" id="modeFreeBox">
+<p>I partecipanti potranno scegliere liberamente quanto versare (es. 10€, 20€ o a piacere). Puoi comunque impostare un traguardo indicativo sotto.</p>
+</div>
+</div>
+<!-- Live Budget Simulator Module -->
+<div class="bg-forest-tint rounded-xl p-3.5 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-primary font-bold">Budget &amp; Amici</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-cream-card text-[11px] font-bold text-primary shadow-xs">Calcolo istantaneo</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Target Budget Input -->
+<div class="bg-surface-cream-card rounded-xl p-2.5 flex flex-col gap-1 shadow-xs">
+<label class="font-label-sm text-label-sm text-text-muted" for="amountInput">Obiettivo Totale</label>
+<div class="flex items-center">
+<input class="w-full bg-transparent font-headline-md text-headline-md text-primary font-extrabold outline-none p-0" id="amountInput" min="10" oninput="recalculate()" step="5" type="number" value="180"/>
+<span class="font-headline-md text-headline-md text-primary font-extrabold ml-1">€</span>
+</div>
+</div>
+<!-- Friends Count Stepper -->
+<div class="bg-surface-cream-card rounded-xl p-2.5 flex flex-col justify-between shadow-xs">
+<span class="font-label-sm text-label-sm text-text-muted">Partecipanti stimati</span>
+<div class="flex items-center justify-between">
+<button class="w-7 h-7 rounded-lg bg-surface-container text-primary flex items-center justify-center font-bold active:scale-90 transition-all" onclick="adjustParticipants(-1)" type="button">-</button>
+<span class="font-headline-md text-headline-md text-primary font-extrabold" id="friendsCount">12</span>
+<button class="w-7 h-7 rounded-lg bg-surface-container text-primary flex items-center justify-center font-bold active:scale-90 transition-all" onclick="adjustParticipants(1)" type="button">+</button>
+</div>
+</div>
+</div>
+<!-- Live Split Result Pill -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-text-muted">Quota suggerita a testa:</span>
+<span class="font-display-mobile text-display-mobile text-secondary font-extrabold leading-none" id="quotaResult">15,00 €</span>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="inline-flex items-center gap-1 text-[11px] font-bold text-primary-container bg-surface-cream-card px-2 py-0.5 rounded-full shadow-xs">
+<span class="material-symbols-outlined text-[13px] text-emerald-600">check_circle</span> 0€ trattenute
+          </span>
+<div class="flex items-center -space-x-1.5 overflow-hidden py-0.5">
+<div class="inline-block h-6 w-6 rounded-full bg-primary text-on-primary text-[10px] flex items-center justify-center font-bold">M</div>
+<div class="inline-block h-6 w-6 rounded-full bg-secondary text-on-secondary text-[10px] flex items-center justify-center font-bold">S</div>
+<div class="inline-block h-6 w-6 rounded-full bg-gift-gold text-primary text-[10px] flex items-center justify-center font-bold">G</div>
+<div class="inline-block h-6 w-6 rounded-full bg-surface-container text-primary text-[10px] flex items-center justify-center font-bold" id="avatarCountPill">+9</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Payout Methods Setup (Direct to Organizer) -->
+<section class="bg-surface-cream-card rounded-2xl p-4 shadow-md flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-tangerine-tint flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[17px]">account_balance_wallet</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-label-md text-label-md text-primary font-bold">Dove ricevi le quote?</h2>
+<span class="font-body-sm text-body-sm text-text-muted">I soldi arrivano subito e direttamente a te</span>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-text-muted">Passo 2/3</span>
+</div>
+<!-- Toggle Chip Grid -->
+<div class="grid grid-cols-2 gap-2">
+<label class="payout-option cursor-pointer p-2.5 rounded-xl bg-surface-container-low flex items-center justify-between transition-all" onclick="togglePayout(this)">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-secondary text-on-secondary flex items-center justify-center text-[11px] font-bold">S</div>
+<span class="font-label-md text-label-md font-bold text-primary">Satispay</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary check-icon">check_circle</span>
+</label>
+<label class="payout-option cursor-pointer p-2.5 rounded-xl bg-surface-container-low flex items-center justify-between transition-all" onclick="togglePayout(this)">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-primary-container text-on-primary flex items-center justify-center text-[11px] font-bold">P</div>
+<span class="font-label-md text-label-md font-bold text-primary">PayPal.me</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary check-icon">check_circle</span>
+</label>
+<label class="payout-option cursor-pointer p-2.5 rounded-xl bg-surface-container-low flex items-center justify-between transition-all" onclick="togglePayout(this)">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-surface-variant text-primary flex items-center justify-center text-[11px] font-bold">IB</div>
+<span class="font-label-md text-label-md font-bold text-primary">Bonifico / IBAN</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary check-icon">check_circle</span>
+</label>
+<label class="payout-option cursor-pointer p-2.5 rounded-xl bg-surface-container-low flex items-center justify-between transition-all" onclick="togglePayout(this)">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-gift-gold text-primary flex items-center justify-center text-[11px] font-bold">€</div>
+<span class="font-label-md text-label-md font-bold text-primary">A mano</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-secondary check-icon">check_circle</span>
+</label>
+</div>
+<!-- Assurance Callout -->
+<div class="bg-forest-tint/60 rounded-xl p-2.5 flex items-start gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container shrink-0 mt-0.5">lock</span>
+<p class="font-body-sm text-body-sm text-text-muted">
+<strong class="text-primary font-bold">Zero fondi bloccati:</strong> Regaloop non trattiene denaro. Gli invitati scelgono il loro metodo preferito e pagano direttamente sul tuo account personale.
+      </p>
+</div>
+</section>
+<!-- Live WhatsApp Share Preview Card -->
+<section class="bg-surface-cream-card rounded-2xl p-4 shadow-md flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-emerald-600">chat</span>
+<span class="font-label-md text-label-md text-primary font-bold">Anteprima messaggio WhatsApp</span>
+</div>
+<span class="font-label-sm text-label-sm text-text-muted">Passo 3/3</span>
+</div>
+<!-- Chat Bubble Mockup -->
+<div class="bg-[#dcf8c6] text-[#075e54] p-3 rounded-2xl rounded-tr-xs shadow-xs flex flex-col gap-1.5 font-body-sm text-body-sm">
+<p class="text-on-surface" id="chatSnippetText">
+        🎁 Ragazzi, facciamo il regalo per <strong>Compleanno Marco 🎂</strong> tutti insieme! Quota suggerita: ~<strong>15,00 €</strong> a testa.
+      </p>
+<div class="bg-surface-cream-card/90 rounded-xl p-2 flex items-center gap-2.5 text-primary">
+<div class="w-8 h-8 rounded-lg bg-forest-tint flex items-center justify-center text-secondary shrink-0 font-bold text-[14px]">
+          🎁
+        </div>
+<div class="flex-1 min-w-0">
+<div class="font-label-sm text-label-sm font-bold truncate">regaloop.it/c/compleanno-marco</div>
+<div class="font-body-sm text-[11px] text-text-muted truncate">Firma il biglietto online &amp; invia quota</div>
+</div>
+</div>
+<span class="text-[10px] text-text-muted self-end">Adesso • Link pronto</span>
+</div>
+<button class="self-end inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm hover:bg-forest-tint active:scale-95 transition-all" id="copySnippetBtn" onclick="copySnippet()" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+<span id="copyBtnLabel">Copia testo rapido</span>
+</button>
+</section>
+<!-- Primary High-Impact CTA -->
+<section class="flex flex-col gap-2.5 pt-1">
+<button class="w-full h-14 rounded-2xl bg-secondary-container text-on-secondary font-label-lg text-label-lg font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-secondary active:scale-[0.98] transition-all" onclick="handleCreateCampaign()" type="button">
+<span class="material-symbols-outlined text-[22px]">rocket_launch</span>
+<span>Genera Link e Condividi</span>
+</button>
+<div class="flex items-center justify-between px-2">
+<span class="font-body-sm text-[12px] text-text-muted flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-600">check</span> Nessun conto da aprire
+      </span>
+<button class="font-label-sm text-label-sm text-primary font-bold hover:underline" type="button">
+        Salva con Google (Opzionale)
+      </button>
+</div>
+</section>
+<!-- Social Reassurance & Contrast Ticker -->
+<section class="bg-surface-container-low rounded-2xl p-4 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-primary font-label-md text-label-md font-bold">
+<span class="material-symbols-outlined text-[18px] text-secondary">sentiment_very_satisfied</span>
+        Perché organizzarla qui:
+      </div>
+<span class="px-2 py-0.5 rounded-full bg-surface-cream-card text-[11px] font-bold text-text-muted">
+        1.450+ collette
+      </span>
+</div>
+<div class="grid grid-cols-1 gap-1.5 font-body-sm text-body-sm">
+<div class="flex items-center gap-2 p-2 rounded-xl bg-surface-cream-card/80">
+<span class="text-error font-bold text-[14px]">✕</span>
+<span class="text-text-muted">Niente fogli Excel disordinati o note perse</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded-xl bg-surface-cream-card/80">
+<span class="text-error font-bold text-[14px]">✕</span>
+<span class="text-text-muted">Niente inseguimenti imbarazzanti "chi manca?"</span>
+</div>
+<div class="flex items-center gap-2 p-2 rounded-xl bg-forest-tint text-primary font-bold">
+<span class="text-emerald-600 font-bold text-[14px]">✓</span>
+<span>Un tap nel gruppo WhatsApp: tutti sanno cosa fare e quanto versare</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Inline Micro-Interactions Script -->
+<script>
+  let activeParticipants = 12;
+
+  function recalculate() {
+    const amountVal = parseFloat(document.getElementById('amountInput').value) || 0;
+    const quota = activeParticipants > 0 ? (amountVal / activeParticipants) : 0;
+    const formatted = quota.toFixed(2).replace('.', ',') + ' €';
+    
+    document.getElementById('quotaResult').textContent = formatted;
+    document.getElementById('friendsCount').textContent = activeParticipants;
+    
+    const extraFriends = Math.max(0, activeParticipants - 3);
+    document.getElementById('avatarCountPill').textContent = '+' + extraFriends;
+    
+    updateSnippet();
+  }
+
+  function adjustParticipants(delta) {
+    activeParticipants = Math.max(2, Math.min(80, activeParticipants + delta));
+    recalculate();
+  }
+
+  function setRecipient(title, defaultAmount, defaultFriends) {
+    const input = document.getElementById('giftRecipientInput');
+    input.value = title;
+    
+    if (defaultAmount) {
+      document.getElementById('amountInput').value = defaultAmount;
+    }
+    if (defaultFriends) {
+      activeParticipants = defaultFriends;
+    }
+    recalculate();
+  }
+
+  function switchGiftMode(mode) {
+    const linkBox = document.getElementById('modeLinkBox');
+    const catalogBox = document.getElementById('modeCatalogBox');
+    const freeBox = document.getElementById('modeFreeBox');
+
+    const tLink = document.getElementById('tabLink');
+    const tCatalog = document.getElementById('tabCatalog');
+    const tFree = document.getElementById('tabFree');
+
+    // Reset button states
+    [tLink, tCatalog, tFree].forEach(btn => {
+      btn.className = "py-2 px-1.5 rounded-lg text-text-muted font-medium hover:text-primary transition-all";
+    });
+
+    linkBox.classList.add('hidden');
+    catalogBox.classList.add('hidden');
+    freeBox.classList.add('hidden');
+
+    if (mode === 'link') {
+      linkBox.classList.remove('hidden');
+      tLink.className = "py-2 px-1.5 rounded-lg bg-surface-cream-card text-primary font-bold shadow-xs transition-all";
+    } else if (mode === 'catalog') {
+      catalogBox.classList.remove('hidden');
+      tCatalog.className = "py-2 px-1.5 rounded-lg bg-surface-cream-card text-primary font-bold shadow-xs transition-all";
+    } else if (mode === 'free') {
+      freeBox.classList.remove('hidden');
+      tFree.className = "py-2 px-1.5 rounded-lg bg-surface-cream-card text-primary font-bold shadow-xs transition-all";
+    }
+  }
+
+  function simulateAutoDetect() {
+    const chip = document.getElementById('detectedItemChip');
+    chip.classList.add('scale-105');
+    setTimeout(() => {
+      chip.classList.remove('scale-105');
+      document.getElementById('amountInput').value = 189;
+      recalculate();
+    }, 250);
+  }
+
+  function selectPresetItem(name, price, friends) {
+    document.getElementById('giftRecipientInput').value = 'Regalo: ' + name;
+    document.getElementById('amountInput').value = price;
+    activeParticipants = friends;
+    recalculate();
+  }
+
+  function togglePayout(card) {
+    const icon = card.querySelector('.check-icon');
+    if (icon.textContent === 'check_circle') {
+      icon.textContent = 'radio_button_unchecked';
+      icon.classList.remove('text-secondary');
+      icon.classList.add('text-text-muted');
+      card.classList.add('opacity-50');
+    } else {
+      icon.textContent = 'check_circle';
+      icon.classList.add('text-secondary');
+      icon.classList.remove('text-text-muted');
+      card.classList.remove('opacity-50');
+    }
+  }
+
+  function updateSnippet() {
+    const recipient = document.getElementById('giftRecipientInput').value || 'un amico';
+    const quota = document.getElementById('quotaResult').textContent;
+    const snippetEl = document.getElementById('chatSnippetText');
+    snippetEl.innerHTML = `🎁 Ragazzi, facciamo il regalo per <strong>${recipient}</strong> tutti insieme! Quota suggerita: ~<strong>${quota}</strong> a testa.`;
+  }
+
+  document.getElementById('giftRecipientInput').addEventListener('input', updateSnippet);
+  document.getElementById('clearRecipientBtn').addEventListener('click', () => {
+    document.getElementById('giftRecipientInput').value = '';
+    document.getElementById('giftRecipientInput').focus();
+    updateSnippet();
+  });
+
+  function copySnippet() {
+    const recipient = document.getElementById('giftRecipientInput').value || 'il festeggiato';
+    const quota = document.getElementById('quotaResult').textContent;
+    const textToCopy = `🎁 Ragazzi, facciamo il regalo per ${recipient} tutti insieme! Quota suggerita: ~${quota} a testa.\n👉 regaloop.it/c/compleanno-marco`;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy);
+    }
+    const label = document.getElementById('copyBtnLabel');
+    label.textContent = "Copiato! ✓";
+    setTimeout(() => { label.textContent = "Copia testo rapido"; }, 1800);
+  }
+
+  function handleCreateCampaign() {
+    const btn = event.currentTarget;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[20px]">progress_activity</span> <span>Creazione link in corso...</span>`;
+    btn.disabled = true;
+    
+    setTimeout(() => {
+      btn.innerHTML = `<span class="material-symbols-outlined text-[22px]">check_circle</span> <span>Link Pronto! Condividi</span>`;
+      copySnippet();
+    }, 1200);
+  }
+
+  // Initial calculation
+  recalculate();
+</script></main>
+<!-- FLOATING QUICK LAUNCH BAR / BOTTOM CTA FOR HIGH CONVERSION -->
+<aside class="fixed bottom-16 w-full z-40 px-4 pb-2 pointer-events-none">
+<div class="max-w-lg mx-auto pointer-events-auto">
+<div class="rounded-2xl bg-primary-container/95 backdrop-blur-md text-white p-2.5 shadow-xl flex items-center justify-between border border-white/10">
+<div class="flex items-center gap-2 pl-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container pulse-dot"></span>
+<div class="flex flex-col">
+<span class="text-[12px] font-bold leading-tight">Organizzi un regalo ora?</span>
+<span class="text-[10px] text-white/70">Link pronto in 60 secondi</span>
+</div>
+</div>
+<a class="h-9 px-4 rounded-xl bg-secondary-container text-white font-label-md font-bold text-[13px] flex items-center gap-1 shadow-md hover:bg-secondary active:scale-95 transition-all" href="/catalogo">
+<span>Inizia</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Bottom Navigation Tab Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/95 backdrop-blur-xl border-t border-surface-container-high shadow-[0_-4px_20px_rgba(0,37,28,0.06)]">
+<div class="flex justify-around items-center h-16 max-w-lg mx-auto px-2">
+<!-- Home (Active) -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="#">
+<span class="material-symbols-outlined text-[23px]" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-bold mt-0.5">Home</span>
+</a>
+<!-- Catalogo -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/catalogo">
+<span class="material-symbols-outlined text-[23px]">card_giftcard</span>
+<span class="text-[11px] font-medium mt-0.5">Idee</span>
+</a>
+<!-- Quick Center Action Icon -->
+<a class="flex flex-col items-center justify-center -mt-5 min-w-[50px] min-h-[50px]" href="/catalogo">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-white flex items-center justify-center shadow-lg active:scale-95 transition-all border-4 border-surface">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</div>
+<span class="text-[10px] font-bold text-primary-container mt-0.5">Crea</span>
+</a>
+<!-- Biglietto -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/biglietto-di-gruppo">
+<span class="material-symbols-outlined text-[23px]">draw</span>
+<span class="text-[11px] font-medium mt-0.5">Biglietto</span>
+</a>
+<!-- Come funziona -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/come-funziona">
+<span class="material-symbols-outlined text-[23px]">help_outline</span>
+<span class="text-[11px] font-medium mt-0.5">Aiuto</span>
+</a>
+</div>
+</nav>
+<!-- Interactive Simulator Script -->
+<script>
+    let currentFriends = 10;
+    
+    function calculateQuota() {
+      const amountInput = document.getElementById('totalAmount');
+      const resultDisplay = document.getElementById('resultPerPerson');
+      const friendsDisplay = document.getElementById('friendsCountDisplay');
+      const participantsLabel = document.getElementById('participantsLabel');
+
+      let amount = parseFloat(amountInput.value) || 0;
+      if (amount < 0) amount = 0;
+      
+      const perPerson = currentFriends > 0 ? (amount / currentFriends) : 0;
+      resultDisplay.textContent = perPerson.toFixed(2).replace('.', ',') + ' €';
+      friendsDisplay.textContent = currentFriends;
+      participantsLabel.textContent = currentFriends + ' partecipanti';
+    }
+
+    function changeParticipants(delta) {
+      currentFriends = Math.max(2, Math.min(60, currentFriends + delta));
+      calculateQuota();
+    }
+
+    function setPreset(title, amount) {
+      const amountInput = document.getElementById('totalAmount');
+      amountInput.value = amount;
+      
+      // Highlight preset button visually
+      const buttons = document.querySelectorAll('#presetPills .preset-btn');
+      buttons.forEach(btn => {
+        if (btn.innerText.includes(title.split(' ')[0])) {
+          btn.className = "preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-secondary-container text-white shadow-xs whitespace-nowrap active:scale-95 transition-all";
+        } else {
+          btn.className = "preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-surface-container text-primary-container border border-outline-variant/30 whitespace-nowrap active:scale-95 transition-all";
+        }
+      });
+      calculateQuota();
+    }
+
+    // Micro-interactions
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('touchstart', () => el.classList.add('opacity-90'), { passive: true });
+      el.addEventListener('touchend', () => el.classList.remove('opacity-90'), { passive: true });
+    });
+  </script>
+</body></html>

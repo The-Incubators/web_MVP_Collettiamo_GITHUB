@@ -1,0 +1,199 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function autenticato() { return request.auth != null; }
+
+    function collettaDi(slug) {
+      return get(/databases/$(database)/documents/collette/$(slug)).data;
+    }
+    function sonoOrganizzatore(slug) {
+      return autenticato() && collettaDi(slug).organizzatoreUid == request.auth.uid;
+    }
+    // La colletta dimostrativa ("demo") è in sola lettura per tutti.
+    function raccoltaAperta(slug) {
+      return slug != 'demo' && collettaDi(slug).stato == 'aperta';
+    }
+
+    // Si può votare e proporre solo mentre la votazione è aperta e non è scaduta (l'orario è quello del server).
+    function votazioneAperta(slug) {
+      return slug != 'demo'
+        && collettaDi(slug).stato == 'aperta'
+        && collettaDi(slug).votazione != null
+        && collettaDi(slug).votazione.chiusa == false
+        && collettaDi(slug).votazione.scade > request.time;
+    }
+
+    match /prodotti/{id} {
+      allow read: if autenticato();
+      allow write: if false;                 // solo Admin SDK (script di seed)
+    }
+
+    match /utenti/{uid} {
+      allow read, write: if autenticato() && request.auth.uid == uid;
+
+      // I preferiti: l'id del documento è lo slug del prodotto. Solo del proprietario.
+      match /preferiti/{prodotto} {
+        allow read, delete: if autenticato() && request.auth.uid == uid;
+        allow create, update: if autenticato() && request.auth.uid == uid
+                              && prodotto.size() <= 80
+                              && request.resource.data.keys().hasOnly(['creatoIl'])
+                              && request.resource.data.creatoIl == request.time;
+      }
+    }
+
+    match /collette/{slug} {
+      // chi ha il link legge; nessuno può elencare le collette altrui
+      allow get: if autenticato();
+      allow list: if autenticato()
+                  && request.query.limit <= 50
+                  && resource.data.organizzatoreUid == request.auth.uid;
+
+      allow create: if autenticato()
+                  && request.resource.data.organizzatoreUid == request.auth.uid
+                  && request.resource.data.stato == 'bozza'
+                  && request.resource.data.totaleConfermatoCent == 0
+                  && request.resource.data.nConfermati == 0;
+
+      // chi organizza modifica la colletta; chi partecipa può solo aggiornare i contatori di adesione
+      // (di una unità alla volta): mai il totale confermato, mai la quota.
+      allow update: if (sonoOrganizzatore(slug)
+                        && request.resource.data.organizzatoreUid == resource.data.organizzatoreUid)
+                    || (autenticato()
+                        && slug != 'demo'
+                        && resource.data.stato == 'aperta'
+                        && request.resource.data.diff(resource.data).affectedKeys()
+                             .hasOnly(['nAttesi', 'nAderenti', 'aggiornatoIl'])
+                        && request.resource.data.nAttesi >= 0
+                        && request.resource.data.nAderenti >= 0
+                        && math.abs(request.resource.data.nAttesi - resource.data.nAttesi) <= 1
+                        && math.abs(request.resource.data.nAderenti - resource.data.nAderenti) <= 1);
+
+      // si eliminano solo le bozze, e solo chi le ha create
+      allow delete: if sonoOrganizzatore(slug) && resource.data.stato == 'bozza';
+
+      match /partecipanti/{pid} {
+        allow read: if autenticato();
+
+        function miaRiga() {
+          return autenticato() && resource.data.uidAnonimo == request.auth.uid;
+        }
+        function statiConsentitiAlPartecipante() {
+          return request.resource.data.stato in ['aderito', 'dichiarato', 'rinunciato'];
+        }
+        function campiTocchiDalPartecipante() {
+          return request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['nome', 'stato', 'metodo', 'importoCent', 'causale', 'messaggio', 'dichiaratoIl']);
+        }
+
+        // il partecipante crea la propria riga, con il proprio uid
+        allow create: if autenticato()
+          && raccoltaAperta(slug)
+          && request.resource.data.uidAnonimo == request.auth.uid
+          && pid == request.auth.uid
+          && statiConsentitiAlPartecipante()
+          && request.resource.data.confermatoIl == null;
+
+        // l'organizzatore crea righe della lista degli attesi
+        allow create: if sonoOrganizzatore(slug)
+          && request.resource.data.stato == 'invitato';
+
+        // il partecipante aggiorna solo la propria riga e mai lo stato 'confermato'
+        allow update: if miaRiga()
+          && raccoltaAperta(slug)
+          && resource.data.stato != 'confermato'
+          && request.resource.data.uidAnonimo == resource.data.uidAnonimo
+          && statiConsentitiAlPartecipante()
+          && request.resource.data.confermatoIl == resource.data.confermatoIl
+          && campiTocchiDalPartecipante();
+
+        // chi sceglie il proprio nome in una lista chiusa lo rivendica
+        allow update: if autenticato()
+          && raccoltaAperta(slug)
+          && resource.data.uidAnonimo == null
+          && resource.data.stato == 'invitato'
+          && request.resource.data.uidAnonimo == request.auth.uid
+          && request.resource.data.stato == 'aderito'
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uidAnonimo', 'stato']);
+
+        // «Hai già partecipato? Continua con il tuo nome»: dal nuovo dispositivo si riprende la riga,
+        // cambiando solo il proprietario. Lo stato non si tocca.
+        allow update: if autenticato()
+          && raccoltaAperta(slug)
+          && resource.data.uidAnonimo != null
+          && request.resource.data.uidAnonimo == request.auth.uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['uidAnonimo']);
+
+        // l'organizzatore può tutto sulle righe della sua colletta
+        allow update, delete: if sonoOrganizzatore(slug);
+      }
+
+      // Regali candidati. Chi organizza li imposta (anche in bozza) e li può togliere; chi partecipa ne può aggiungere
+      // (se consentito) e togliere solo i propri, finché si vota.
+      match /proposte/{prid} {
+        allow read: if autenticato();
+        allow create: if sonoOrganizzatore(slug)
+                      && request.resource.data.daOrganizzatore == true
+                      && request.resource.data.autoreUid == request.auth.uid
+                      && request.resource.data.creatoIl == request.time
+                      && request.resource.data.prodotto.prezzoCent > 0;
+        allow create: if autenticato()
+                      && votazioneAperta(slug)
+                      && collettaDi(slug).votazione.consentiProposte == true
+                      && request.resource.data.daOrganizzatore == false
+                      && request.resource.data.autoreUid == request.auth.uid
+                      && request.resource.data.creatoIl == request.time
+                      && request.resource.data.autoreNome.size() > 0
+                      && request.resource.data.autoreNome.size() <= 40
+                      && request.resource.data.prodotto.nome.size() > 0
+                      && request.resource.data.prodotto.nome.size() <= 120
+                      && request.resource.data.prodotto.prezzoCent is int
+                      && request.resource.data.prodotto.prezzoCent > 0;
+        allow update: if false;
+        allow delete: if sonoOrganizzatore(slug)
+                      || (autenticato() && resource.data.autoreUid == request.auth.uid && votazioneAperta(slug));
+      }
+
+      // Un documento per persona e per proposta: `<uid>__<propostaId>`. Da 1 a 5 stelle.
+      match /voti/{vid} {
+        allow read: if autenticato();
+        allow create, update: if autenticato()
+                      && votazioneAperta(slug)
+                      && request.resource.data.uid == request.auth.uid
+                      && vid == request.auth.uid + '__' + request.resource.data.propostaId
+                      && request.resource.data.stelle is int
+                      && request.resource.data.stelle >= 1
+                      && request.resource.data.stelle <= 5
+                      && request.resource.data.ts == request.time
+                      && exists(/databases/$(database)/documents/collette/$(slug)/proposte/$(request.resource.data.propostaId));
+        allow delete: if sonoOrganizzatore(slug);
+      }
+
+      match /eventi/{eid} {
+        allow create: if autenticato()
+                      && slug != 'demo'
+                      && request.resource.data.ts == request.time
+                      && request.resource.data.tipo in ['apertura', 'adesione', 'metodo_scelto', 'dichiarazione',
+                                                        'messaggio', 'rinuncia', 'sollecito_preparato', 'conferma',
+                                                        'voto', 'proposta']
+                      && (request.resource.data.uidAnonimo == null
+                          || request.resource.data.uidAnonimo == request.auth.uid
+                          || sonoOrganizzatore(slug));
+        allow read: if sonoOrganizzatore(slug);
+        allow update, delete: if false;
+      }
+    }
+
+    // Biglietto di auguri: tutto passa dalle rotte del server (Admin SDK, che ignora queste regole).
+    // Dal browser nessuna lettura né scrittura: email del destinatario, token e chiavi non escono mai.
+    match /biglietti/{id}/{document=**} {
+      allow read, write: if false;
+    }
+    match /biglietti/{id} {
+      allow read, write: if false;
+    }
+    match /slugBiglietti/{slug} {
+      allow read, write: if false;
+    }
+  }
+}

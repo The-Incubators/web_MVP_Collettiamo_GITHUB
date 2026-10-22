@@ -1,0 +1,43 @@
+# Configurazione di Firebase App Hosting (backend "colletta", progetto users-database-e7ac6, condiviso con altre app).
+# Le chiavi NEXT_PUBLIC_* della configurazione web non sono segreti. Le credenziali dell'Admin SDK non servono:
+# su App Hosting arrivano dall'ambiente (FIREBASE_ADMIN_ADC=true).
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 4
+  concurrency: 80
+
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyBdH__9CFVsauLTcYg0xpzpKlrbNn3svW4
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: users-database-e7ac6.firebaseapp.com
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: users-database-e7ac6
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "330251677131"
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:330251677131:web:b19b09d4b2951b25e11a4e
+    availability: [BUILD, RUNTIME]
+  # Database dedicato: le regole e i dati delle altre app del progetto restano nel database (default).
+  - variable: NEXT_PUBLIC_FIRESTORE_DATABASE
+    value: colletta
+    availability: [BUILD, RUNTIME]
+  - variable: NEXT_PUBLIC_BASE_URL
+    value: https://colletta--users-database-e7ac6.europe-west4.hosted.app
+    availability: [BUILD, RUNTIME]
+  - variable: FIREBASE_ADMIN_PROJECT_ID
+    value: users-database-e7ac6
+    availability: [BUILD, RUNTIME]
+  - variable: FIREBASE_ADMIN_ADC
+    value: "true"
+    availability: [BUILD, RUNTIME]
+  # Chi può gestire l'ordine del catalogo (/backoffice/catalogo). Il server controlla l'email a ogni richiesta.
+  - variable: ADMIN_EMAILS
+    value: pace.stefano77@gmail.com
+    availability: [RUNTIME]

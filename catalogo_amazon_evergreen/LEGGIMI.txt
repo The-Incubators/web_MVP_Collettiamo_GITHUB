@@ -1,0 +1,7 @@
+Catalogo Amazon.it: 50 nuovi prodotti, ID PRD-131–PRD-180.
+Rilevazione: 16 ottobre 2026.
+
+Nel file Excel trovi prezzo rilevato, ASIN, link Amazon originale, link affiliato con tag pacestefano77-21, categorie, interessi e nome del file immagine.
+Le immagini sono nella cartella immagini/ e hanno lo stesso ID della riga prodotto.
+Prezzi e disponibilità cambiano; verifica la variante esatta prima della pubblicazione.
+L'Oura Ring selezionato è in misura 9.

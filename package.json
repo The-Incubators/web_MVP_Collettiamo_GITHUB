@@ -1,0 +1,51 @@
+{
+  "name": "colletta",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --project dominio",
+    "test:rules": "firebase emulators:exec --config firebase.test.json --only firestore,auth --project demo-colletta \"vitest run --project regole\"",
+    "seed": "tsx --env-file=.env.local scripts/seed.ts",
+    "seed:demo": "tsx --env-file=.env.local scripts/seed-demo.ts",
+    "migra:link": "tsx --env-file=.env.local scripts/migra-link-affiliati.ts"
+  },
+  "dependencies": {
+    "firebase": "12.19.0",
+    "firebase-admin": "13.10.0",
+    "next": "15.5.27",
+    "qrcode": "1.5.4",
+    "react": "19.1.9",
+    "react-dom": "19.1.9"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.7",
+    "@firebase/rules-unit-testing": "5.0.2",
+    "@types/node": "22.20.5",
+    "@types/qrcode": "1.5.6",
+    "@types/react": "19.1.17",
+    "@types/react-dom": "19.1.11",
+    "autoprefixer": "10.6.1",
+    "eslint": "9.39.5",
+    "eslint-config-next": "15.5.27",
+    "firebase-tools": "14.27.0",
+    "postcss": "8.5.30",
+    "tailwindcss": "3.4.19",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

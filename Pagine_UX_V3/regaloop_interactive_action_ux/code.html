@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="mobile_tab" name="shell-type"/>
+<title>Regaloop — Il regalo di gruppo social e immediato</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary-fixed-variant": "#214f42",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#ebf6f1",
+            "tangerine-tint": "#FFF0E8",
+            "surface-container-highest": "#dae5e0",
+            "primary-fixed-dim": "#a1d0bf",
+            "surface-dim": "#d1ddd8",
+            "on-tertiary-fixed-variant": "#7e2c00",
+            "text-muted": "#56635E",
+            "surface-bright": "#f1fcf7",
+            "primary": "#00251c",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#5d1900",
+            "on-surface-variant": "#404945",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#28332f",
+            "background": "#f1fcf7",
+            "on-tertiary-fixed": "#370e00",
+            "secondary-fixed": "#ffdbd0",
+            "on-secondary": "#ffffff",
+            "secondary-fixed-dim": "#ffb59d",
+            "secondary": "#ab3500",
+            "on-error": "#ffffff",
+            "tertiary": "#3d1100",
+            "surface-container": "#e5f0eb",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#dae5e0",
+            "outline-variant": "#c0c8c4",
+            "secondary-container": "#fe6a34",
+            "surface": "#f1fcf7",
+            "on-primary-container": "#78a797",
+            "border-warm": "#E6DFD5",
+            "surface-cream-card": "#FFFDF8",
+            "tertiary-container": "#601f00",
+            "on-secondary-fixed-variant": "#832600",
+            "canvas-cream": "#F7F3EB",
+            "surface-container-high": "#dfebe6",
+            "on-surface": "#141e1b",
+            "primary-fixed": "#bceddb",
+            "forest-hover": "#072B22",
+            "outline": "#717975",
+            "on-primary-fixed": "#002018",
+            "tertiary-fixed": "#ffdbce",
+            "on-tertiary-container": "#ff7231",
+            "on-secondary-fixed": "#390c00",
+            "gift-gold": "#FDB022",
+            "on-background": "#141e1b",
+            "forest-tint": "#E8F2EE",
+            "tertiary-fixed-dim": "#ffb598",
+            "primary-container": "#0a3c30",
+            "surface-tint": "#3a6759",
+            "gold-tint": "#FEF7E6",
+            "inverse-on-surface": "#e8f3ee",
+            "inverse-primary": "#a1d0bf"
+          },
+          fontFamily: {
+            "display": ["Bricolage Grotesque", "sans-serif"],
+            "headline-lg": ["Bricolage Grotesque", "sans-serif"],
+            "headline-md": ["Bricolage Grotesque", "sans-serif"],
+            "headline-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "body-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "label-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    @layer base {
+      html, body {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #f1fcf7;
+        color: #141e1b;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+      .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+      .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Subtle pulsing glow for live badge */
+    @keyframes subtlePulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.08); opacity: 0.85; }
+    }
+    .pulse-dot {
+      animation: subtlePulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen selection:bg-secondary-container/20">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/90 backdrop-blur-xl border-b border-surface-container-high/60 pt-safe">
+<div class="h-16 px-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img alt="Regaloop Logo" class="h-7 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1V5yu1Lv3A3U-fi-myFjYfNdvTWhz6PcyMsx062tOGb5rdEv9cJFaPWkMENd3-8tX8k3ATeDZ9I19ltcNkADdDRummuBKA2T4WSwWql14rWz_AFDVvrnDrmGItvcSXxwDALOPQBMAsedXyhNOaKyZEmhhWror2UTVDqgqUSWB72LT9K0s6FIKQbrgkZ8SQnVb6OxsuuJis4esaScu-tt_-xi3O39uxM9Q9wbyJ8Jce8Qyptu3DxAJDSyZnp"/>
+</div>
+<div class="flex items-center gap-1.5">
+<!-- Live activity pill -->
+<div class="hidden xs:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-forest-tint text-[11px] font-label-md text-primary-container font-semibold">
+<span class="w-2 h-2 rounded-full bg-emerald-500 pulse-dot"></span>
+<span>1.8k collette attive</span>
+</div>
+<button aria-label="Notifiche" class="w-10 h-10 flex items-center justify-center rounded-full text-primary-container hover:bg-forest-tint active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+</button>
+<button aria-label="Profilo" class="w-9 h-9 rounded-full bg-primary-container text-white flex items-center justify-center shadow-sm active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[19px]">bolt</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Action Content -->
+<main class="flex-1 flex flex-col w-full pt-[72px] pb-28 px-4 gap-6 max-w-lg mx-auto">
+<!-- 1. HERO & INTERACTIVE SIMULATOR (ACTION-FIRST) -->
+<section class="flex flex-col gap-3.5 pt-1">
+<!-- Punchy Social Pill -->
+<div class="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full bg-tangerine-tint text-secondary font-label-sm text-[12px] font-bold border border-secondary-container/20 shadow-xs">
+<span class="material-symbols-outlined text-[15px] text-secondary">flash_on</span>
+<span>Colletta istantanea • Zero IBAN persi</span>
+</div>
+<!-- Main Hook Headline -->
+<div class="flex flex-col gap-1">
+<h1 class="font-display text-[32px] leading-[1.12] text-primary-container font-extrabold tracking-tight">
+          Chi organizza il regalo?<br/>
+<span class="text-secondary-container underline decoration-secondary-container/30 decoration-wavy decoration-2">Ci pensa Regaloop.</span>
+</h1>
+<p class="text-text-muted text-[14px] leading-relaxed pt-1">
+          Basta anticipare per tutti e supplicare su WhatsApp. Simula la quota, copia il link e riscuoti col sorriso.
+        </p>
+</div>
+<!-- INTERACTIVE CALCULATOR CARD -->
+<div class="mt-1 rounded-3xl bg-surface-cream-card p-4 sm:p-5 shadow-[0_8px_30px_rgb(0,37,28,0.06)] border border-border-warm flex flex-col gap-4 relative overflow-hidden">
+<!-- Floating badge inside card -->
+<div class="flex items-center justify-between border-b border-surface-container-high/60 pb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-xl bg-forest-tint text-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+</div>
+<div>
+<span class="text-[11px] font-bold uppercase tracking-wider text-text-muted block">Simulatore Rapido</span>
+<span class="font-display font-bold text-primary-container text-[15px]">Cosa regaliamo?</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-gold-tint text-gift-gold font-label-sm text-[11px] font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">bolt</span> 3 sec
+          </span>
+</div>
+<!-- Preset Gift Quick-Pills -->
+<div class="flex flex-col gap-1.5">
+<label class="text-[12px] font-semibold text-text-muted">Seleziona idea o digita il budget</label>
+<div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5" id="presetPills">
+<button class="preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-surface-container text-primary-container border border-outline-variant/30 whitespace-nowrap active:scale-95 transition-all" onclick="setPreset('Weekend Spa 💆‍♀️', 240)" type="button">
+              💆‍♀️ Weekend Spa (240€)
+            </button>
+<button class="preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-secondary-container text-white shadow-xs whitespace-nowrap active:scale-95 transition-all" onclick="setPreset('Cena Gourmet 🍷', 150)" type="button">
+              🍷 Cena Gourmet (150€)
+            </button>
+<button class="preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-surface-container text-primary-container border border-outline-variant/30 whitespace-nowrap active:scale-95 transition-all" onclick="setPreset('Playstation 5 🎮', 450)" type="button">
+              🎮 PS5 Slim (450€)
+            </button>
+<button class="preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-surface-container text-primary-container border border-outline-variant/30 whitespace-nowrap active:scale-95 transition-all" onclick="setPreset('Zaino Viaggio 🎒', 80)" type="button">
+              🎒 Zaino Tech (80€)
+            </button>
+</div>
+</div>
+<!-- Budget & Custom Input -->
+<div class="grid grid-cols-2 gap-2.5">
+<div class="flex flex-col gap-1">
+<span class="text-[11px] font-semibold text-text-muted">Costo regalo totale</span>
+<div class="relative flex items-center">
+<input class="w-full h-11 pl-3 pr-8 rounded-xl bg-surface-container-low border border-border-warm font-display font-bold text-primary-container text-[18px] focus:ring-2 focus:ring-secondary-container focus:outline-none" id="totalAmount" max="5000" min="10" oninput="calculateQuota()" step="5" type="number" value="150"/>
+<span class="absolute right-3 font-bold text-text-muted text-[14px]">€</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[11px] font-semibold text-text-muted">Numero amici</span>
+<div class="h-11 px-2 rounded-xl bg-surface-container-low border border-border-warm flex items-center justify-between">
+<button class="w-7 h-7 rounded-lg bg-surface-cream-card text-primary-container flex items-center justify-center font-bold shadow-xs active:scale-90 transition-all" onclick="changeParticipants(-1)" type="button">-</button>
+<span class="font-display font-bold text-primary-container text-[17px]" id="friendsCountDisplay">10</span>
+<button class="w-7 h-7 rounded-lg bg-surface-cream-card text-primary-container flex items-center justify-center font-bold shadow-xs active:scale-90 transition-all" onclick="changeParticipants(1)" type="button">+</button>
+</div>
+</div>
+</div>
+<!-- Visual Animated Avatars Row -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center -space-x-2.5 overflow-hidden" id="avatarStack">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-primary-container font-bold text-[11px] flex items-center justify-center border-2 border-surface-cream-card shadow-xs">TU</div>
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary font-bold text-[11px] flex items-center justify-center border-2 border-surface-cream-card shadow-xs">LC</div>
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-tertiary font-bold text-[11px] flex items-center justify-center border-2 border-surface-cream-card shadow-xs">GL</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-primary-container font-bold text-[11px] flex items-center justify-center border-2 border-surface-cream-card shadow-xs">FR</div>
+<div class="w-8 h-8 rounded-full bg-gold-tint text-gift-gold font-bold text-[11px] flex items-center justify-center border-2 border-surface-cream-card shadow-xs">+6</div>
+</div>
+<span class="text-[12px] font-semibold text-secondary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">groups</span>
+<span id="participantsLabel">10 partecipanti</span>
+</span>
+</div>
+<!-- Calculated Live Result Box -->
+<div class="p-3.5 rounded-2xl bg-gradient-to-r from-forest-tint/90 to-surface-container-low border border-forest-tint flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[11px] font-bold uppercase tracking-wider text-text-muted">Quota calcolata</span>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-[26px] font-extrabold text-primary-container" id="resultPerPerson">15.00 €</span>
+<span class="text-text-muted text-[13px] font-medium">/ persona</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-[11px] px-2 py-1 rounded-md bg-white/80 font-semibold text-primary-container shadow-xs">
+              0€ trattenute
+            </span>
+</div>
+</div>
+<!-- CTA Launcher Button -->
+<a class="flex items-center justify-center gap-2 w-full h-[54px] rounded-2xl bg-secondary-container text-white font-label-lg font-bold shadow-[0_6px_20px_rgba(254,106,52,0.35)] hover:bg-secondary active:scale-[0.98] transition-all" href="/catalogo">
+<span class="material-symbols-outlined text-[22px]">rocket_launch</span>
+<span class="text-[16px]">Lancia la colletta ora</span>
+</a>
+<!-- Demo secondary link -->
+<div class="flex items-center justify-center pt-0.5">
+<a class="text-[13px] font-semibold text-primary-container hover:text-secondary flex items-center gap-1" href="/c/demo">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+<span>Vedi esempio reale da invitato</span>
+</a>
+</div>
+</div>
+</section>
+<!-- 2. SOCIAL PROOF LIVE TICKER & TOAST SIMULATION -->
+<section class="rounded-2xl bg-white/70 border border-border-warm p-3 flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+</div>
+<div class="flex flex-col">
+<span class="text-[12px] font-bold text-primary-container">Marco ha confermato la sua quota (15€)</span>
+<span class="text-[11px] text-text-muted">Colletta "Laurea Chiara 🎓" • 2 min fa</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary-container text-[20px]">thumb_up</span>
+</section>
+<!-- 3. HOW IT WORKS: INTERACTIVE SOCIAL FEED / SWIPE CARDS -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div>
+<span class="text-[11px] font-bold text-secondary-container uppercase tracking-wider">Flusso ultra fluido</span>
+<h2 class="font-display text-[22px] font-extrabold text-primary-container leading-tight">
+            Come funziona? 3 tap e sei in festa.
+          </h2>
+</div>
+<div class="flex gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+</div>
+</div>
+<!-- Horizontal Cards Feed -->
+<div class="flex gap-3 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 snap-x snap-mandatory">
+<!-- Card 1: Link & Regalo -->
+<div class="min-w-[270px] max-w-[280px] snap-center rounded-2xl bg-surface-cream-card p-4 border border-border-warm shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="w-7 h-7 rounded-lg bg-forest-tint text-primary-container font-display font-extrabold text-[14px] flex items-center justify-center">01</span>
+<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface-container text-primary-container">Regalo</span>
+</div>
+<h3 class="font-display font-bold text-[17px] text-primary-container leading-snug">
+              Scegli o incolla link
+            </h3>
+<p class="text-[13px] text-text-muted leading-relaxed">
+              Dal nostro catalogo o da qualunque shop (Amazon, Decathlon, Apple). Fissa l'importo.
+            </p>
+</div>
+<!-- Visual snippet -->
+<div class="mt-3 p-2.5 rounded-xl bg-surface-container-low border border-surface-container flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary-container">link</span>
+<span class="text-[11px] font-mono font-medium text-primary-container truncate">amazon.it/dp/B09...</span>
+<span class="text-[10px] ml-auto px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">Auto</span>
+</div>
+</div>
+<!-- Card 2: Chat Mockup -->
+<div class="min-w-[270px] max-w-[280px] snap-center rounded-2xl bg-surface-cream-card p-4 border border-border-warm shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="w-7 h-7 rounded-lg bg-tangerine-tint text-secondary-container font-display font-extrabold text-[14px] flex items-center justify-center">02</span>
+<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-tangerine-tint text-secondary font-semibold">Gruppo</span>
+</div>
+<h3 class="font-display font-bold text-[17px] text-primary-container leading-snug">
+              Incolli il link in chat
+            </h3>
+<p class="text-[13px] text-text-muted leading-relaxed">
+              WhatsApp, Telegram o Instagram. Chi clicca vede il regalo e la quota: zero registrazione richiesta!
+            </p>
+</div>
+<!-- Chat Balloon Mockup -->
+<div class="mt-3 p-2.5 rounded-xl bg-[#E7F8EE] border border-[#C6ECD6] flex flex-col gap-1">
+<div class="flex items-center justify-between text-[10px] text-text-muted">
+<span class="font-bold text-[#0D6E42]">Gruppo Amici 🍕</span>
+<span>12:45</span>
+</div>
+<p class="text-[12px] font-medium text-primary-container">
+              🎁 Ragazzi ecco il regalo per Andrea! Quota 15€: <span class="text-secondary-container underline">regaloop.it/andrea</span>
+</p>
+</div>
+</div>
+<!-- Card 3: Dashboard & Solleciti -->
+<div class="min-w-[270px] max-w-[280px] snap-center rounded-2xl bg-surface-cream-card p-4 border border-border-warm shadow-sm flex flex-col justify-between">
+<div class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="w-7 h-7 rounded-lg bg-gold-tint text-gift-gold font-display font-extrabold text-[14px] flex items-center justify-center">03</span>
+<span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-gold-tint text-gift-gold">Zero conti</span>
+</div>
+<h3 class="font-display font-bold text-[17px] text-primary-container leading-snug">
+              Chi manca? Lo diciamo noi
+            </h3>
+<p class="text-[13px] text-text-muted leading-relaxed">
+              Ricevi notifiche in diretta. Un tap per confermare l'accredito e solleciti gentili automatici.
+            </p>
+</div>
+<!-- Stat Pill Mini Mockup -->
+<div class="mt-3 p-2 rounded-xl bg-surface-container-low flex items-center justify-between">
+<span class="text-[11px] font-bold text-primary-container">Raccolti 180€ su 200€</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white">9/10 pagati</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. BEFORE VS WITH REGALOOP (NO-STRESS COMPARISON) -->
+<section class="flex flex-col gap-3">
+<div class="flex flex-col gap-0.5">
+<span class="text-[11px] font-bold text-secondary-container uppercase tracking-wider">Perché zero stress</span>
+<h2 class="font-display text-[22px] font-extrabold text-primary-container leading-tight">
+          La fine dei drammi nelle chat di gruppo
+        </h2>
+</div>
+<div class="grid grid-cols-1 gap-2.5">
+<!-- Vecchio Modo (Pain points) -->
+<div class="rounded-2xl bg-error-container/40 border border-error-container p-3.5 flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container text-error flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[19px]">close</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-[12px] font-bold uppercase tracking-wider text-error">Il solito incubo</span>
+<p class="text-[13px] text-on-surface leading-tight line-through opacity-75">
+              Excel improvvisati, IBAN dispersi tra 400 messaggi, "chi mi manda 12 euro?", imbarazzo a chiedere i soldi agli amici.
+            </p>
+</div>
+</div>
+<!-- Con Regaloop (Solution) -->
+<div class="rounded-2xl bg-forest-tint border border-primary-fixed p-3.5 flex items-start gap-3 shadow-xs">
+<div class="w-8 h-8 rounded-full bg-primary-container text-white flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-[19px]">check</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1.5">
+<span class="text-[12px] font-bold uppercase tracking-wider text-primary-container">Con Regaloop</span>
+<span class="px-1.5 py-0.2 rounded bg-secondary-container text-white text-[10px] font-bold">1 Tap</span>
+</div>
+<p class="text-[13px] text-primary-container font-medium leading-tight">
+              Unico link con contatore in tempo reale. Ognuno paga via Satispay, PayPal o bonifico diretto. Zero percentuali trattenute.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. BIGLIETTO DI GRUPPO DIGITALE (INTERACTIVE STICKER BOARD) -->
+<section class="rounded-3xl bg-surface-cream-card p-4 sm:p-5 border border-border-warm shadow-md flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-tint text-gift-gold font-label-sm text-[12px] font-bold">
+<span class="material-symbols-outlined text-[16px]">draw</span>
+<span>Incluso e 100% Gratis</span>
+</div>
+<span class="text-[12px] font-bold text-secondary-container">🎁 Biglietto Collettivo</span>
+</div>
+<div class="flex flex-col gap-1">
+<h2 class="font-display text-[22px] font-extrabold text-primary-container leading-tight">
+          Bacheca di auguri firmata da tutti
+        </h2>
+<p class="text-[13px] text-text-muted leading-relaxed">
+          Tutti lasciano una dedica con foto, GIF e sticker. Il festeggiato riceve una sorpresa animata via link alla mezzanotte!
+        </p>
+</div>
+<!-- Digital Stickers Canvas (Interactive Preview) -->
+<div class="relative bg-surface-container-low rounded-2xl p-3.5 border border-surface-container overflow-hidden min-h-[190px] flex flex-col justify-between">
+<!-- Floating Post-it 1 -->
+<div class="self-start w-48 rounded-xl bg-[#FFF9D2] p-2.5 shadow-sm transform -rotate-3 border border-[#F4E38A]">
+<div class="flex items-center justify-between mb-1">
+<div class="flex items-center gap-1">
+<span class="w-4 h-4 rounded-full bg-amber-400 text-amber-950 text-[9px] font-bold flex items-center justify-center">S</span>
+<span class="text-[11px] font-bold text-amber-950">Sara</span>
+</div>
+<span class="text-[11px]">❤️🎂</span>
+</div>
+<p class="text-[12px] text-amber-950 font-medium leading-tight">Tanti auguri compare! Pronti per la festa 🎉</p>
+<!-- Tap to react pill -->
+<div class="mt-2 flex items-center gap-1">
+<button class="px-1.5 py-0.5 rounded-full bg-white/70 text-[10px] font-bold text-amber-900 border border-amber-300" type="button">
+              👏 4
+            </button>
+<button class="px-1.5 py-0.5 rounded-full bg-white/70 text-[10px] font-bold text-amber-900 border border-amber-300" type="button">
+              🥂 7
+            </button>
+</div>
+</div>
+<!-- Floating Post-it 2 (Polaroid style) -->
+<div class="self-end w-44 rounded-xl bg-white p-2 shadow-md transform rotate-2 border border-surface-container-high -mt-6">
+<div class="w-full h-14 rounded-lg bg-surface-container flex items-center justify-center text-primary-container font-semibold text-[11px] overflow-hidden relative">
+<img alt="Foto ricordo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgjduL2kZytxBRbzyJbK316c_lmt5M3seSZTvVoaBa0GM-tmqbRxZsQR_ZydzZJasH8ErcmH3BWrvm1HeAFxhUcucMmTf8DE07HuvPc65_0pcD1nIbKNgpkl7SeFVm6oxK8rSqWrUUeLUgXMChXmUu7au3588OHutVAal4scjM8itHBKkiPCORBbjfL9DStcHEcXaR41L9lFxWHyxCkZnGn4OjK-v4qa8d40nAMRZYvLkdYtbufEIEAA"/>
+<span class="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/60 text-white text-[9px]">Foto 📸</span>
+</div>
+<div class="pt-1.5 flex items-center justify-between">
+<span class="text-[11px] font-bold text-primary-container">Matteo</span>
+<span class="text-[10px] text-text-muted">"Sei il n°1!"</span>
+</div>
+</div>
+<!-- Delivery Badge -->
+<div class="mt-2 inline-flex items-center gap-1 self-center px-3 py-1 rounded-full bg-primary-container text-white text-[11px] font-label-md font-bold shadow-sm">
+<span class="material-symbols-outlined text-[14px] text-gift-gold">auto_awesome</span>
+<span>Apertura animata con coriandoli virtuali</span>
+</div>
+</div>
+<a class="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-forest-tint text-primary-container font-label-lg font-bold hover:bg-forest-hover hover:text-white transition-all active:scale-[0.98]" href="/biglietto/nuovo">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span>Crea un biglietto di gruppo</span>
+</a>
+</section>
+<!-- 6. TRENDING GIFT IDEAS (FAST-SCROLL CHIPS) -->
+<section class="flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div>
+<span class="text-[11px] font-bold text-secondary-container uppercase tracking-wider">Idee che spaccano</span>
+<h2 class="font-display text-[22px] font-extrabold text-primary-container leading-tight">
+            I regali più scelti della settimana
+          </h2>
+</div>
+<a class="text-[13px] font-bold text-secondary-container flex items-center" href="/catalogo">
+<span>Vedi tutti</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</a>
+</div>
+<!-- Quick Category Filter Chips -->
+<div class="flex gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+<span class="px-3 py-1 rounded-full bg-primary-container text-white text-[12px] font-bold whitespace-nowrap">🔥 Tutti</span>
+<span class="px-3 py-1 rounded-full bg-surface-container text-text-muted text-[12px] font-semibold whitespace-nowrap">Esperienze</span>
+<span class="px-3 py-1 rounded-full bg-surface-container text-text-muted text-[12px] font-semibold whitespace-nowrap">Tech &amp; Gadget</span>
+<span class="px-3 py-1 rounded-full bg-surface-container text-text-muted text-[12px] font-semibold whitespace-nowrap">Design &amp; Casa</span>
+</div>
+<!-- 2-Card Visual Grid with Quota Highlight -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Item 1 -->
+<div class="rounded-2xl bg-surface-cream-card p-3 border border-border-warm shadow-xs flex flex-col gap-2">
+<div class="w-full h-28 rounded-xl overflow-hidden relative bg-surface-container">
+<img alt="Macchina Caffè Design" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgjduL2kZytxBRbzyJbK316c_lmt5M3seSZTvVoaBa0GM-tmqbRxZsQR_ZydzZJasH8ErcmH3BWrvm1HeAFxhUcucMmTf8DE07HuvPc65_0pcD1nIbKNgpkl7SeFVm6oxK8rSqWrUUeLUgXMChXmUu7au3588OHutVAal4scjM8itHBKkiPCORBbjfL9DStcHEcXaR41L9lFxWHyxCkZnGn4OjK-v4qa8d40nAMRZYvLkdYtbufEIEAA"/>
+<span class="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-secondary-container text-white text-[10px] font-bold uppercase tracking-wider">Trending</span>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold text-primary-container shadow-xs">129 €</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-display font-bold text-[14px] text-primary-container truncate">Macchina Caffè Design</h4>
+<div class="flex items-center justify-between pt-1">
+<span class="text-[12px] font-bold text-secondary-container">~13 € a testa</span>
+<span class="text-[10px] text-text-muted">10 quote</span>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="rounded-2xl bg-surface-cream-card p-3 border border-border-warm shadow-xs flex flex-col gap-2">
+<div class="w-full h-28 rounded-xl overflow-hidden relative bg-surface-container">
+<img alt="Cuffie Wireless Pro" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgS_0Zr8Ppqm67ttB29H8uUAWygzYatxeyV421EmiQKfw9fMVrrtAPg2S9t6tOHE651TTL8Wp4TzjavJuzjkRHpaTpfAKdwrx5PlKTO7c40ZHhHjgPOroz279xEj_Doo6NLYJRDZ2pO2uLYn6AcAgJKSCuY7g5uNfK_8yMtI42WOaoWfGmvtPAJYN-KKUZs_0FccB5GltQIM05pgGAQ1ZEpM2X5ZvZPZf8qQtsukbFtzjdKDq-Nr3QpQ"/>
+<span class="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-primary-container text-white text-[10px] font-bold uppercase tracking-wider">Top Regalo</span>
+<span class="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 backdrop-blur-sm text-[11px] font-bold text-primary-container shadow-xs">199 €</span>
+</div>
+<div class="flex flex-col">
+<h4 class="font-display font-bold text-[14px] text-primary-container truncate">Cuffie Wireless Pro</h4>
+<div class="flex items-center justify-between pt-1">
+<span class="text-[12px] font-bold text-secondary-container">~15 € a testa</span>
+<span class="text-[10px] text-text-muted">13 quote</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7. FOOTER & TRANSPARENCY NOTICE -->
+<footer class="flex flex-col gap-2 pt-4 pb-6 items-center text-center">
+<div class="w-10 h-10 rounded-full bg-forest-tint flex items-center justify-center text-primary-container mb-1">
+<span class="material-symbols-outlined text-[20px]">volunteer_activism</span>
+</div>
+<p class="font-display font-bold text-[17px] text-primary-container max-w-xs">
+        Regalo pronto, zero ansia e zero commissioni.
+      </p>
+<p class="text-[12px] text-text-muted max-w-xs leading-relaxed">
+        Regaloop è un progetto indipendente di <strong class="text-primary-container">Cosa Gli Regaliamo</strong>. I pagamenti avvengono direttamente tra partecipanti e organizzatore (Satispay, Revolut, PayPal o a mano).
+      </p>
+<span class="text-[11px] text-outline mt-1">
+        In qualità di Affiliato Amazon, Regaloop riceve un guadagno dagli acquisti idonei.
+      </span>
+</footer>
+</main>
+<!-- FLOATING QUICK LAUNCH BAR / BOTTOM CTA FOR HIGH CONVERSION -->
+<aside class="fixed bottom-16 w-full z-40 px-4 pb-2 pointer-events-none">
+<div class="max-w-lg mx-auto pointer-events-auto">
+<div class="rounded-2xl bg-primary-container/95 backdrop-blur-md text-white p-2.5 shadow-xl flex items-center justify-between border border-white/10">
+<div class="flex items-center gap-2 pl-2">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container pulse-dot"></span>
+<div class="flex flex-col">
+<span class="text-[12px] font-bold leading-tight">Organizzi un regalo ora?</span>
+<span class="text-[10px] text-white/70">Link pronto in 60 secondi</span>
+</div>
+</div>
+<a class="h-9 px-4 rounded-xl bg-secondary-container text-white font-label-md font-bold text-[13px] flex items-center gap-1 shadow-md hover:bg-secondary active:scale-95 transition-all" href="/catalogo">
+<span>Inizia</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Bottom Navigation Tab Bar -->
+<nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/95 backdrop-blur-xl border-t border-surface-container-high shadow-[0_-4px_20px_rgba(0,37,28,0.06)]">
+<div class="flex justify-around items-center h-16 max-w-lg mx-auto px-2">
+<!-- Home (Active) -->
+<a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-secondary-container transition-colors" href="#">
+<span class="material-symbols-outlined text-[23px]" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[11px] font-bold mt-0.5">Home</span>
+</a>
+<!-- Catalogo -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/catalogo">
+<span class="material-symbols-outlined text-[23px]">card_giftcard</span>
+<span class="text-[11px] font-medium mt-0.5">Idee</span>
+</a>
+<!-- Quick Center Action Icon -->
+<a class="flex flex-col items-center justify-center -mt-5 min-w-[50px] min-h-[50px]" href="/catalogo">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-white flex items-center justify-center shadow-lg active:scale-95 transition-all border-4 border-surface">
+<span class="material-symbols-outlined text-[24px]">add</span>
+</div>
+<span class="text-[10px] font-bold text-primary-container mt-0.5">Crea</span>
+</a>
+<!-- Biglietto -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/biglietto-di-gruppo">
+<span class="material-symbols-outlined text-[23px]">draw</span>
+<span class="text-[11px] font-medium mt-0.5">Biglietto</span>
+</a>
+<!-- Come funziona -->
+<a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-on-surface-variant hover:text-primary-container transition-colors" href="/come-funziona">
+<span class="material-symbols-outlined text-[23px]">help_outline</span>
+<span class="text-[11px] font-medium mt-0.5">Aiuto</span>
+</a>
+</div>
+</nav>
+<!-- Interactive Simulator Script -->
+<script>
+    let currentFriends = 10;
+    
+    function calculateQuota() {
+      const amountInput = document.getElementById('totalAmount');
+      const resultDisplay = document.getElementById('resultPerPerson');
+      const friendsDisplay = document.getElementById('friendsCountDisplay');
+      const participantsLabel = document.getElementById('participantsLabel');
+
+      let amount = parseFloat(amountInput.value) || 0;
+      if (amount < 0) amount = 0;
+      
+      const perPerson = currentFriends > 0 ? (amount / currentFriends) : 0;
+      resultDisplay.textContent = perPerson.toFixed(2).replace('.', ',') + ' €';
+      friendsDisplay.textContent = currentFriends;
+      participantsLabel.textContent = currentFriends + ' partecipanti';
+    }
+
+    function changeParticipants(delta) {
+      currentFriends = Math.max(2, Math.min(60, currentFriends + delta));
+      calculateQuota();
+    }
+
+    function setPreset(title, amount) {
+      const amountInput = document.getElementById('totalAmount');
+      amountInput.value = amount;
+      
+      // Highlight preset button visually
+      const buttons = document.querySelectorAll('#presetPills .preset-btn');
+      buttons.forEach(btn => {
+        if (btn.innerText.includes(title.split(' ')[0])) {
+          btn.className = "preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-secondary-container text-white shadow-xs whitespace-nowrap active:scale-95 transition-all";
+        } else {
+          btn.className = "preset-btn px-3 py-1.5 rounded-full text-[12px] font-label-md font-semibold bg-surface-container text-primary-container border border-outline-variant/30 whitespace-nowrap active:scale-95 transition-all";
+        }
+      });
+      calculateQuota();
+    }
+
+    // Micro-interactions
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('touchstart', () => el.classList.add('opacity-90'), { passive: true });
+      el.addEventListener('touchend', () => el.classList.remove('opacity-90'), { passive: true });
+    });
+  </script>
+</body></html>
