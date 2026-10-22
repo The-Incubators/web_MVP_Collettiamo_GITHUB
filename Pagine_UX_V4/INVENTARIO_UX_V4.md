@@ -128,6 +128,6 @@ Serve da lista di controllo durante l'implementazione.
 | Fondamenta | ✅ | Palette V4 sui token di sempre, niente tema scuro, Plus Jakarta Sans, icone Material, pulsanti a pillola (arancio = «azione», testo a 19 px per il contrasto), intestazione con profilo, barra in basso |
 | A · Scoperta | ✅ | Home, catalogo (ricerca, filtri in un foglio, «Simula per N invitati», 24 alla volta), scheda prodotto e popup, Trova il regalo (riscritto senza il CSS del sito di partenza), preferiti, accesso |
 | C · Chi partecipa | ✅ | Manca la **foto nel messaggio** del biglietto (nuova funzione decisa: nuovi dati, regole e test) |
-| B · Organizzatore | ⏳ | Wizard a 5 passi, dashboard, chiusura, dati, le mie collette |
+| B · Organizzatore | ✅ | Wizard a 5 passi (quota e pagamenti insieme, sorpresa all'ultimo passo), dashboard con linguette e azioni dietro «⋯», chiusura a passi numerati, statistiche, le mie collette |
 | D/E · Biglietto | ⏳ | Più il campo «Ruolo o parentela» (nuova funzione decisa) |
 | F · Servizio | ⏳ | Privacy, 404, Scegli UX, area riservata |
