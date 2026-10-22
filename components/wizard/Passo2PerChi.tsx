@@ -1,6 +1,6 @@
 "use client";
 
-import { Avviso, Campo, CampoSelezione, Interruttore } from "@/components/ui";
+import { Avviso, Campo, CampoSelezione, Icona } from "@/components/ui";
 import { dataConGiorno, giornoDaIso, giornoInIso } from "@/lib/dominio/date";
 import { calcolaScadenza } from "@/lib/dominio/scadenza";
 import { OCCASIONI } from "@/lib/tipi";
@@ -15,7 +15,7 @@ export function Passo2PerChi({ s, cambia, errori, adesso }: PropsPasso) {
   const esito = giorno ? calcolaScadenza(giorno, consegna, adesso) : null;
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-4 rounded-3xl bg-surface p-4 shadow-carta">
       <Campo etichetta="Per chi è il regalo?" value={s.festeggiato} onChange={(e) => cambia({ festeggiato: e.target.value })} errore={errori.festeggiato} placeholder="Giulia" autoComplete="off" />
       <CampoSelezione etichetta="Occasione" value={s.occasione} onChange={(e) => cambia({ occasione: e.target.value })}>
         {OCCASIONI.map((o) => (
@@ -34,13 +34,15 @@ export function Passo2PerChi({ s, cambia, errori, adesso }: PropsPasso) {
       />
 
       {esito && esito.compatibile ? (
-        <div className="rounded-contenitore border border-gold-line bg-gold-field p-4" aria-live="polite">
-          <p className="text-sm font-semibold">La raccolta si chiude</p>
-          <p className="font-display text-xl font-bold">{dataConGiorno(esito.scadenza)}, alle 20:00</p>
-          <p className="mt-1 text-sm">
-            Il regalo arriva in {consegna} {consegna === 1 ? "giorno" : "giorni"} e teniamo un giorno di margine: la raccolta si chiude {consegna + 1} giorni prima della data
-            che hai scelto.
-          </p>
+        <div className="flex items-start gap-3 rounded-2xl bg-gold-field p-4" aria-live="polite">
+          <Icona nome="schedule" className="mt-0.5 text-gold" />
+          <div className="flex flex-col">
+            <p className="text-xs font-bold uppercase tracking-widest">La raccolta si chiude</p>
+            <p className="font-display text-xl font-bold">{dataConGiorno(esito.scadenza)}, alle 20:00</p>
+            <p className="mt-1 text-xs">
+              Consegna in {consegna} {consegna === 1 ? "giorno" : "giorni"} più uno di margine.
+            </p>
+          </div>
         </div>
       ) : null}
       {esito && !esito.compatibile ? (
@@ -60,21 +62,13 @@ export function Passo2PerChi({ s, cambia, errori, adesso }: PropsPasso) {
 
       <Campo
         etichetta="Il tuo nome"
-        suggerimento="Lo vedranno i partecipanti: «Marco sta organizzando…»"
+        suggerimento="Lo vedranno i partecipanti: «Marco organizza»."
         value={s.organizzatoreNome}
         onChange={(e) => cambia({ organizzatoreNome: e.target.value })}
         errore={errori.organizzatoreNome}
         autoComplete="given-name"
       />
 
-      <div className="contenitore p-4">
-        <Interruttore
-          etichetta="Modalità sorpresa"
-          descrizione="L’anteprima del link non mostra regalo né nome, e la pagina non finisce nei motori di ricerca."
-          attivo={s.sorpresa}
-          onCambia={(sorpresa) => cambia({ sorpresa })}
-        />
-      </div>
     </div>
   );
 }

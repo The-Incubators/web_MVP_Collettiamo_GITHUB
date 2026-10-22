@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { Avviso, Barra, Bottone, Dialogo, IconaFreccia, IconaIndietro } from "@/components/ui";
+import { Avviso, Bottone, Dialogo, Icona } from "@/components/ui";
 import { ErroreDominio } from "@/lib/dominio/operazioni";
 import { generaSlugLibero } from "@/lib/dominio/slug";
 import { ORE, votazioneIniziale } from "@/lib/dominio/votazione";
@@ -32,14 +32,22 @@ import {
   type StatoWizard,
 } from "./stato";
 
-const TITOLI: Record<Passo, string> = {
-  1: "Il regalo",
-  2: "Per chi e quando",
-  3: "La quota",
-  4: "Come ti pagano",
-  5: "Chi partecipa",
-  6: "Invita il gruppo",
-};
+/**
+ * I passi che si vedono sono cinque: «La quota» e «Come ti pagano» (passi 3 e 4 dello stato, che restano
+ * distinti per la bozza e per la ripresa dalla sessione) stanno in una schermata sola, come nel disegno di UX_V4.
+ */
+const VISIBILI = [
+  { passi: [1], nome: "Il regalo", domanda: "Chi sceglie il regalo?", sotto: "Puoi sceglierlo tu o far votare il gruppo." },
+  { passi: [2], nome: "Per chi e quando", domanda: "Per chi e quando?", sotto: "Chi festeggiate e quando date il regalo." },
+  { passi: [3, 4], nome: "Quota e pagamenti", domanda: "Come si divide il costo?", sotto: "La quota e dove ricevere i soldi." },
+  { passi: [5], nome: "Chi partecipa", domanda: "Chi partecipa?", sotto: "Lascia aggiungere tutti, o scrivi tu i nomi." },
+  { passi: [6], nome: "Invita", domanda: "Pronto! Invita il gruppo", sotto: "Manda il link nella chat per iniziare la raccolta." },
+] as const;
+
+const indiceVisibile = (p: Passo) => VISIBILI.findIndex((v) => (v.passi as readonly number[]).includes(p));
+/** Il passo successivo e quello precedente saltano il 4, che sta nella stessa schermata del 3. */
+const dopo = (p: Passo): Passo => (p === 3 || p === 4 ? 5 : ((p + 1) as Passo));
+const prima = (p: Passo): Passo => (p === 5 ? 3 : p === 4 ? 2 : ((p - 1) as Passo));
 
 function leggiSalvato(uid: string): StatoWizard | null {
   try {
@@ -208,7 +216,7 @@ export function Wizard() {
 
   async function avanti() {
     if (!s) return;
-    const e = erroriPasso(s, s.passo, adesso);
+    const e = s.passo === 3 || s.passo === 4 ? { ...erroriPasso(s, 3, adesso), ...erroriPasso(s, 4, adesso) } : erroriPasso(s, s.passo, adesso);
     setErrori(e);
     if (Object.keys(e).length) {
       setDialogo(true);
@@ -229,7 +237,7 @@ export function Wizard() {
         const nomiCreati = await sincronizzaInvitati(corrente.slug, corrente);
         corrente = { ...corrente, nomiCreati };
       }
-      setS({ ...corrente, passo: (s.passo + 1) as Passo });
+      setS({ ...corrente, passo: dopo(s.passo) });
     } catch (err) {
       setProblema(err instanceof ErroreDominio ? err.message : "Non sono riuscito a salvare. Controlla la connessione e riprova.");
     } finally {
@@ -251,7 +259,7 @@ export function Wizard() {
     if (!s || s.passo === 1) return;
     setErrori({});
     setProblema(null);
-    setS({ ...s, passo: (s.passo - 1) as Passo });
+    setS({ ...s, passo: prima(s.passo) });
   }
 
   async function apri() {
@@ -277,43 +285,61 @@ export function Wizard() {
   }
 
   const propsPasso = { s, cambia, errori, adesso };
+  const i = indiceVisibile(s.passo);
+  const visibile = VISIBILI[i];
+  const prossimo = VISIBILI[i + 1];
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col gap-6">
+    <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-3">
-          {s.passo > 1 ? (
-            <Bottone variante="testuale" dimensione="piccolo" onClick={indietro} disabled={occupato}>
-              <IconaIndietro width={16} height={16} /> Indietro
-            </Bottone>
-          ) : (
-            <Link href="/catalogo" className="inline-flex min-h-tocco items-center gap-1 px-3 text-sm font-semibold text-accent-2">
-              <IconaIndietro width={16} height={16} /> Catalogo
+        <div className="flex items-center gap-3">
+          {s.passo === 1 ? (
+            <Link href="/catalogo" aria-label="Torna al catalogo" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
+              <Icona nome="close" />
             </Link>
+          ) : (
+            <button type="button" onClick={indietro} disabled={occupato} aria-label="Indietro" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
+              <Icona nome="arrow_back" />
+            </button>
           )}
-          <span className="text-sm text-ink-soft">Passo {s.passo} di 6</span>
-        </div>
-        <Barra percento={(s.passo / 6) * 100} etichetta={`Passo ${s.passo} di 6`} />
-        <h1 ref={titolo} tabIndex={-1} className="text-3xl outline-none">
-          {TITOLI[s.passo]}
-        </h1>
-        {s.passo >= 2 && s.passo <= 5 && prodottoDaStato(s) ? (
-          <p className="flex items-center justify-between gap-2 text-sm text-ink-soft">
-            <span className="min-w-0 truncate">
-              {s.votazioneAttiva ? `Regalo: lo sceglie il gruppo (${s.candidati.length} candidati)` : `Regalo: ${s.prodotto?.nome}`}
+          <p className="flex min-w-0 items-center gap-2 text-xs font-bold">
+            <span className="cifre flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">{i + 1}</span>
+            <span className="truncate">
+              Passo {i + 1} di {VISIBILI.length} · {visibile.nome}
             </span>
-            {s.passo === 2 ? (
-              <button type="button" className="min-h-tocco shrink-0 font-semibold text-accent-2 underline underline-offset-4" onClick={() => cambia({ passo: 1 })}>
-                Cambia
-              </button>
-            ) : null}
+          </p>
+          <div aria-hidden="true" className="ml-auto flex shrink-0 gap-1">
+            {VISIBILI.map((v, j) => (
+              <span key={v.nome} className={`h-1.5 rounded-full ${j === i ? "w-7 bg-cta" : j < i ? "w-3 bg-accent" : "w-3 bg-line"}`} />
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <h1 ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
+            {visibile.domanda}
+          </h1>
+          <p className="text-ink-soft">{visibile.sotto}</p>
+        </div>
+        {s.passo >= 2 && s.passo <= 5 && prodottoDaStato(s) ? (
+          <p className="flex items-center justify-between gap-2 rounded-2xl bg-surface-2 px-4 py-2 text-sm">
+            <span className="flex min-w-0 items-center gap-2">
+              <Icona nome="redeem" dimensione={20} className="text-accent" />
+              <span className="truncate">{s.votazioneAttiva ? `Lo sceglie il gruppo (${s.candidati.length} idee)` : s.prodotto?.nome}</span>
+            </span>
+            <button type="button" className="min-h-tocco shrink-0 font-bold text-cta-2" onClick={() => cambia({ passo: 1 })}>
+              Cambia
+            </button>
           </p>
         ) : null}
       </div>
 
       {s.passo === 1 ? <Passo1Regalo {...propsPasso} /> : null}
       {s.passo === 2 ? <Passo2PerChi {...propsPasso} /> : null}
-      {s.passo === 3 ? <Passo3Quota {...propsPasso} /> : null}
-      {s.passo === 4 ? <Passo4Pagamenti {...propsPasso} /> : null}
+      {s.passo === 3 || s.passo === 4 ? (
+        <>
+          <Passo3Quota {...propsPasso} />
+          <Passo4Pagamenti {...propsPasso} />
+        </>
+      ) : null}
       {s.passo === 5 ? <Passo5Partecipanti {...propsPasso} /> : null}
       {s.passo === 6 ? <Passo6Invita {...propsPasso} onApri={apri} apro={occupato} /> : null}
 
@@ -327,10 +353,25 @@ export function Wizard() {
         </Avviso>
       ) : null}
 
-      {s.passo < 6 ? (
-        <Bottone pieno onClick={avanti} disabled={occupato}>
-          {occupato ? "Salvo…" : "Avanti"} {!occupato ? <IconaFreccia width={18} height={18} /> : null}
-        </Bottone>
+      {/* Una sola azione in fondo allo schermo, sempre a portata di pollice. */}
+      {prossimo ? (
+        <div className="sticky bottom-0 z-30 -mx-4 flex items-center gap-2 bg-field/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
+          {s.passo > 1 ? (
+            <button
+              type="button"
+              onClick={indietro}
+              disabled={occupato}
+              aria-label="Indietro"
+              className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-surface shadow-carta"
+            >
+              <Icona nome="arrow_back" />
+            </button>
+          ) : null}
+          <Bottone pieno onClick={avanti} disabled={occupato}>
+            {occupato ? "Salvo…" : `Avanti: ${prossimo.nome}`}
+            {!occupato ? <Icona nome="arrow_forward" dimensione={20} /> : null}
+          </Bottone>
+        </div>
       ) : null}
     </div>
   );
