@@ -104,7 +104,7 @@ export function OrdinaCatalogo() {
   if (caricamento === "vietato") {
     return (
       <div className="mx-auto flex max-w-md flex-col gap-3 py-16 text-center">
-        <h1 className="text-2xl">Accesso riservato</h1>
+        <h1 className="text-2xl font-bold text-accent-2">Accesso riservato</h1>
         <p className="text-ink-soft">Questo account non è autorizzato a gestire il catalogo.</p>
         <Bottone variante="secondario" className="self-center" onClick={() => void auth.esci().then(() => window.location.assign("/"))}>
           Esci
@@ -206,7 +206,7 @@ export function OrdinaCatalogo() {
   return (
     <div className="flex w-full flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl">Catalogo: ordine e prodotti</h1>
+        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Catalogo: ordine e prodotti</h1>
         <p className="text-ink-soft">
           Decidi in che ordine compaiono i prodotti nel catalogo, anche dopo che chi visita ha applicato i filtri. Il primo della lista è il
           primo del sito. Con «Elimina» togli un prodotto dal sito senza cancellarlo: finisce in fondo a questa pagina e lo puoi rimettere.

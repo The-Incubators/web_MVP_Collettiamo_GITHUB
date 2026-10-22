@@ -130,4 +130,4 @@ Serve da lista di controllo durante l'implementazione.
 | C · Chi partecipa | ✅ | Manca la **foto nel messaggio** del biglietto (nuova funzione decisa: nuovi dati, regole e test) |
 | B · Organizzatore | ✅ | Wizard a 5 passi (quota e pagamenti insieme, sorpresa all'ultimo passo), dashboard con linguette e azioni dietro «⋯», chiusura a passi numerati, statistiche, le mie collette |
 | D/E · Biglietto | ✅ | Intestazione con «Passo N di M», pulsanti arancio, campi e card V4; invito riordinato come nel disegno; **«Ruolo o parentela»** aggiunto (campo `ruolo` della firma, max 40, visibile sotto la firma; testato) |
-| F · Servizio | ⏳ | Privacy, 404, Scegli UX, area riservata |
+| F · Servizio | ✅ | Privacy in tre blocchi, tre pagine «non trovata» con un componente unico, Scegli UX con UX_V4 predefinita (il cookie «v1» ricade su V4), titoli dell'area riservata |

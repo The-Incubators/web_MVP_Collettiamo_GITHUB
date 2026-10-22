@@ -41,8 +41,8 @@
 
 /*
  * «Regaloop Expressive Warmth»: il design system di UX_V2 e UX_V3, che lo condividono identico
- * (i due DESIGN.md sono lo stesso file). I token vivono solo dentro .tema-warmth, così UX_V1 non cambia
- * di una virgola. `--surface` ed `--error` esistono anche in UX_V1: qui dentro cambia il valore, non il
+ * (i due DESIGN.md sono lo stesso file). I token vivono solo dentro .tema-warmth, così il sito principale
+ * non cambia. `--surface` ed `--error` esistono anche lì: qui dentro cambia il valore, non il
  * nome, e le classi Tailwind seguono. Nessun tema scuro: i colori restano chiari anche col sistema in scuro.
  */
 .tema-warmth {

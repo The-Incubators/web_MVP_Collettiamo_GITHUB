@@ -18,7 +18,7 @@ export function SceltaUx({ attiva }: { attiva: string }) {
     document.cookie = `${COOKIE_UX}=${encodeURIComponent(id)}; path=/; max-age=${DURATA_COOKIE_UX}; SameSite=Lax`;
     const scelta = VARIANTI_UX.find((v) => v.id === id);
     setMessaggio(`Ora navighi con ${scelta?.nome ?? id}.`);
-    // Si va subito nella variante scelta: restare qui, che è una pagina di UX_V1, non mostrerebbe il cambio.
+    // Si va subito nella variante scelta: restare qui, che è una pagina di UX_V4, non mostrerebbe il cambio.
     if (scelta && scelta.percorso !== "/scegli-ux") router.push(scelta.percorso);
     router.refresh();
   }
@@ -31,7 +31,7 @@ export function SceltaUx({ attiva }: { attiva: string }) {
           if (!v.disponibile) {
             // Annunciata ma non pronta: si vede, non si sceglie. Niente scheda cliccabile che non fa nulla.
             return (
-              <div key={v.id} className="flex items-start gap-3 rounded-contenitore border border-dashed border-line bg-surface-2 p-4 opacity-80">
+              <div key={v.id} className="flex items-start gap-3 rounded-3xl border border-dashed border-line-forte bg-surface-2 p-4 opacity-80">
                 <span aria-hidden="true" className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-dashed border-line" />
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <p className="font-display text-lg font-bold leading-tight">
@@ -49,7 +49,7 @@ export function SceltaUx({ attiva }: { attiva: string }) {
               descrizione={v.descrizione}
               selezionata={selezionata}
               onSeleziona={() => scegli(v.id)}
-              extra={selezionata ? <span className="text-sm font-semibold text-accent-2">In uso adesso</span> : null}
+              extra={selezionata ? <span className="mt-1 self-start rounded-full bg-ok-field px-3 py-0.5 text-xs font-bold text-ok">In uso adesso</span> : null}
             />
           );
         })}
