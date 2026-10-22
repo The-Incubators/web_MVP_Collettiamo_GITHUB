@@ -35,7 +35,7 @@ export const OCCASIONI_REGALO = [
   { id: "natale", etichetta: "Natale", icona: "tree" },
   { id: "laurea", etichetta: "Laurea", icona: "cap" },
   { id: "compleanno", etichetta: "Compleanno", icona: "cake" },
-  { id: "altro", etichetta: "Altro", icona: "sparkles" },
+  { id: "altro", etichetta: "Altro", icona: "gift" }, // "sparkles" ha il disegno in un riquadro 24×24 e non si vede
 ] as const;
 
 export const CATEGORIE_INTERESSI = [
