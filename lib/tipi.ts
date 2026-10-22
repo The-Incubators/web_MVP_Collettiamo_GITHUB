@@ -331,6 +331,11 @@ export interface Firma {
   stile: StileFirma;
   immagine: ImmagineFirma | null;
   daParteDi: string;
+  /**
+   * Ruolo o parentela («Amica del liceo», «Collega»): facoltativo, si vede sotto la firma sul biglietto.
+   * Le firme salvate prima che esistesse non ce l'hanno, quindi può mancare.
+   */
+  ruolo?: string | null;
   nome: string;
   cognome: string | null;
   email: string | null;

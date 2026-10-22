@@ -115,10 +115,10 @@ export function Passo3({ id, librerie }: { id: string; librerie: Librerie }) {
           <StatoBozza stato={stato === "ok" ? "carica" : stato} />
         ) : (
           <>
-            <h2 className="font-display text-2xl font-bold">Scegli la copertina</h2>
+            <h2 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Scegli la copertina</h2>
             <div ref={rif} className="h-0 w-full" />
             {modello ? (
-              <section id="anteprima-copertina" aria-label="Anteprima della copertina" className="relative flex scroll-mt-28 flex-col items-center gap-3 rounded-contenitore bg-surface-2 px-4 py-6 ring-1 ring-line">
+              <section id="anteprima-copertina" aria-label="Anteprima della copertina" className="relative flex scroll-mt-28 flex-col items-center gap-3 rounded-3xl bg-surface-2 px-4 py-6">
                 {coach ? (
                   <div className="absolute left-1/2 z-40 -translate-x-1/2" style={{ top: Math.max(8, 24 + (larghezza - 32) * RAPPORTO_CARTA * (modello.titolo.y / 100) - 150) }}>
                     <Fumetto verso="alto" testo="Tocca «Il tuo titolo qui» per scrivere il nome sul biglietto" onChiudi={chiudiCoach} />

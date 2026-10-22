@@ -12,7 +12,7 @@ export function StatoBozza({ stato }: { stato: "carica" | "assente" | "errore" }
   if (stato === "carica") return <p className="py-16 text-center text-ink-soft">Un momento…</p>;
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
-      <h1 className="text-2xl">{stato === "assente" ? "Non trovo questo biglietto" : "Qualcosa non ha funzionato"}</h1>
+      <h1 className="text-2xl font-bold text-accent-2">{stato === "assente" ? "Non trovo questo biglietto" : "Qualcosa non ha funzionato"}</h1>
       <p className="text-ink-soft">
         {stato === "assente"
           ? utente

@@ -89,7 +89,7 @@ describe("rotte del biglietto (memoria)", () => {
 
     // firma: stessa chiave = stessa firma (aggiorna, non duplica)
     const kf = { "x-chiave-firmatario": "a".repeat(43) };
-    const corpo = { messaggioHtml: "Auguri <i>Nico</i>!<img src=x onerror=alert(1)>", stile: { font: "poppins", colore: "#ff0000", dimensione: "l" }, immagine: { tipo: "caricata", dataUrl: PNG_1PX, larghezza: 1, altezza: 1 }, daParteDi: "Luca", nome: "Luca", cognome: "", email: "" };
+    const corpo = { messaggioHtml: "Auguri <i>Nico</i>!<img src=x onerror=alert(1)>", stile: { font: "poppins", colore: "#ff0000", dimensione: "l" }, immagine: { tipo: "caricata", dataUrl: PNG_1PX, larghezza: 1, altezza: 1 }, daParteDi: "Luca", ruolo: "  Amico del liceo, da sempre e per sempre, insieme  ", nome: "Luca", cognome: "", email: "" };
     const f1 = await json(await firma(req(`${B}/b/${slug}/firma`, { method: "POST", headers: kf, body: corpo }), ctx({ slug })));
     expect(f1.nuova).toBe(true);
     const f2 = await json(await firma(req(`${B}/b/${slug}/firma`, { method: "POST", headers: kf, body: { ...corpo, immagine: { tipo: "mantieni" }, messaggioHtml: "Auguri di nuovo" } }), ctx({ slug })));
@@ -107,6 +107,8 @@ describe("rotte del biglietto (memoria)", () => {
     const pub2 = await json(await pubblico(req(`${B}/b/${slug}`), ctx({ slug })));
     expect(pub2.biglietto.nFirme).toBe(1);
     expect(pub2.firme[0].nome).toBe("");
+    // il ruolo si vede sul biglietto: ripulito e tagliato a 40 caratteri
+    expect(pub2.firme[0].ruolo).toBe("Amico del liceo, da sempre e per sempre,");
     const org = await json(await firmeOrg(req(`${B}/biglietti/${id}/firme`, { headers: hu }), ctx({ id })));
     expect(org.firme[0].nome).toBe("Luca");
   });

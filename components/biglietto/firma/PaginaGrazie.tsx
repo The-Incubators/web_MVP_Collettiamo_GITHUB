@@ -26,7 +26,7 @@ export function PaginaGrazie({ b, firme, firmaId }: { b: BigliettoPubblico; firm
         <p aria-hidden="true" className="text-4xl">
           🎉
         </p>
-        <h1 className="font-display text-3xl font-medium">Fatto! Il tuo messaggio è sul biglietto</h1>
+        <h1 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Fatto! Il tuo messaggio è sul biglietto</h1>
       </div>
       <div ref={rif} className="h-0 w-full" />
       <Visualizzatore
@@ -54,15 +54,27 @@ export function PaginaGrazie({ b, firme, firmaId }: { b: BigliettoPubblico; firm
         >
           Firma anche tu da questo telefono
         </button>
-        <div className="flex flex-col gap-3 rounded-contenitore border border-line bg-surface p-4">
-          <h2 className="font-semibold">Condividi il link con chi manca</h2>
+        <div className="flex flex-col gap-3 rounded-3xl bg-surface shadow-carta p-4">
+          <h2 className="font-display text-xl font-semibold text-accent-2">Mancano ancora degli amici?</h2>
           <p className="break-all text-sm text-ink-soft">{url}</p>
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <BottoneCopia testo={url} etichetta="Copia il link" piccolo={false} />
-            <a href={linkWhatsApp(messaggio)} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-tocco items-center justify-center rounded-controllo bg-accent px-5 font-semibold text-on-accent hover:bg-accent-2">
-              Apri WhatsApp
+          <div className="flex flex-col gap-2">
+            <BottoneCopia testo={url} etichetta="Copia il link" piccolo={false} pieno />
+            <a
+              href={linkWhatsApp(messaggio)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-azione items-center justify-center rounded-full bg-[#25D366] px-5 font-bold text-[#0b3d21] hover:bg-[#1fbe5b]"
+            >
+              Inoltra nel gruppo WhatsApp
             </a>
           </div>
+        </div>
+        <div className="flex flex-col gap-2 rounded-3xl bg-accent p-5 text-on-accent">
+          <p className="font-display text-xl font-bold">Organizzi anche tu una festa o un regalo?</p>
+          <p className="text-sm opacity-90">Un biglietto di gruppo è gratis, e una colletta si apre in due minuti.</p>
+          <Link href="/biglietto/nuovo" className="mt-1 inline-flex min-h-azione items-center justify-center rounded-full bg-cta px-6 text-[19px] font-bold text-on-cta hover:bg-cta-2">
+            Crea un biglietto gratis
+          </Link>
         </div>
       </div>
     </div>

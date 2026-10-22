@@ -112,7 +112,7 @@ export function EditorFirma({
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="overflow-hidden rounded-contenitore border border-line bg-surface">
+      <div className="overflow-hidden rounded-3xl bg-surface shadow-carta">
         {intestazione}
         {/* zona immagine */}
         <div className="relative flex min-h-[270px] flex-col items-center justify-center gap-4 bg-accent-field p-4">
@@ -135,15 +135,15 @@ export function EditorFirma({
               <p className="text-center font-medium">Aggiungi un’immagine al tuo messaggio</p>
               <div className="flex gap-3">
                 {librerie.gif || librerie.foto ? (
-                  <button type="button" onClick={() => setFinestra("libreria")} className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-contenitore bg-surface text-xs font-semibold shadow-sm ring-1 ring-line hover:ring-accent">
-                    <span aria-hidden="true" className="text-2xl">
+                  <button type="button" onClick={() => setFinestra("libreria")} className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-contenitore bg-surface text-xs font-semibold shadow-sm hover:ring-accent">
+                    <span aria-hidden="true" className="text-2xl font-bold text-accent-2">
                       🎞️
                     </span>
                     Libreria GIF
                   </button>
                 ) : null}
-                <button type="button" onClick={() => setFinestra("carica")} className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-contenitore bg-surface text-xs font-semibold shadow-sm ring-1 ring-line hover:ring-accent">
-                  <span aria-hidden="true" className="text-2xl">
+                <button type="button" onClick={() => setFinestra("carica")} className="flex h-24 w-24 flex-col items-center justify-center gap-1 rounded-contenitore bg-surface text-xs font-semibold shadow-sm hover:ring-accent">
+                  <span aria-hidden="true" className="text-2xl font-bold text-accent-2">
                     ⬆️
                   </span>
                   Carica immagine

@@ -17,12 +17,14 @@ export interface BozzaFirma {
   daParteDi: string;
   nome: string;
   cognome: string;
+  /** ruolo o parentela, facoltativo */
+  ruolo: string;
   email: string;
   /** già firmato da questo dispositivo: si sta modificando */
   modifica: boolean;
 }
 
-export const BOZZA_VUOTA: BozzaFirma = { messaggioHtml: "", stile: STILE_PREDEFINITO, immagine: null, daParteDi: "", nome: "", cognome: "", email: "", modifica: false };
+export const BOZZA_VUOTA: BozzaFirma = { messaggioHtml: "", stile: STILE_PREDEFINITO, immagine: null, daParteDi: "", nome: "", cognome: "", ruolo: "", email: "", modifica: false };
 
 const chiave = (slug: string) => `colletta.firma.${slug}`;
 export const leggiBozzaFirma = (slug: string) => leggiSessione<BozzaFirma>(chiave(slug));

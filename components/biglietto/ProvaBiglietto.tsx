@@ -64,7 +64,7 @@ export function ProvaBiglietto() {
   return (
     <div className="mx-auto flex max-w-dashboard flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl">Prova del biglietto</h1>
+        <h1 className="text-2xl font-bold text-accent-2">Prova del biglietto</h1>
         <p className="text-sm text-ink-soft">Fase 1: copertina e impaginazione automatica con 15 messaggi finti. Pagina interna, non pubblica.</p>
       </header>
 

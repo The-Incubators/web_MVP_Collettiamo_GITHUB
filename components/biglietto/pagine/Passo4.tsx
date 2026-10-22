@@ -32,7 +32,7 @@ function CaroselloAnteprima({ b, librerie }: { b: Biglietto; librerie: Librerie 
           <button type="button" className={freccia} onClick={() => setI(0)} disabled={i === 0} aria-label="Schermata precedente">
             ‹
           </button>
-          <h2 className="text-center font-display text-xl font-bold">Ecco cosa vedrà il gruppo</h2>
+          <h2 className="text-center font-display text-2xl font-bold text-accent-2">Ecco cosa vedrà il gruppo</h2>
           <button type="button" className={freccia} onClick={() => setI(1)} disabled={i === 1} aria-label="Schermata successiva">
             ›
           </button>
@@ -131,7 +131,7 @@ export function Passo4({ id, librerie }: { id: string; librerie: Librerie }) {
             <button type="button" onClick={() => setDettagli(true)} className="min-h-tocco text-sm font-semibold underline underline-offset-4">
               Modifica i dettagli
             </button>
-            <button type="button" onClick={() => void pubblica()} disabled={invio} className="inline-flex min-h-12 items-center rounded-full bg-accent px-5 font-semibold text-on-accent hover:bg-accent-2 disabled:opacity-60">
+            <button type="button" onClick={() => void pubblica()} disabled={invio} className="inline-flex min-h-12 items-center rounded-full bg-cta px-5 text-[19px] font-bold text-on-cta shadow-sollevata hover:bg-cta-2 disabled:opacity-60">
               {invio ? "Un momento…" : b.stato === "bozza" ? "Pubblica e condividi" : "Condividi"}
             </button>
           </div>

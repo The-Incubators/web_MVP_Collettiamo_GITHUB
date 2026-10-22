@@ -44,7 +44,7 @@ export function PannelloStile({ aperto, stile, onStile, onChiudi }: { aperto: bo
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onChiudi}>
       <div role="dialog" aria-modal="true" aria-label="Stile del testo" onClick={(e) => e.stopPropagation()} className="flex max-h-[85dvh] w-full max-w-[600px] flex-col rounded-t-[20px] bg-surface shadow-2xl">
         <div className="flex items-center justify-between px-4 pt-2">
-          <h2 className="font-display text-xl font-bold">Stile del testo</h2>
+          <h2 className="font-display text-xl font-bold text-accent-2">Stile del testo</h2>
           <button ref={chiudi} type="button" onClick={onChiudi} aria-label="Chiudi" className="flex h-11 w-11 items-center justify-center rounded-full text-2xl hover:bg-surface-2">
             <span aria-hidden="true">×</span>
           </button>
@@ -121,7 +121,7 @@ export function PannelloStile({ aperto, stile, onStile, onChiudi }: { aperto: bo
           )}
         </div>
         <div className="border-t border-line p-4">
-          <button type="button" onClick={onChiudi} className="min-h-14 w-full rounded-full bg-accent font-semibold text-on-accent hover:bg-accent-2">
+          <button type="button" onClick={onChiudi} className="min-h-14 w-full rounded-full bg-accent font-bold text-on-accent hover:bg-accent-2">
             Fatto
           </button>
         </div>

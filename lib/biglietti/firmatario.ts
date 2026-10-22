@@ -4,7 +4,7 @@ import { archivioBiglietti } from ".";
 import { chiaveValida, idFirma, nuovaChiave, nuovoId } from "./accesso";
 import { immagineDaDataUrl, nomeDaUrl, urlEsternoAmmesso, urlImmagine } from "./immagini";
 import type { BigliettoServer, FirmaServer } from "./tipi";
-import { emailValida, lunghezzaTesto, MAX_TESTO_MESSAGGIO, ripulisciHtml, stileValido } from "../dominio/biglietti";
+import { emailValida, lunghezzaTesto, MAX_RUOLO, MAX_TESTO_MESSAGGIO, ripulisciHtml, stileValido } from "../dominio/biglietti";
 import type { ImmagineFirma } from "../tipi";
 
 export function chiaveFirmatario(richiesta: Request): string | null {
@@ -64,6 +64,7 @@ export async function salvaFirmaDaCorpo(b: BigliettoServer, chiave: string, c: R
     stile: stileValido(c.stile),
     immagine,
     daParteDi,
+    ruolo: t(c.ruolo, MAX_RUOLO) || null,
     nome,
     cognome: t(c.cognome, 60) || null,
     email: email || null,
