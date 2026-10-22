@@ -1,4 +1,4 @@
-import { Avviso } from "@/components/ui";
+import { Icona } from "@/components/ui";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { classifica, mediaInTesto } from "@/lib/dominio/votazione";
 import type { Colletta, Proposta, Voto } from "@/lib/tipi";
@@ -11,21 +11,26 @@ export function RisultatoVotazione({ colletta: c, proposte, voti }: { colletta: 
   const vincente = ordine.find((x) => x.proposta.id === v.propostaVincenteId) ?? ordine[0];
   return (
     <div className="flex flex-col gap-2">
-      <Avviso tono="positivo" titolo="Il gruppo ha scelto">
-        {vincente ? (
-          <p>
-            Ha vinto <strong>{vincente.proposta.prodotto.nome}</strong>
-            {vincente.nVoti > 0 ? `, con ${mediaInTesto(vincente.media)} stelle di media su ${vincente.nVoti} ${vincente.nVoti === 1 ? "voto" : "voti"}` : ", scelta fra le idee senza voti"}. Ora si
-            parte con la colletta.
-          </p>
-        ) : (
-          <p>La votazione è chiusa. Ora si parte con la colletta.</p>
-        )}
-      </Avviso>
+      <div role="status" className="flex items-start gap-3 rounded-3xl bg-gold-field p-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold-vivo text-ink">
+          <Icona nome="emoji_events" dimensione={22} />
+        </span>
+        <div className="flex min-w-0 flex-col gap-0.5">
+          <p className="font-bold">Il gruppo ha scelto</p>
+          {vincente ? (
+            <p className="text-sm">
+              Ha vinto <strong>{vincente.proposta.prodotto.nome}</strong>
+              {vincente.nVoti > 0 ? ` (${mediaInTesto(vincente.media)} ★ su ${vincente.nVoti} ${vincente.nVoti === 1 ? "voto" : "voti"})` : ""}. Ora si parte con la colletta.
+            </p>
+          ) : (
+            <p className="text-sm">La votazione è chiusa. Ora si parte con la colletta.</p>
+          )}
+        </div>
+      </div>
       {ordine.length > 1 ? (
-        <details className="rounded-controllo border border-line bg-surface p-3">
-          <summary className="min-h-tocco cursor-pointer py-2 text-sm font-semibold">Vedi com’è andata</summary>
-          <ol className="flex flex-col gap-2 pt-2">
+        <details className="rounded-2xl bg-surface px-4 py-1 shadow-carta">
+          <summary className="min-h-tocco cursor-pointer py-3 text-sm font-bold">Vedi com’è andata</summary>
+          <ol className="flex flex-col gap-2 pb-3">
             {ordine.map((x, i) => (
               <li key={x.proposta.id} className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="min-w-0">

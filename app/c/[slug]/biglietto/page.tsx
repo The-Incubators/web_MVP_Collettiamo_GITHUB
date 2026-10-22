@@ -29,16 +29,16 @@ export default async function Biglietto({ params }: Props) {
       {/* Il biglietto si stampa in A5, senza nessun elemento dell'interfaccia. */}
       <style>{"@page { size: A5; margin: 12mm; } @media print { body { background: #fff !important; color: #000 !important; } main { max-width: none !important; padding: 0 !important; } }"}</style>
       <div className="no-stampa mb-6 flex flex-wrap items-center justify-between gap-3">
-        <Link href={`/c/${slug}`} className="inline-flex min-h-tocco items-center text-sm font-semibold text-accent-2 underline underline-offset-4">
+        <Link href={`/c/${slug}`} className="inline-flex min-h-tocco items-center text-sm font-bold text-accent underline underline-offset-4">
           Torna alla colletta
         </Link>
         <BottoneStampa />
       </div>
 
-      <article className="flex flex-col gap-6 rounded-contenitore border border-line bg-surface p-6 print:rounded-none print:border-0 print:p-0">
+      <article className="flex flex-col gap-6 rounded-3xl bg-surface p-6 shadow-carta print:rounded-none print:p-0 print:shadow-none">
         <header className="flex flex-col gap-1 text-center">
-          <p className="text-sm uppercase tracking-wide text-ink-soft">{c.occasione}</p>
-          <h1 className="text-3xl">Per {c.festeggiato}</h1>
+          <p className="text-xs font-bold uppercase tracking-widest text-cta-2">{c.occasione}</p>
+          <h1 className="text-[32px] font-bold leading-tight text-accent-2">Per {c.festeggiato}</h1>
           <p className="text-sm text-ink-soft">{dataLunga(c.dataRegalo)}</p>
         </header>
 
@@ -47,7 +47,7 @@ export default async function Biglietto({ params }: Props) {
         ) : (
           <ul className="flex flex-col gap-4">
             {messaggi.map((r) => (
-              <li key={r.id} className="break-inside-avoid border-l-4 border-accent pl-4">
+              <li key={r.id} className="break-inside-avoid rounded-2xl bg-surface-2 p-4 print:rounded-none print:border-l-4 print:border-black print:bg-transparent print:p-0 print:pl-4">
                 <p className="whitespace-pre-wrap">{r.messaggio}</p>
                 <p className="text-sm font-semibold">— {r.nome}</p>
               </li>
