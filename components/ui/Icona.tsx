@@ -10,14 +10,22 @@ export const ICONE = [
   "auto_awesome",
   "check",
   "check_circle",
+  "checklist_rtl",
+  "chevron_right",
   "close",
   "content_copy",
+  "draw",
   "favorite",
+  "featured_seasonal_and_gifts",
   "grid_view",
+  "group",
   "home",
   "logout",
   "person",
   "redeem",
+  "share",
+  "verified_user",
+  "visibility",
 ] as const;
 
 export type NomeIcona = (typeof ICONE)[number];

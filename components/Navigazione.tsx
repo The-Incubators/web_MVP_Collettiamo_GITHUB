@@ -11,7 +11,7 @@ const VOCI: { href: string; testo: string; icona: NomeIcona }[] = [
   { href: "/catalogo", testo: "Catalogo", icona: "grid_view" },
   { href: "/regalo", testo: "Trova regalo", icona: "auto_awesome" },
   { href: "/preferiti", testo: "Preferiti", icona: "favorite" },
-  { href: "/le-mie-collette", testo: "Collette", icona: "redeem" },
+  { href: "/le-mie-collette", testo: "Collette", icona: "featured_seasonal_and_gifts" },
 ];
 
 /**

@@ -3,7 +3,7 @@ import { DICHIARAZIONE_AFFILIATO_AMAZON } from "@/lib/dominio/amazon";
 import { BarraListaRegali } from "@/components/BarraListaRegali";
 import { MenuProfilo } from "@/components/MenuProfilo";
 import { BarraNavigazione, NavigazioneOrizzontale } from "@/components/Navigazione";
-import { Logo } from "@/components/ui";
+import { Icona, Logo } from "@/components/ui";
 
 /** `modale` è lo slot del popup della scheda prodotto: vuoto quasi sempre (vedi @modale/default.tsx). */
 export default function LayoutSito({ children, modale }: { children: React.ReactNode; modale: React.ReactNode }) {
@@ -22,10 +22,12 @@ export default function LayoutSito({ children, modale }: { children: React.React
       </header>
       <main className="flex-1">{children}</main>
       {modale}
-      <footer className="no-stampa gutter py-8 text-center text-xs text-ink-soft">
-        <div className="mx-auto flex max-w-catalogo flex-col gap-1">
-          <p className="font-semibold text-ink">I soldi non passano mai da qui.</p>
-          <p>{DICHIARAZIONE_AFFILIATO_AMAZON}</p>
+      <footer className="no-stampa gutter pb-6 pt-8 text-center">
+        <div className="mx-auto flex max-w-xs flex-col items-center gap-2">
+          <p className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-4 py-1 text-xs font-bold text-accent shadow-carta">
+            <Icona nome="verified_user" dimensione={18} />I soldi non passano mai da qui.
+          </p>
+          <p className="text-[11px] font-semibold leading-tight text-ink-soft">{DICHIARAZIONE_AFFILIATO_AMAZON}</p>
         </div>
       </footer>
       <BarraListaRegali />
