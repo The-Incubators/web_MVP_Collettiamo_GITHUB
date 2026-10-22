@@ -3,6 +3,14 @@
 Confronto fra l'export (`stitch_regaloop_group_gift_platform/`, 20 schermate + `DESIGN.md`) e il brief `PROMPT_STITCH_UX_V4.md`.
 Serve da lista di controllo durante l'implementazione.
 
+## 0. Decisioni prese (22 ottobre 2026)
+
+- **Schermate mancanti, approccio misto:** in Stitch si generano solo **B3 Chiusura**, **C1.b Votazione** e **C1.j Rendiconto**; tutte le altre si ricavano dai componenti V4.
+- **Wizard di creazione a 5 passi:** Regalo · Per chi e quando · Quota e pagamenti · Chi partecipa · Invita.
+- **Nuove funzioni da aggiungere con UX_V4:** foto nel messaggio della colletta (C1.g) e «Ruolo o parentela» per chi firma il biglietto (E3, D5). Richiedono nuovi campi, regole e test.
+- **Copia di lavoro e pubblicazione:** `web_MVP_Collettiamo_GITHUB`, branch `ux-v4`; V1 recuperabile dal tag `ux-v1`.
+- Le altre proposte «da accettare» della sezione 4 sono accettate.
+
 ## 1. Design system
 
 - `expressive_warmth/DESIGN.md` è una **versione nuova** di Expressive Warmth (non quella di V2/V3): primario **#033922** (verde del logo), CTA principale **arancio #FD5D17 a pillola**, oro #FDB022 per i traguardi, fondo `#f6fbf4`, card `#FFFDF8`, bordi `#E6DFD5`.
