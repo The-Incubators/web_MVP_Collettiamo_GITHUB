@@ -144,25 +144,15 @@ export function Wizard() {
       } catch {
         /* si riparte dal lavoro salvato o da zero */
       }
-      // Dati già raccolti dalle altre varianti (UX_V2 `/v2/crea`, UX_V3 `/v3/crea`): si riparte da lì
-      // invece di rifare le stesse domande. Tutto quello che non si riconosce viene ignorato.
-      const nome = params.get("nome")?.trim();
-      const festeggiato = params.get("festeggiato")?.trim();
+      // L'occasione arriva dal biglietto («Fare un regalo insieme e firmare il biglietto»), le persone dal
+      // catalogo. Un valore che non si riconosce viene ignorato.
       const occasione = OCCASIONI.find((o) => o === params.get("occasione"));
-      const metodi = new Set((params.get("metodi") ?? "").split(",").filter(Boolean));
       const base = statoIniziale(uid, utente.nome);
       setS(
         salvato ?? {
           ...base,
-          ...(nome ? { organizzatoreNome: nome.slice(0, 60) } : {}),
-          ...(festeggiato ? { festeggiato: festeggiato.slice(0, 60) } : {}),
           ...(occasione ? { occasione } : {}),
           ...(Number.isFinite(persone) && persone >= 2 ? { previsti: Math.min(200, Math.round(persone)) } : {}),
-          // Si accende solo la casella: il valore (nome Satispay, IBAN…) si scrive nel passo dei pagamenti.
-          satispayAttivo: base.satispayAttivo || metodi.has("satispay"),
-          paypalAttivo: base.paypalAttivo || metodi.has("paypal"),
-          bonificoAttivo: base.bonificoAttivo || metodi.has("bonifico"),
-          contantiAttivo: base.contantiAttivo || metodi.has("contanti"),
         },
       );
     })();

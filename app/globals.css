@@ -39,56 +39,6 @@
   color-scheme: light;
 }
 
-/*
- * «Regaloop Expressive Warmth»: il design system di UX_V2 e UX_V3, che lo condividono identico
- * (i due DESIGN.md sono lo stesso file). I token vivono solo dentro .tema-warmth, così il sito principale
- * non cambia. `--surface` ed `--error` esistono anche lì: qui dentro cambia il valore, non il
- * nome, e le classi Tailwind seguono. Nessun tema scuro: i colori restano chiari anche col sistema in scuro.
- */
-.tema-warmth {
-  --surface: #f1fcf7;
-  --error: #ba1a1a;
-  --v2-background: #f1fcf7;
-  --v2-on-background: #141e1b;
-  --v2-surface-dim: #d1ddd8;
-  --v2-surface-bright: #f1fcf7;
-  --v2-surface-container-lowest: #ffffff;
-  --v2-surface-container-low: #ebf6f1;
-  --v2-surface-container: #e5f0eb;
-  --v2-surface-container-high: #dfebe6;
-  --v2-surface-container-highest: #dae5e0;
-  --v2-surface-variant: #dae5e0;
-  --v2-on-surface: #141e1b;
-  --v2-on-surface-variant: #404945;
-  --v2-inverse-surface: #28332f;
-  --v2-inverse-on-surface: #e8f3ee;
-  --v2-outline: #717975;
-  --v2-outline-variant: #c0c8c4;
-  --v2-primary: #00251c;
-  --v2-on-primary: #ffffff;
-  --v2-primary-container: #0a3c30;
-  --v2-on-primary-container: #78a797;
-  --v2-primary-fixed: #bceddb;
-  --v2-on-primary-fixed: #002018;
-  --v2-secondary: #ab3500;
-  --v2-on-secondary: #ffffff;
-  --v2-secondary-container: #fe6a34;
-  --v2-secondary-fixed: #ffdbd0;
-  --v2-on-secondary-fixed: #390c00;
-  --v2-tertiary: #3d1100;
-  --v2-tertiary-fixed: #ffdbce;
-  --v2-on-tertiary-fixed: #370e00;
-  --v2-canvas-cream: #f7f3eb;
-  --v2-surface-cream-card: #fffdf8;
-  --v2-border-warm: #e6dfd5;
-  --v2-forest-tint: #e8f2ee;
-  --v2-forest-hover: #072b22;
-  --v2-tangerine-tint: #fff0e8;
-  --v2-gift-gold: #fdb022;
-  --v2-gold-tint: #fef7e6;
-  --v2-text-muted: #56635e;
-  color-scheme: light;
-}
 /* Rispetta la tacca e la barra di sistema del telefono. */
 .pt-safe {
   padding-top: env(safe-area-inset-top, 0px);

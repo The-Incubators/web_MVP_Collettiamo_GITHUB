@@ -16,11 +16,10 @@ describe("varianti di front-end", () => {
 
   it("sceglie la variante chiesta quando esiste ed è pronta", () => {
     expect(varianteUx("v4").id).toBe("v4");
-    expect(varianteUx("v2").id).toBe("v2");
   });
 
-  it("chi aveva scelto UX_V1 (non più in elenco) ricade su UX_V4, sulla stessa rotta", () => {
-    expect(varianteUx("v1").id).toBe("v4");
+  it("chi aveva scelto una variante tolta (V1, V2, V3) ricade su UX_V4", () => {
+    for (const vecchia of ["v1", "v2", "v3"]) expect(varianteUx(vecchia).id).toBe("v4");
   });
 
   it("ripiega sulla predefinita se la variante non esiste o non è scelta", () => {

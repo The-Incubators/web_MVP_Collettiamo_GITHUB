@@ -2,8 +2,8 @@
  * Le varianti di front-end del sito, fra cui si sceglie da «Scegli UX».
  *
  * Il sito di oggi è **UX_V4**, sulle rotte di sempre: ha sostituito UX_V1 (che resta nell'etichetta git
- * `ux-v1`). Le varianti di prova (UX_V2, UX_V3) vivono nelle loro rotte, così nessuna può rompere le altre;
- * una nuova si aggiunge in elenco con `disponibile: true` e il suo `percorso`.
+ * `ux-v1`). Le varianti di prova UX_V2 e UX_V3 sono state tolte quando è arrivata V4 (restano nella storia
+ * di git). Una variante nuova vive nelle sue rotte e si aggiunge qui con `disponibile: true` e il suo `percorso`.
  *
  * La scelta sta in un **cookie** e non in `localStorage` perché così la può leggere anche il server, e la
  * pagina giusta si costruisce subito, senza il lampo della variante sbagliata. Non è un dato sensibile:
@@ -43,24 +43,6 @@ export const VARIANTI_UX: VarianteUx[] = [
     descrizione:
       "Meno testo, una sola azione per schermata, barra in basso sul telefono. Catalogo, «Trova il regalo», colletta e biglietto nel disegno nuovo.",
     percorso: "/",
-    disponibile: true,
-  },
-  {
-    id: "v2",
-    nome: "UX_V2",
-    sommario: "Expressive Warmth, pensata per il telefono",
-    descrizione:
-      "Fondo crema, barra di navigazione in basso sempre a portata di pollice e creazione della colletta guidata in tre passi. È in costruzione: per ora ci sono la home e il primo passo della creazione, il resto del percorso continua nel sito principale.",
-    percorso: "/v2",
-    disponibile: true,
-  },
-  {
-    id: "v3",
-    nome: "UX_V3",
-    sommario: "Interactive Action: simula la quota e parti",
-    descrizione:
-      "Stessi colori di UX_V2, interazione diversa: in home un simulatore che calcola la quota mentre scrivi, catalogo con filtri veri e due modi di sfogliare (griglia o una card alla volta), creazione in tre passi su una pagina sola con l'anteprima del messaggio.",
-    percorso: "/v3",
     disponibile: true,
   },
 ];
