@@ -497,3 +497,14 @@ I file `regaloop*.png` sono stati tolti. Il logo completo ha proporzioni più co
 **Cosa NON è cambiato, di proposito** (come alla sezione 20): la parola «colletta» (è il nome della cosa, non del marchio); le chiavi del browser `colletta.*` e il cookie `regaloop.ux` della scelta d'interfaccia (rinominarli farebbe perdere a chi usa già il sito preferiti, lista e scelta); l'infrastruttura (pacchetto, backend App Hosting `colletta`, database `colletta`, indirizzo `*.hosted.app`), da affrontare insieme a un dominio vero.
 
 **Da decidere:** il verde del nuovo logo (#035C32) è più chiaro del verde dell'interfaccia (`--accent` #033922, il verde del logo Regaloop su cui è costruita la palette V4). Convivono bene, ma non sono la stessa tinta; l'arancio (#FE6801 contro #FD5D17) è quasi identico. Allineare la palette al nuovo logo è un lavoro a parte, da fare guardando i contrasti (il verde nuovo con il bianco regge comunque l'AA).
+
+## 30. Catalogo: filtri riordinati, «Nessun filtro» e categoria «Design»
+
+Richiesta con un mockup (pagina attuale / modifiche da fare) sul foglio dei filtri del catalogo.
+
+- **Ordine:** Prezzo, Per chi, Categoria (prima: Per chi, Tema, Tipo, Prezzo).
+- **«Nessun filtro»** in fondo al prezzo e **«Uomo + Donna»** in fondo a Per chi: tolgono il filtro del gruppo e sono evidenziati quando nel gruppo non è scelto niente. Scelta confermata da Stefano: «Uomo + Donna» vuol dire «mostra tutti», non «solo i prodotti per entrambi» (che sarebbero 177 su 180, quasi la stessa cosa).
+- **Categoria** al posto di Tema e Tipo: Tecnologia, Arredamento, **Design**, Viaggio. «Design» non è un tema nei dati: sono i 50 pezzi del pacchetto «arredamento e design», cioè i prodotti con una sottocategoria (lampade, vasi, specchi, sedie…), tutti anche in Arredamento (che ne conta 103). Nell'indirizzo resta `tema=` (con il valore `design`), così i link condivisi con un tema continuano a valere.
+- **Il filtro per tipo è tolto** (scelta confermata): un link vecchio con `tipo=` si apre e lo ignora, mostrando il catalogo senza quel filtro.
+
+Verificato nel browser a 390 px: il foglio nell'ordine nuovo, «Design» 50 idee, «Arredamento» 103, un vecchio link `tipo=specchi` 180.

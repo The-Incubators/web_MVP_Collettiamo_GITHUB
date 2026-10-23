@@ -4,7 +4,7 @@ import { FiltriCatalogo } from "@/components/FiltriCatalogo";
 import { PERSONE_PREDEFINITE, SchedaProdotto } from "@/components/SchedaProdotto";
 import { Icona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
-import { chiaveSottocategoria, testoRilevazioneCatalogo } from "@/lib/dominio/regali";
+import { testoRilevazioneCatalogo } from "@/lib/dominio/regali";
 import { DESTINATARI, FASCE_PREZZO, TEMI, type Prodotto } from "@/lib/tipi";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +21,20 @@ const PER_PAGINA = 24;
  * Tutto lo stato della pagina vive nell'indirizzo, così la pagina filtrata si può condividere:
  * filtri, ricerca (`q`), persone della simulazione e quanti prodotti si vedono (`mostra`).
  */
-type Stato = { per?: string; tema?: string; tipo?: string; fascia?: string; q?: string; persone?: string; mostra?: string };
+type Stato = { per?: string; tema?: string; fascia?: string; q?: string; persone?: string; mostra?: string };
+
+/**
+ * Le categorie del filtro: i tre temi del catalogo più «Design», che non è un tema nei dati ma sono i pezzi
+ * del pacchetto «arredamento e design», cioè i prodotti con un tipo (lampade, vasi, specchi…). Il vecchio
+ * filtro per tipo (`tipo=` nell'indirizzo) non c'è più: un link che lo porta ancora si apre e lo ignora.
+ */
+const DESIGN = "design";
+const CATEGORIE: { valore: string; etichetta: string }[] = [
+  { valore: "tecnologia", etichetta: "Tecnologia" },
+  { valore: "arredamento", etichetta: "Arredamento" },
+  { valore: DESIGN, etichetta: "Design" },
+  { valore: "viaggio", etichetta: "Viaggio" },
+];
 
 const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const normalizza = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -35,17 +48,30 @@ function href(attuale: Stato, cambia: Partial<Stato>): string {
   return s ? `/catalogo?${s}` : "/catalogo";
 }
 
-function GruppoFiltro({ titolo, chiave, opzioni, stato }: { titolo: string; chiave: keyof Stato; opzioni: { valore: string; etichetta: string }[]; stato: Stato }) {
+/** Un gruppo di pillole a scelta singola. `tutti` aggiunge in fondo la voce che toglie il filtro («Nessun filtro»). */
+function GruppoFiltro({
+  titolo,
+  chiave,
+  opzioni,
+  stato,
+  tutti,
+}: {
+  titolo: string;
+  chiave: keyof Stato;
+  opzioni: { valore: string; etichetta: string }[];
+  stato: Stato;
+  tutti?: string;
+}) {
   return (
     <div role="group" aria-label={titolo} className="flex flex-col gap-2">
       <h3 className="font-sans text-xs font-bold uppercase tracking-widest text-ink-soft">{titolo}</h3>
       <ul className="flex flex-wrap gap-2">
-        {opzioni.map((o) => {
-          const attivo = stato[chiave] === o.valore;
+        {[...opzioni, ...(tutti ? [{ valore: "", etichetta: tutti }] : [])].map((o) => {
+          const attivo = o.valore ? stato[chiave] === o.valore : !stato[chiave];
           return (
             <li key={o.valore}>
               <Link
-                href={href(stato, { [chiave]: attivo ? undefined : o.valore })}
+                href={href(stato, { [chiave]: attivo || !o.valore ? undefined : o.valore })}
                 scroll={false}
                 aria-current={attivo ? "true" : undefined}
                 className={`inline-flex min-h-tocco items-center gap-1 rounded-full px-4 text-sm font-semibold transition-colors ${
@@ -72,17 +98,13 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
   const prendi = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : undefined);
   const dati = datiServer();
   const tutti = await dati.elencaProdotti();
-  // Le sottocategorie (lampade, vasi, specchi…) si offrono se esistono; il filtro vale solo se la chiave è una di queste.
-  const tipi = [...new Map(tutti.filter((p) => p.sottocategoria).map((p) => [chiaveSottocategoria(p.sottocategoria as string), p.sottocategoria as string])).entries()]
-    .map(([valore, etichetta]) => ({ valore, etichetta }))
-    .sort((a, b) => a.etichetta.localeCompare(b.etichetta, "it"));
   // Si offrono solo le fasce di prezzo in cui c'è qualcosa.
   const fasce = FASCE_PREZZO.filter((f) => tutti.some((p) => p.prezzoCent > f.minCent && p.prezzoCent <= f.maxCent));
 
+  const design = prendi("tema") === DESIGN;
   const filtri = {
     per: DESTINATARI.find((o) => o === prendi("per")),
     tema: TEMI.find((c) => c === prendi("tema")),
-    tipo: tipi.find((t) => t.valore === prendi("tipo"))?.valore,
     fascia: FASCE_PREZZO.find((f) => f.id === prendi("fascia"))?.id,
   };
   const cerca = (prendi("q") ?? "").trim().slice(0, 60);
@@ -90,22 +112,22 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
   const mostra = Math.max(PER_PAGINA, Math.floor(Number(prendi("mostra"))) || PER_PAGINA);
   const stato: Stato = {
     ...filtri,
+    tema: filtri.tema ?? (design ? DESIGN : undefined),
     q: cerca || undefined,
     persone: persone !== PERSONE_PREDEFINITE ? String(persone) : undefined,
     mostra: mostra !== PER_PAGINA ? String(mostra) : undefined,
   };
 
-  const filtrati = await dati.elencaProdotti(filtri);
+  const filtrati = (await dati.elencaProdotti(filtri)).filter((p) => !design || !!p.sottocategoria);
   const prodotti = cerca ? filtrati.filter((p) => cercaNelTesto(p, normalizza(cerca))) : filtrati;
   const visibili = prodotti.slice(0, mostra);
-  const nFiltri = Object.values(filtri).filter(Boolean).length;
+  const nFiltri = [stato.per, stato.tema, stato.fascia].filter(Boolean).length;
   const conteggio = prodotti.length === 1 ? "1 idea" : `${prodotti.length} idee`;
 
   // le etichette dei filtri attivi, ognuna con il suo collegamento per toglierla
   const etichette: { testo: string; via: string }[] = [
     ...(filtri.per ? [{ testo: `Per ${filtri.per}`, via: href(stato, { per: undefined }) }] : []),
-    ...(filtri.tema ? [{ testo: maiuscola(filtri.tema), via: href(stato, { tema: undefined }) }] : []),
-    ...(filtri.tipo ? [{ testo: tipi.find((t) => t.valore === filtri.tipo)?.etichetta ?? filtri.tipo, via: href(stato, { tipo: undefined }) }] : []),
+    ...(stato.tema ? [{ testo: CATEGORIE.find((c) => c.valore === stato.tema)?.etichetta ?? maiuscola(stato.tema), via: href(stato, { tema: undefined }) }] : []),
     ...(filtri.fascia ? [{ testo: FASCE_PREZZO.find((f) => f.id === filtri.fascia)?.etichetta ?? "", via: href(stato, { fascia: undefined }) }] : []),
     ...(cerca ? [{ testo: `«${cerca}»`, via: href(stato, { q: undefined }) }] : []),
   ];
@@ -124,7 +146,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
         <div className="flex items-center gap-2">
           {/* un modulo GET: la ricerca finisce nell'indirizzo come i filtri, e funziona anche senza JavaScript */}
           <form action="/catalogo" role="search" className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-full bg-surface px-4 shadow-carta focus-within:ring-2 focus-within:ring-accent">
-            {Object.entries({ ...filtri, persone: stato.persone }).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
+            {Object.entries({ per: stato.per, tema: stato.tema, fascia: stato.fascia, persone: stato.persone }).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
             <Icona nome="search" dimensione={22} className="text-ink-soft" />
             <label htmlFor="cerca-catalogo" className="sr-only">
               Cerca nel catalogo
@@ -140,12 +162,12 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             />
           </form>
           <FiltriCatalogo attivi={nFiltri} conteggio={conteggio}>
-            <GruppoFiltro titolo="Per chi" chiave="per" stato={stato} opzioni={DESTINATARI.map((o) => ({ valore: o, etichetta: maiuscola(o) }))} />
-            <GruppoFiltro titolo="Tema" chiave="tema" stato={stato} opzioni={TEMI.map((c) => ({ valore: c, etichetta: maiuscola(c) }))} />
-            {tipi.length > 0 ? <GruppoFiltro titolo="Tipo (arredamento e design)" chiave="tipo" stato={stato} opzioni={tipi} /> : null}
-            <GruppoFiltro titolo="Prezzo" chiave="fascia" stato={stato} opzioni={fasce.map((f) => ({ valore: f.id, etichetta: f.etichetta }))} />
+            <GruppoFiltro titolo="Prezzo" chiave="fascia" stato={stato} opzioni={fasce.map((f) => ({ valore: f.id, etichetta: f.etichetta }))} tutti="Nessun filtro" />
+            {/* «Uomo + Donna» è «nessun filtro per genere»: quasi tutto il catalogo è pensato per entrambi */}
+            <GruppoFiltro titolo="Per chi" chiave="per" stato={stato} opzioni={DESTINATARI.map((o) => ({ valore: o, etichetta: maiuscola(o) }))} tutti="Uomo + Donna" />
+            <GruppoFiltro titolo="Categoria" chiave="tema" stato={stato} opzioni={CATEGORIE} />
             {nFiltri > 0 ? (
-              <Link href={href(stato, { per: undefined, tema: undefined, tipo: undefined, fascia: undefined })} scroll={false} className="self-start text-sm font-bold text-cta-2 underline underline-offset-4">
+              <Link href={href(stato, { per: undefined, tema: undefined, fascia: undefined })} scroll={false} className="self-start text-sm font-bold text-cta-2 underline underline-offset-4">
                 Azzera i filtri
               </Link>
             ) : null}
