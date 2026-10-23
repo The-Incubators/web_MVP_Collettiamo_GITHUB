@@ -27,9 +27,12 @@ export default async function Home() {
   return (
     <div className="gutter pb-10 pt-4 sm:pt-10">
       <div className="mx-auto flex max-w-lg flex-col gap-8">
-        <section className="flex flex-col items-start gap-4">
-          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Il regalo di gruppo, senza dover rincorrere tutti.</h1>
-          <p className="text-ink-soft">Un link, tutti dentro, tu sai chi manca.</p>
+        <section className="flex flex-col items-center gap-4 text-center">
+          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-ink">Il regalo di gruppo, senza dover rincorrere tutti.</h1>
+          <p className="font-semibold italic text-ink-soft">
+            Un solo link, tutti dentro,
+            <br />e tu sai sempre chi manca…
+          </p>
           <div className="flex w-full flex-col gap-2 pt-1">
             <BottoneLink href="/catalogo" variante="azione" pieno className="px-4">
               Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
