@@ -477,3 +477,23 @@ Materiale in `Pagine_UX_V4/`: il brief per Stitch (`PROMPT_STITCH_UX_V4.md`), l'
 **Rimandato a dopo il rilascio:** la foto nel messaggio del biglietto della colletta (nuovo campo, caricamento, regole e test).
 
 **Verifiche.** Tipi, lint, 136 test e build passano. Ogni gruppo è stato percorso nel browser a 390 px in modalità senza Firebase, con un browser pilotato via DevTools Protocol: home, catalogo con filtri, scheda prodotto, Trova il regalo fino ai risultati, preferiti, accesso; wizard dal prodotto all'apertura, dashboard, chiusura; partecipante dalla prima schermata allo stato, rendiconto e votazione (con dati simulati); biglietto: primo passo di chi organizza e tutto il percorso di chi firma, ruolo compreso. **Non verificato:** nulla con Firebase vero (accesso Google, scritture reali, firme lette dal database), nessun telefono reale, e le pagine di chi organizza il biglietto dal secondo passo in poi (dettagli, copertina, anteprima, gestione), che hanno preso lo stile dai componenti comuni ma non sono state guardate a schermo.
+
+## 29. Da «Regaloop» a «Gifty»: nome e logo
+
+Richiesta: cambiare nome e logo del progetto in **Gifty**, con il logo consegnato, su tutte le pagine.
+
+**Il logo.** L'originale (PNG 2066×761 con fondo trasparente) è in `marchio/gifty-originale.png`; gli asset si ricavano con `scripts/genera_marchio.py` (solo libreria standard, rilanciato: dà file identici). Lo script toglie l'alone semitrasparente del ritaglio (alfa sotto 40, dove stavano le macchioline rosse visibili attorno alle forme) e cerca puntini staccati (non ce n'erano), ritaglia al disegno e riduce con media a scatola su alfa premoltiplicato. Colori del marchio campionati: **arancio #FE6801**, **verde #035C32**.
+
+| file | cosa è | uso |
+|---|---|---|
+| `public/logo/gifty.png` (350×120) | logo completo | intestazioni del sito, della pagina di chi partecipa e del biglietto (36 px di altezza) |
+| `public/logo/gifty-icona.png` (256×256) | la scatola regalo, quadrata | sorgente della favicon (`app/icon.png`, uguale) |
+| `public/logo/gifty-icona-chiara.png` (256×256) | la scatola con il verde schiarito (#E7EFEA) | anteprime social, che hanno il fondo verde scuro #0B5E4C, dove il verde del logo sparirebbe |
+
+I file `regaloop*.png` sono stati tolti. Il logo completo ha proporzioni più compatte del vecchio (2,9:1 contro 3,8:1): alle intestazioni è passato da 28 a 36 px di altezza, per occupare circa lo stesso spazio.
+
+**Dove è cambiato il nome:** `metadata` (titolo, modello `%s · Gifty`, `applicationName`), `siteName` dell'anteprima della colletta, nome nelle due immagini social (`NOME_PROGETTO` in `lib/marchio.ts`), occhiello della home, testi «Gifty non tocca i tuoi soldi» (partecipante, wizard, scheda prodotto, votazione, rendiconto), etichette accessibili del logo, README.
+
+**Cosa NON è cambiato, di proposito** (come alla sezione 20): la parola «colletta» (è il nome della cosa, non del marchio); le chiavi del browser `colletta.*` e il cookie `regaloop.ux` della scelta d'interfaccia (rinominarli farebbe perdere a chi usa già il sito preferiti, lista e scelta); l'infrastruttura (pacchetto, backend App Hosting `colletta`, database `colletta`, indirizzo `*.hosted.app`), da affrontare insieme a un dominio vero.
+
+**Da decidere:** il verde del nuovo logo (#035C32) è più chiaro del verde dell'interfaccia (`--accent` #033922, il verde del logo Regaloop su cui è costruita la palette V4). Convivono bene, ma non sono la stessa tinta; l'arancio (#FE6801 contro #FD5D17) è quasi identico. Allineare la palette al nuovo logo è un lavoro a parte, da fare guardando i contrasti (il verde nuovo con il bianco regge comunque l'AA).

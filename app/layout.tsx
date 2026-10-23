@@ -22,10 +22,10 @@ const testo = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl()),
-  title: { default: "Regaloop · Il regalo di gruppo, senza dover rincorrere tutti", template: "%s · Regaloop" },
+  title: { default: "Gifty · Il regalo di gruppo, senza dover rincorrere tutti", template: "%s · Gifty" },
   description:
     "Un unico link per coinvolgere tutti e seguire i contributi: sai chi ha partecipato, chi manca e a che punto siete. I soldi arrivano direttamente a te.",
-  applicationName: "Regaloop",
+  applicationName: "Gifty",
 };
 
 export const viewport: Viewport = {

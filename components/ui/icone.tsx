@@ -165,5 +165,5 @@ export const IconaInfo = (p: PropsIcona) => (
   </Base>
 );
 
-/* Il vecchio marchio disegnato (biglietto con tre punti) è stato sostituito dal logo Regaloop:
+/* Il vecchio marchio disegnato (biglietto con tre punti) è stato sostituito dal logo del marchio (oggi Gifty):
    vedi components/ui/Logo.tsx. */

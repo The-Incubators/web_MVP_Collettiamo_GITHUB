@@ -33,7 +33,7 @@ export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
       </div>
       <p className="flex items-start gap-2 rounded-2xl bg-cta-field p-3 text-sm font-semibold">
         <Icona nome="verified_user" dimensione={20} className="text-cta-2" />
-        I soldi arrivano direttamente a te: Regaloop non li tocca. Questi dati li vede solo chi apre il link.
+        I soldi arrivano direttamente a te: Gifty non li tocca. Questi dati li vede solo chi apre il link.
       </p>
 
       {errori.metodi ? (

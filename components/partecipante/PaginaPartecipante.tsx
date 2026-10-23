@@ -209,7 +209,7 @@ export function PaginaPartecipante({
               </Bottone>
             </div>
             <p className="px-4 text-center text-xs font-semibold leading-relaxed text-ink-soft">
-              I soldi vanno direttamente a {c.organizzatoreNome}. Regaloop non li tocca.
+              I soldi vanno direttamente a {c.organizzatoreNome}. Gifty non li tocca.
             </p>
           </>
         ) : null}

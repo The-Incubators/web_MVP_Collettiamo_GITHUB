@@ -130,7 +130,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
       </section>
 
       <p className="inline-flex items-center justify-center gap-1 text-xs font-bold text-accent">
-        <Icona nome="verified_user" dimensione={16} />I soldi non passano mai da Regaloop.
+        <Icona nome="verified_user" dimensione={16} />I soldi non passano mai da Gifty.
       </p>
     </div>
   );

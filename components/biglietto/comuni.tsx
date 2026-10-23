@@ -77,8 +77,8 @@ export function IntestazioneWizard({
           {titolo ? (
             <h1 className="text-center font-display text-xl font-bold text-accent-2">{titolo}</h1>
           ) : (
-            <Link href="/" className="mx-auto inline-flex min-h-tocco items-center" aria-label="Regaloop, vai alla home">
-              <Logo />
+            <Link href="/" className="mx-auto inline-flex min-h-tocco items-center" aria-label="Gifty, vai alla home">
+              <Logo className="h-9" />
             </Link>
           )}
           <span className="flex min-w-11 justify-end">

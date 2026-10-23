@@ -9,9 +9,9 @@
  * pagina giusta si costruisce subito, senza il lampo della variante sbagliata. Non è un dato sensibile:
  * la scrive il browser, e il server si limita a leggerla.
  *
- * Il nome del cookie usa il marchio nuovo (`regaloop.`), a differenza delle chiavi già in giro
- * (`colletta.preferiti`, `colletta.listaRegali`), che hanno il vecchio prefisso solo per non far perdere
- * a chi già usa il sito quello che aveva salvato (vedi sezione 20 di DECISIONI.md).
+ * Il nome del cookie usa il marchio di quando è nato (`regaloop.`; oggi il progetto si chiama Gifty) e non si
+ * rinomina, perché chi ha già scelto non perda la scelta. Per lo stesso motivo le chiavi più vecchie
+ * (`colletta.preferiti`, `colletta.listaRegali`) tengono il prefisso di prima ancora (vedi DECISIONI.md, sezioni 20 e 29).
  */
 
 export const COOKIE_UX = "regaloop.ux";

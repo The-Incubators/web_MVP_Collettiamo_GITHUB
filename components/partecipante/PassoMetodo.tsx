@@ -128,7 +128,7 @@ export function PassoMetodo({
       <p className="flex items-start gap-3 rounded-2xl bg-surface-2 p-4 text-sm text-ink-soft">
         <Icona nome="lock" dimensione={20} className="mt-0.5" />
         <span>
-          <strong className="text-ink">Regaloop non tocca i tuoi soldi:</strong> paghi direttamente {c.organizzatoreNome}.
+          <strong className="text-ink">Gifty non tocca i tuoi soldi:</strong> paghi direttamente {c.organizzatoreNome}.
         </span>
       </p>
     </div>

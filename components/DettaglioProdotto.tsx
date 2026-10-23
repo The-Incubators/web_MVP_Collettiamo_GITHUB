@@ -89,7 +89,7 @@ export function DettaglioProdotto({ p, comeTitolo = "h1", indietro }: { p: Prodo
           <div className="flex flex-col items-center gap-1 rounded-2xl p-2 text-center text-xs font-semibold text-ink-soft">
             <p>Prezzo rilevato il {testoGiornoRilevazione(p.rilevatoIl ?? "2026-10-14")}: su Amazon.it può essere cambiato.</p>
             <p className="inline-flex items-center gap-1">
-              <Icona nome="lock" dimensione={14} />I soldi della colletta non passano da Regaloop.
+              <Icona nome="lock" dimensione={14} />I soldi della colletta non passano da Gifty.
             </p>
           </div>
         </div>

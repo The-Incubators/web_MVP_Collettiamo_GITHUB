@@ -11,8 +11,8 @@ export default function LayoutSito({ children, modale }: { children: React.React
     <div className="flex min-h-dvh flex-col">
       <header className="no-stampa gutter sticky top-0 z-40 bg-field/90 pt-safe backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-catalogo items-center justify-between gap-4">
-          <Link href="/" className="inline-flex min-h-tocco items-center" aria-label="Regaloop, vai alla home">
-            <Logo priorita className="h-7" />
+          <Link href="/" className="inline-flex min-h-tocco items-center" aria-label="Gifty, vai alla home">
+            <Logo priorita className="h-9" />
           </Link>
           <div className="flex items-center gap-3">
             <NavigazioneOrizzontale />

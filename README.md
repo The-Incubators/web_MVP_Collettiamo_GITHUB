@@ -1,4 +1,4 @@
-# Regaloop (Colletta)
+# Gifty (Colletta)
 
 Web app per organizzare un regalo di gruppo in Italia: si sceglie il regalo, il gruppo vota, ognuno paga la sua quota e si firma un biglietto digitale. Nome di progetto: «Cosa gli regaliamo?». Nel codice e nell'infrastruttura il nome resta `colletta`.
 

@@ -244,7 +244,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
       <div className="flex flex-col items-center gap-1 rounded-2xl bg-surface-2 p-4 text-center">
         <p className="text-xs font-semibold text-ink-soft">{DICHIARAZIONE_AFFILIATO_AMAZON}</p>
         <p className="inline-flex items-center gap-1 text-xs font-bold text-accent">
-          <Icona nome="verified_user" dimensione={16} />I soldi non passano mai da Regaloop.
+          <Icona nome="verified_user" dimensione={16} />I soldi non passano mai da Gifty.
         </p>
       </div>
       {apriForm && nuovo && mie < MAX_PROPOSTE_PER_PERSONA && !scaduta ? (

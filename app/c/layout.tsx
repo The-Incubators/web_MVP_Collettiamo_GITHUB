@@ -5,7 +5,7 @@ export default function LayoutPartecipante({ children }: { children: React.React
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-partecipante flex-col">
       <header className="no-stampa gutter flex h-16 items-center justify-between pt-safe">
-        <Logo priorita className="h-7" />
+        <Logo priorita className="h-9" />
         <span className="inline-flex items-center gap-1 rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink-soft">
           <Icona nome="lock" dimensione={14} />
           Link privato

@@ -27,7 +27,7 @@ export default async function Home() {
         <section className="flex flex-col items-start gap-4">
           <p className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-4 py-1 text-xs font-bold tracking-wide text-accent-2">
             <span aria-hidden="true" className="h-2 w-2 rounded-full bg-cta" />
-            Regaloop
+            Gifty
           </p>
           <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Il regalo di gruppo, senza dover rincorrere tutti.</h1>
           <p className="text-ink-soft">Un link, tutti dentro, tu sai chi manca.</p>

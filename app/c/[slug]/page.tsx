@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: "website",
       locale: "it_IT",
-      siteName: "Regaloop",
+      siteName: "Gifty",
       url: `/c/${slug}`,
       title: titolo,
       description: descrizione,
