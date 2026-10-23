@@ -516,3 +516,15 @@ Richiesta: sotto «Crea un biglietto» nella home, un pulsante che mostri un big
 - **Pagina** `/biglietto/esempio` (fuori dai motori di ricerca), componente `components/biglietto/EsempioBiglietto.tsx`. Usa lo stesso `Visualizzatore` dei biglietti veri e si apre sulla pagina 2; la copertina («Palloncini», «Buon compleanno Giulia!») è una pagina indietro. In fondo, «Crea il tuo biglietto».
 - **Tutto inventato e dichiarato come tale** («Nomi, messaggi e foto sono di esempio»): nulla viene letto dal database né salvato. Ogni messaggio ha un carattere e un colore diversi e il ruolo («Collega», «Famiglia»…), così si vedono anche lo stile del testo e il campo della sezione 28.
 - **Le «foto» sono illustrazioni** generate nella pagina (sfumatura ed emoji), come nella pagina di prova interna: niente immagini di persone vere. Sono larghe e basse (5:2) perché i cinque messaggi stiano tutti nella pagina 2 su due colonne (verificato: «2 di 2»).
+
+## 32. Catalogo: filtro «Età», niente «Uomo + Donna», «Categoria regalo»
+
+Richiesta con un mockup sul foglio dei filtri: togliere «Uomo + Donna», aggiungere un filtro **Età** (Bambino, Adolescente, Ragazzo, Adulto), chiamare la categoria «Categoria regalo».
+
+- **L'età non c'è nei dati** (i file Excel non hanno una colonna, e cercando «bambino», «ragazzo», «gioco» nei testi esce un solo prodotto). Scelta di Stefano: la classificazione la faccio io, editorialmente, leggendo nome e descrizione dei 180 prodotti. Fasce scelte: **Bambino 0–12, Adolescente 13–17, Ragazzo 18–29, Adulto 30+**; un prodotto può stare in più fasce. Risultato: Ragazzo 155, Adulto 145, Adolescente 64, Bambino 7 (il catalogo è pensato per adulti: i «bambino» sono lampade e oggetti da cameretta, la mappa da colorare, la borraccia piccola).
+- **Dove sta:** `lib/dati/eta-prodotti.ts`, per codice PRD-nnn (stabile se cambia il nome), fuori dai file generati dall'Excel, così una nuova importazione non la cancella. Il test `lib/dati/eta-prodotti.test.ts` **fallisce se un prodotto del catalogo non ha età** (un prodotto nuovo va classificato) o se ci sono codici di prodotti che non esistono più.
+- **Il filtro** è nell'indirizzo (`eta=`), come gli altri; si offrono solo le fasce con almeno un prodotto, come per il prezzo. Un valore sconosciuto viene ignorato.
+- **«Uomo + Donna» tolto:** per tornare a tutti si tocca di nuovo la voce scelta, come negli altri gruppi. Prezzo tiene il suo «Nessun filtro», come nel mockup.
+- **Da rivedere:** la classificazione è un giudizio, non un dato: va controllata da chi conosce il catalogo.
+
+Verificato nel browser a 390 px: foglio nell'ordine Prezzo, Per chi, Età, Categoria regalo; Bambino 7, Adolescente 64, Adulto + Design 43; `eta=inventata` 180.
