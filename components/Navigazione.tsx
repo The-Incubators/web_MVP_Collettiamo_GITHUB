@@ -56,9 +56,10 @@ export function BarraNavigazione() {
                 <Link
                   href={v.href}
                   aria-current={corrente ? "page" : undefined}
-                  className={`flex min-h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-bold ${corrente ? "text-cta-2" : "text-ink-soft"}`}
+                  className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-bold leading-none ${corrente ? "text-cta-2" : "text-ink-soft"}`}
                 >
-                  <span className="relative">
+                  {/* flex, non in riga: un'icona in riga si porta sotto lo spazio della linea di base (8 px in più) */}
+                  <span className="relative flex">
                     <Icona nome={v.icona} piena={corrente} />
                     {v.href === "/preferiti" ? <ContatorePreferiti n={preferiti.size} /> : null}
                   </span>
