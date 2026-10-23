@@ -11,10 +11,13 @@ export const dynamic = "force-dynamic";
 /** Le stesse 12 persone che il calcolatore della scheda prodotto propone come punto di partenza. */
 const PERSONE_ESEMPIO = 12;
 
-const PASSI: { titolo: string; testo: string; icona: NomeIcona; tinta: string }[] = [
+/** I passi di «Come funziona». Senza `testo` il titolo va su più righe; `icona: null` mostra la scatola del logo. */
+const PASSI: { titolo: string; testo?: string; icona: NomeIcona | null; tinta: string }[] = [
+  { titolo: "Usa il nostro motore di ricerca per filtrare il catalogo", icona: "auto_awesome", tinta: "bg-cta-field text-cta-2" },
   { titolo: "Scegli il regalo", testo: "Dal nostro catalogo, o da un link", icona: "redeem", tinta: "bg-ok-field text-accent" },
   { titolo: "Manda un link", testo: "Nella chat WhatsApp del gruppo", icona: "share", tinta: "bg-cta-field text-cta-2" },
   { titolo: "Noi teniamo il conto", testo: "Vedi chi ha pagato, senza chiedere", icona: "checklist_rtl", tinta: "bg-gold-field text-gold" },
+  { titolo: "Crea un biglietto di auguri che tutti possano firmare facilmente", icona: null, tinta: "bg-surface ring-2 ring-accent" },
 ];
 
 export default async function Home() {
@@ -46,26 +49,31 @@ export default async function Home() {
             <h2 id="come-funziona" className="text-xl font-semibold text-accent-2">
               Come funziona
             </h2>
-            <span className="text-xs font-semibold text-ink-soft">3 semplici passi</span>
+            <span className="text-xs font-semibold text-ink-soft">{PASSI.length} semplici passi</span>
           </div>
           <ol className="flex flex-col gap-1.5">
             {PASSI.map((p, i) => (
               <li key={p.titolo} className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-carta">
                 <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${p.tinta}`}>
-                  <Icona nome={p.icona} />
+                  {p.icona ? (
+                    <Icona nome={p.icona} />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src="/logo/gifty-icona.png" alt="" width={26} height={26} className="h-[26px] w-[26px]" />
+                  )}
                 </span>
                 <span className="flex min-w-0 flex-col">
                   <span className="text-sm font-bold text-accent-2">
                     {i + 1}. {p.titolo}
                   </span>
-                  <span className="truncate text-sm text-ink-soft">{p.testo}</span>
+                  {p.testo ? <span className="truncate text-sm text-ink-soft">{p.testo}</span> : null}
                 </span>
               </li>
             ))}
           </ol>
         </section>
 
-        <section className="flex flex-col gap-4 rounded-3xl bg-surface-2 p-6 shadow-carta">
+        <section className="flex flex-col gap-4 rounded-3xl border-2 border-line-forte bg-surface-2 p-6 shadow-carta">
           <div className="flex items-start justify-between">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-field text-gold shadow-carta">
               <Icona nome="favorite" dimensione={28} piena />
