@@ -96,10 +96,19 @@ export default async function Home() {
             </div>
             <span className="pl-1 text-xs font-semibold text-ink-soft">«Buon compleanno Marco! 🎉»</span>
           </div>
-          <BottoneLink href="/biglietto/nuovo" variante="azione" pieno>
-            <Icona nome="draw" dimensione={20} />
-            Crea un biglietto
-          </BottoneLink>
+          <div className="flex flex-col gap-2">
+            <BottoneLink href="/biglietto/nuovo" variante="azione" pieno>
+              <Icona nome="draw" dimensione={20} />
+              Crea un biglietto
+            </BottoneLink>
+            <Link
+              href="/biglietto/esempio"
+              className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
+            >
+              <Icona nome="visibility" dimensione={18} />
+              Guarda un esempio
+            </Link>
+          </div>
         </section>
 
         <section className="flex items-start gap-4 rounded-2xl bg-surface p-4 shadow-carta">

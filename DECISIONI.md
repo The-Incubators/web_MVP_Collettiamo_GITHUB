@@ -508,3 +508,11 @@ Richiesta con un mockup (pagina attuale / modifiche da fare) sul foglio dei filt
 - **Il filtro per tipo è tolto** (scelta confermata): un link vecchio con `tipo=` si apre e lo ignora, mostrando il catalogo senza quel filtro.
 
 Verificato nel browser a 390 px: il foglio nell'ordine nuovo, «Design» 50 idee, «Arredamento» 103, un vecchio link `tipo=specchi` 180.
+
+## 31. Biglietto di esempio («Guarda un esempio»)
+
+Richiesta: sotto «Crea un biglietto» nella home, un pulsante che mostri un biglietto già firmato da cinque persone, con messaggi e piccole foto nella pagina 2.
+
+- **Pagina** `/biglietto/esempio` (fuori dai motori di ricerca), componente `components/biglietto/EsempioBiglietto.tsx`. Usa lo stesso `Visualizzatore` dei biglietti veri e si apre sulla pagina 2; la copertina («Palloncini», «Buon compleanno Giulia!») è una pagina indietro. In fondo, «Crea il tuo biglietto».
+- **Tutto inventato e dichiarato come tale** («Nomi, messaggi e foto sono di esempio»): nulla viene letto dal database né salvato. Ogni messaggio ha un carattere e un colore diversi e il ruolo («Collega», «Famiglia»…), così si vedono anche lo stile del testo e il campo della sezione 28.
+- **Le «foto» sono illustrazioni** generate nella pagina (sfumatura ed emoji), come nella pagina di prova interna: niente immagini di persone vere. Sono larghe e basse (5:2) perché i cinque messaggi stiano tutti nella pagina 2 su due colonne (verificato: «2 di 2»).
