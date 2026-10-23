@@ -25,22 +25,18 @@ export default async function Home() {
     <div className="gutter pb-10 pt-4 sm:pt-10">
       <div className="mx-auto flex max-w-lg flex-col gap-8">
         <section className="flex flex-col items-start gap-4">
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-4 py-1 text-xs font-bold tracking-wide text-accent-2">
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-cta" />
-            Gifty
-          </p>
           <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Il regalo di gruppo, senza dover rincorrere tutti.</h1>
           <p className="text-ink-soft">Un link, tutti dentro, tu sai chi manca.</p>
           <div className="flex w-full flex-col gap-2 pt-1">
-            <BottoneLink href="/catalogo" pieno>
-              Organizza un regalo <Icona nome="arrow_forward" dimensione={20} />
+            <BottoneLink href="/catalogo" variante="azione" pieno className="px-4">
+              Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
             </BottoneLink>
             <Link
               href={`/c/${SLUG_DEMO}`}
-              className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-surface-2 px-4 text-sm font-semibold text-accent transition-colors hover:bg-line"
+              className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
             >
               <Icona nome="visibility" dimensione={18} />
-              Guarda cosa vede chi partecipa
+              Guarda cosa vedranno i partecipanti
             </Link>
           </div>
         </section>
