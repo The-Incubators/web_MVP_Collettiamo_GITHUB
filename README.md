@@ -4,6 +4,18 @@ Web app per organizzare un regalo di gruppo in Italia: si sceglie il regalo, il 
 
 **Principio fondante:** i soldi non passano mai dal servizio. Chi partecipa paga direttamente chi organizza (PayPal, Satispay, IBAN, contanti).
 
+## Direttrice del prossimo sviluppo
+
+La [specifica dettagliata Gifty](docs/product/gifty/Gifty-flussi-e-decisioni.md) del 24 ottobre 2026 guida le nuove modifiche di prodotto. Distingue decisioni di Cri, proposte da confermare e criteri di accettazione. Le sezioni sull’app Next descrivono il codice originale. L’interfaccia locale separata segue i nuovi flussi: autenticazione e profilo usano Firebase, mentre i dati dei gruppi restano nel browser.
+
+Documenti collegati: [competitor](docs/product/gifty/Gifty-analisi-competitor.md), [proposta UX/design e tavole](docs/product/gifty/Gifty-proposta-UX-design.md), [copy di interfaccia](docs/product/gifty/Gifty-copy-interfaccia.md). Sono proposte e specifiche, non funzionalità già rilasciate.
+
+## Interfaccia locale direzione A
+
+Frontend in [prototype/gifty](prototype/gifty/README.md), con le viste di organizzatore, partecipante e festeggiato, home fotografica e racconto interattivo Come funziona. Avvio: `python3 prototype/gifty/serve.py`, poi [apri Gifty](http://127.0.0.1:4193). Google, link email e profilo sono collegati al progetto Firebase esistente; il catalogo legge i 180 prodotti e le foto della fonte di Stefano. I gruppi restano locali e non sono sincronizzati fra utenti. Nessun pagamento, invito o acquisto viene effettuato automaticamente.
+
+Riferimenti: [UX e design guidelines](docs/product/gifty/Gifty-UX-design-guidelines.md), [catalogo, API e regole](docs/product/gifty/Gifty-catalogo-e-API.md), [riepilogo per continuare](docs/product/gifty/Gifty-riepilogo-continuazione.md), [stato operativo](docs/product/gifty/STATUS.md), [verifica autenticazione](docs/product/gifty/Gifty-verifica-autenticazione.md). Le sezioni seguenti descrivono l’app Next originale.
+
 ## Due porte d'ingresso
 
 - **«Cerco un'idea»**: catalogo di prodotti selezionati (Amazon.it, link affiliati) e percorso «Trova il regalo» (`/regalo`).
@@ -41,7 +53,7 @@ Controlli: `pnpm typecheck`, `pnpm lint`, `pnpm test`; regole Firestore con `pnp
 
 ## Documenti
 
-- `PROMPT_PROTOTIPO_COLLETTA.md`: specifica completa (modello dati, regole, schermate).
+- `PROMPT_PROTOTIPO_COLLETTA.md`: specifica del prototipo precedente; per i nuovi flussi usare la direttrice Gifty collegata sopra.
 - `DECISIONI.md`: scelte prese, limiti noti, cosa è verificato e cosa no. Da leggere prima di cambiare qualcosa.
 - `AMAZON_AFFILIATES_API.md`: integrazione con il programma di affiliazione Amazon.
 

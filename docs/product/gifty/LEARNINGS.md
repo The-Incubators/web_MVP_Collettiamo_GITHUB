@@ -1,0 +1,8 @@
+# Lezioni di prodotto Gifty
+
+- 2026-10-24, correzioni di Cri: prima del design ricercare i competitor e fissare i flussi; ogni copy, anche nelle immagini e in qualsiasi lingua, passa da find-ai-slop; niente punti finali nei titoli; guidare con controlli ed esempi invece di spiegazioni. Applicazione: Gifty-flussi-e-decisioni.md, regola R18 e direttrice sezione 24.
+- 2026-10-24, chiarimento di Cri: gli accordi su regalo e variazioni di spesa possono restare in WhatsApp; Gifty non introduce riconferme individuali obbligatorie. La consegna chiude le nuove adesioni; equipararla all’invio digitale resta la proposta P01, non una decisione di Cri.
+- 2026-10-24, correzione di Cri sul prototipo: «devi continuare con lo stile che avevi proposto» e «non puoi costruire delle cose diverse da quelle che mi avevi proposto». La tavola approvata prevale sulle successive interpretazioni del testo di layout: preservare marchio con nastro, hero fotografica con biglietti, immagini ambientate e illustrazioni; confrontare il codice renderizzato con la tavola prima della consegna. Conservare anche le funzioni di navigazione già previste da Stefano, compresi menu principale e profilo.
+
+- 2026-10-24, verifica dropdown: il selettore generico `select` perdeva la freccia perché il precedente `.form-field select` reimpostava il background. Corretto con specificità coerente; controllare posizione e immagine di sfondo calcolate nel browser, non solo la dichiarazione CSS.
+- 2026-10-24, quota ed euro: sostituito il contenitore span con un div flex senza ritorno a capo, evitando la dipendenza dai selettori generici degli span nel riepilogo. Verificati nel browser i centri verticali di simbolo e campo, sia su desktop sia a 390 px; aggiornata la versione del CSS caricato.
