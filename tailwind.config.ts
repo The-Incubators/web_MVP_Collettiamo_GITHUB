@@ -16,8 +16,10 @@ const config: Config = {
         "accent-2": "var(--accent-2)",
         "on-accent": "var(--on-accent)",
         "accent-field": "var(--accent-field)",
+        "verde-medio": "var(--verde-medio)",
         cta: "var(--cta)",
         "cta-2": "var(--cta-2)",
+        "cta-3": "var(--cta-3)",
         "on-cta": "var(--on-cta)",
         "cta-field": "var(--cta-field)",
         gold: "var(--gold)",
@@ -35,10 +37,11 @@ const config: Config = {
         controllo: "16px",
       },
       boxShadow: {
-        // Ombre diffuse: livello 1 per le card, livello 2 per ciò che galleggia, `accento` sotto il bottone verde.
+        // Ombre diffuse: livello 1 per le card, livello 2 per ciò che galleggia, `accento` e `arancio` sotto i bottoni pieni.
         carta: "0 2px 12px -2px rgba(18, 22, 20, 0.06)",
         sollevata: "0 14px 34px -8px rgba(2, 36, 26, 0.28)",
         accento: "0 10px 24px -10px rgba(3, 92, 50, 0.6)",
+        arancio: "0 10px 24px -10px rgba(225, 77, 11, 0.65)",
       },
       fontFamily: {
         // stesso carattere del testo: i titoli si distinguono per peso, misura e spaziatura stretta

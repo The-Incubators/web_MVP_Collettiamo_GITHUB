@@ -36,39 +36,40 @@ export default async function Home() {
       <div className="mx-auto flex max-w-lg flex-col gap-6">
         <section className="gutter flex flex-col gap-5">
           <Saluto />
+          {/* l'azione principale è arancio; tutto il resto in sfumature di verde */}
           <div className="grid grid-cols-2 gap-3">
-            <Link href="/catalogo" className="eroe flex min-h-40 flex-col justify-between gap-2 p-4 transition-transform active:scale-[0.98]">
-              <span className="flex flex-col items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
-                  <Icona nome="add_circle" dimensione={22} />
-                </span>
-                <span className="text-[17px] font-bold leading-tight">Organizza una colletta</span>
-              </span>
-              <span className="text-[13px] leading-snug text-white/80">Scegli il regalo e invita il gruppo.</span>
-            </Link>
             <Link
-              href="/le-mie-collette"
-              className="contenitore flex min-h-40 flex-col justify-between gap-2 p-4 transition-transform active:scale-[0.98]"
+              href="/catalogo"
+              className="flex min-h-40 flex-col justify-between gap-2 rounded-contenitore bg-gradient-to-br from-cta to-cta-3 p-4 text-on-cta shadow-arancio transition-transform active:scale-[0.98]"
             >
               <span className="flex flex-col items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-field text-accent">
-                  <Icona nome="groups" dimensione={22} />
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                  <Icona nome="add_circle" dimensione={22} />
                 </span>
-                <span className="text-[17px] font-bold leading-tight text-ink">Le mie collette</span>
+                <span className="text-[19px] font-bold leading-tight">Organizza una colletta</span>
               </span>
-              <span className="text-[13px] leading-snug text-ink-soft">Vedi chi ha già partecipato.</span>
+              <span className="text-[13px] font-semibold leading-snug">Scegli il regalo e invita il gruppo.</span>
+            </Link>
+            <Link href="/biglietto/nuovo" className="eroe flex min-h-40 flex-col justify-between gap-2 p-4 transition-transform active:scale-[0.98]">
+              <span className="flex flex-col items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                  <Icona nome="draw" dimensione={22} />
+                </span>
+                <span className="text-[17px] font-bold leading-tight">Biglietto di auguri collettivo</span>
+              </span>
+              <span className="text-[13px] leading-snug text-white/85">Firme e dediche di tutti.</span>
             </Link>
           </div>
           <Link
             href={`/c/${SLUG_DEMO}`}
-            className="flex items-center gap-4 rounded-contenitore bg-gradient-to-br from-cta to-cta-2 p-4 text-on-accent shadow-sollevata transition-transform active:scale-[0.98]"
+            className="flex items-center gap-4 rounded-contenitore bg-verde-medio p-4 text-on-accent shadow-carta transition-transform active:scale-[0.98]"
           >
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20">
               <Icona nome="visibility" dimensione={28} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="text-lg font-bold leading-tight">Cosa vedono i partecipanti?</span>
-              <span className="text-sm text-white/85">Apri una colletta di prova, come la riceverebbero loro.</span>
+              <span className="text-sm text-white/90">Apri una colletta di prova, come la riceverebbero loro.</span>
             </span>
             <Icona nome="chevron_right" />
           </Link>
@@ -78,17 +79,12 @@ export default async function Home() {
           <div className="flex overflow-hidden rounded-contenitore bg-surface shadow-carta">
             <div className="flex flex-1 flex-col justify-between gap-4 p-5">
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold text-accent">Gratuito</span>
-                <h2 className="text-xl font-extrabold leading-tight text-ink">Un biglietto firmato da tutti.</h2>
+                <span className="text-xs font-bold text-accent">Biglietto collettivo</span>
+                <h2 className="text-xl font-extrabold leading-tight text-ink">Guarda un biglietto già firmato.</h2>
               </div>
-              <div className="flex flex-col items-start gap-1">
-                <Link href="/biglietto/nuovo" className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-ink">
-                  Crea un biglietto <Icona nome="arrow_forward" dimensione={18} />
-                </Link>
-                <Link href="/biglietto/esempio" className="inline-flex min-h-tocco items-center text-sm font-semibold text-ink-soft underline-offset-4 hover:underline">
-                  Guarda un esempio
-                </Link>
-              </div>
+              <Link href="/biglietto/esempio" className="inline-flex min-h-tocco items-center gap-1 self-start text-sm font-bold text-accent">
+                Apri l’esempio <Icona nome="arrow_forward" dimensione={18} />
+              </Link>
             </div>
             {/* un assaggio di come appare un biglietto: è un esempio, non un conteggio */}
             <div aria-hidden="true" className="flex w-[40%] shrink-0 flex-col items-center justify-center gap-3 bg-accent-field p-4">

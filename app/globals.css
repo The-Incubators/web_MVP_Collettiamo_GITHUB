@@ -8,12 +8,13 @@
  * i valori. Niente tema scuro: i colori restano chiari anche col sistema in scuro.
  *
  * - `field` è il grigio freddo dello sfondo, su cui le card bianche si staccano senza bordo.
- * - `accent` è il verde del marchio (#035C32): bottoni principali, selezioni, barre.
- * - `eroe-da` → `eroe-a` è il gradiente delle card in evidenza (classe `.eroe`), testo bianco. Niente nero né
- *   quasi-nero per card e pulsanti: il fondo del gradiente resta un verde scuro riconoscibile.
- * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
- *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (da 14 pt, 18,7 px, in grassetto), che è
- *   come lo usa la variante «azione» di Bottone (19 px), non per il testo piccolo.
+ * - `cta` è l'arancio del marchio (#FD5D17): **solo per l'azione principale** di ogni schermata (variante
+ *   «primario» di Bottone, card principale della home). Il bianco sull'arancio arriva a 3,1:1: basta per il testo
+ *   grande (da 14 pt, 18,7 px, in grassetto), per questo il bottone arancio ha il testo a 19 px; il testo piccolo
+ *   su arancio va solo sulla parte scura del gradiente (`cta-3`, 4,6:1).
+ * - Tutto il resto usa le sfumature di verde, dalla più intensa alla più chiara: `accent` (#035C32) e il
+ *   gradiente `eroe-da` → `eroe-a` (classe `.eroe`), `verde-medio`, `accent-field` per sfondi e riquadri.
+ * - Niente nero né quasi-nero per card e pulsanti.
  */
 :root {
   --field: #f0f2f1;
@@ -29,8 +30,10 @@
   --accent-field: #e1efe6;
   --eroe-da: #06703f;
   --eroe-a: #023d24;
+  --verde-medio: #2c8152;
   --cta: #fd5d17;
   --cta-2: #e14d0b;
+  --cta-3: #c43d00;
   --on-cta: #ffffff;
   --cta-field: #ffdbcf;
   --gold: #614000;
