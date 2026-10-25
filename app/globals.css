@@ -14,7 +14,8 @@
  *   su arancio va solo sulla parte scura del gradiente (`cta-3`, 4,6:1).
  * - Tutto il resto usa le sfumature di verde, dalla più intensa alla più chiara: `accent` (#035C32) e il
  *   gradiente `eroe-da` → `eroe-a` (classe `.eroe`), `verde-medio`, `accent-field` per sfondi e riquadri.
- * - Niente nero né quasi-nero per card e pulsanti.
+ * - Niente nero né quasi-nero per card e pulsanti, e niente trasparenze (bianco semitrasparente, veli sulle foto,
+ *   barre sfocate): ogni superficie ha un colore pieno.
  */
 :root {
   --field: #f0f2f1;

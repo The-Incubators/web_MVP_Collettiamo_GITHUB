@@ -9,7 +9,7 @@ import { Icona, Logo } from "@/components/ui";
 export default function LayoutSito({ children, modale }: { children: React.ReactNode; modale: React.ReactNode }) {
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="no-stampa gutter sticky top-0 z-40 bg-field/90 pt-safe backdrop-blur-xl">
+      <header className="no-stampa gutter sticky top-0 z-40 bg-field pt-safe">
         {/* sul telefono il logo sta al centro (lo spazio vuoto a sinistra pareggia il tondo del profilo), da tablet in su a sinistra */}
         <div className="mx-auto flex h-16 max-w-catalogo items-center justify-between gap-4">
           <span aria-hidden="true" className="w-11 md:hidden" />

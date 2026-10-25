@@ -46,7 +46,7 @@ export function BarraNavigazione() {
       <div aria-hidden="true" className="h-20 md:hidden" />
       <nav
         aria-label="Principale"
-        className="no-stampa fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-safe backdrop-blur-xl md:hidden"
+        className="no-stampa fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-safe md:hidden"
       >
         <ul className="mx-auto flex max-w-lg">
           {VOCI.map((v) => {

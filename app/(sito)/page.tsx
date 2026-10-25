@@ -43,7 +43,7 @@ export default async function Home() {
               className="flex min-h-40 flex-col justify-between gap-2 rounded-contenitore bg-gradient-to-br from-cta to-cta-3 p-4 text-on-cta shadow-arancio transition-transform active:scale-[0.98]"
             >
               <span className="flex flex-col items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/20">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface text-cta-2">
                   <Icona nome="add_circle" dimensione={22} />
                 </span>
                 <span className="text-[19px] font-bold leading-tight">Organizza una colletta</span>
@@ -52,24 +52,24 @@ export default async function Home() {
             </Link>
             <Link href="/biglietto/nuovo" className="eroe flex min-h-40 flex-col justify-between gap-2 p-4 transition-transform active:scale-[0.98]">
               <span className="flex flex-col items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface text-accent">
                   <Icona nome="draw" dimensione={22} />
                 </span>
                 <span className="text-[17px] font-bold leading-tight">Biglietto di auguri collettivo</span>
               </span>
-              <span className="text-[13px] leading-snug text-white/85">Firme e dediche di tutti.</span>
+              <span className="text-[13px] leading-snug text-accent-field">Firme e dediche di tutti.</span>
             </Link>
           </div>
           <Link
             href={`/c/${SLUG_DEMO}`}
             className="flex items-center gap-4 rounded-contenitore bg-verde-medio p-4 text-on-accent shadow-carta transition-transform active:scale-[0.98]"
           >
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/20">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-surface text-verde-medio">
               <Icona nome="visibility" dimensione={28} />
             </span>
             <span className="flex min-w-0 flex-1 flex-col">
               <span className="text-lg font-bold leading-tight">Cosa vedono i partecipanti?</span>
-              <span className="text-sm text-white/90">Apri una colletta di prova, come la riceverebbero loro.</span>
+              <span className="text-sm text-on-accent">Apri una colletta di prova, come la riceverebbero loro.</span>
             </span>
             <Icona nome="chevron_right" />
           </Link>
@@ -116,12 +116,12 @@ export default async function Home() {
             <ul className="flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 [scrollbar-width:none]">
               {inEvidenza.map((p) => (
                 <li key={p.slug} className="w-[42%] max-w-[190px] shrink-0 snap-start">
-                  <Link href={`/prodotto/${p.slug}`} className="relative block overflow-hidden rounded-contenitore bg-surface shadow-carta">
-                    <ImmagineProdotto prodotto={p} className="aspect-[3/4]" />
-                    <span className="absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/75 via-black/40 to-transparent p-3 pt-10 text-on-accent">
-                      <span className="line-clamp-2 text-sm font-bold leading-tight">{p.nome}</span>
-                      <span className="text-xs text-white/85">
-                        In {PERSONE_ESEMPIO}: <span className="cifre font-bold">{formattaEuro(quotaProposta(p.prezzoCent, PERSONE_ESEMPIO))}</span> a testa
+                  <Link href={`/prodotto/${p.slug}`} className="flex h-full flex-col overflow-hidden rounded-contenitore bg-surface shadow-carta">
+                    <ImmagineProdotto prodotto={p} className="aspect-square" />
+                    <span className="flex flex-col gap-1 p-3">
+                      <span className="line-clamp-2 text-sm font-bold leading-tight text-ink">{p.nome}</span>
+                      <span className="text-xs text-ink-soft">
+                        In {PERSONE_ESEMPIO}: <span className="cifre font-bold text-accent">{formattaEuro(quotaProposta(p.prezzoCent, PERSONE_ESEMPIO))}</span> a testa
                       </span>
                     </span>
                   </Link>
