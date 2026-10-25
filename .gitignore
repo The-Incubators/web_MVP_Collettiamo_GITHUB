@@ -10,3 +10,6 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 backup/*.json.local
+
+# Screenshot di riferimento UX_V5 (app di terzi, non versionare)
+Pagine_UX_V5/screenshot/
