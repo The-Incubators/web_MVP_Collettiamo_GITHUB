@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { Avviso, Bottone, Dialogo, Icona } from "@/components/ui";
+import { Avviso, Bottone, BottoneTondo, Dialogo, Icona, IntestazionePasso, LinkTondo, type NomeIcona } from "@/components/ui";
 import { ErroreDominio } from "@/lib/dominio/operazioni";
 import { generaSlugLibero } from "@/lib/dominio/slug";
 import { ORE, votazioneIniziale } from "@/lib/dominio/votazione";
@@ -36,15 +35,15 @@ import {
  * I passi che si vedono sono cinque: «La quota» e «Come ti pagano» (passi 3 e 4 dello stato, che restano
  * distinti per la bozza e per la ripresa dalla sessione) stanno in una schermata sola, come nel disegno di UX_V4.
  */
-const VISIBILI = [
-  { passi: [1], nome: "Il regalo", domanda: "Chi sceglie il regalo?", sotto: "Puoi sceglierlo tu o far votare il gruppo." },
-  { passi: [2], nome: "Per chi e quando", domanda: "Per chi e quando?", sotto: "Chi festeggiate e quando date il regalo." },
-  { passi: [3, 4], nome: "Quota e pagamenti", domanda: "Come si divide il costo?", sotto: "La quota e dove ricevere i soldi." },
-  { passi: [5], nome: "Chi partecipa", domanda: "Chi partecipa?", sotto: "Lascia aggiungere tutti, o scrivi tu i nomi." },
-  { passi: [6], nome: "Invita", domanda: "Pronto! Invita il gruppo", sotto: "Manda il link nella chat per iniziare la raccolta." },
-] as const;
+const VISIBILI: readonly { passi: readonly number[]; nome: string; icona: NomeIcona; domanda: string; sotto: string }[] = [
+  { passi: [1], nome: "Il regalo", icona: "redeem", domanda: "Chi sceglie il regalo?", sotto: "Puoi sceglierlo tu o far votare il gruppo." },
+  { passi: [2], nome: "Per chi e quando", icona: "celebration", domanda: "Per chi e quando?", sotto: "Chi festeggiate e quando date il regalo." },
+  { passi: [3, 4], nome: "Quota e pagamenti", icona: "payments", domanda: "Come si divide il costo?", sotto: "La quota e dove ricevere i soldi." },
+  { passi: [5], nome: "Chi partecipa", icona: "groups", domanda: "Chi partecipa?", sotto: "Lascia aggiungere tutti, o scrivi tu i nomi." },
+  { passi: [6], nome: "Invita", icona: "share", domanda: "Pronto! Invita il gruppo", sotto: "Manda il link nella chat per iniziare la raccolta." },
+];
 
-const indiceVisibile = (p: Passo) => VISIBILI.findIndex((v) => (v.passi as readonly number[]).includes(p));
+const indiceVisibile = (p: Passo) => VISIBILI.findIndex((v) => v.passi.includes(p));
 /** Il passo successivo e quello precedente saltano il 4, che sta nella stessa schermata del 3. */
 const dopo = (p: Passo): Passo => (p === 3 || p === 4 ? 5 : ((p + 1) as Passo));
 const prima = (p: Passo): Passo => (p === 5 ? 3 : p === 4 ? 2 : ((p - 1) as Passo));
@@ -280,42 +279,35 @@ export function Wizard() {
   const prossimo = VISIBILI[i + 1];
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-5">
+        {/* barra in alto: pulsante tondo e linea di avanzamento */}
         <div className="flex items-center gap-3">
           {s.passo === 1 ? (
-            <Link href="/catalogo" aria-label="Torna al catalogo" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-              <Icona nome="close" />
-            </Link>
+            <LinkTondo href="/catalogo" icona="close" etichetta="Torna al catalogo" />
           ) : (
-            <button type="button" onClick={indietro} disabled={occupato} aria-label="Indietro" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-              <Icona nome="arrow_back" />
-            </button>
+            <BottoneTondo icona="arrow_back" etichetta="Indietro" onClick={indietro} disabled={occupato} />
           )}
-          <p className="flex min-w-0 items-center gap-2 text-xs font-bold">
-            <span className="cifre flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">{i + 1}</span>
-            <span className="truncate">
-              Passo {i + 1} di {VISIBILI.length} · {visibile.nome}
-            </span>
-          </p>
-          <div aria-hidden="true" className="ml-auto flex shrink-0 gap-1">
-            {VISIBILI.map((v, j) => (
-              <span key={v.nome} className={`h-1.5 rounded-full ${j === i ? "w-7 bg-cta" : j < i ? "w-3 bg-accent" : "w-3 bg-line"}`} />
-            ))}
+          <div aria-hidden="true" className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
+            <div className="h-full rounded-full bg-accent transition-[width] duration-300" style={{ width: `${((i + 1) / VISIBILI.length) * 100}%` }} />
           </div>
+          <span className="cifre shrink-0 text-sm font-semibold text-ink-soft">
+            {i + 1}/{VISIBILI.length}
+          </span>
         </div>
-        <div className="flex flex-col gap-1">
-          <h1 ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
-            {visibile.domanda}
-          </h1>
-          <p className="text-ink-soft">{visibile.sotto}</p>
-        </div>
+        <IntestazionePasso
+          icona={visibile.icona}
+          etichetta={`Passo ${i + 1} di ${VISIBILI.length} · ${visibile.nome}`}
+          titolo={visibile.domanda}
+          sotto={visibile.sotto}
+          titoloRef={titolo}
+        />
         {s.passo >= 2 && s.passo <= 5 && prodottoDaStato(s) ? (
-          <p className="flex items-center justify-between gap-2 rounded-2xl bg-surface-2 px-4 py-2 text-sm">
+          <p className="flex items-center justify-between gap-2 rounded-2xl bg-surface px-4 py-2 text-sm shadow-carta">
             <span className="flex min-w-0 items-center gap-2">
               <Icona nome="redeem" dimensione={20} className="text-accent" />
               <span className="truncate">{s.votazioneAttiva ? `Lo sceglie il gruppo (${s.candidati.length} idee)` : s.prodotto?.nome}</span>
             </span>
-            <button type="button" className="min-h-tocco shrink-0 font-bold text-cta-2" onClick={() => cambia({ passo: 1 })}>
+            <button type="button" className="min-h-tocco shrink-0 font-bold text-accent" onClick={() => cambia({ passo: 1 })}>
               Cambia
             </button>
           </p>
@@ -345,14 +337,14 @@ export function Wizard() {
 
       {/* Una sola azione in fondo allo schermo, sempre a portata di pollice. */}
       {prossimo ? (
-        <div className="sticky bottom-0 z-30 -mx-4 flex items-center gap-2 bg-field/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
+        <div className="sticky bottom-0 z-30 -mx-4 flex items-center gap-2 bg-field px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
           {s.passo > 1 ? (
             <button
               type="button"
               onClick={indietro}
               disabled={occupato}
               aria-label="Indietro"
-              className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-surface shadow-carta"
+              className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full border border-line bg-surface shadow-carta"
             >
               <Icona nome="arrow_back" />
             </button>

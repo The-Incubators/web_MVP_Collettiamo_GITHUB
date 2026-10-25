@@ -31,8 +31,8 @@ export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
         </h2>
         <p className="text-sm text-ink-soft">Scegli dove ricevere i soldi del gruppo.</p>
       </div>
-      <p className="flex items-start gap-2 rounded-2xl bg-cta-field p-3 text-sm font-semibold">
-        <Icona nome="verified_user" dimensione={20} className="text-cta-2" />
+      <p className="flex items-start gap-2 rounded-2xl bg-accent-field p-3 text-sm font-semibold text-accent-2">
+        <Icona nome="verified_user" dimensione={20} className="text-accent" />
         I soldi arrivano direttamente a te: Gifty non li tocca. Questi dati li vede solo chi apre il link.
       </p>
 
@@ -62,7 +62,7 @@ export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
       {riquadro(
         "Satispay",
         "smartphone",
-        "bg-cta-field text-cta-2",
+        "bg-ok-field text-accent-2",
         "Chi paga copia il tuo numero",
         s.satispayAttivo,
         (satispayAttivo) => cambia({ satispayAttivo }),
@@ -79,7 +79,7 @@ export function Passo4Pagamenti({ s, cambia, errori }: PropsPasso) {
       {riquadro(
         "Bonifico",
         "account_balance",
-        "bg-surface-2 text-ink",
+        "bg-accent text-on-accent",
         "IBAN e intestatario",
         s.bonificoAttivo,
         (bonificoAttivo) => cambia({ bonificoAttivo }),

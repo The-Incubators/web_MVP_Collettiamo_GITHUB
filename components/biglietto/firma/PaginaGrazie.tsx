@@ -71,7 +71,7 @@ export function PaginaGrazie({ b, firme, firmaId }: { b: BigliettoPubblico; firm
         </div>
         <div className="flex flex-col gap-2 rounded-3xl bg-accent p-5 text-on-accent">
           <p className="font-display text-xl font-bold">Organizzi anche tu una festa o un regalo?</p>
-          <p className="text-sm opacity-90">Un biglietto di gruppo è gratis, e una colletta si apre in due minuti.</p>
+          <p className="text-sm">Un biglietto di gruppo è gratis, e una colletta si apre in due minuti.</p>
           <Link href="/biglietto/nuovo" className="mt-1 inline-flex min-h-azione items-center justify-center rounded-full bg-cta px-6 text-[19px] font-bold text-on-cta hover:bg-cta-2">
             Crea un biglietto gratis
           </Link>

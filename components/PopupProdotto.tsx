@@ -56,13 +56,13 @@ export function PopupProdotto({ children, titolo }: { children: React.ReactNode;
       }}
       // Nessun clic «sullo sfondo»: il popup occupa tutto lo schermo, fuori non c'è niente da cliccare.
       // Si chiude con la X o con Esc.
-      className="max-h-none max-w-none bg-transparent p-0 backdrop:bg-black/60"
+      className="max-h-none max-w-none bg-transparent p-0 backdrop:bg-velo"
       style={{ width: "100vw", height: "100dvh" }}
     >
       <div className="flex min-h-full w-full justify-center overflow-y-auto overscroll-contain bg-field p-0 sm:p-6">
         <div className="relative w-full max-w-catalogo">
           {/* La X resta in vista mentre si scorre la scheda. */}
-          <div className="sticky top-0 z-10 flex justify-end bg-field/95 px-4 py-3 backdrop-blur-sm sm:px-0">
+          <div className="sticky top-0 z-10 flex justify-end bg-field px-4 py-3 sm:px-0">
             <button
               type="button"
               onClick={chiudi}

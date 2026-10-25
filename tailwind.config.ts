@@ -17,6 +17,7 @@ const config: Config = {
         "on-accent": "var(--on-accent)",
         "accent-field": "var(--accent-field)",
         "verde-medio": "var(--verde-medio)",
+        velo: "var(--velo)",
         cta: "var(--cta)",
         "cta-2": "var(--cta-2)",
         "cta-3": "var(--cta-3)",

@@ -124,7 +124,7 @@ export function EditorFirma({
                 type="button"
                 onClick={() => onBozza({ ...bozza, immagine: null })}
                 aria-label="Togli l’immagine"
-                className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full bg-ink/80 text-2xl leading-none text-surface hover:bg-ink"
+                className="absolute right-2 top-2 flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface text-2xl leading-none text-ink shadow-carta hover:bg-surface-2"
               >
                 <span aria-hidden="true">×</span>
               </button>

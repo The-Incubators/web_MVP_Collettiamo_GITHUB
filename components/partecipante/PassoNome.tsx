@@ -107,7 +107,7 @@ export function PassoNome({ p, onFatto }: { p: Partecipazione; onFatto: (riga?: 
             {trovati.map((r) => (
               <div key={r.id} className="flex flex-col gap-2 rounded-2xl bg-surface-2 p-4">
                 <p>Sei <strong>{r.nome}</strong>? Ha già partecipato con questo nome.</p>
-                <Bottone dimensione="piccolo" disabled={occupato} onClick={() => void rivendica(r)}>
+                <Bottone variante="verde" dimensione="piccolo" disabled={occupato} onClick={() => void rivendica(r)}>
                   Sì, sono io
                 </Bottone>
               </div>

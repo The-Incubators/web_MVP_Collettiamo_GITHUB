@@ -41,7 +41,7 @@ function CaroselloAnteprima({ b, librerie }: { b: Biglietto; librerie: Librerie 
           {i === 0 ? "1 di 2 · L’invito" : "2 di 2 · La firma"}
         </p>
         {/* cornice che simula un telefono: angoli superiori arrotondati */}
-        <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-t-[28px] border-x-[6px] border-t-[6px] border-ink/80 bg-field shadow-xl">
+        <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-t-[28px] border-x-[6px] border-t-[6px] border-line-forte bg-field shadow-xl">
           <div className="pointer-events-auto max-h-[720px] overflow-y-auto px-4 pb-6 pt-4">
             {i === 0 ? <PaginaInvito b={vista} onFirma={() => setI(1)} /> : <PaginaFirma b={vista} firme={[]} librerie={librerie} anteprima onContinuaAnteprima={() => setI(0)} />}
           </div>

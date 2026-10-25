@@ -39,7 +39,7 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
       <div ref={rif} className="h-0 w-full" />
       <div className="flex w-full items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-ink-soft">
-          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-cta" />
+          <span aria-hidden="true" className="h-2 w-2 rounded-full bg-verde-medio" />
           Invito privato
         </span>
         {b.nFirme > 0 ? <p className="rounded-full bg-gold-field px-3 py-1 text-xs font-bold">{testoFirmatari(b.nFirme)}</p> : null}
@@ -57,7 +57,7 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
       </div>
       {!chiuso ? (
         <p className="flex items-center gap-1.5 rounded-full bg-surface-2 px-4 py-2 text-xs font-semibold">
-          <Icona nome="verified" dimensione={16} className="text-cta-2" />
+          <Icona nome="verified" dimensione={16} className="text-accent" />
           Gratis e senza registrazione. Ci metti meno di un minuto.
         </p>
       ) : null}

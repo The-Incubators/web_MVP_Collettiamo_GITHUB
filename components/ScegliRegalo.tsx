@@ -120,7 +120,7 @@ export function ScegliRegalo({
               <Icona nome="verified" dimensione={16} />
               Selezionato
             </span>
-            <button type="button" onClick={() => setMostraElenco(true)} className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-cta-2">
+            <button type="button" onClick={() => setMostraElenco(true)} className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-accent">
               Cambia regalo <Icona nome="refresh" dimensione={18} />
             </button>
           </div>
@@ -181,7 +181,7 @@ export function ScegliRegalo({
                       {dentro ? <IconaSpunta width={22} height={22} /> : <IconaPiu width={22} height={22} />}
                       <span
                         aria-hidden="true"
-                        className="pointer-events-none absolute right-0 top-full z-20 mt-1 hidden whitespace-nowrap rounded-controllo bg-ink px-2.5 py-1.5 text-xs font-medium text-field group-hover/piu:block group-focus-within/piu:block"
+                        className="pointer-events-none absolute right-0 top-full z-20 mt-1 hidden whitespace-nowrap rounded-controllo bg-accent-2 px-2.5 py-1.5 text-xs font-medium text-on-accent group-hover/piu:block group-focus-within/piu:block"
                       >
                         {dentro ? "Nella lista dei regali" : "Aggiungi alla lista dei regali"}
                       </span>

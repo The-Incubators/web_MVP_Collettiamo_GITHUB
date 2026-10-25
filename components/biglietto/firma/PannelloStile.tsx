@@ -41,7 +41,7 @@ export function PannelloStile({ aperto, stile, onStile, onChiudi }: { aperto: bo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40" onClick={onChiudi}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-velo" onClick={onChiudi}>
       <div role="dialog" aria-modal="true" aria-label="Stile del testo" onClick={(e) => e.stopPropagation()} className="flex max-h-[85dvh] w-full max-w-[600px] flex-col rounded-t-[20px] bg-surface shadow-2xl">
         <div className="flex items-center justify-between px-4 pt-2">
           <h2 className="font-display text-xl font-bold text-accent-2">Stile del testo</h2>

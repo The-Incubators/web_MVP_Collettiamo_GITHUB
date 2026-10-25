@@ -145,7 +145,7 @@ export function FinestraImmagine({
               onChange={(e) => setQ(e.target.value)}
               placeholder="Cerca nella libreria…"
               aria-label="Cerca nella libreria"
-              className="h-12 w-full rounded-full border border-line bg-surface-2 px-5 text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="h-12 w-full rounded-full border border-line bg-surface-2 px-5 text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-field"
             />
             {risultati === null ? <p className="text-center text-sm text-ink-soft">Cerco…</p> : null}
             {risultati && risultati.length === 0 ? <p className="text-center text-sm text-ink-soft">Nessun risultato: prova con un’altra parola.</p> : null}
@@ -160,7 +160,7 @@ export function FinestraImmagine({
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={r.anteprima} alt="" loading="lazy" className="block w-full" />
-                  <span className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100 group-focus-visible:bg-black/40 group-focus-visible:opacity-100">
+                  <span className="absolute inset-0 flex items-center justify-center bg-velo opacity-0 transition group-hover:bg-velo group-hover:opacity-100 group-focus-visible:bg-velo group-focus-visible:opacity-100">
                     <span className="rounded-full bg-surface px-4 py-2 text-sm font-bold text-ink">SCEGLI</span>
                   </span>
                 </button>

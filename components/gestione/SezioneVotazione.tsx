@@ -119,7 +119,7 @@ export function SezioneVotazione({
         <div className="flex flex-wrap gap-2">
           {chiedoChiusura ? (
             <>
-              <Bottone onClick={() => void chiudiOra()} disabled={occupato}>
+              <Bottone variante="verde" onClick={() => void chiudiOra()} disabled={occupato}>
                 {occupato ? "Chiudo…" : "Sì, chiudi adesso"}
               </Bottone>
               <Bottone variante="testuale" onClick={() => setChiedoChiusura(false)}>
@@ -167,7 +167,7 @@ export function SezioneVotazione({
                 </p>
                 <div className="flex flex-wrap items-center gap-3">
                   {x.proposta.prodotto.urlEsterno ? (
-                    <a className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-cta-2 underline underline-offset-4" href={urlPerAcquisto(x.proposta.prodotto.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
+                    <a className="inline-flex min-h-tocco items-center gap-1 text-sm font-bold text-accent underline underline-offset-4" href={urlPerAcquisto(x.proposta.prodotto.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
                       Vedi sul negozio <IconaEsterno width={16} height={16} />
                     </a>
                   ) : null}
@@ -197,7 +197,7 @@ export function SezioneVotazione({
           Aggiungi un regalo
         </h2>
         <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} avvisoLink={false} />
-        <Bottone onClick={() => void aggiungi()} disabled={!nuovo} className="self-start">
+        <Bottone variante="verde" onClick={() => void aggiungi()} disabled={!nuovo} className="self-start">
           <IconaPiu width={18} height={18} /> Aggiungi alla lista
         </Bottone>
       </section>

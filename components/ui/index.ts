@@ -12,3 +12,5 @@ export * from "./RigaPartecipante";
 export * from "./SchedaScelta";
 export * from "./Interruttore";
 export * from "./Dialogo";
+export * from "./IntestazionePasso";
+export * from "./BottoneTondo";

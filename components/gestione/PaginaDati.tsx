@@ -59,7 +59,7 @@ export function PaginaDati({ slug }: { slug: string }) {
               La metrica che conta
             </h2>
             <p className="cifre mt-1 text-4xl font-bold">
-              {imbuto.dichiarazioniSpontanee} <span className="text-xl font-medium opacity-80">su {imbuto.dichiarazioniTotali}</span>
+              {imbuto.dichiarazioniSpontanee} <span className="text-xl font-medium">su {imbuto.dichiarazioniTotali}</span>
             </p>
             <p className="text-sm">
               {imbuto.dichiarazioniTotali === 0

@@ -105,7 +105,7 @@ export function Tendina({
             setAperta(true);
           }
         }}
-        className={`flex h-16 w-full items-center justify-between gap-2 rounded-controllo border bg-surface px-4 text-left text-base disabled:cursor-not-allowed ${aperta ? "border-accent ring-2 ring-accent/30" : "border-line"}`}
+        className={`flex h-16 w-full items-center justify-between gap-2 rounded-controllo border bg-surface px-4 text-left text-base disabled:cursor-not-allowed ${aperta ? "border-accent ring-2 ring-accent-field" : "border-line"}`}
       >
         <span className={`min-w-0 truncate ${scelta ? "" : "text-ink-soft"}`}>{scelta ? scelta.etichetta : segnaposto}</span>
         <span className={`shrink-0 transition-transform ${aperta ? "rotate-180" : ""}`}>{FRECCIA_GIU}</span>
@@ -209,7 +209,7 @@ export function SelettoreData({ id, valore, onScegli, segnaposto = "Scegli una d
           setMese(scelto ? { a: scelto.a, m: scelto.m } : { a: oggi.a, m: oggi.m });
           setAperto((a) => !a);
         }}
-        className={`flex h-16 w-full items-center justify-between rounded-controllo border bg-surface px-4 text-left text-base ${aperto ? "border-accent ring-2 ring-accent/30" : "border-line"}`}
+        className={`flex h-16 w-full items-center justify-between rounded-controllo border bg-surface px-4 text-left text-base ${aperto ? "border-accent ring-2 ring-accent-field" : "border-line"}`}
       >
         <span className={scelto ? "" : "text-ink-soft"}>{scelto ? dataScritta(valore) : segnaposto}</span>
         <svg viewBox="0 0 24 24" width={20} height={20} fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -381,7 +381,7 @@ export function CampoRicco({
     iniziato.current = true;
   }, [valore]);
   return (
-    <div className={`relative rounded-controllo border border-line bg-surface focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30 ${className}`}>
+    <div className={`relative rounded-controllo border border-line bg-surface focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-field ${className}`}>
       <div
         ref={ref}
         id={id}
@@ -501,7 +501,7 @@ export function AnteprimaLink({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              className="h-12 min-w-0 flex-1 rounded-controllo border border-line bg-surface px-3 text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+              className="h-12 min-w-0 flex-1 rounded-controllo border border-line bg-surface px-3 text-base focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent-field"
             />
           </div>
           <p className="break-all text-sm text-ink-soft">

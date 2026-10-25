@@ -133,7 +133,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
         <span className="text-xs font-semibold text-ink-soft">Le tue risposte:</span>
         {genere ? (
           <button type="button" onClick={() => vaiA(1)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
-            <Icona nome={genere.icona} className="h-4 w-4 text-cta-2" />
+            <Icona nome={genere.icona} className="h-4 w-4 text-accent" />
             Per {genere.etichetta.toLowerCase()}
             <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
             <span className="sr-only">: cambia</span>
@@ -141,7 +141,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
         ) : null}
         {occasione && stato.tappa > 2 ? (
           <button type="button" onClick={() => vaiA(2)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
-            <Icona nome={occasione.icona} className="h-4 w-4 text-cta-2" />
+            <Icona nome={occasione.icona} className="h-4 w-4 text-accent" />
             {occasione.etichetta}
             <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
             <span className="sr-only">: cambia</span>
@@ -170,7 +170,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
     return (
       <section aria-labelledby="titolo-regalo" className="mx-auto flex w-full max-w-lg flex-col gap-5">
         <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-6 text-center shadow-carta">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cta-field text-cta-2">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-field text-accent">
             <Icona nome="gift" className="h-8 w-8" />
           </span>
           <h1 id="titolo-regalo" ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
@@ -298,7 +298,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
                   <h2 id={`cat-${c.id}`} className="text-lg font-semibold text-accent-2">
                     {c.etichetta}
                   </h2>
-                  {scelti > 0 ? <span className="text-xs font-bold text-cta-2">{scelti === 1 ? "1 selezionato" : `${scelti} selezionati`}</span> : null}
+                  {scelti > 0 ? <span className="text-xs font-bold text-accent">{scelti === 1 ? "1 selezionato" : `${scelti} selezionati`}</span> : null}
                 </div>
                 <div role="group" aria-label={c.etichetta} className="grid grid-cols-2 gap-2">
                   {lista.map((x) => (
@@ -317,7 +317,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
       ) : null}
 
       {/* La barra dei pulsanti resta in fondo allo schermo, sopra la navigazione. */}
-      <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-col gap-1 bg-field/95 px-4 pb-2 pt-3 backdrop-blur md:bottom-0">
+      <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-col gap-1 bg-field px-4 pb-2 pt-3 md:bottom-0">
         <div className="flex items-center gap-2">
           {tappa > 1 ? (
             <button
@@ -332,7 +332,7 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
           <Bottone pieno onClick={avanti} disabled={bloccato} aria-describedby="aiuto-regalo">
             {tappa === 3 ? "Trova i regali perfetti" : "Avanti"}
             {tappa === 3 && nInteressi > 0 ? (
-              <span className="cifre flex h-6 min-w-6 items-center justify-center rounded-full bg-cta px-1.5 text-xs text-accent-2">{nInteressi}</span>
+              <span className="cifre flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-xs text-on-accent">{nInteressi}</span>
             ) : null}
             <IconaSito nome="arrow_forward" dimensione={20} />
           </Bottone>

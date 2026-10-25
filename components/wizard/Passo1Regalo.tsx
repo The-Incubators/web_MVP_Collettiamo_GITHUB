@@ -119,7 +119,7 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
               Aggiungi un regalo
             </h2>
             <ScegliRegalo key={chiave} valore={bozza} onScelta={setBozza} avvisoLink={false} onAggiungi={aggiungiDaCatalogo} giaInLista={s.candidati} />
-            <Bottone onClick={aggiungi} disabled={!bozza} className="self-start">
+            <Bottone variante="verde" onClick={aggiungi} disabled={!bozza} className="self-start">
               <IconaPiu width={18} height={18} /> Aggiungi alla lista
             </Bottone>
           </section>
@@ -133,7 +133,7 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
                 <Bottone
                   key={o}
                   dimensione="piccolo"
-                  variante={s.votazioneOre === o ? "primario" : "secondario"}
+                  variante={s.votazioneOre === o ? "verde" : "secondario"}
                   aria-pressed={s.votazioneOre === o}
                   onClick={() => cambia({ votazioneOre: o })}
                 >

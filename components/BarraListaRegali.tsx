@@ -32,13 +32,13 @@ export function BarraListaRegali() {
         </div>
         <p className="min-w-0 flex-1 text-sm leading-tight" aria-live="polite">
           <strong className="block">{lista.length === 1 ? "1 regalo scelto" : `${lista.length} regali scelti`}</strong>
-          <span className="block truncate text-xs opacity-80">{pronta ? "Pronti per la votazione" : "Aggiungine un altro"}</span>
+          <span className="block truncate text-xs">{pronta ? "Pronti per la votazione" : "Aggiungine un altro"}</span>
         </p>
         <button
           type="button"
           onClick={svuotaRegali}
           aria-label="Svuota la lista dei regali"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full opacity-80 hover:bg-white/10 hover:opacity-100"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full hover:bg-accent-2"
         >
           <Icona nome="close" dimensione={20} />
         </button>

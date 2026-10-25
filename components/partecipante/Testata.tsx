@@ -20,7 +20,7 @@ function testoModoQuota(c: Colletta): string {
   return `Quota fissa, uguale per tutti`;
 }
 
-const TINTE = ["bg-ok-field text-accent-2", "bg-cta-field text-cta-2", "bg-gold-field text-gold", "bg-surface-2 text-ink"];
+const TINTE = ["bg-ok-field text-accent-2", "bg-accent-field text-accent", "bg-gold-field text-gold", "bg-surface-2 text-ink"];
 
 /** Le iniziali di chi ha già pagato (solo i confermati: chi manca non si mostra mai). */
 function Confermati({ righe }: { righe: Partecipante[] | null }) {
@@ -57,7 +57,7 @@ function Avanzamento({ colletta: c, righe }: { colletta: Colletta; righe: Partec
     <div className="flex flex-col gap-3 rounded-2xl bg-surface-2 p-4">
       <div className="flex items-center justify-between gap-3 text-sm font-bold">
         <p className="flex items-center gap-2" aria-live="polite">
-          <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-cta" />
+          <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-verde-medio" />
           {testoPartecipazione(c)}
         </p>
         <span className="cifre">{a.percento}%</span>
@@ -128,7 +128,7 @@ export function RiquadroColletta({ colletta: c, righe, scaduta }: { colletta: Co
           <p className="font-display text-xl font-semibold">Regalo per {c.festeggiato}</p>
         </div>
         {c.stato === "aperta" ? (
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-cta-field px-3 py-1 text-xs font-bold text-ink">
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent-field px-3 py-1 text-xs font-bold text-ink">
             <Icona nome="schedule" dimensione={16} />
             {scaduta ? "Scaduta" : `Fino al ${dataBreve(c.scadenza)}`}
           </span>
@@ -148,12 +148,12 @@ export function Passi({ corrente, etichetta }: { corrente: 1 | 2 | 3; etichetta:
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-2">
       <p className="inline-flex items-center gap-1.5 self-start rounded-full bg-surface-2 px-3 py-1 text-xs font-bold">
-        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-cta" />
+        <span aria-hidden="true" className="h-2 w-2 rounded-full bg-verde-medio" />
         Passo {corrente} di 3 · {etichetta}
       </p>
       <div aria-hidden="true" className="flex gap-1.5">
         {[1, 2, 3].map((n) => (
-          <span key={n} className={`h-1.5 flex-1 rounded-full ${n < corrente ? "bg-accent" : n === corrente ? "bg-cta" : "bg-line"}`} />
+          <span key={n} className={`h-1.5 flex-1 rounded-full ${n < corrente ? "bg-accent" : n === corrente ? "bg-verde-medio" : "bg-line"}`} />
         ))}
       </div>
     </div>

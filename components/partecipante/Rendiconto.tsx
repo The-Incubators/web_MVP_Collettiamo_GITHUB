@@ -52,7 +52,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
           >
             <Icona nome="receipt_long" className="text-ink-soft" />
             <span className="flex-1">Ricevuta d’acquisto</span>
-            <span className="inline-flex items-center gap-1 text-sm text-cta-2">
+            <span className="inline-flex items-center gap-1 text-sm text-accent">
               Vedi <Icona nome="open_in_new" dimensione={18} />
             </span>
           </a>
@@ -78,7 +78,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
             </div>
           ) : null}
           {chiusura ? (
-            <div className={`flex flex-col gap-1 rounded-2xl p-3 ${avanzo > 0 ? "bg-cta-field" : "bg-surface-2"}`}>
+            <div className={`flex flex-col gap-1 rounded-2xl p-3 ${avanzo > 0 ? "bg-accent-field" : "bg-surface-2"}`}>
               <dt className="text-xs font-semibold text-ink-soft">{avanzo < 0 ? "Differenza" : "Avanzo"}</dt>
               <dd className="cifre text-lg font-bold">{formattaEuro(Math.abs(avanzo))}</dd>
               <dd className="text-[11px] text-ink-soft">{avanzo < 0 ? `messa da ${c.organizzatoreNome}` : avanzo === 0 ? "nessuno" : a?.destinazioneAvanzo ? "già destinato" : "da destinare"}</dd>
@@ -108,7 +108,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
 
       <section aria-labelledby="biglietto" className="flex flex-col gap-3 rounded-3xl bg-surface p-5 shadow-carta">
         <h2 id="biglietto" className="flex items-center gap-2 text-xl font-semibold text-accent-2">
-          <Icona nome="mail" className="text-cta-2" />
+          <Icona nome="mail" className="text-accent" />
           Il biglietto di gruppo 💌
         </h2>
         <p className="text-sm text-ink-soft">I messaggi del gruppo per {c.festeggiato}, pronti da sfogliare o stampare.</p>
@@ -118,12 +118,12 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
       </section>
 
       <section className="flex flex-col gap-3 rounded-3xl bg-accent p-6 text-on-accent">
-        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80">
+        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
           <Icona nome="auto_awesome" dimensione={18} />
           Prossimo evento in arrivo?
         </p>
         <h2 className="text-2xl font-bold">Organizzi anche tu un regalo di gruppo?</h2>
-        <p className="text-sm opacity-90">Scegli il regalo, manda il link nella chat e firmate il biglietto insieme.</p>
+        <p className="text-sm">Scegli il regalo, manda il link nella chat e firmate il biglietto insieme.</p>
         <BottoneLink href="/catalogo" variante="azione" pieno className="mt-1">
           Guarda il catalogo <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>

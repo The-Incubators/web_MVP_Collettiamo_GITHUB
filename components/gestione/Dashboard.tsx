@@ -45,7 +45,7 @@ function ConfermaRiga({ r, quota, azione, tipo }: { r: Partecipante; quota: numb
       azioni={
         <>
           <div className="grid w-full grid-cols-2 gap-2">
-            <Bottone dimensione="piccolo" onClick={() => conferma(r.importoCent ?? undefined)}>
+            <Bottone variante="verde" dimensione="piccolo" onClick={() => conferma(r.importoCent ?? undefined)}>
               <Icona nome="check" dimensione={18} />
               {tipo === "contanti" ? "Ricevuti" : "Accredito ricevuto"}
             </Bottone>
@@ -79,7 +79,7 @@ function ConfermaRiga({ r, quota, azione, tipo }: { r: Partecipante; quota: numb
               <div className="min-w-0 flex-1">
                 <Campo etichetta="Importo ricevuto (€)" inputMode="decimal" value={testo} onChange={(e) => setTesto(e.target.value)} errore={errore} />
               </div>
-              <Bottone type="submit" dimensione="piccolo">
+              <Bottone variante="verde" type="submit" dimensione="piccolo">
                 Conferma questo importo
               </Bottone>
             </form>
@@ -175,7 +175,7 @@ function RigaTutti({ r, c, azione }: { r: Partecipante; c: Colletta; azione: Azi
                 <div className="min-w-32 flex-1">
                   <Campo etichetta="Importo (€)" inputMode="decimal" value={importo} onChange={(e) => setImporto(e.target.value)} errore={errore} />
                 </div>
-                <Bottone type="submit" dimensione="piccolo">
+                <Bottone variante="verde" type="submit" dimensione="piccolo">
                   Registra come pagato
                 </Bottone>
               </form>
@@ -345,53 +345,60 @@ export function Dashboard({ slug }: { slug: string }) {
         </Avviso>
       ) : null}
 
-      <section aria-labelledby="sommario" className="flex flex-col gap-4 rounded-3xl bg-surface p-5 shadow-carta">
+      {/* la card verde in evidenza: quanto è stato confermato, chi c'è, quanto manca, e le scorciatoie */}
+      <section aria-labelledby="sommario" className="eroe flex flex-col gap-5 p-5">
         <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-ink-soft">{chiusa ? "Colletta chiusa" : "Colletta di gruppo"}</p>
-            <h2 id="sommario" className="text-2xl font-bold leading-tight text-accent-2">
-              Regalo per {c.festeggiato}
-            </h2>
-          </div>
-          {!chiusa ? (
-            <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${scaduta ? "bg-error-field text-error" : "bg-cta-field"}`}>
-              <Icona nome="schedule" dimensione={16} />
-              {scaduta ? "Scaduta" : giorni === 0 ? "Chiude oggi" : giorni === 1 ? "Chiude domani" : `Fino al ${dataBreve(c.scadenza)}`}
-            </span>
-          ) : null}
+          <span className="inline-flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-xs font-bold text-accent">
+            <Icona nome="schedule" dimensione={16} />
+            {chiusa ? "Colletta chiusa" : scaduta ? "Scaduta" : giorni === 0 ? "Chiude oggi" : giorni === 1 ? "Chiude domani" : `Fino al ${dataBreve(c.scadenza)}`}
+          </span>
+          <span className="cifre rounded-full bg-accent-field px-3 py-1 text-xs font-bold text-accent-2">{a.percento}%</span>
         </div>
-        <div className="flex items-center gap-3 rounded-2xl bg-surface-2 p-2">
-          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-white">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="h-20 w-20 overflow-hidden rounded-full border-4 border-surface bg-surface">
             <ImmagineProdotto prodotto={c.prodotto} className="aspect-square h-full" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs text-ink-soft">Il regalo</p>
-            <p className="truncate font-display text-lg font-semibold">{c.prodotto.nome}</p>
-            <p className="cifre text-xs font-bold text-cta-2">Obiettivo: {formattaEuro(a.obiettivoCent)}</p>
+            <h2 id="sommario" className="text-2xl font-bold leading-tight">
+              Regalo per {c.festeggiato}
+            </h2>
+            <p className="truncate text-sm text-accent-field">{c.prodotto.nome}</p>
           </div>
-        </div>
-        <div className="flex items-baseline justify-between gap-2">
           <p>
-            <span className="cifre text-4xl font-extrabold">{formattaEuro(a.confermatoCent)}</span>
-            <span className="cifre text-ink-soft"> / {formattaEuro(a.obiettivoCent)}</span>
+            <span className="cifre text-5xl font-extrabold">{formattaEuro(a.confermatoCent)}</span>
+            <span className="cifre block text-sm text-accent-field">confermati su {formattaEuro(a.obiettivoCent)}</span>
           </p>
-          <span className="cifre rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">{a.percento}%</span>
         </div>
         <Barra percento={a.percento} etichetta="Totale confermato sull'obiettivo" alta />
-        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
-          <p className="flex items-center gap-1.5">
-            <Icona nome="group" dimensione={18} />
-            <strong>{c.nConfermati}</strong> su {Math.max(c.previsti, c.nAttesi)} hanno partecipato
-          </p>
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-sm font-semibold">
+          <span>
+            {c.nConfermati} su {Math.max(c.previsti, c.nAttesi)} hanno partecipato
+          </span>
+          <span aria-hidden="true">·</span>
           {mancanti > 0 ? (
-            <p className="font-bold text-cta-2">
+            <span>
               Mancano {formattaEuro(mancaCent)} (~{mancanti} {mancanti === 1 ? "quota" : "quote"})
-            </p>
+            </span>
           ) : (
-            <p className="font-bold text-ok">Obiettivo raggiunto!</p>
+            <span>Obiettivo raggiunto!</span>
           )}
         </div>
-        {c.quotaCongelata && c.modoQuota === "divisa" ? <p className="text-xs text-ink-soft">La quota è congelata a {formattaEuro(c.quotaCent)}: chi si aggiunge paga questa.</p> : null}
+        <nav aria-label="Vai a" className="grid grid-cols-4 gap-2">
+          {[
+            { href: "#tutti", testo: "Partecipanti", icona: "groups" as const },
+            ...(!chiusa ? [{ href: "#solleciti", testo: "Promemoria", icona: "chat" as const }] : []),
+            { href: "#link", testo: "Invita", icona: "person_add" as const },
+            { href: `/gestisci/${slug}/dati`, testo: "Statistiche", icona: "bar_chart" as const },
+          ].map((v) => (
+            <a key={v.href} href={v.href} className="flex flex-col items-center gap-1.5 text-xs font-semibold">
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface text-accent">
+                <Icona nome={v.icona} />
+              </span>
+              {v.testo}
+            </a>
+          ))}
+        </nav>
+        {c.quotaCongelata && c.modoQuota === "divisa" ? <p className="text-center text-xs text-accent-field">La quota è congelata a {formattaEuro(c.quotaCent)}: chi si aggiunge paga questa.</p> : null}
       </section>
 
       {scaduta && !chiusa ? (
@@ -412,10 +419,10 @@ export function Dashboard({ slug }: { slug: string }) {
         <section aria-labelledby="da-confermare" className="flex flex-col gap-3 rounded-3xl bg-surface-2 p-4">
           <div className="flex items-center justify-between gap-2">
             <h2 id="da-confermare" className="flex items-center gap-2 text-xl font-semibold text-accent-2">
-              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-cta" />
+              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-verde-medio" />
               Da confermare
             </h2>
-            <span className="rounded-full bg-cta px-3 py-1 text-xs font-bold text-accent-2">
+            <span className="rounded-full bg-verde-medio px-3 py-1 text-xs font-bold text-on-accent">
               {dichiarati.length} {dichiarati.length === 1 ? "accredito" : "accrediti"}
             </span>
           </div>
@@ -445,13 +452,13 @@ export function Dashboard({ slug }: { slug: string }) {
       <section aria-labelledby="tutti" className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-carta">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h2 id="tutti" className="text-xl font-semibold text-accent-2">
+            <h2 id="tutti" className="scroll-mt-24 text-xl font-semibold text-accent-2">
               Partecipanti
             </h2>
             <p className="text-xs text-ink-soft">{Math.max(c.previsti, c.nAttesi)} previsti</p>
           </div>
           {!chiusa ? (
-            <Bottone dimensione="piccolo" onClick={() => setAggiungiAperto((v) => !v)} aria-expanded={aggiungiAperto}>
+            <Bottone variante="verde" dimensione="piccolo" onClick={() => setAggiungiAperto((v) => !v)} aria-expanded={aggiungiAperto}>
               <Icona nome="person_add" dimensione={18} />
               Aggiungi
             </Bottone>
@@ -519,7 +526,7 @@ export function Dashboard({ slug }: { slug: string }) {
               <Icona nome="chat" dimensione={20} />
             </span>
             <div>
-              <h2 id="solleciti" className="text-xl font-semibold text-accent-2">
+              <h2 id="solleciti" className="scroll-mt-24 text-xl font-semibold text-accent-2">
                 Promemoria WhatsApp
               </h2>
               <p className="text-xs text-ink-soft">Già scritti: li inoltri tu. Nessuno viene nominato.</p>
@@ -534,7 +541,7 @@ export function Dashboard({ slug }: { slug: string }) {
       ) : null}
 
       <section aria-labelledby="link" className="flex flex-col gap-3 rounded-3xl bg-surface p-4 shadow-carta">
-        <h2 id="link" className="text-xl font-semibold text-accent-2">
+        <h2 id="link" className="scroll-mt-24 text-xl font-semibold text-accent-2">
           Il link della colletta
         </h2>
         <BloccoInvito url={url} messaggio={messaggio} />

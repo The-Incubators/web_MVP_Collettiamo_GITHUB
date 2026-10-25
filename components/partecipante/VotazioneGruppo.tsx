@@ -102,7 +102,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
           <Icona nome="how_to_vote" dimensione={20} className="text-gold-vivo" />
           {scaduta ? "Votazione finita" : "Votazione in corso"}
         </p>
-        <p className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
+        <p className="inline-flex items-center gap-1 rounded-full bg-surface text-accent px-3 py-1 text-xs font-bold">
           <Icona nome="schedule" dimensione={16} />
           {scaduta ? "Conto i voti…" : ora !== null && v.scade !== null ? testoTempoRimasto(v.scade, ora) : "In corso"}
         </p>
@@ -152,7 +152,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
                   <h2 className="line-clamp-2 font-display text-lg font-semibold leading-snug">{x.prodotto.nome}</h2>
                   {x.prodotto.urlEsterno ? (
                     <a
-                      className="inline-flex items-center gap-1 self-start py-1 text-sm font-bold text-cta-2 underline underline-offset-4"
+                      className="inline-flex items-center gap-1 self-start py-1 text-sm font-bold text-accent underline underline-offset-4"
                       href={urlPerAcquisto(x.prodotto.urlEsterno)}
                       target="_blank"
                       rel={REL_LINK_PRODOTTO}
@@ -170,7 +170,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
                 <div className="flex items-center justify-between text-xs font-semibold">
                   <span className="text-ink-soft">Il tuo voto</span>
                   {voto > 0 ? (
-                    <span className="font-bold text-cta-2">
+                    <span className="font-bold text-accent">
                       {voto} su 5 ({GIUDIZI[voto]})
                     </span>
                   ) : null}
@@ -250,7 +250,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
       {apriForm && nuovo && mie < MAX_PROPOSTE_PER_PERSONA && !scaduta ? (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-surface p-3 shadow-sollevata pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <div className="mx-auto max-w-catalogo">
-            <Bottone pieno onClick={() => void proponi()} disabled={occupato}>
+            <Bottone variante="verde" pieno onClick={() => void proponi()} disabled={occupato}>
               {occupato ? "Aggiungo…" : "Aggiungi alla lista"}
             </Bottone>
           </div>

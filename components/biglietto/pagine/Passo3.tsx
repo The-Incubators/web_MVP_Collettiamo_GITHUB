@@ -169,7 +169,7 @@ export function Passo3({ id, librerie }: { id: string; librerie: Librerie }) {
         )}
       </main>
       {b && testi ? (
-        <div className="no-stampa sticky bottom-0 z-30 border-t border-line bg-surface/95 py-3 backdrop-blur">
+        <div className="no-stampa sticky bottom-0 z-30 border-t border-line bg-surface py-3">
           <div className="gutter mx-auto max-w-[600px]">
             <BottonePillola disabled={!pronto || lavoro} onClick={() => void avanti()}>
               Avanti

@@ -21,7 +21,7 @@ export function Avanzamento({ stato, vaiA }: { stato: StatoRicerca; vaiA: (tappa
   return (
     <nav aria-label="Avanzamento della ricerca" className="flex flex-col gap-2 rounded-2xl bg-surface p-3 shadow-carta">
       <div className="flex items-center justify-between text-[11px] font-bold">
-        <p className="uppercase tracking-widest text-cta-2">
+        <p className="uppercase tracking-widest text-accent">
           Passo {stato.tappa} di 4 <span aria-hidden="true">●</span>
         </p>
         {secondi > 0 ? <p className="text-ink-soft">Circa {secondi} sec rimanenti</p> : null}
@@ -32,8 +32,8 @@ export function Avanzamento({ stato, vaiA }: { stato: StatoRicerca; vaiA: (tappa
           const completata = tappa.id < stato.tappa;
           const corpo = (
             <>
-              <span aria-hidden="true" className={`h-1.5 w-full rounded-full ${completata ? "bg-accent" : attiva ? "bg-cta" : "bg-line"}`} />
-              <span className={`flex items-center gap-0.5 text-[11px] font-bold ${attiva ? "text-cta-2" : completata ? "text-ink" : "text-ink-soft/60"}`}>
+              <span aria-hidden="true" className={`h-1.5 w-full rounded-full ${completata ? "bg-accent" : attiva ? "bg-verde-medio" : "bg-line"}`} />
+              <span className={`flex items-center gap-0.5 text-[11px] font-bold ${attiva ? "text-accent" : completata ? "text-ink" : "text-line-forte"}`}>
                 {completata ? <Icona nome="check" className="h-3.5 w-3.5" /> : null}
                 <span className="truncate">{tappa.etichetta}</span>
                 {completata ? <span className="sr-only"> (completato)</span> : null}
@@ -99,12 +99,12 @@ export function SceltaScheda({
       aria-pressed={scelto}
       onClick={onClick}
       className={`flex w-full items-center gap-3 rounded-2xl text-left transition-colors ${grande ? "min-h-24 flex-col justify-center p-5" : "min-h-14 gap-2.5 p-2.5"} ${
-        scelto ? "bg-surface shadow-carta ring-2 ring-cta" : "bg-surface-2 hover:bg-line"
+        scelto ? "bg-surface shadow-carta ring-2 ring-accent" : "bg-surface-2 hover:bg-line"
       }`}
     >
       <span
         className={`flex shrink-0 items-center justify-center rounded-full ${grande ? "h-16 w-16" : "h-9 w-9"} ${
-          scelto ? "bg-cta text-on-cta" : "bg-surface text-ink"
+          scelto ? "bg-accent text-on-accent" : "bg-surface text-ink"
         }`}
       >
         <Icona nome={icona} className={grande ? "h-8 w-8" : "h-5 w-5"} />
@@ -112,7 +112,7 @@ export function SceltaScheda({
       <span className={`min-w-0 flex-1 font-bold leading-tight ${grande ? "flex-none text-lg" : "text-sm"}`}>{etichetta}</span>
       {/* solo la spunta sulle scelte: un «+» su ogni scheda ruberebbe lo spazio alle parole lunghe */}
       {!grande && scelto ? (
-        <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cta text-on-cta">
+        <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">
           <IconaSito nome="check" dimensione={16} />
         </span>
       ) : null}

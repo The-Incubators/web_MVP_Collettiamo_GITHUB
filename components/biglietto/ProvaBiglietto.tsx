@@ -72,7 +72,7 @@ export function ProvaBiglietto() {
         <div role="group" aria-label="Colonne" className="flex items-center gap-2">
           <span className="text-sm font-semibold">Colonne:</span>
           {[1, 2, 3].map((n) => (
-            <Bottone key={n} dimensione="piccolo" variante={colonne === n ? "primario" : "secondario"} onClick={() => setColonne(n as 1 | 2 | 3)}>
+            <Bottone key={n} dimensione="piccolo" variante={colonne === n ? "verde" : "secondario"} onClick={() => setColonne(n as 1 | 2 | 3)}>
               {n}
             </Bottone>
           ))}

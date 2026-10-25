@@ -16,7 +16,7 @@ const DESCRIZIONI: Record<Metodo, string> = {
 
 const ICONE: Record<Metodo, { icona: NomeIcona; tinta: string }> = {
   paypal: { icona: "payments", tinta: "bg-accent-field text-accent" },
-  satispay: { icona: "smartphone", tinta: "bg-cta-field text-cta-2" },
+  satispay: { icona: "smartphone", tinta: "bg-accent-field text-accent" },
   bonifico: { icona: "account_balance", tinta: "bg-surface-2 text-ink" },
   contanti: { icona: "handshake", tinta: "bg-gold-field text-gold" },
 };
@@ -55,7 +55,7 @@ export function PassoMetodo({
       <div className="flex flex-col gap-1">
         <h2 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Paga la tua quota a {c.organizzatoreNome}</h2>
         <p className="text-ink-soft">
-          {importo ? <strong className="cifre text-lg font-extrabold text-cta-2">{formattaEuro(importo)}</strong> : null} per il regalo di {c.festeggiato}
+          {importo ? <strong className="cifre text-lg font-extrabold text-accent">{formattaEuro(importo)}</strong> : null} per il regalo di {c.festeggiato}
         </p>
       </div>
 

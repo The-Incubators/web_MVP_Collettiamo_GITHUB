@@ -27,11 +27,11 @@ export function SchedaScelta({
       aria-checked={selezionata}
       onClick={onSeleziona}
       className={`flex min-h-tocco w-full items-center gap-3 rounded-3xl p-4 text-left transition-colors ${
-        selezionata ? "bg-surface shadow-sollevata ring-2 ring-accent" : "bg-surface-2 hover:bg-line"
+        selezionata ? "bg-surface shadow-carta ring-2 ring-accent" : "bg-surface shadow-carta ring-1 ring-line hover:ring-line-forte"
       }`}
     >
       {icona ? (
-        <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${selezionata ? "bg-ok-field text-accent" : "bg-surface text-ink"}`}>
+        <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${selezionata ? "bg-accent text-on-accent" : "bg-accent-field text-accent"}`}>
           <Icona nome={icona} />
         </span>
       ) : null}
@@ -42,7 +42,7 @@ export function SchedaScelta({
       </span>
       <span
         aria-hidden="true"
-        className={`flex h-7 w-7 shrink-0 items-center justify-center self-start rounded-full ${selezionata ? "bg-accent text-on-accent" : "bg-line"}`}
+        className={`flex h-7 w-7 shrink-0 items-center justify-center self-start rounded-full ${selezionata ? "bg-accent text-on-accent" : "ring-2 ring-inset ring-line-forte"}`}
       >
         {selezionata ? <Icona nome="check" dimensione={18} /> : null}
       </span>

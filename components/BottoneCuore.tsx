@@ -14,7 +14,7 @@ export function BottoneCuore({ slug, nome, className = "" }: { slug: string; nom
       title={dentro ? "Togli dai preferiti" : "Aggiungi ai preferiti"}
       onClick={() => toggle(slug)}
       className={`flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta transition-colors ${
-        dentro ? "text-cta" : "text-ink hover:text-cta-2"
+        dentro ? "text-accent" : "text-ink hover:text-accent"
       } ${className}`}
     >
       <svg viewBox="0 0 24 24" width={22} height={22} aria-hidden="true" fill={dentro ? "currentColor" : "none"} stroke="currentColor" strokeWidth={2} strokeLinejoin="round">

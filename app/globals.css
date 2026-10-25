@@ -15,7 +15,8 @@
  * - Tutto il resto usa le sfumature di verde, dalla più intensa alla più chiara: `accent` (#035C32) e il
  *   gradiente `eroe-da` → `eroe-a` (classe `.eroe`), `verde-medio`, `accent-field` per sfondi e riquadri.
  * - Niente nero né quasi-nero per card e pulsanti, e niente trasparenze (bianco semitrasparente, veli sulle foto,
- *   barre sfocate): ogni superficie ha un colore pieno.
+ *   barre sfocate): ogni superficie ha un colore pieno. L'unica eccezione è `velo`, il grigio-verde dietro i
+ *   pannelli e le finestre, che deve lasciar intuire la pagina sotto.
  */
 :root {
   --field: #f0f2f1;
@@ -32,6 +33,7 @@
   --eroe-da: #06703f;
   --eroe-a: #023d24;
   --verde-medio: #2c8152;
+  --velo: rgba(40, 52, 46, 0.45);
   --cta: #fd5d17;
   --cta-2: #e14d0b;
   --cta-3: #c43d00;

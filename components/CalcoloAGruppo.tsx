@@ -27,7 +27,7 @@ export function CalcoloAGruppo({ slug, prezzoCent, children }: { slug: string; p
         </h2>
         <div className="flex flex-col items-center gap-0.5 rounded-2xl bg-surface p-4 text-center shadow-carta" aria-live="polite">
           <p>
-            <span className="cifre text-4xl font-extrabold text-cta-2">{formattaEuro(quota)}</span>
+            <span className="cifre text-4xl font-extrabold text-accent">{formattaEuro(quota)}</span>
             <span className="text-sm font-semibold text-ink-soft"> / persona</span>
           </p>
           <p className="text-xs font-semibold text-ink-soft">

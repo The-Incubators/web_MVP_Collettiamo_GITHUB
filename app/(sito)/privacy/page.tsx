@@ -8,7 +8,7 @@ const BLOCCHI: { titolo: string; icona: NomeIcona; tinta: string; testi: string[
   {
     titolo: "Chi firma un biglietto",
     icona: "draw",
-    tinta: "bg-cta-field text-cta-2",
+    tinta: "bg-accent-field text-accent",
     testi: [
       "Conserviamo il messaggio, l’eventuale immagine, la firma, il ruolo se lo scrivi e il tuo nome; cognome ed email solo se li lasci. Nome, cognome ed email li vede solo chi organizza: il festeggiato e gli altri vedono messaggio, firma e ruolo.",
       "Il tuo dispositivo tiene una chiave casuale che ci permette di riconoscere la tua firma e di fartela modificare: non è legata alla tua identità.",

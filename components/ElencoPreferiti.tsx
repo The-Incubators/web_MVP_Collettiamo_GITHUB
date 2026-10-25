@@ -18,7 +18,7 @@ export function ElencoPreferiti({ prodotti }: { prodotti: Prodotto[] }) {
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">I tuoi preferiti</h1>
         {miei.length > 0 ? (
-          <span className="cifre rounded-full bg-cta-field px-3 py-1 text-xs font-bold" aria-live="polite">
+          <span className="cifre rounded-full bg-accent-field px-3 py-1 text-xs font-bold" aria-live="polite">
             {miei.length === 1 ? "1 idea" : `${miei.length} idee`}
           </span>
         ) : null}
@@ -39,7 +39,7 @@ export function ElencoPreferiti({ prodotti }: { prodotti: Prodotto[] }) {
       {!pronto ? <p className="text-center text-ink-soft">Carico i preferiti…</p> : null}
       {pronto && miei.length === 0 ? (
         <div className="mx-auto flex w-full max-w-md flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-cta-field text-cta-2">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-field text-accent">
             <Icona nome="favorite" dimensione={32} />
           </span>
           <p className="font-display text-xl font-semibold text-accent-2">Nessun preferito, per ora</p>

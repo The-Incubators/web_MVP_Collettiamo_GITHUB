@@ -59,3 +59,21 @@ Bacheca, album foto con conto alla rovescia, dettagli della festa (luogo, orario
 3. **Solo grafica in questo branch.** Le funzioni della sezione 4 non si sviluppano qui; se servono, ognuna su un branch suo.
 
 Gli screenshot non vanno su GitHub (sono di un'altra app e pesano ~40 MB): la cartella è in `.gitignore`.
+
+## 6. Regole emerse durante il lavoro (25 ottobre 2026)
+
+- **Azione principale sempre arancio** (Bottone `primario`/`azione`, card «Organizza una colletta»), una per schermata. Tutto il resto in sfumature di verde: `accent` e `.eroe` (intenso), `verde-medio`, `accent-field` e Bottone `secondario` (chiaro), Bottone `verde` per le azioni importanti non principali.
+- **Niente nero** per box e pulsanti (i suggerimenti scuri ora sono verde scuro).
+- **Niente trasparenze**: colori pieni ovunque; l'unica eccezione è `velo`, il grigio-verde dietro pannelli e finestre.
+
+## 7. Avanzamento
+
+| Area | Stato |
+|---|---|
+| Fondamenta (colori, Inter, card, pulsanti, campi, finestre come pannelli dal basso) | fatto |
+| Home (2592) | fatto |
+| Creazione colletta (2593–2606): barra con pulsante tondo e linea di avanzamento, intestazione di passo con icona, pulsante arancio fisso | fatto |
+| Gestione (2607–2614): card verde con quote confermate, conteggi e scorciatoie | fatto |
+| Partecipante, pagamento, rendiconto, votazione | colori e pulsanti allineati alle regole |
+| Biglietto (creazione, firma, anteprima, gestione) | colori, barra in alto con pulsante tondo, suggerimenti verde scuro |
+| Catalogo, prodotto, preferiti, Trova regalo, le mie collette, accesso, privacy | colori e pulsanti allineati alle regole |

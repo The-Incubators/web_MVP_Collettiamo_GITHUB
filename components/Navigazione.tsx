@@ -29,7 +29,7 @@ function attiva(percorso: string, href: string): boolean {
 function ContatorePreferiti({ n }: { n: number }) {
   if (n === 0) return null;
   return (
-    <span className="cifre absolute -right-2 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cta px-1 text-[11px] font-bold text-accent-2">
+    <span className="cifre absolute -right-2 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-on-accent">
       <span className="sr-only">: </span>
       {n}
     </span>
@@ -94,7 +94,7 @@ export function NavigazioneOrizzontale() {
               >
                 {v.testo}
                 {v.href === "/preferiti" && preferiti.size > 0 ? (
-                  <span className="cifre ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-cta px-1 text-xs font-bold text-accent-2">
+                  <span className="cifre ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold text-on-accent">
                     <span className="sr-only">: </span>
                     {preferiti.size}
                   </span>

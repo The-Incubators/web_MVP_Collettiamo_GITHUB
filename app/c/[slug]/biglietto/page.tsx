@@ -37,7 +37,7 @@ export default async function Biglietto({ params }: Props) {
 
       <article className="flex flex-col gap-6 rounded-3xl bg-surface p-6 shadow-carta print:rounded-none print:p-0 print:shadow-none">
         <header className="flex flex-col gap-1 text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-cta-2">{c.occasione}</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-accent">{c.occasione}</p>
           <h1 className="text-[32px] font-bold leading-tight text-accent-2">Per {c.festeggiato}</h1>
           <p className="text-sm text-ink-soft">{dataLunga(c.dataRegalo)}</p>
         </header>

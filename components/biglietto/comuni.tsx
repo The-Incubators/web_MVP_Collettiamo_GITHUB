@@ -11,7 +11,7 @@ import { Logo } from "@/components/ui";
 import { giaVisto, segnaVisto } from "@/lib/biglietti/client";
 
 /**
- * I passi del biglietto (UX_V4): «Passo N di M» e un segmento per passo, verdi quelli fatti, arancio il corrente.
+ * I passi del biglietto: «Passo N di M» e un segmento per passo, verde pieno quelli fatti, verde medio il corrente.
  * `percento` (0–100) dice dove si è; il passo corrente è quello che contiene la posizione.
  */
 export function BarraSegmentata({ segmenti, percento }: { segmenti: number; percento: number }) {
@@ -19,17 +19,21 @@ export function BarraSegmentata({ segmenti, percento }: { segmenti: number; perc
   const corrente = Math.min(segmenti, Math.floor((p / 100) * segmenti) + 1);
   return (
     <div className="flex flex-col gap-1.5" role="progressbar" aria-valuemin={1} aria-valuemax={segmenti} aria-valuenow={corrente} aria-label={`Passo ${corrente} di ${segmenti}`}>
-      <p className="text-[11px] font-bold uppercase tracking-widest" aria-hidden="true">
+      <p className="text-sm text-ink-soft" aria-hidden="true">
         Passo {corrente} di {segmenti}
       </p>
       <div aria-hidden="true" className="flex gap-1.5">
         {Array.from({ length: segmenti }, (_, k) => (
-          <span key={k} className={`h-1.5 flex-1 rounded-full transition-colors ${k + 1 < corrente ? "bg-accent" : k + 1 === corrente ? "bg-cta" : "bg-line"}`} />
+          <span key={k} className={`h-1.5 flex-1 rounded-full transition-colors ${k + 1 < corrente ? "bg-accent" : k + 1 === corrente ? "bg-verde-medio" : "bg-line"}`} />
         ))}
       </div>
     </div>
   );
 }
+
+/** Il pulsante tondo bianco delle barre in alto, come `BottoneTondo` di components/ui. */
+const TONDO =
+  "flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-carta transition-transform active:scale-95";
 
 /**
  * Intestazione fissa del wizard: «indietro» a sinistra, marchio al centro, «Accedi» a destra se non si è entrati.
@@ -60,25 +64,25 @@ export function IntestazioneWizard({
     </svg>
   );
   return (
-    <header className="no-stampa sticky top-0 z-30 bg-field/90 pt-safe backdrop-blur-xl">
+    <header className="no-stampa sticky top-0 z-30 bg-field pt-safe">
       <div className={`gutter mx-auto ${larghezza} pb-3`}>
         <div className="grid grid-cols-[44px_1fr_auto] items-center py-1">
           {indietro === null ? (
             <span />
           ) : indietro === "storia" ? (
-            <button type="button" onClick={() => router.back()} aria-label="Indietro" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface-2">
+            <button type="button" onClick={() => router.back()} aria-label="Indietro" className={TONDO}>
               {freccia}
             </button>
           ) : (
-            <Link href={indietro} aria-label="Indietro" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-surface-2">
+            <Link href={indietro} aria-label="Indietro" className={TONDO}>
               {freccia}
             </Link>
           )}
           {titolo ? (
-            <h1 className="text-center font-display text-xl font-bold text-accent-2">{titolo}</h1>
+            <h1 className="text-center font-display text-xl font-bold text-ink">{titolo}</h1>
           ) : (
             <Link href="/" className="mx-auto inline-flex min-h-tocco items-center" aria-label="Gifty, vai alla home">
-              <Logo className="h-9" />
+              <Logo className="h-8" />
             </Link>
           )}
           <span className="flex min-w-11 justify-end">
@@ -100,7 +104,7 @@ export function BottonePillola({ className = "", pieno = true, children, ...rest
   return (
     <button
       type="button"
-      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-full px-8 text-[19px] font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-cta enabled:text-on-cta enabled:shadow-sollevata enabled:hover:bg-cta-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
+      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-full px-8 text-[19px] font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-cta enabled:text-on-cta enabled:shadow-arancio enabled:hover:bg-cta-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
       {...resto}
     >
       {children}
@@ -123,12 +127,12 @@ export function Aiuto({ testo }: { testo: string }) {
         onBlur={() => setAperto(false)}
         className="-m-[13px] flex h-11 w-11 items-center justify-center"
       >
-        <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-ink-soft text-[11px] font-bold text-surface">
+        <span aria-hidden="true" className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-accent text-[11px] font-bold text-on-accent">
           ?
         </span>
       </button>
       {aperto ? (
-        <span role="tooltip" id={id} className="absolute left-1/2 top-full z-40 mt-2 w-64 -translate-x-1/2 rounded-controllo bg-ink p-3 text-sm font-normal leading-snug text-surface shadow-lg max-[420px]:left-auto max-[420px]:right-[-100px] max-[420px]:translate-x-0">
+        <span role="tooltip" id={id} className="absolute left-1/2 top-full z-40 mt-2 w-64 -translate-x-1/2 rounded-controllo bg-accent-2 p-3 text-sm font-normal leading-snug text-on-accent shadow-lg max-[420px]:left-auto max-[420px]:right-[-100px] max-[420px]:translate-x-0">
           {testo}
         </span>
       ) : null}
@@ -141,8 +145,8 @@ export function Fumetto({ testo, onChiudi, verso = "basso", className = "" }: { 
   const rif = useRef<HTMLButtonElement>(null);
   useEffect(() => rif.current?.focus(), []);
   return (
-    <div role="dialog" aria-modal="false" className={`relative z-40 w-72 max-w-[calc(100vw-32px)] rounded-contenitore bg-ink p-4 text-center text-sm leading-snug text-surface shadow-xl ${className}`}>
-      <span aria-hidden="true" className={`absolute left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-ink ${verso === "basso" ? "-top-1.5" : "-bottom-1.5"}`} />
+    <div role="dialog" aria-modal="false" className={`relative z-40 w-72 max-w-[calc(100vw-32px)] rounded-contenitore bg-accent-2 p-4 text-center text-sm leading-snug text-on-accent shadow-xl ${className}`}>
+      <span aria-hidden="true" className={`absolute left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 bg-accent-2 ${verso === "basso" ? "-top-1.5" : "-bottom-1.5"}`} />
       <p>{testo}</p>
       <button ref={rif} type="button" onClick={onChiudi} className="mt-3 inline-flex min-h-tocco items-center rounded-full bg-surface px-5 font-semibold text-ink">
         Ho capito
@@ -248,7 +252,7 @@ export function Finestra({ aperta, onChiudi, titolo, children, larga }: { aperta
   }, [aperta]);
   if (!aperta) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-4" onClick={onChiudi}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-velo sm:items-center sm:p-4" onClick={onChiudi}>
       <div
         role="dialog"
         aria-modal="true"

@@ -37,7 +37,7 @@ export function Stelle({ valore, onVota, etichetta, disabilitato = false }: { va
           onKeyDown={(e) => tasto(e, n)}
           className="flex h-11 w-11 items-center justify-center rounded-controllo disabled:opacity-50"
         >
-          <svg viewBox="0 0 24 24" width={32} height={32} aria-hidden="true" className={n <= valore ? "text-cta" : "text-line-forte"}>
+          <svg viewBox="0 0 24 24" width={32} height={32} aria-hidden="true" className={n <= valore ? "text-gold-vivo" : "text-line-forte"}>
             <path
               d="M12 2.8l2.8 5.9 6.4.9-4.6 4.5 1.1 6.4L12 17.5l-5.7 3 1.1-6.4L2.8 9.6l6.4-.9z"
               fill={n <= valore ? "currentColor" : "none"}

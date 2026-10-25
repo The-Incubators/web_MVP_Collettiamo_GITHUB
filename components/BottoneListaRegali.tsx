@@ -65,7 +65,7 @@ export function BottoneListaRegali({ prodotto, className = "", variante = "piu" 
       </button>
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-full z-20 mt-1 hidden whitespace-nowrap rounded-controllo bg-ink px-2.5 py-1.5 text-xs font-medium text-field group-hover/piu:block group-focus-within/piu:block"
+        className="pointer-events-none absolute right-0 top-full z-20 mt-1 hidden whitespace-nowrap rounded-controllo bg-accent-2 px-2.5 py-1.5 text-xs font-medium text-on-accent group-hover/piu:block group-focus-within/piu:block"
       >
         {dentro ? "Nella lista dei regali" : "Aggiungi alla lista dei regali"}
       </span>

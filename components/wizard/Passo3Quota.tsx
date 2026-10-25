@@ -75,12 +75,12 @@ export function Passo3Quota({ s, cambia, errori }: PropsPasso) {
                 aria-checked={scelto}
                 onClick={() => cambia({ modoQuota: m.id })}
                 className={`flex min-h-28 flex-col items-center justify-center gap-1 rounded-2xl p-2 text-center transition-colors ${
-                  scelto ? "bg-accent text-on-accent shadow-sollevata" : "bg-surface-2 hover:bg-line"
+                  scelto ? "bg-accent text-on-accent shadow-accento" : "bg-surface shadow-carta ring-1 ring-line hover:ring-line-forte"
                 }`}
               >
                 <Icona nome={m.icona} />
                 <span className="text-sm font-bold leading-tight">{m.titolo}</span>
-                <span className={`text-[11px] leading-tight ${scelto ? "opacity-90" : "text-ink-soft"}`}>{m.testo}</span>
+                <span className={`text-[11px] leading-tight ${scelto ? "text-accent-field" : "text-ink-soft"}`}>{m.testo}</span>
               </button>
             );
           })}
@@ -160,7 +160,7 @@ export function Passo3Quota({ s, cambia, errori }: PropsPasso) {
             <Icona nome="celebration" className="text-gold-vivo" />
             <span className="flex flex-col">
               <strong className="cifre">+{formattaEuro(avanzo)} di avanzo previsto</strong>
-              <span className="text-xs opacity-90">Lo decidi alla chiusura: biglietto, restituzione o un extra.</span>
+              <span className="text-xs text-accent-field">Lo decidi alla chiusura: biglietto, restituzione o un extra.</span>
             </span>
           </p>
         ) : null}

@@ -42,14 +42,14 @@ export function FiltriCatalogo({ attivi, conteggio, children }: { attivi: number
         <Icona nome="tune" dimensione={20} />
         Filtri
         {attivi > 0 ? (
-          <span className="cifre flex h-5 min-w-5 items-center justify-center rounded-full bg-cta px-1 text-[11px] font-bold text-accent-2">
+          <span className="cifre flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-[11px] font-bold text-on-accent">
             <span className="sr-only">attivi: </span>
             {attivi}
           </span>
         ) : null}
       </button>
       {aperto ? (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center" onClick={() => setAperto(false)}>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-velo sm:items-center" onClick={() => setAperto(false)}>
           <div
             id={id}
             role="dialog"

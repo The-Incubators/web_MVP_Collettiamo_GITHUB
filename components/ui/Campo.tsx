@@ -3,7 +3,7 @@
 import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 
 const CLASSI_CONTROLLO =
-  "min-h-azione w-full min-w-0 max-w-full rounded-controllo border-[1.5px] border-line-forte bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent-field aria-[invalid=true]:border-2 aria-[invalid=true]:border-error aria-[invalid=true]:bg-error-field";
+  "min-h-azione w-full min-w-0 max-w-full rounded-controllo border-[1.5px] border-line bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-soft focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent-field aria-[invalid=true]:border-2 aria-[invalid=true]:border-error aria-[invalid=true]:bg-error-field";
 
 interface Comuni {
   etichetta: string;

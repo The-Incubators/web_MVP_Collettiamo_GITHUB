@@ -16,11 +16,11 @@ export function Barra({
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={valore}
-      className={`w-full overflow-hidden rounded-full bg-line ${alta ? "h-4" : "h-3"}`}
+      className={`w-full overflow-hidden rounded-full bg-accent-field ${alta ? "h-4" : "h-3"}`}
     >
-      {/* dal verde del marchio all'arancio mentre si raccoglie; all'obiettivo diventa oro, il colore dei traguardi */}
+      {/* sfumature di verde mentre si raccoglie (l'arancio è dell'azione principale); all'obiettivo diventa oro, il colore dei traguardi */}
       <div
-        className={`h-full rounded-full bg-gradient-to-r from-accent transition-[width] duration-500 ${valore >= 100 ? "to-gold-vivo" : "to-cta"}`}
+        className={`h-full rounded-full bg-gradient-to-r transition-[width] duration-500 ${valore >= 100 ? "from-accent to-gold-vivo" : "from-verde-medio to-accent"}`}
         style={{ width: `${valore}%` }}
       />
     </div>

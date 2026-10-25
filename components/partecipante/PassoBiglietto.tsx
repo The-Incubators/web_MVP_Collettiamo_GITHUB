@@ -56,7 +56,7 @@ export function PassoBiglietto({
       ) : null}
 
       <div className="flex flex-col gap-1">
-        <p className="text-xs font-bold uppercase tracking-widest text-cta-2">Ultimo tocco · Biglietto di gruppo</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-accent">Ultimo tocco · Biglietto di gruppo</p>
         <h2 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Due righe per {festeggiato}</h2>
         <p className="text-ink-soft">Finiranno sul biglietto firmato da tutto il gruppo.</p>
       </div>
@@ -64,7 +64,7 @@ export function PassoBiglietto({
       <div className="flex flex-col gap-4 rounded-3xl bg-surface p-5 shadow-carta">
         {nome ? (
           <div className="flex items-center gap-3">
-            <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-full bg-cta-field font-display font-bold text-cta-2">
+            <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-field font-display font-bold text-accent">
               {inizialiDi(nome).slice(0, 1)}
             </span>
             <div className="flex flex-col">

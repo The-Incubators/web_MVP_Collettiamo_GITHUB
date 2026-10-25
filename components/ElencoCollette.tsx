@@ -45,7 +45,7 @@ function Scheda({ c, onElimina }: { c: Colletta; onElimina: (slug: string) => Pr
       <div className="flex flex-wrap gap-2">
         {bozza ? (
           <>
-            <BottoneLink href={`/crea?bozza=${c.slug}`} dimensione="piccolo">
+            <BottoneLink variante="verde" href={`/crea?bozza=${c.slug}`} dimensione="piccolo">
               Riprendi
             </BottoneLink>
             {chiedo ? (
@@ -69,7 +69,7 @@ function Scheda({ c, onElimina }: { c: Colletta; onElimina: (slug: string) => Pr
           </>
         ) : (
           <>
-            <BottoneLink href={`/gestisci/${c.slug}`} dimensione="piccolo">
+            <BottoneLink variante="verde" href={`/gestisci/${c.slug}`} dimensione="piccolo">
               Gestisci
             </BottoneLink>
             <BottoneLink href={`/c/${c.slug}`} variante="secondario" dimensione="piccolo">

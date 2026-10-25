@@ -122,12 +122,12 @@ export function Chiusura({ slug }: { slug: string }) {
     return (
       <div className="mx-auto flex max-w-dashboard flex-col gap-5">
         <header className="flex flex-col gap-2 rounded-3xl bg-accent p-6 text-on-accent">
-          <p className="inline-flex items-center gap-1 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
+          <p className="inline-flex items-center gap-1 self-start rounded-full bg-surface text-accent px-3 py-1 text-xs font-bold">
             <Icona nome="check_circle" dimensione={16} />
             Colletta chiusa
           </p>
           <h1 className="text-[28px] font-bold leading-tight">Regalo comprato! 🎉</h1>
-          <p className="text-sm opacity-90">Il regalo per {c.festeggiato} è stato acquistato.</p>
+          <p className="text-sm">Il regalo per {c.festeggiato} è stato acquistato.</p>
         </header>
         <section className="flex flex-col gap-3 rounded-3xl bg-surface p-5 shadow-carta">
           <h2 className="text-xl font-semibold text-accent-2">Rendiconto</h2>
@@ -163,7 +163,7 @@ export function Chiusura({ slug }: { slug: string }) {
           {ch && ch.avanzoCent < 0 ? <p>La differenza di {formattaEuro(-ch.avanzoCent)} l’hai messa tu.</p> : null}
         </section>
         <div className="flex flex-col gap-2">
-          <BottoneLink href={`/c/${slug}/biglietto`} pieno>
+          <BottoneLink variante="verde" href={`/c/${slug}/biglietto`} pieno>
             <Icona nome="mail" dimensione={20} />
             Biglietto da stampare
           </BottoneLink>
@@ -186,12 +186,12 @@ export function Chiusura({ slug }: { slug: string }) {
       </Link>
       {mancante === 0 ? (
         <header className="flex flex-col gap-2 rounded-3xl bg-accent p-6 text-on-accent" aria-live="polite">
-          <p className="inline-flex items-center gap-1 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
+          <p className="inline-flex items-center gap-1 self-start rounded-full bg-surface text-accent px-3 py-1 text-xs font-bold">
             <Icona nome="verified" dimensione={16} />
             {c.nConfermati} {c.nConfermati === 1 ? "confermato" : "confermati"} · Raccolta completata
           </p>
           <h1 className="text-[28px] font-bold leading-tight">Hai tutto quello che serve! 🎉</h1>
-          <p className="text-sm opacity-90">
+          <p className="text-sm">
             Raccolti <strong className="cifre">{formattaEuro(totale)}</strong> su {formattaEuro(prezzo)} previsti.
           </p>
         </header>
@@ -252,7 +252,7 @@ export function Chiusura({ slug }: { slug: string }) {
                     <div className="flex flex-1 flex-col gap-2 px-1 pb-1">
                       <p className="text-sm leading-snug">{p.nome}</p>
                       <p className="cifre font-bold">{formattaEuro(p.prezzoCent)}</p>
-                      <Bottone
+                      <Bottone variante="verde"
                         dimensione="piccolo"
                         className="mt-auto"
                         onClick={async () => {
@@ -273,7 +273,7 @@ export function Chiusura({ slug }: { slug: string }) {
 
           {strada === "rimando" ? (
             <div className="flex flex-col gap-3">
-              <Bottone
+              <Bottone variante="verde"
                 className="self-start"
                 onClick={async () => {
                   await g.aggiorna({ scadenza: spostaScadenza(c.scadenza, 1) });
@@ -346,7 +346,7 @@ export function Chiusura({ slug }: { slug: string }) {
                 <>
                   <h2 id="avanzo" className="flex items-center gap-2 text-xl font-semibold text-accent-2">
                     <span className="cifre flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm text-on-accent">2</span>
-                    C’è un avanzo di <span className="cifre text-cta-2">+{formattaEuro(esito.avanzoCent)}</span>
+                    C’è un avanzo di <span className="cifre text-accent">+{formattaEuro(esito.avanzoCent)}</span>
                   </h2>
                   <div role="radiogroup" aria-label="Che cosa ne facciamo dell'avanzo" className="flex flex-col gap-2">
                     <SchedaScelta icona="redeem" titolo="Lo tengo per biglietto e confezione" selezionata={destinazione === "biglietto"} onSeleziona={() => setDestinazione("biglietto")} />

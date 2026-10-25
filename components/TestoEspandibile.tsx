@@ -21,7 +21,7 @@ export function TestoEspandibile({ testo, extra }: { testo: string; extra?: Reac
           aria-expanded={aperto}
           aria-controls={id}
           onClick={() => setAperto((a) => !a)}
-          className="inline-flex min-h-tocco items-center gap-0.5 self-start text-sm font-bold text-cta-2"
+          className="inline-flex min-h-tocco items-center gap-0.5 self-start text-sm font-bold text-accent"
         >
           {aperto ? "Riduci" : "Leggi tutto"}
           <Icona nome="expand_more" dimensione={18} className={aperto ? "rotate-180" : ""} />

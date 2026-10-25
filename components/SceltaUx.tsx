@@ -31,7 +31,7 @@ export function SceltaUx({ attiva }: { attiva: string }) {
           if (!v.disponibile) {
             // Annunciata ma non pronta: si vede, non si sceglie. Niente scheda cliccabile che non fa nulla.
             return (
-              <div key={v.id} className="flex items-start gap-3 rounded-3xl border border-dashed border-line-forte bg-surface-2 p-4 opacity-80">
+              <div key={v.id} className="flex items-start gap-3 rounded-3xl border border-dashed border-line-forte bg-surface-2 p-4">
                 <span aria-hidden="true" className="mt-0.5 h-6 w-6 shrink-0 rounded-full border border-dashed border-line" />
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <p className="font-display text-lg font-bold leading-tight">

@@ -192,7 +192,7 @@ export function PaginaPartecipante({
               </Avviso>
             ) : null}
             <p className="flex items-center gap-2 rounded-2xl bg-surface-2 px-4 py-3 text-sm">
-              <Icona nome="bolt" dimensione={20} className="text-cta-2" />
+              <Icona nome="bolt" dimensione={20} className="text-accent" />
               Nessuna registrazione: basta il tuo nome.
             </p>
             {problema ? (
@@ -408,7 +408,7 @@ function VistaStato({
         ) : null}
 
         {riga && riga.stato !== "confermato" ? (
-          <button type="button" onClick={onRivedi} className="flex min-h-tocco items-center justify-center gap-1 text-sm font-bold text-cta-2">
+          <button type="button" onClick={onRivedi} className="flex min-h-tocco items-center justify-center gap-1 text-sm font-bold text-accent">
             {riga.stato === "aderito" && !contanti ? "Rivedi come pagare" : "Hai sbagliato metodo? Cambia come pagare"}
             <Icona nome="chevron_right" dimensione={18} />
           </button>
@@ -420,13 +420,13 @@ function VistaStato({
       {puoScrivere ? (
         <section aria-labelledby="mio-biglietto" className="flex flex-col gap-4 rounded-3xl bg-surface-2 p-5">
           <h2 id="mio-biglietto" className="flex items-center gap-2 text-xl font-semibold text-accent-2">
-            <Icona nome="draw" className="text-cta-2" />
+            <Icona nome="draw" className="text-accent" />
             Il tuo biglietto di auguri
           </h2>
           {riga?.messaggio ? (
             <blockquote className="rounded-2xl bg-surface p-4 shadow-carta">
               <p className="text-xs font-bold text-ink-soft">La tua firma: {riga.nome}</p>
-              <p className="mt-2 whitespace-pre-wrap border-l-4 border-cta-field pl-3 italic">«{riga.messaggio}»</p>
+              <p className="mt-2 whitespace-pre-wrap border-l-4 border-accent-field pl-3 italic">«{riga.messaggio}»</p>
             </blockquote>
           ) : (
             <p className="text-sm text-ink-soft">Lascia due righe per {c.festeggiato}: finiranno sul biglietto firmato da tutto il gruppo.</p>
@@ -439,13 +439,13 @@ function VistaStato({
       ) : null}
 
       <section className="flex flex-col gap-3 rounded-3xl bg-accent p-6 text-on-accent">
-        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80">
+        <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
           <Icona nome="celebration" dimensione={18} />
           Facile e senza stress
         </p>
         <h2 className="text-2xl font-bold">Stai pensando a un altro regalo di gruppo?</h2>
-        <p className="text-sm opacity-90">Organizza una colletta in due minuti, senza inseguire nessuno.</p>
-        <BottoneLink href="/catalogo" variante="azione" pieno className="mt-1">
+        <p className="text-sm">Organizza una colletta in due minuti, senza inseguire nessuno.</p>
+        <BottoneLink href="/catalogo" variante="secondario" pieno className="mt-1">
           Organizza una colletta <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
       </section>

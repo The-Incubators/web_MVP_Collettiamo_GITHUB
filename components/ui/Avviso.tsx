@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { IconaAvviso, IconaInfo, IconaSpunta } from "./icone";
 
 const STILI = {
-  neutro: "border-transparent bg-surface-2",
+  neutro: "border-line bg-surface",
   attenzione: "border-gold-line bg-gold-field",
   positivo: "border-transparent bg-ok-field",
 } as const;

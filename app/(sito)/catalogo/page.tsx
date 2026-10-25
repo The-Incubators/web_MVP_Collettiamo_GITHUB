@@ -175,7 +175,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             ) : null}
             <GruppoFiltro titolo="Categoria regalo" chiave="tema" stato={stato} opzioni={CATEGORIE} />
             {nFiltri > 0 ? (
-              <Link href={href(stato, { per: undefined, eta: undefined, tema: undefined, fascia: undefined })} scroll={false} className="self-start text-sm font-bold text-cta-2 underline underline-offset-4">
+              <Link href={href(stato, { per: undefined, eta: undefined, tema: undefined, fascia: undefined })} scroll={false} className="self-start text-sm font-bold text-accent underline underline-offset-4">
                 Azzera i filtri
               </Link>
             ) : null}
@@ -198,7 +198,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
 
         <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-2 py-1.5 pl-4 pr-1.5" role="group" aria-label="Simula la quota a testa">
           <p className="flex items-center gap-2 text-sm font-bold">
-            <Icona nome="groups" dimensione={20} className="text-cta-2" />
+            <Icona nome="groups" dimensione={20} className="text-accent" />
             Simula per <span className="cifre">{persone}</span> invitati
           </p>
           <div className="flex items-center gap-1">
@@ -226,7 +226,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
               <Icona nome="search" dimensione={32} className="text-ink-soft" />
               <p className="font-semibold">Nessun regalo con questi filtri.</p>
-              <Link href="/catalogo" className="text-sm font-bold text-cta-2 underline underline-offset-4">
+              <Link href="/catalogo" className="text-sm font-bold text-accent underline underline-offset-4">
                 Azzera tutto
               </Link>
             </div>
