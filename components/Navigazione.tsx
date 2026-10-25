@@ -56,7 +56,7 @@ export function BarraNavigazione() {
                 <Link
                   href={v.href}
                   aria-current={corrente ? "page" : undefined}
-                  className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-bold leading-none ${corrente ? "text-cta-2" : "text-ink-soft"}`}
+                  className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-bold leading-none ${corrente ? "text-accent" : "text-ink-soft"}`}
                 >
                   {/* flex, non in riga: un'icona in riga si porta sotto lo spazio della linea di base (8 px in più) */}
                   <span className="relative flex">

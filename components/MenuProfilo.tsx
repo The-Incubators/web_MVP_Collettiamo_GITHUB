@@ -58,7 +58,7 @@ export function MenuProfilo() {
         aria-expanded={aperto}
         aria-controls="menu-profilo"
         onClick={() => setAperto((a) => !a)}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-on-accent transition-transform active:scale-95"
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-surface text-ink shadow-carta transition-transform active:scale-95"
       >
         {aperto ? (
           <Icona nome="close" dimensione={22} />
