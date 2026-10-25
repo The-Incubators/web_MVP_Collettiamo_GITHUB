@@ -21,9 +21,9 @@ export function classiBottone(variante: VarianteBottone = "primario", dimensione
         ? `min-h-tocco px-4 ${variante === "azione" ? "text-[19px]" : "text-sm"}`
         : `min-h-azione px-6 ${variante === "azione" ? "text-[19px]" : "text-base"}`;
   const colori = {
-    primario: "bg-accent text-on-accent hover:bg-accent-2",
+    primario: "bg-accent text-on-accent shadow-accento hover:bg-accent-2",
     azione: "bg-cta text-on-cta shadow-sollevata hover:bg-cta-2",
-    secondario: "border-[1.5px] border-line bg-surface text-accent hover:border-accent",
+    secondario: "border-[1.5px] border-line-forte bg-surface text-accent hover:border-accent",
     testuale: "text-accent underline-offset-4 hover:underline",
   }[variante];
   return `${base} ${misura} ${colori} ${extra}`.trim();

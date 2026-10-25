@@ -30,17 +30,19 @@ const config: Config = {
         "error-field": "var(--error-field)",
       },
       borderRadius: {
-        // UX_V4: card e fogli molto morbidi, controlli arrotondati; i bottoni sono pillole (rounded-full).
-        contenitore: "24px",
+        // UX_V5: card e fogli molto morbidi, controlli arrotondati; i bottoni sono pillole (rounded-full).
+        contenitore: "22px",
         controllo: "16px",
       },
       boxShadow: {
-        // Ombre calde e diffuse del design system V4: livello 1 per le card, livello 2 per ciò che galleggia.
-        carta: "0 4px 16px -2px rgba(95, 107, 100, 0.06)",
-        sollevata: "0 12px 32px -4px rgba(3, 57, 34, 0.10)",
+        // Ombre diffuse: livello 1 per le card, livello 2 per ciò che galleggia, `accento` sotto il bottone verde.
+        carta: "0 2px 12px -2px rgba(18, 22, 20, 0.06)",
+        sollevata: "0 14px 34px -8px rgba(2, 36, 26, 0.28)",
+        accento: "0 10px 24px -10px rgba(3, 92, 50, 0.6)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        // stesso carattere del testo: i titoli si distinguono per peso, misura e spaziatura stretta
+        display: ["var(--font-testo)", "system-ui", "sans-serif"],
         sans: ["var(--font-testo)", "system-ui", "sans-serif"],
       },
       maxWidth: {

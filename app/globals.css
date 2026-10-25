@@ -3,27 +3,31 @@
 @tailwind utilities;
 
 /*
- * UX_V4 — «Expressive Warmth» nella versione esportata da Stitch (Pagine_UX_V4/…/expressive_warmth/DESIGN.md).
+ * UX_V5 — layout e componenti dagli screenshot di riferimento (Pagine_UX_V5/INVENTARIO_UX_V5.md), colori Gifty.
  * I nomi dei token sono quelli di sempre, così ogni pagina prende i colori nuovi senza toccarla; cambiano
- * i valori. Come il design system, V4 non ha un tema scuro: i colori restano chiari anche col sistema in scuro.
+ * i valori. Niente tema scuro: i colori restano chiari anche col sistema in scuro.
  *
- * - `accent` è il verde del marchio (#033922): bottoni principali, selezioni, barre.
+ * - `field` è il grigio freddo dello sfondo, su cui le card bianche si staccano senza bordo.
+ * - `accent` è il verde del marchio (#035C32): bottoni principali, selezioni, barre.
+ * - `eroe-da` → `eroe-a` è il gradiente delle card in evidenza (classe `.eroe`), testo bianco.
  * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
  *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (da 14 pt, 18,7 px, in grassetto), che è
  *   come lo usa la variante «azione» di Bottone (19 px), non per il testo piccolo.
  */
 :root {
-  --field: #f6fbf4;
+  --field: #f0f2f1;
   --surface: #ffffff;
-  --surface-2: #f0f5ee;
-  --ink: #181d19;
-  --ink-soft: #414943;
-  --line: #dfe4dd;
-  --line-forte: #c0c9c1;
-  --accent: #033922;
-  --accent-2: #002212;
+  --surface-2: #f5f7f6;
+  --ink: #121614;
+  --ink-soft: #5b635f;
+  --line: #e3e7e5;
+  --line-forte: #c9d0cc;
+  --accent: #035c32;
+  --accent-2: #024526;
   --on-accent: #ffffff;
-  --accent-field: #e3f2e7;
+  --accent-field: #e1efe6;
+  --eroe-da: #06703f;
+  --eroe-a: #02241a;
   --cta: #fd5d17;
   --cta-2: #e14d0b;
   --on-cta: #ffffff;
@@ -77,6 +81,7 @@
   h2,
   h3 {
     @apply font-display font-bold;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
   p {
@@ -109,8 +114,14 @@
     @apply font-display;
     font-variant-numeric: tabular-nums;
   }
+  /* Card bianca senza bordo: sullo sfondo grigio basta l'ombra leggera. */
   .contenitore {
-    @apply rounded-contenitore border border-line bg-surface shadow-carta;
+    @apply rounded-contenitore bg-surface shadow-carta;
+  }
+  /* Card in evidenza: gradiente verde → verde notte, testo bianco. */
+  .eroe {
+    background: linear-gradient(150deg, var(--eroe-da) 0%, var(--eroe-a) 100%);
+    @apply rounded-contenitore text-on-accent shadow-sollevata;
   }
   .gutter {
     @apply px-4;
