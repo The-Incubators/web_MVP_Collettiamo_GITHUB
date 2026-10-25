@@ -48,15 +48,15 @@ export default async function Home() {
             </Link>
             <Link
               href="/le-mie-collette"
-              className="flex min-h-40 flex-col justify-between gap-2 rounded-contenitore bg-ink p-4 text-on-accent shadow-sollevata transition-transform active:scale-[0.98]"
+              className="contenitore flex min-h-40 flex-col justify-between gap-2 p-4 transition-transform active:scale-[0.98]"
             >
               <span className="flex flex-col items-start gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-field text-accent">
                   <Icona nome="groups" dimensione={22} />
                 </span>
-                <span className="text-[17px] font-bold leading-tight">Le mie collette</span>
+                <span className="text-[17px] font-bold leading-tight text-ink">Le mie collette</span>
               </span>
-              <span className="text-[13px] leading-snug text-white/75">Vedi chi ha già partecipato.</span>
+              <span className="text-[13px] leading-snug text-ink-soft">Vedi chi ha già partecipato.</span>
             </Link>
           </div>
           <Link

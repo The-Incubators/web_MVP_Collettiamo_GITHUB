@@ -9,7 +9,8 @@
  *
  * - `field` è il grigio freddo dello sfondo, su cui le card bianche si staccano senza bordo.
  * - `accent` è il verde del marchio (#035C32): bottoni principali, selezioni, barre.
- * - `eroe-da` → `eroe-a` è il gradiente delle card in evidenza (classe `.eroe`), testo bianco.
+ * - `eroe-da` → `eroe-a` è il gradiente delle card in evidenza (classe `.eroe`), testo bianco. Niente nero né
+ *   quasi-nero per card e pulsanti: il fondo del gradiente resta un verde scuro riconoscibile.
  * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
  *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (da 14 pt, 18,7 px, in grassetto), che è
  *   come lo usa la variante «azione» di Bottone (19 px), non per il testo piccolo.
@@ -27,7 +28,7 @@
   --on-accent: #ffffff;
   --accent-field: #e1efe6;
   --eroe-da: #06703f;
-  --eroe-a: #02241a;
+  --eroe-a: #023d24;
   --cta: #fd5d17;
   --cta-2: #e14d0b;
   --on-cta: #ffffff;
