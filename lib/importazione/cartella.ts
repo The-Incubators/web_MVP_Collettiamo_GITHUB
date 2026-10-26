@@ -1,9 +1,10 @@
 // La cartella dell'agente letta nel browser: arriva come elenco di file (cartella scelta per intero) oppure
-// come un .zip. Si trova l'Excel, si abbinano righe e foto di immagini/, si dice subito cosa non va.
+// come un .zip. Due formati: quello JSON del GPT (catalogo.json + prodotti/<ASIN>/immagini/) e quello Excel
+// delle prime cartelle (un .xlsx + immagini/). Si abbinano prodotti e foto e si dice subito cosa non va.
 
 import { leggiFoglio, leggiZip } from "./excel";
 import type { DatiCandidato } from "./tipi";
-import { colonneMancanti, rigaInCandidato } from "./valida";
+import { colonneMancanti, prodottoJsonInCandidato, rigaInCandidato } from "./valida";
 
 export interface Pronto {
   dati: DatiCandidato;
@@ -23,12 +24,69 @@ function estensione(nome: string): string {
   return nome.includes(".") ? nome.slice(nome.lastIndexOf(".")).toLowerCase() : "";
 }
 
-/** Riceve i file come «percorso → contenuto», da cartella o da zip, e fa il resto. */
+/** Oltre questa misura il catalogo.json non si apre: 30 prodotti pesano circa 65 KB. */
+const MAX_JSON_BYTE = 5 * 1024 * 1024;
+
+/** Il tipo lo dà l'estensione: dentro uno zip i file non ne hanno uno. */
+function conTipo(blob: Blob, nome: string): Blob {
+  return blob.type ? blob : new Blob([blob], { type: MIME[estensione(nome)] });
+}
+
+/** Riceve i file come «percorso → contenuto», da cartella o da zip, e sceglie il formato. */
 async function daFile(lotto: string, file: Map<string, Blob>): Promise<LetturaCartella> {
   // Si ignorano i file di sistema del Mac (__MACOSX, .DS_Store) e i file temporanei di Excel (~$…).
   const utili = [...file.entries()].filter(([p]) => !p.split("/").some((parte) => parte === "__MACOSX" || parte.startsWith(".") || parte.startsWith("~$")));
+  const json = utili.filter(([p]) => p === "catalogo.json" || p.endsWith("/catalogo.json"));
+  if (json.length > 1) throw new Error(`Nella cartella ci sono ${json.length} file catalogo.json: ne serve uno solo.`);
+  if (json.length === 1) return daJson(lotto, json[0], new Map(utili));
+  return daExcel(lotto, utili);
+}
+
+/** Il formato del GPT: catalogo.json con l'elenco «prodotti»; le foto hanno il percorso scritto nel prodotto. */
+async function daJson(lotto: string, [percorso, blob]: [string, Blob], file: Map<string, Blob>): Promise<LetturaCartella> {
+  if (blob.size > MAX_JSON_BYTE) throw new Error("Il file catalogo.json è troppo grande.");
+  let catalogo: unknown;
+  try {
+    catalogo = JSON.parse(await blob.text());
+  } catch {
+    throw new Error("Il file catalogo.json non è un JSON valido.");
+  }
+  const c = catalogo && typeof catalogo === "object" ? (catalogo as Record<string, unknown>) : {};
+  if (!Array.isArray(c.prodotti)) throw new Error("Nel file catalogo.json manca l'elenco «prodotti».");
+  if (c.prodotti.length === 0) throw new Error("Il file catalogo.json non ha prodotti.");
+  const categoria = typeof c.categoria === "string" ? c.categoria : "";
+  // i percorsi delle foto sono relativi alla cartella che contiene catalogo.json
+  const radice = percorso.slice(0, percorso.length - "catalogo.json".length);
+
+  const pronti: Pronto[] = [];
+  const errori: LetturaCartella["errori"] = [];
+  const visti = new Set<string>();
+  for (const voce of c.prodotti) {
+    const esito = prodottoJsonInCandidato(voce, categoria);
+    if (!esito.ok) {
+      errori.push({ id: esito.id, errori: esito.errori });
+      continue;
+    }
+    const { dati, immagine } = esito;
+    if (visti.has(dati.asin)) {
+      errori.push({ id: dati.asin, errori: ["ASIN ripetuto nel file"] });
+      continue;
+    }
+    visti.add(dati.asin);
+    const foto = file.get(radice + immagine);
+    if (!foto) {
+      errori.push({ id: dati.asin, errori: [`foto mancante (${immagine})`] });
+      continue;
+    }
+    pronti.push({ dati, foto: conTipo(foto, immagine) });
+  }
+  return { lotto, pronti, errori };
+}
+
+/** Il formato delle prime cartelle: un Excel con colonne fisse e la cartella immagini/. */
+async function daExcel(lotto: string, utili: [string, Blob][]): Promise<LetturaCartella> {
   const excel = utili.filter(([p]) => p.toLowerCase().endsWith(".xlsx"));
-  if (excel.length === 0) throw new Error("Nella cartella non c'è un file Excel (.xlsx).");
+  if (excel.length === 0) throw new Error("Nella cartella non trovo né un catalogo.json né un file Excel (.xlsx).");
   if (excel.length > 1) throw new Error(`Nella cartella ci sono ${excel.length} file Excel: ne serve uno solo.`);
 
   // Le foto si cercano per nome dentro una cartella «immagini», ovunque si trovi nella cartella caricata.
@@ -63,8 +121,7 @@ async function daFile(lotto: string, file: Map<string, Blob>): Promise<LetturaCa
       errori.push({ id: dati.idOrigine, errori: [`foto mancante in immagini/ (${immagine})`] });
       continue;
     }
-    // Il tipo lo dà l'estensione: dentro uno zip i file non ne hanno uno.
-    pronti.push({ dati, foto: blob.type ? blob : new Blob([blob], { type: MIME[estensione(immagine)] }) });
+    pronti.push({ dati, foto: conTipo(blob, immagine) });
   }
   return { lotto, pronti, errori };
 }

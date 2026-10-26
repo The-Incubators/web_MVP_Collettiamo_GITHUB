@@ -8,11 +8,32 @@ import type { FasciaEta } from "../dati/eta-prodotti";
 export type StatoCandidato = "in_revisione" | "importato" | "scartato";
 export type Esito = "importato" | "scartato";
 
+/**
+ * Quello che il formato JSON dell'agente dice in più rispetto al catalogo: non va nel sito, ma si mostra in
+ * revisione e finisce nell'esportazione, perché spiega le scelte dell'agente.
+ */
+export interface InfoAgente {
+  categoria?: string;
+  sottocategoria?: string;
+  modello?: string;
+  variante?: string;
+  /** i destinatari descritti a parole («appassionati di vinile») */
+  destinatari?: string[];
+  limiti?: string[];
+  statoVerifica?: string;
+  verificheMancanti?: string[];
+  disponibilita?: string;
+  fonti?: { url: string; informazioni: string }[];
+}
+
 /** I campi di un prodotto come arrivano dal file dell'agente, già controllati. */
 export interface DatiCandidato {
   /** l'ASIN è anche l'identificativo del candidato: due righe con lo stesso ASIN sono lo stesso prodotto */
   asin: string;
-  /** il codice PRD-nnn che gli ha dato l'agente; nel catalogo il prodotto ne prende uno libero */
+  /**
+   * il riferimento dell'agente: il codice PRD-nnn dell'Excel, o «#001» (ordine editoriale) nel formato JSON.
+   * Nel catalogo il prodotto prende comunque un codice PRD libero.
+   */
   idOrigine: string;
   nome: string;
   marca: string;
@@ -26,6 +47,8 @@ export interface DatiCandidato {
   sottocategoria?: string;
   /** giorno della rilevazione del prezzo (AAAA-MM-GG) */
   rilevatoIl: string;
+  /** solo dal formato JSON */
+  agente?: InfoAgente;
 }
 
 export interface Decisione {

@@ -114,7 +114,7 @@ export function Importa() {
       <header className="flex flex-col gap-2">
         <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Importa prodotti nuovi</h1>
         <p className="text-ink-soft">
-          Carica la cartella preparata dal tuo agente: un file Excel e la cartella <strong>immagini/</strong>. I prodotti non vanno subito nel sito: finiscono{" "}
+          Carica la cartella preparata dal tuo agente, o il suo .zip. I prodotti non vanno subito nel sito: finiscono{" "}
           <strong>in revisione</strong>, e lì decidi tu, uno per uno, se importarli o scartarli.
         </p>
       </header>
@@ -147,10 +147,19 @@ export function Importa() {
             />
           </label>
         </div>
-        <p className="text-sm text-ink-soft">
-          Le colonne sono quelle di sempre (ID prodotto, Nome prodotto, Marca, Descrizione breve, Perché è interessante, Uomo, Donna, Viaggio, Tecnologia,
-          Arredamento, Prezzo rilevato (EUR), ASIN, Link Amazon, Immagine locale, Data rilevazione; Sottocategoria è facoltativa).
-        </p>
+        <details className="text-sm text-ink-soft">
+          <summary className="min-h-tocco cursor-pointer py-2 font-semibold text-ink">Quali formati vanno bene</summary>
+          <ul className="flex list-disc flex-col gap-1 pb-2 pl-5">
+            <li>
+              <strong>Formato JSON del GPT:</strong> <code>catalogo.json</code> con l’elenco «prodotti» e le foto in <code>prodotti/&lt;ASIN&gt;/immagini/</code>.
+            </li>
+            <li>
+              <strong>Formato Excel delle prime cartelle:</strong> un file .xlsx (ID prodotto, Nome prodotto, Marca, Descrizione breve, Perché è interessante,
+              Uomo, Donna, Viaggio, Tecnologia, Arredamento, Prezzo rilevato (EUR), ASIN, Link Amazon, Immagine locale, Data rilevazione; Sottocategoria
+              facoltativa) e la cartella <code>immagini/</code>.
+            </li>
+          </ul>
+        </details>
         {leggo ? <p role="status" className="text-sm text-ink-soft">Leggo la cartella…</p> : null}
         {problema ? (
           <Avviso tono="attenzione" live>

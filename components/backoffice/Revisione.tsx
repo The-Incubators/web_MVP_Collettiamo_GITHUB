@@ -55,6 +55,30 @@ function Pillola({ attiva, onClick, children }: { attiva: boolean; onClick: () =
   );
 }
 
+/** Quello che il formato JSON dell'agente aggiunge: si legge prima di decidere. */
+function InfoDellAgente({ info }: { info: NonNullable<Candidato["agente"]> }) {
+  const righe: [string, string | undefined][] = [
+    ["Variante", info.variante],
+    ["Tipo", [info.categoria, info.sottocategoria].filter(Boolean).join(" · ") || undefined],
+    ["Per chi", info.destinatari?.join(" · ")],
+    ["Limiti", info.limiti?.join(" ")],
+    ["Da verificare", info.verificheMancanti?.join(" ")],
+    ["Disponibilità", info.disponibilita],
+  ];
+  return (
+    <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-2xl bg-surface-2 p-3 text-sm">
+      {righe
+        .filter(([, v]) => v)
+        .map(([k, v]) => (
+          <div key={k} className="contents">
+            <dt className="font-semibold">{k}</dt>
+            <dd className="text-ink-soft">{v}</dd>
+          </div>
+        ))}
+    </dl>
+  );
+}
+
 function Gruppo({ titolo, children, nota }: { titolo: string; children: ReactNode; nota?: string }) {
   return (
     <fieldset className="flex flex-col gap-2">
@@ -212,7 +236,7 @@ export function Revisione() {
             </div>
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <p className="text-xs font-semibold text-ink-soft">
-                {corrente.idOrigine} · {corrente.marca} · lotto «{corrente.lotto}» · {coda.indexOf(corrente) + 1} di {coda.length}
+                {corrente.idOrigine} · {corrente.asin} · {corrente.marca} · lotto «{corrente.lotto}» · {coda.indexOf(corrente) + 1} di {coda.length}
               </p>
               <h2 id="corrente" className="text-2xl font-bold leading-tight">
                 {corrente.nome}
@@ -224,6 +248,7 @@ export function Revisione() {
                   <strong className="text-ink">Perché l’agente l’ha scelto:</strong> {corrente.perche}
                 </p>
               ) : null}
+              {corrente.agente ? <InfoDellAgente info={corrente.agente} /> : null}
               <a
                 href={linkSchedaAmazon(corrente.asin, corrente.link)}
                 target="_blank"
@@ -288,7 +313,7 @@ export function Revisione() {
                   </Pillola>
                 ))}
               </Gruppo>
-              <Gruppo titolo="Per chi" nota="Dall’Excel dell’agente: correggi se serve.">
+              <Gruppo titolo="Per chi" nota="Proposto dall’agente (nel formato JSON partono accesi tutti e due): correggi se serve.">
                 {DESTINATARI.map((d) => (
                   <Pillola key={d.id} attiva={modulo.destinatari.includes(d.id)} onClick={() => cambia({ destinatari: alterna(modulo.destinatari, d.id) })}>
                     {d.testo}

@@ -10,3 +10,6 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 backup/*.json.local
+
+# Pacchetti scaricati dall'agente (foto di Amazon): si caricano dal backoffice, non si versionano
+/catalogo_*.zip
