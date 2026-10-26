@@ -52,8 +52,12 @@ export const ETA_PRODOTTI: Record<string, string> = {
   "PRD-175": "RD", "PRD-176": "RD", "PRD-177": "RD", "PRD-178": "RD", "PRD-179": "RD", "PRD-180": "RD",
 };
 
-/** Le fasce d'età di un prodotto (vuoto se non è classificato, per esempio un regalo da link). */
-export function fasceEta(p: Pick<Prodotto, "id">): FasciaEta[] {
+/**
+ * Le fasce d'età di un prodotto (vuoto se non è classificato, per esempio un regalo da link). I prodotti
+ * importati dal backoffice hanno le fasce nel documento; gli altri le prendono da qui.
+ */
+export function fasceEta(p: Pick<Prodotto, "id" | "eta">): FasciaEta[] {
+  if (p.eta) return FASCE_ETA.filter((f) => p.eta?.includes(f.id)).map((f) => f.id);
   const codici = p.id ? (ETA_PRODOTTI[p.id] ?? "") : "";
   return FASCE_ETA.filter((f) => codici.includes(f.codice)).map((f) => f.id);
 }

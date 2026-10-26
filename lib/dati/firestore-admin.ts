@@ -58,6 +58,11 @@ export function creaDatiFirestoreAdmin(): DatiServer {
       // merge: si scrive solo questo campo, il resto del prodotto non si tocca.
       await db.collection("prodotti").doc(slug).set({ eliminato }, { merge: true });
     },
+    async aggiungiProdotto(p) {
+      const { slug, ...resto } = p;
+      // create(): fallisce se lo slug c'è già, invece di sovrascrivere un prodotto
+      await db.collection("prodotti").doc(slug).create(JSON.parse(JSON.stringify({ slug, ...resto })));
+    },
     async salvaOrdineCatalogo(imp, posizioni) {
       const voci = Object.entries(posizioni);
       for (let i = 0; i < voci.length; i += 400) {

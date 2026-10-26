@@ -116,6 +116,10 @@ export function creaDatiServerMemoria(): DatiServer {
       const p = a.prodotti.get(slug);
       if (p) a.prodotti.set(slug, { ...p, eliminato });
     },
+    aggiungiProdotto: async (p) => {
+      if (a.prodotti.has(p.slug)) throw new Error(`Slug già usato: ${p.slug}`);
+      a.prodotti.set(p.slug, copia(p));
+    },
     salvaOrdineCatalogo: async (imp, posizioni) => {
       a.impostazioniCatalogo = copia(imp);
       for (const [slug, posizione] of Object.entries(posizioni)) {

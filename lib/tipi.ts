@@ -75,6 +75,13 @@ export interface Prodotto {
    * a ogni importazione: un prodotto eliminato tornerebbe visibile da solo. Questo campo il seed non lo tocca.
    */
   eliminato?: boolean;
+  /** fasce d'età dei prodotti importati dal backoffice (per gli altri vale lib/dati/eta-prodotti.ts) */
+  eta?: string[];
+  /**
+   * Importato dal backoffice e non dal file del catalogo: `pnpm seed`, che toglie i prodotti assenti dal file,
+   * questi li lascia stare.
+   */
+  importato?: boolean;
 }
 
 export interface ProdottoColletta {

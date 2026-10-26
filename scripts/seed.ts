@@ -17,10 +17,11 @@ async function main() {
     // merge: così non si perde la posizione decisa da chi gestisce il sito
     batch.set(db.collection("prodotti").doc(slug), { slug, ...resto }, { merge: true });
   }
-  // Il catalogo è quello dell'importazione: i prodotti che non ne fanno più parte si tolgono.
+  // Il catalogo è quello dell'importazione: i prodotti che non ne fanno più parte si tolgono. Quelli importati
+  // dal backoffice (`importato: true`) non stanno nel file e restano.
   const attuali = new Set(CATALOGO.map((p) => p.slug));
   const esistenti = await db.collection("prodotti").get();
-  const vecchi = esistenti.docs.filter((d) => !attuali.has(d.id));
+  const vecchi = esistenti.docs.filter((d) => !attuali.has(d.id) && d.data().importato !== true);
   vecchi.forEach((d) => batch.delete(d.ref));
   await batch.commit();
   console.log(`Catalogo scritto: ${CATALOGO.length} prodotti${vecchi.length ? `, ${vecchi.length} vecchi rimossi` : ""}.`);

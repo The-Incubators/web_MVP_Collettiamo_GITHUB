@@ -27,6 +27,8 @@ export interface DatiServer extends DatiLettura {
   elencaProdottiPerGestione(): Promise<Prodotto[]>;
   /** Segna un prodotto come eliminato, o lo ripristina. Non tocca nient'altro del prodotto. */
   impostaProdottoEliminato(slug: string, eliminato: boolean): Promise<void>;
+  /** Aggiunge un prodotto al catalogo (importazione dal backoffice). Lo slug non deve essere già usato. */
+  aggiungiProdotto(p: Prodotto): Promise<void>;
 }
 
 /**

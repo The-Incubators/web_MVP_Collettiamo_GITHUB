@@ -27,7 +27,7 @@ interface Voce {
 export const CONSEGNA_STIMATA_GIORNI = 3;
 
 /** Solo per l'illustrazione di ripiego (se manca la foto): un'icona vicina al tema. */
-function iconaPerTemi(temi: string[]): Categoria {
+export function iconaPerTemi(temi: string[]): Categoria {
   if (temi.includes("tecnologia")) return "audio";
   if (temi.includes("viaggio")) return "viaggio";
   return "casa";

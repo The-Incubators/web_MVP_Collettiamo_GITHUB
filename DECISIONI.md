@@ -528,3 +528,19 @@ Richiesta con un mockup sul foglio dei filtri: togliere «Uomo + Donna», aggiun
 - **Da rivedere:** la classificazione è un giudizio, non un dato: va controllata da chi conosce il catalogo.
 
 Verificato nel browser a 390 px: foglio nell'ordine Prezzo, Per chi, Età, Categoria regalo; Bambino 7, Adolescente 64, Adulto + Design 43; `eta=inventata` 180.
+
+## 33. Importare prodotti nuovi dal backoffice, con revisione e decisioni per l'agente
+
+Richiesta: una pagina del backoffice per caricare la cartella che prepara l'agente AI (link + immagini di prodotti Amazon) e una pagina per rivedere quei prodotti uno per uno, decidendo «importa» o «scarta» con le motivazioni; le decisioni devono diventare un set di esempi «ottimi» e «sbagliati» per migliorare l'agente.
+
+- **Due pagine nuove** nell'area riservata, con una barra in alto per passare fra le tre: `/backoffice/importa` (fase 1) e `/backoffice/revisione` (fase 2). Stessa protezione dell'ordine del catalogo: accesso e controllo dell'email in `ADMIN_EMAILS` a ogni richiesta.
+- **Formato della cartella: quello di sempre** (un Excel con le colonne di `scripts/importa_catalogo.py` e la cartella `immagini/`), scelta per intero oppure come `.zip`. La lettura avviene nel browser senza librerie (`lib/importazione/excel.ts`: un .xlsx è uno zip di XML); i controlli sono quelli dello script Python (`lib/importazione/valida.ts`) e il server li ripete. Verificato sulle quattro cartelle dell'agente già nel progetto: 180 righe su 180 lette, con gli stessi valori del catalogo generato dallo script.
+- **In revisione, non nel sito.** Ogni prodotto buono diventa un «candidato» (`/candidati/{asin}` su Firestore). Un ASIN già nel catalogo o già caricato non entra, e la pagina dice perché.
+- **Foto:** rimpicciolite nel browser (lato lungo 1000 px, JPEG) e salvate in Firestore (`/fotoProdotti/{nome}`), servite da `/api/img/prodotti/{nome}` con cache permanente: come le immagini dei biglietti, senza Firebase Storage e senza regole nuove (le due collezioni le legge solo il server).
+- **Decisione (scelte di Stefano):** motivi rapidi (almeno uno) più una frase libera facoltativa. Per importare si completano nella stessa schermata **età** (obbligatoria), destinatari e categorie (già compilati dall'Excel), sottocategoria e **stelle**. Il prodotto importato entra **in fondo all'ordine** del catalogo con il primo codice PRD libero, link affiliato come tutti gli altri. Uno scartato si può rimettere in revisione; un importato si toglie dal sito con «Elimina» nella pagina dell'ordine.
+- **I motivi rapidi sono fissi** (`MOTIVI` in `lib/importazione/tipi.ts`): sono le etichette del set di esempi, quindi se ne aggiungono di nuovi in fondo senza rinominare quelli esistenti.
+- **Esportazione per l'agente:** JSON e CSV (con BOM per Excel, celle protette dalle formule) con esito «ottimo»/«sbagliato», motivi, nota, dati del prodotto, categorie ed età decise, codice dell'agente e del catalogo.
+- **Età nel documento:** i prodotti importati hanno le fasce d'età nel campo `eta`; `fasceEta()` le legge da lì e, per gli altri, da `lib/dati/eta-prodotti.ts` come prima.
+- **`pnpm seed` non li cancella più:** i prodotti importati dal backoffice hanno `importato: true` e il seed, che toglie i prodotti assenti dal file del catalogo, li lascia stare.
+
+Verificato in locale (modalità prova) con un pacchetto inventato di 5 righe: 3 in revisione, 1 bloccata (link non Amazon.it), 1 bloccata perché già nel catalogo; importato → PRD-181 in fondo all'ordine, visibile nel sito col filtro «Adulto» e non con «Bambino»; scartato con motivo e nota; JSON e CSV con le due decisioni.
