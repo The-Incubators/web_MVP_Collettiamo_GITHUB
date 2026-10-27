@@ -69,6 +69,16 @@ function statoIniziale(): Stato {
 }
 
 const PASSI = ["Che cosa si festeggia?", "A chi è dedicato?", "Stile", "Come lo scoprirà", "Ritocchi finali", "Ci siamo!"] as const;
+/** Il pulsante che apre le scelte di ogni passo (il pannello parte chiuso: prima si vede il biglietto). */
+const APRI = ["Scegli l’occasione", "Scrivi per chi è", "Scegli tema e colori", "Scegli come lo scoprirà", "Aggiungi una foto", "Controlla e crea"] as const;
+
+function Freccia({ su }: { su: boolean }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={`h-5 w-5 transition-transform ${su ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  );
+}
 
 function oggiIso(): string {
   const d = new Date();
@@ -111,7 +121,7 @@ export function CreaBiglietto() {
   const { utente, auth, modalita } = useApp();
   const [s, setS] = useState<Stato>(statoIniziale);
   const [pronto, setPronto] = useState(false);
-  const [aperto, setAperto] = useState(true);
+  const [aperto, setAperto] = useState(false);
   const [filtro, setFiltro] = useState<string | null>(null);
   const [invio, setInvio] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
@@ -132,9 +142,9 @@ export function CreaBiglietto() {
     if (pronto) scriviSessione(CHIAVE_SESSIONE, s);
   }, [s, pronto]);
 
-  // a ogni passo il pannello si riapre e riparte dall'alto
+  // a ogni passo si riparte dal biglietto: il pannello si richiude e, riaperto, parte dall'alto
   useEffect(() => {
-    setAperto(true);
+    setAperto(false);
     contenuto.current?.scrollTo({ top: 0 });
   }, [s.passo]);
 
@@ -222,7 +232,11 @@ export function CreaBiglietto() {
       if (e instanceof ErroreApi && e.dati.motivo === "accesso") {
         inAttesa.current = true;
         setAccesso(true);
-      } else setErrore(e instanceof Error ? e.message : "Non sono riuscito a creare il biglietto. Riprova.");
+      } else {
+        setErrore(e instanceof Error ? e.message : "Non sono riuscito a creare il biglietto. Riprova.");
+        // l'errore è nel pannello del riepilogo: lo si apre perché si veda
+        setAperto(true);
+      }
       setInvio(false);
     }
   }
@@ -510,22 +524,36 @@ export function CreaBiglietto() {
 
       <div className="relative mx-auto w-full max-w-[640px] flex-1 overflow-hidden">
         {/* anteprima dal vivo: il pannello chiuso la lascia vedere tutta */}
-        <div className={`absolute inset-0 overflow-y-auto px-6 pt-6 ${aperto ? "pb-[62vh]" : "pb-28"}`}>
+        <div className={`absolute inset-0 overflow-y-auto px-6 pt-6 ${aperto ? "pb-[70vh]" : "pb-40"}`}>
           {pronto ? <AnteprimaBacheca aspetto={aspetto} /> : null}
         </div>
 
-        {/* pannello delle scelte */}
-        <section aria-label={PASSI[s.passo]} className={`absolute inset-x-0 bottom-0 flex flex-col rounded-t-[28px] bg-surface shadow-[0_-12px_32px_-8px_rgba(3,57,34,0.18)] ${aperto ? "max-h-[78%]" : ""}`}>
-          <button type="button" onClick={() => setAperto((a) => !a)} aria-expanded={aperto} className="flex flex-col items-stretch px-4 pb-3 pt-2 text-left">
-            <span aria-hidden="true" className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-line-forte" />
-            <span className="flex items-center justify-between gap-3">
-              <h2 className="font-display text-2xl font-bold text-ink">{PASSI[s.passo]}</h2>
-              <span aria-hidden="true" className={`flex h-10 w-10 items-center justify-center rounded-full bg-surface-2 text-lg transition-transform ${aperto ? "" : "rotate-180"}`}>
-                ⌄
+        {/* pannello delle scelte: chiuso mostra solo il passo e il pulsante per aprirlo */}
+        <section aria-label={PASSI[s.passo]} className={`absolute inset-x-0 bottom-0 flex flex-col rounded-t-[28px] bg-surface shadow-[0_-12px_32px_-8px_rgba(3,57,34,0.18)] ${aperto ? "max-h-[68%]" : ""}`}>
+          {aperto ? (
+            <button type="button" onClick={() => setAperto(false)} aria-expanded className="flex flex-col items-stretch px-4 pb-3 pt-2 text-left">
+              <span aria-hidden="true" className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-line-forte" />
+              <span className="flex items-center justify-between gap-3">
+                <h2 className="font-display text-2xl font-bold text-ink">{PASSI[s.passo]}</h2>
+                <span className="flex h-11 shrink-0 items-center gap-1 rounded-full bg-surface-2 px-3 text-sm font-semibold text-ink-soft">
+                  Vedi il biglietto <Freccia su={false} />
+                </span>
               </span>
-              <span className="sr-only">{aperto ? "Riduci il pannello per vedere l’anteprima" : "Apri il pannello"}</span>
-            </span>
-          </button>
+            </button>
+          ) : (
+            <div className="flex flex-col gap-3 px-4 pb-4 pt-2">
+              <span aria-hidden="true" className="mx-auto h-1.5 w-10 rounded-full bg-line-forte" />
+              <h2 className="font-display text-xl font-bold text-ink">{PASSI[s.passo]}</h2>
+              <button
+                type="button"
+                onClick={() => setAperto(true)}
+                aria-expanded={false}
+                className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-2 border-accent bg-accent-field px-5 font-bold text-accent-2 hover:bg-surface-2"
+              >
+                {APRI[s.passo]} <Freccia su />
+              </button>
+            </div>
+          )}
           {aperto ? (
             <div ref={contenuto} className="overflow-y-auto px-4 pb-6">
               {pronto ? pannelli[s.passo] : null}
