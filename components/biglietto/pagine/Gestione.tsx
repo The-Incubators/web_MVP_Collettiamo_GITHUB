@@ -81,7 +81,8 @@ export function Gestione({ id }: { id: string }) {
           <p className="text-sm font-semibold text-ink-soft">{STATI[b.stato]}</p>
           <h1 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">{b.nome}</h1>
           <p className="text-ink-soft">
-            Per <strong className="text-ink">{b.festeggiato}</strong> · da {b.daParteDi}
+            Per <strong className="text-ink">{b.festeggiato}</strong>
+            {b.daParteDi ? ` · da ${b.daParteDi}` : null}
           </p>
           {b.stato === "bozza" ? (
             <Link href={`/biglietto/${id}/anteprima`} className={classiBottone("primario", "normale", "self-start")}>
@@ -139,12 +140,18 @@ export function Gestione({ id }: { id: string }) {
 
             <section className="flex flex-col gap-3 rounded-3xl bg-surface shadow-carta p-5">
               <h2 className="text-xl font-semibold text-accent-2">Consegna</h2>
-              <p>
-                <span className="capitalize">{quando}</span> <span className="text-ink-soft">({nomeFuso(b.consegna.fuso)})</span>
-              </p>
-              <p className="text-sm text-ink-soft">{b.destinatario === "festeggiato" ? "Lo mandiamo all’email del festeggiato." : "Lo mandiamo a te, così lo inoltri tu."}</p>
-              <button type="button" onClick={() => setDettagli(true)} className={classiBottone("secondario", "normale", "self-start")}>
-                Modifica i dettagli
+              {b.consegna.quando ? (
+                <>
+                  <p>
+                    <span className="capitalize">{quando}</span> <span className="text-ink-soft">({nomeFuso(b.consegna.fuso)})</span>
+                  </p>
+                  <p className="text-sm text-ink-soft">{b.destinatario === "festeggiato" ? "Lo mandiamo all’email del festeggiato." : "Lo mandiamo a te, così lo inoltri tu."}</p>
+                </>
+              ) : (
+                <p className="text-sm text-ink-soft">Non hai ancora scelto quando consegnarlo. Scegli il giorno, l’ora e a chi mandarlo.</p>
+              )}
+              <button type="button" onClick={() => setDettagli(true)} className={classiBottone(b.consegna.quando ? "secondario" : "primario", "normale", "self-start")}>
+                {b.consegna.quando ? "Modifica i dettagli" : "Programma la consegna"}
               </button>
             </section>
           </div>

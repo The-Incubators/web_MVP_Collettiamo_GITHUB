@@ -28,7 +28,8 @@ function daBiglietto(b: Biglietto): Modulo {
       destinatario: salvato ? b.destinatario : null,
       emailFesteggiato: b.destinatario === "festeggiato" ? b.emailDestinatario : altra,
       emailMia: b.destinatario === "organizzatore" ? b.emailDestinatario : altra,
-      data: b.consegna.data,
+      // creato dal wizard V2: si propone il giorno dell'evento
+      data: b.consegna.data || b.dataEvento || "",
       ora: b.consegna.ora,
       fuso: salvato ? b.consegna.fuso : fusoDelBrowser(),
       nome: b.nome,

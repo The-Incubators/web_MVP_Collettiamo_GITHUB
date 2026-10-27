@@ -307,6 +307,8 @@ export interface ModelloBiglietto {
   testoFisso: string | null;
   ordine: number;
   attivo: boolean;
+  /** il carattere del titolo sulla bacheca (id di FONT_BIGLIETTO); senza, quello predefinito */
+  fontBacheca?: string;
 }
 
 export interface StileFirma {
@@ -352,7 +354,21 @@ export interface CopertinaBiglietto {
   titolo: string;
   sottotitolo: string | null;
   immagineUrl: string | null;
+  /** wizard V2 (bacheca): i tre colori scelti; mancano nei biglietti creati prima */
+  colori?: ColoriBacheca;
+  /** wizard V2: quanto scurire l'immagine di sfondo (0–0,8) perché i testi si leggano */
+  scurisci?: number;
 }
+
+/** I colori della bacheca: gradiente dello sfondo (1 → 2) e accento (pulsanti, firme). */
+export interface ColoriBacheca {
+  sfondo1: string;
+  sfondo2: string;
+  accento: string;
+}
+
+/** Come il festeggiato scopre i messaggi quando il biglietto viene consegnato. */
+export type ModoRivelazione = "griglia" | "storie" | "film" | "scorrimento";
 
 export interface Biglietto {
   id: string;
@@ -371,6 +387,10 @@ export interface Biglietto {
   emailAlternativa?: string;
   /** quando: istante; data/ora: come le ha scelte chi organizza, nel suo fuso (servono a modificarle) */
   consegna: { quando: number; fuso: string; data: string; ora: string };
+  /** wizard V2: il giorno dell'evento (AAAA-MM-GG), facoltativo; propone la data di consegna */
+  dataEvento?: string;
+  /** wizard V2: come si rivela il biglietto alla consegna */
+  rivelazione?: ModoRivelazione;
   messaggioGruppo: string;
   nome: string;
   copertina: CopertinaBiglietto;

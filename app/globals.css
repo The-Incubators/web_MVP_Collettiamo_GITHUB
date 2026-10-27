@@ -156,3 +156,41 @@
     animation: none !important;
   }
 }
+
+/* Wizard V2: le anteprime animate delle modalità di rivelazione (passo «Come lo scopre»). */
+@keyframes riv-barra {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes riv-dissolvi {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+}
+@keyframes riv-sali {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+.riv-barra {
+  transform-origin: left;
+  animation: riv-barra 3s linear infinite;
+}
+.riv-dissolvi {
+  animation: riv-dissolvi 3s ease-in-out infinite;
+}
+.riv-sali {
+  animation: riv-sali 9s linear infinite;
+}

@@ -20,7 +20,8 @@ export async function POST(richiesta: Request, { params }: Ctx) {
   if (b.organizzatoreUid && b.organizzatoreUid !== utente.uid) return errore("Questo biglietto appartiene a un altro account.", 403);
   if (b.stato === "bozza") {
     if (!b.slug || !b.nome || !b.festeggiato) return errore("Completa le basi del biglietto.", 409, { motivo: "dettagli" });
-    if (!(b.consegna.quando > Date.now())) return errore("La data di consegna è già passata: scegline un'altra.", 409, { motivo: "data" });
+    // la consegna si può programmare anche dopo (wizard V2): si controlla solo se è già stata scelta
+    if (b.consegna.quando && !(b.consegna.quando > Date.now())) return errore("La data di consegna è già passata: scegline un'altra.", 409, { motivo: "data" });
     if (!modelloPerId(b.copertina.modelloId)) return errore("Scegli la copertina.", 409, { motivo: "copertina" });
   }
   const c = await corpoJson(richiesta);

@@ -3,6 +3,16 @@ import { senzaSegreti } from "@/lib/biglietti/accesso";
 import { bigliettoDelProprietario, corpoJson, errore, risposta, testo } from "@/lib/biglietti/rotte";
 import { modelloPerId } from "@/lib/dati/modelli-biglietto";
 import {
+  coloriDelModello,
+  coloriValidi,
+  dataEventoValida,
+  htmlDaTestoSemplice,
+  rivelazioneValida,
+  scurisciValido,
+  slugPerFesteggiato,
+  titoloEffettivo,
+} from "@/lib/dominio/bacheca";
+import {
   erroriDettagli,
   istanteConsegna,
   MAX_MESSAGGIO_GRUPPO,
@@ -31,6 +41,8 @@ export async function GET(richiesta: Request, { params }: Ctx) {
  * Salva un passo del wizard (o le modifiche dalla gestione). Parti accettate:
  * - dettagli (passo 2): tutti i campi + slug, validati insieme; lo slug si prenota in transazione.
  * - copertina (passo 3): modello, variante, titolo, sottotitolo.
+ * - bacheca (wizard V2, /biglietto/nuovo): festeggiato, titolo, benvenuto, data dell'evento, tema, colori, sfondo, rivelazione.
+ *   Il link si crea qui dal nome del festeggiato; email e consegna si scelgono dopo, dalla gestione.
  * - colonne.
  */
 export async function PATCH(richiesta: Request, { params }: Ctx) {
@@ -98,6 +110,42 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
       immagineUrl: b.copertina.immagineUrl,
     };
     patch.copertina = copertina;
+  }
+
+  if (c.bacheca && typeof c.bacheca === "object") {
+    const k = c.bacheca as Record<string, unknown>;
+    const festeggiato = testo(k.festeggiato, 80);
+    if (!festeggiato) return errore("Scrivi per chi è il biglietto.", 400, { campi: { festeggiato: "Scrivi per chi è il biglietto." } });
+    const modello = typeof k.modelloId === "string" ? modelloPerId(k.modelloId) : null;
+    if (!modello) return errore("Tema non valido.");
+    const messaggio = ripulisciHtml(htmlDaTestoSemplice(typeof k.benvenuto === "string" ? k.benvenuto : ""));
+    if ([...testoDaHtml(messaggio)].length > MAX_MESSAGGIO_GRUPPO) return errore("Il messaggio di benvenuto è troppo lungo.");
+    const titolo = titoloEffettivo(testo(k.titolo, 80), b.occasione, festeggiato);
+    // il link nasce dal nome del festeggiato e non cambia più (è già nei messaggi mandati al gruppo)
+    if (!b.slug) {
+      let slug = "";
+      for (let i = 0; i < 5 && !slug; i++) {
+        const s = slugPerFesteggiato(festeggiato);
+        if (await archivio.prenotaSlug(id, s)) slug = s;
+      }
+      if (!slug) return errore("Non sono riuscito a creare il link. Riprova.", 503);
+      patch.slug = slug;
+    }
+    Object.assign(patch, {
+      festeggiato,
+      nome: titolo.slice(0, MAX_NOME_BIGLIETTO),
+      messaggioGruppo: messaggio,
+      dataEvento: dataEventoValida(k.dataEvento),
+      rivelazione: rivelazioneValida(k.rivelazione),
+      copertina: {
+        ...b.copertina,
+        modelloId: modello.id,
+        titolo,
+        sottotitolo: null,
+        colori: coloriValidi(k.colori) ?? coloriDelModello(modello),
+        scurisci: scurisciValido(k.scurisci),
+      },
+    });
   }
 
   if (c.colonne === 1 || c.colonne === 2 || c.colonne === 3) patch.colonne = c.colonne;
