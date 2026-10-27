@@ -361,7 +361,7 @@ export function CreaBiglietto() {
             [
               ["sfondo1", "Sfondo in alto"],
               ["sfondo2", "Sfondo in basso"],
-              ["accento", "Pulsanti"],
+              ["accento", "Accento"],
             ] as const
           ).map(([k, nome]) => (
             <label key={k} className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-line bg-surface p-3 text-center hover:border-line-forte">

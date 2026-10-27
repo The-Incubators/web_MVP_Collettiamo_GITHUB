@@ -83,25 +83,19 @@ export function AnteprimaBacheca({ aspetto, note = NOTE_ESEMPIO, compatta = fals
           {aspetto.titolo}
         </p>
         {aspetto.benvenuto.trim() ? <p className="line-clamp-3 whitespace-pre-line text-sm opacity-90">{aspetto.benvenuto}</p> : null}
-        <span className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1 text-xs font-semibold text-[#16241F]" style={{ textShadow: "none" }}>
+        {/* l'accento colora l'etichetta dei messaggi (niente pulsanti finti nell'anteprima: sembrerebbero da cliccare) */}
+        <span
+          className="mt-1 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+          style={{ textShadow: "none", backgroundColor: aspetto.colori.accento, color: testoSu(aspetto.colori.accento) }}
+        >
           ✍️ {note.length} {note.length === 1 ? "messaggio" : "messaggi"}
         </span>
       </div>
-      <div className="grid grid-cols-2 items-start gap-3 px-4 pb-4 pt-5">
+      <div className={`grid grid-cols-2 items-start gap-3 px-4 pt-5 ${compatta ? "pb-4" : "pb-6"}`}>
         {note.map((n, i) => (
           <Nota key={i} n={n} i={i} />
         ))}
       </div>
-      {compatta ? null : (
-        <div className="px-4 pb-4">
-          <span
-            className="flex min-h-11 w-full items-center justify-center rounded-full px-4 text-sm font-bold shadow"
-            style={{ backgroundColor: aspetto.colori.accento, color: testoSu(aspetto.colori.accento) }}
-          >
-            ✍️ Scrivi il tuo messaggio
-          </span>
-        </div>
-      )}
     </div>
   );
 }
