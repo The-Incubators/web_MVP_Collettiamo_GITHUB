@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Icona } from "@/components/ui";
 import { cambiaFirmatario, leggiSessione, scriviSessione, useApi } from "@/lib/biglietti/client";
@@ -11,9 +12,12 @@ import type { BigliettoPubblico, Firma } from "@/lib/tipi";
 import { baseUrlClient } from "@/lib/url";
 import { Finestra } from "../comuni";
 import { immaginePerServer } from "../firma/bozza";
-import { aspettoDaBiglietto, CLASSI_NOTA, ROTAZIONI, stileSfondo, TestaBacheca, testoSopra } from "./AnteprimaBacheca";
+import { aspettoDaBiglietto, stileSfondo, TestaBacheca, testoSopra } from "./AnteprimaBacheca";
+import { Avviso, condividiLink, useAvviso } from "./Avviso";
 import { Coriandoli } from "./Coriandoli";
 import { EditorNota, NOTA_VUOTA, type NotaInCorso } from "./EditorNota";
+import { BottoneNota, NotaFirma } from "./NotaFirma";
+import { useOrganizzatore } from "./useOrganizzatore";
 
 const chiaveBozza = (slug: string) => `colletta.nota.${slug}`;
 
@@ -26,44 +30,22 @@ function notaDaFirma(f: Firma, colore: string): NotaInCorso {
   };
 }
 
-function NotaFirma({ f, colore, i, propria, accento, onModifica, onElimina }: { f: Firma; colore: string; i: number; propria: boolean; accento: string; onModifica?: () => void; onElimina?: () => void }) {
+/** I pulsanti delle finestre di conferma: azione a destra (sopra, sul telefono), «Annulla» accanto. */
+function Conferma({ etichetta, pericolo, invio, onConferma, onAnnulla }: { etichetta: string; pericolo?: boolean; invio?: boolean; onConferma: () => void; onAnnulla: () => void }) {
   return (
-    <article
-      id={`nota-${f.id}`}
-      aria-label={`Messaggio di ${f.daParteDi}`}
-      className={`mb-4 flex break-inside-avoid flex-col gap-2 p-4 text-[15px] ${CLASSI_NOTA} ${ROTAZIONI[i % ROTAZIONI.length]}`}
-      style={{ backgroundColor: colore, ...(propria ? { boxShadow: `0 0 0 3px ${accento}, 0 6px 16px -6px rgba(0,0,0,0.25)` } : {}) }}
-    >
-      {f.immagine ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={f.immagine.url}
-          alt=""
-          loading="lazy"
-          width={f.immagine.larghezza || undefined}
-          height={f.immagine.altezza || undefined}
-          className="h-auto w-full rounded-xl object-cover"
-        />
-      ) : null}
-      {/* HTML già ripulito dal server: solo <b> <i> <u> <br> */}
-      <div className="whitespace-normal break-words" dangerouslySetInnerHTML={{ __html: f.messaggioHtml }} />
-      <p className="font-semibold opacity-75">
-        — {f.daParteDi}
-        {f.ruolo ? <span className="block text-xs font-normal">{f.ruolo}</span> : null}
-      </p>
-      {f.immagine?.attribuzione ? <p className="text-[10px] opacity-60">{f.immagine.attribuzione}</p> : null}
-      {onModifica && onElimina ? (
-        <div className="-mb-2 -mr-2 flex items-center justify-end gap-1">
-          <span className="mr-auto whitespace-nowrap rounded-full bg-black/5 px-2 py-0.5 text-xs font-semibold opacity-80">Tuo</span>
-          <button type="button" onClick={onModifica} aria-label="Modifica il tuo messaggio" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
-            <Icona nome="edit" dimensione={20} />
-          </button>
-          <button type="button" onClick={onElimina} aria-label="Elimina il tuo messaggio" className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-black/5">
-            <Icona nome="delete" dimensione={20} />
-          </button>
-        </div>
-      ) : null}
-    </article>
+    <div className="flex flex-col gap-2 sm:flex-row-reverse">
+      <button
+        type="button"
+        disabled={invio}
+        onClick={onConferma}
+        className={`inline-flex min-h-12 flex-1 items-center justify-center rounded-full px-5 font-bold text-white disabled:opacity-60 ${pericolo ? "bg-error" : "bg-accent-2"}`}
+      >
+        {invio ? "Un momento…" : etichetta}
+      </button>
+      <button type="button" onClick={onAnnulla} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full border border-line px-5 font-semibold hover:bg-surface-2">
+        Annulla
+      </button>
+    </div>
   );
 }
 
@@ -71,12 +53,18 @@ function NotaFirma({ f, colore, i, propria, accento, onModifica, onElimina }: { 
  * La bacheca di chi firma (/b/[slug]): titolo, benvenuto e i messaggi come bigliettini.
  * «Lascia il tuo messaggio» apre un bigliettino in cima che è anche l'editor; pubblicato, piovono i coriandoli.
  * Chi ha già firmato da questo dispositivo ritrova il suo bigliettino, e può modificarlo o eliminarlo.
+ * Chi organizza vede anche i messaggi nascosti, li nasconde o li elimina, e consegna il biglietto (🎁);
+ * con «Vista ospiti» la vede come tutti gli altri.
  */
 export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; firme: Firma[] }) {
   const api = useApi();
+  const router = useRouter();
   const aspetto = useMemo(() => aspettoDaBiglietto(b), [b]);
   const accento = aspetto.colori.accento;
   const aperto = b.stato === "aperto";
+  const org = useOrganizzatore(b);
+  const [comeOspite, setComeOspite] = useState(false);
+  const moderazione = org.organizzatore && !comeOspite;
 
   const [firme, setFirme] = useState(iniziali);
   const [mia, setMia] = useState<Firma | null>(null);
@@ -85,8 +73,11 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
   const [errore, setErrore] = useState<string | null>(null);
   const [scatto, setScatto] = useState(0);
   const [daMostrare, setDaMostrare] = useState<string | null>(null);
-  const [avviso, setAvviso] = useState("");
+  const [avviso, setAvviso] = useAvviso();
   const [elimina, setElimina] = useState(false);
+  const [daEliminare, setDaEliminare] = useState<Firma | null>(null);
+  const [consegna, setConsegna] = useState(false);
+  const [attesa, setAttesa] = useState(false);
   const rifEditor = useRef<HTMLDivElement>(null);
 
   // ho già firmato da questo dispositivo? Il mio bigliettino si riconosce e si modifica, non si duplica.
@@ -97,15 +88,10 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       .catch(() => {});
   }, [aperto, api, b.slug]);
 
-  const ordinate = useMemo(() => firmeOrdinate(firme, b.ordineFirme), [firme, b.ordineFirme]);
+  // chi organizza vede anche i nascosti (attenuati); gli altri solo quelli visibili
+  const ordinate = useMemo(() => moderazione && org.tutte ? firmeOrdinate(org.tutte, b.ordineFirme, true) : firmeOrdinate(firme, b.ordineFirme), [moderazione, org.tutte, firme, b.ordineFirme]);
   const colori = useMemo(() => new Map(ordinate.map((f, i) => [f.id, coloreDellaNota(f.coloreNota, i)])), [ordinate]);
-
-  // l'avviso in alto sparisce da solo
-  useEffect(() => {
-    if (!avviso) return;
-    const t = setTimeout(() => setAvviso(""), 3500);
-    return () => clearTimeout(t);
-  }, [avviso]);
+  const nVisibili = ordinate.filter((f) => !f.nascosta).length;
 
   // dopo la pubblicazione si scorre fino al proprio bigliettino
   useEffect(() => {
@@ -121,6 +107,13 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
     },
     [b.slug],
   );
+
+  /** Rilegge i messaggi (quelli di tutti e, per chi organizza, anche i nascosti): compaiono anche quelli arrivati nel frattempo. */
+  async function rileggi() {
+    const { firme: nuove } = await api<{ firme: Firma[] }>(`/api/b/${b.slug}`);
+    setFirme(nuove);
+    if (org.organizzatore) await org.ricarica();
+  }
 
   function apri() {
     setErrore(null);
@@ -164,13 +157,8 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
           coloreNota: nota.colore,
         },
       });
-      // si ricarica tutto: così compaiono anche i messaggi arrivati nel frattempo
-      const [{ firma: salvata }, { firme: nuove }] = await Promise.all([
-        api<{ firma: Firma | null }>(`/api/b/${b.slug}/mia-firma`, { firmatario: b.slug }),
-        api<{ firme: Firma[] }>(`/api/b/${b.slug}`),
-      ]);
+      const [{ firma: salvata }] = await Promise.all([api<{ firma: Firma | null }>(`/api/b/${b.slug}/mia-firma`, { firmatario: b.slug }), rileggi()]);
       setMia(salvata);
-      setFirme(nuove);
       cambia(null);
       setDaMostrare(r.firmaId);
       setScatto(Date.now());
@@ -187,6 +175,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
     try {
       await api(`/api/b/${b.slug}/firma`, { metodo: "DELETE", firmatario: b.slug });
       setFirme((x) => x.filter((f) => f.id !== mia?.id));
+      org.setTutte((x) => x && x.filter((f) => f.id !== mia?.id));
       setMia(null);
       scriviSessione(chiaveBozza(b.slug), null);
       setAvviso("Messaggio eliminato.");
@@ -195,23 +184,52 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
     }
   }
 
+  // ---------- chi organizza ----------
+
+  async function nascondi(f: Firma) {
+    try {
+      await org.api(`/api/biglietti/${b.id}/firme/${f.id}`, { metodo: "PATCH", bigliettoId: b.id, corpo: { nascosta: !f.nascosta } });
+      await rileggi();
+      setAvviso(f.nascosta ? "Il messaggio è di nuovo visibile." : "Messaggio nascosto: lo vedi solo tu.");
+    } catch (e) {
+      setAvviso(e instanceof Error ? e.message : "Non ci sono riuscito. Riprova.");
+    }
+  }
+
+  async function confermaEliminaOrg() {
+    const f = daEliminare;
+    if (!f) return;
+    setAttesa(true);
+    try {
+      await org.api(`/api/biglietti/${b.id}/firme/${f.id}`, { metodo: "DELETE", bigliettoId: b.id });
+      if (f.id === mia?.id) setMia(null);
+      await rileggi();
+      setAvviso("Messaggio eliminato.");
+    } catch (e) {
+      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a eliminare il messaggio. Riprova.");
+    } finally {
+      setAttesa(false);
+      setDaEliminare(null);
+    }
+  }
+
+  async function consegnaOra() {
+    setAttesa(true);
+    try {
+      await org.api(`/api/biglietti/${b.id}/consegna`, { metodo: "POST", bigliettoId: b.id, corpo: { azione: "consegna" } });
+      setConsegna(false);
+      // la pagina si rifà dal server: lo stesso link ora è la rivelazione
+      router.refresh();
+    } catch (e) {
+      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a consegnare il biglietto. Riprova.");
+    } finally {
+      setAttesa(false);
+    }
+  }
+
   async function condividi() {
     const url = `${baseUrlClient()}/b/${b.slug}`;
-    const testo = `Stiamo preparando un biglietto per ${b.festeggiato}: lascia anche tu un messaggio, ci vuole un minuto.`;
-    if (typeof navigator.share === "function") {
-      try {
-        await navigator.share({ title: aspetto.titolo, text: testo, url });
-      } catch {
-        /* condivisione annullata */
-      }
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(url);
-      setAvviso("Link copiato: incollalo nel gruppo.");
-    } catch {
-      setAvviso(url);
-    }
+    setAvviso(await condividiLink(url, aspetto.titolo, `Stiamo preparando un biglietto per ${b.festeggiato}: lascia anche tu un messaggio, ci vuole un minuto.`));
   }
 
   const coloreTesto = testoSopra(aspetto);
@@ -222,19 +240,43 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[760px] flex-1 flex-col px-4 pb-36 pt-4">
-        <div className="flex justify-end">
+        <div className="flex items-start justify-between gap-2">
+          {org.organizzatore ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setComeOspite((x) => !x)}
+                aria-pressed={comeOspite}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-white/90 py-1 pl-3 pr-4 text-sm font-semibold text-[#16241F] shadow-sollevata hover:bg-white"
+              >
+                <Icona nome={comeOspite ? "visibility_off" : "visibility"} dimensione={20} />
+                {comeOspite ? "Torna a gestire" : "Vista ospiti"}
+              </button>
+              {!comeOspite ? (
+                <Link
+                  href={`/biglietto/${b.id}/gestisci`}
+                  className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-black/25 py-1 pl-3 pr-4 text-sm font-semibold text-white backdrop-blur hover:bg-black/40"
+                >
+                  <Icona nome="tune" dimensione={20} />
+                  Gestisci
+                </Link>
+              ) : null}
+            </div>
+          ) : (
+            <span />
+          )}
           <Link
             href="/biglietto/nuovo"
             aria-label="Crea anche tu un biglietto di gruppo"
             title="Crea anche tu un biglietto di gruppo"
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur hover:bg-black/40"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black/25 text-white backdrop-blur hover:bg-black/40"
           >
             <Icona nome="auto_awesome" dimensione={22} />
           </Link>
         </div>
 
-        <div className="mb-6">
-          <TestaBacheca aspetto={aspetto} nMessaggi={ordinate.length} vera />
+        <div className="mb-6 mt-2">
+          <TestaBacheca aspetto={aspetto} nMessaggi={nVisibili} vera />
         </div>
 
         {nota ? (
@@ -257,17 +299,28 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
           <div className="columns-2 gap-4 sm:columns-3">
             {visibili.map((f, i) => {
               const propria = !!mia && f.id === mia.id;
+              const etichette = [propria ? "Tuo" : "", moderazione && f.nascosta ? "Nascosto" : ""].filter(Boolean);
+              const mieAzioni = propria && aperto;
               return (
-                <NotaFirma
-                  key={f.id}
-                  f={f}
-                  i={i}
-                  colore={colori.get(f.id) ?? coloreDellaNota(f.coloreNota, i)}
-                  propria={propria}
-                  accento={accento}
-                  onModifica={propria && aperto ? apri : undefined}
-                  onElimina={propria && aperto ? () => setElimina(true) : undefined}
-                />
+                <NotaFirma key={f.id} f={f} i={i} colore={colori.get(f.id) ?? coloreDellaNota(f.coloreNota, i)} evidenziata={propria} accento={accento} attenuata={moderazione && f.nascosta} etichette={etichette}>
+                  {mieAzioni || moderazione ? (
+                    <>
+                      {mieAzioni ? <BottoneNota icona="edit" etichetta="Modifica il tuo messaggio" onClick={apri} /> : null}
+                      {moderazione ? (
+                        <BottoneNota
+                          icona={f.nascosta ? "visibility" : "visibility_off"}
+                          etichetta={f.nascosta ? `Mostra il messaggio di ${f.daParteDi}` : `Nascondi il messaggio di ${f.daParteDi}`}
+                          onClick={() => void nascondi(f)}
+                        />
+                      ) : null}
+                      {moderazione ? (
+                        <BottoneNota icona="delete" etichetta={`Elimina il messaggio di ${f.daParteDi}`} onClick={() => setDaEliminare(f)} />
+                      ) : mieAzioni ? (
+                        <BottoneNota icona="delete" etichetta="Elimina il tuo messaggio" onClick={() => setElimina(true)} />
+                      ) : null}
+                    </>
+                  ) : null}
+                </NotaFirma>
               );
             })}
           </div>
@@ -276,8 +329,8 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
             <span aria-hidden="true" className="text-4xl">
               💬
             </span>
-            <p className="font-semibold">{aperto ? "Sii la prima persona a firmare" : "Nessun messaggio"}</p>
-            {aperto ? <p className="text-sm opacity-70">Il tuo messaggio sarà il primo sul biglietto.</p> : null}
+            <p className="font-semibold">{aperto ? "Ancora nessun messaggio" : "Nessun messaggio"}</p>
+            {aperto ? <p className="text-sm opacity-70">Scrivi tu il primo: gli altri seguiranno.</p> : null}
           </div>
         ) : null}
 
@@ -288,7 +341,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
         </p>
       </div>
 
-      {/* in basso: scrivere e condividere (sparisce mentre si scrive: il bigliettino ha il suo pulsante) */}
+      {/* in basso: scrivere, condividere e (chi organizza) consegnare; sparisce mentre si scrive: il bigliettino ha il suo pulsante */}
       {!nota ? (
         <div className="fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/30 to-transparent pb-[max(1rem,env(safe-area-inset-bottom))] pt-6">
           <div className="mx-auto flex w-full max-w-[520px] items-center gap-3 px-4">
@@ -311,33 +364,51 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
                 >
                   <Icona nome="share" dimensione={22} />
                 </button>
+                {moderazione ? (
+                  <button
+                    type="button"
+                    onClick={() => setConsegna(true)}
+                    aria-label="Consegna il biglietto"
+                    title="Consegna il biglietto"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-2xl shadow-sollevata hover:bg-white/90"
+                  >
+                    <span aria-hidden="true">🎁</span>
+                  </button>
+                ) : null}
               </>
             ) : (
-              <p className="flex-1 rounded-full bg-white/90 px-5 py-4 text-center font-semibold text-[#16241F] shadow-sollevata">
-                <span aria-hidden="true">🎁 </span>Questo biglietto è già stato consegnato.
-              </p>
+              <p className="flex-1 rounded-full bg-white/90 px-5 py-4 text-center font-semibold text-[#16241F] shadow-sollevata">Questo biglietto non accetta più messaggi.</p>
             )}
           </div>
         </div>
       ) : null}
 
-      <div aria-live="polite" role="status" className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
-        {avviso ? <p className="animate-[apri_150ms_ease-out] animate-apri rounded-full bg-[#16241F] px-5 py-3 text-sm font-semibold text-white shadow-sollevata">{avviso}</p> : null}
-      </div>
-
+      <Avviso testo={avviso} />
       <Coriandoli scatto={scatto} emoji={aspetto.emoji} />
 
       <Finestra aperta={elimina} onChiudi={() => setElimina(false)} titolo="Eliminare il tuo messaggio?">
         <div className="flex flex-col gap-4">
           <p>Sparisce dal biglietto, con la sua foto. Se cambi idea potrai scriverne uno nuovo.</p>
-          <div className="flex flex-col gap-2 sm:flex-row-reverse">
-            <button type="button" onClick={() => void confermaElimina()} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full bg-error px-5 font-bold text-white">
-              Elimina
-            </button>
-            <button type="button" onClick={() => setElimina(false)} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full border border-line px-5 font-semibold hover:bg-surface-2">
-              Annulla
-            </button>
-          </div>
+          <Conferma etichetta="Elimina" pericolo onConferma={() => void confermaElimina()} onAnnulla={() => setElimina(false)} />
+        </div>
+      </Finestra>
+
+      <Finestra aperta={!!daEliminare} onChiudi={() => setDaEliminare(null)} titolo={`Eliminare il messaggio di ${daEliminare?.daParteDi ?? ""}?`}>
+        <div className="flex flex-col gap-4">
+          <p>Sparisce per sempre, con la sua foto. Se vuoi solo toglierlo dalla vista, nascondilo: potrai rimostrarlo quando vuoi.</p>
+          <Conferma etichetta="Elimina" pericolo invio={attesa} onConferma={() => void confermaEliminaOrg()} onAnnulla={() => setDaEliminare(null)} />
+        </div>
+      </Finestra>
+
+      <Finestra aperta={consegna} onChiudi={() => setConsegna(false)} titolo={`Consegnare il biglietto a ${b.festeggiato}?`}>
+        <div className="flex flex-col gap-4">
+          <p>
+            Da quel momento nessuno potrà più scrivere e questo stesso link mostrerà la sorpresa. Poi mandalo a {b.festeggiato}. Se serve, potrai riaprirlo.
+          </p>
+          <Link href={`/b/${b.slug}?anteprima=1`} className="self-start text-sm font-semibold text-accent-2 underline underline-offset-4">
+            Guarda prima come lo vedrà
+          </Link>
+          <Conferma etichetta="Consegna 🎁" invio={attesa} onConferma={() => void consegnaOra()} onAnnulla={() => setConsegna(false)} />
         </div>
       </Finestra>
     </div>

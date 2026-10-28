@@ -369,6 +369,14 @@ export interface ColoriBacheca {
   accento: string;
 }
 
+/** La musica del biglietto: un MP3 caricato da chi organizza, che parte quando si apre la sorpresa. */
+export interface MusicaBiglietto {
+  url: string;
+  /** il nome del file, per riconoscerlo nella gestione (resta privato) */
+  nome: string;
+  byte: number;
+}
+
 /** Come il festeggiato scopre i messaggi quando il biglietto viene consegnato. */
 export type ModoRivelazione = "griglia" | "storie" | "film" | "scorrimento";
 
@@ -393,6 +401,8 @@ export interface Biglietto {
   dataEvento?: string;
   /** wizard V2: come si rivela il biglietto alla consegna */
   rivelazione?: ModoRivelazione;
+  /** facoltativa; manca nei biglietti che non l'hanno mai avuta */
+  musica?: MusicaBiglietto | null;
   messaggioGruppo: string;
   nome: string;
   copertina: CopertinaBiglietto;
@@ -407,6 +417,8 @@ export interface Biglietto {
 
 /** La vista pubblica del biglietto: ciò che il server consegna alla pagina del firmatario (niente email/token). */
 export interface BigliettoPubblico {
+  /** non è un segreto (è già negli indirizzi delle immagini): serve alla bacheca per riconoscere chi organizza */
+  id: string;
   slug: string;
   organizzatoreNome: string | null;
   occasione: string;
@@ -418,4 +430,8 @@ export interface BigliettoPubblico {
   ordineFirme: string[] | null;
   stato: StatoBiglietto;
   nFirme: number;
+  /** come si rivela alla consegna; manca nei biglietti creati prima della bacheca */
+  rivelazione?: ModoRivelazione;
+  /** la musica della sorpresa (solo l'indirizzo: il nome del file resta a chi organizza) */
+  musica?: { url: string } | null;
 }

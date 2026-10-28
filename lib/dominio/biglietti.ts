@@ -268,6 +268,7 @@ export const ORARI_15: string[] = Array.from({ length: 96 }, (_, i) => `${String
 
 export function vistaPubblica(b: Biglietto): BigliettoPubblico {
   return {
+    id: b.id,
     slug: b.slug,
     organizzatoreNome: b.organizzatoreNome,
     occasione: b.occasione,
@@ -279,6 +280,8 @@ export function vistaPubblica(b: Biglietto): BigliettoPubblico {
     ordineFirme: b.ordineFirme,
     stato: b.stato,
     nFirme: b.nFirme,
+    rivelazione: b.rivelazione,
+    musica: b.musica ? { url: b.musica.url } : null,
   };
 }
 

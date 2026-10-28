@@ -89,7 +89,7 @@ export function EditorNota({
         autoFocus
         value={nota.testo}
         onChange={(e) => imposta("testo", e.target.value)}
-        placeholder="Scrivi il tuo messaggio…"
+        placeholder="Scrivi qui i tuoi auguri…"
         rows={4}
         className="min-h-28 w-full resize-none pr-10 bg-transparent text-[17px] leading-snug placeholder:text-[#16241F]/50 focus:outline-none"
       />

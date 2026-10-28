@@ -8,6 +8,7 @@ import {
   coloriDelModello,
   coloriValidi,
   dataEventoValida,
+  durataLettura,
   htmlDaTestoSemplice,
   NOME_ESEMPIO,
   rivelazioneValida,
@@ -60,6 +61,12 @@ describe("valori dal browser", () => {
   it("rivelazione: solo i quattro modi, altrimenti storie", () => {
     expect(rivelazioneValida("film")).toBe("film");
     expect(rivelazioneValida("diapositive")).toBe("storie");
+  });
+  it("rivelazione: più il messaggio è lungo, più resta a schermo, ma con un tetto", () => {
+    expect(durataLettura("")).toBe(4000);
+    expect(durataLettura("x".repeat(100))).toBe(8500);
+    expect(durataLettura("x".repeat(1000))).toBe(14000);
+    expect(durataLettura("ciao", true)).toBe(durataLettura("ciao") + 1500);
   });
   it("data dell'evento facoltativa e nel formato AAAA-MM-GG", () => {
     expect(dataEventoValida("2026-11-03")).toBe("2026-11-03");

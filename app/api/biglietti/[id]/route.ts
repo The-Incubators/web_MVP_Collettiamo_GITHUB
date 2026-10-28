@@ -44,14 +44,16 @@ export async function GET(richiesta: Request, { params }: Ctx) {
  * - bacheca (wizard V2, /biglietto/nuovo): festeggiato, titolo, benvenuto, data dell'evento, tema, colori, sfondo, rivelazione.
  *   Il link si crea qui dal nome del festeggiato; email e consegna si scelgono dopo, dalla gestione.
  * - colonne.
+ * - rivelazione (dalla gestione; anche dopo la consegna).
  */
 export async function PATCH(richiesta: Request, { params }: Ctx) {
   const { id } = await params;
   const { b, esito } = await bigliettoDelProprietario(id, richiesta);
   if (!b) return esito;
-  if (b.stato === "consegnato") return errore("Il biglietto è già stato consegnato.", 409);
   const c = await corpoJson(richiesta);
   if (!c) return errore("Richiesta non valida.");
+  // dopo la consegna si può cambiare solo la modalità della rivelazione
+  if (b.stato === "consegnato" && Object.keys(c).some((k) => k !== "rivelazione")) return errore("Il biglietto è già stato consegnato.", 409);
   const archivio = archivioBiglietti();
   const patch: Partial<BigliettoServer> = {};
 
@@ -149,6 +151,9 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
   }
 
   if (c.colonne === 1 || c.colonne === 2 || c.colonne === 3) patch.colonne = c.colonne;
+
+  // dalla gestione: solo la modalità della rivelazione
+  if (typeof c.rivelazione === "string") patch.rivelazione = rivelazioneValida(c.rivelazione);
 
   if (Object.keys(patch).length === 0) return errore("Niente da salvare.");
   patch.aggiornatoIl = Date.now();

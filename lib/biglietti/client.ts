@@ -68,7 +68,8 @@ export class ErroreApi extends Error {
   }
 }
 
-export type Chiamata = <T = Record<string, unknown>>(url: string, opzioni?: { metodo?: string; corpo?: unknown; bigliettoId?: string; firmatario?: string }) => Promise<T>;
+/** `file`: un file mandato così com'è (es. l'MP3 della musica), al posto del corpo JSON. */
+export type Chiamata = <T = Record<string, unknown>>(url: string, opzioni?: { metodo?: string; corpo?: unknown; file?: Blob; bigliettoId?: string; firmatario?: string }) => Promise<T>;
 
 /** fetch con le intestazioni giuste: chiave della bozza, chiave di chi firma, account (token o, in prova, uid). */
 export function useApi(): Chiamata {
@@ -77,9 +78,10 @@ export function useApi(): Chiamata {
   const nome = utente?.nome;
   const email = utente?.email;
   const chiama = useCallback<Chiamata>(
-    async (url, { metodo = "GET", corpo, bigliettoId, firmatario } = {}) => {
+    async (url, { metodo = "GET", corpo, file, bigliettoId, firmatario } = {}) => {
       const h: Record<string, string> = {};
-      if (corpo !== undefined) h["content-type"] = "application/json";
+      if (file) h["content-type"] = file.type || "application/octet-stream";
+      else if (corpo !== undefined) h["content-type"] = "application/json";
       if (bigliettoId) {
         const k = chiaveBozza(bigliettoId);
         if (k) h["x-chiave-biglietto"] = k;
@@ -95,7 +97,7 @@ export function useApi(): Chiamata {
           if (t) h.authorization = `Bearer ${t}`;
         }
       }
-      const r = await fetch(url, { method: metodo, headers: h, body: corpo === undefined ? undefined : JSON.stringify(corpo), cache: "no-store" });
+      const r = await fetch(url, { method: metodo, headers: h, body: file ?? (corpo === undefined ? undefined : JSON.stringify(corpo)), cache: "no-store" });
       let dati: Record<string, unknown> = {};
       try {
         dati = (await r.json()) as Record<string, unknown>;

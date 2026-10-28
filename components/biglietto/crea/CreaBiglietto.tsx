@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { useApp } from "@/components/AppProvider";
 import { BottoneGoogle } from "@/components/BottoneGoogle";
 import { ErroreApi, leggiSessione, salvaChiaveBozza, scriviSessione, useApi } from "@/lib/biglietti/client";
@@ -22,6 +22,7 @@ import { emojiOccasione, OCCASIONI_BIGLIETTO, type Biglietto, type ColoriBacheca
 import { CLASSI_INPUT, Finestra } from "../comuni";
 import { AnteprimaBacheca, type AspettoBacheca } from "../bacheca/AnteprimaBacheca";
 import { AnteprimaRivelazione } from "../bacheca/AnteprimeRivelazione";
+import { SceltaMusica } from "../bacheca/SceltaMusica";
 
 const CHIAVE_SESSIONE = "colletta.biglietto.nuovo";
 
@@ -70,7 +71,7 @@ function statoIniziale(): Stato {
 
 const PASSI = ["Che cosa si festeggia?", "A chi è dedicato?", "Stile", "Come lo scoprirà", "Ritocchi finali", "Ci siamo!"] as const;
 /** Il pulsante che apre le scelte di ogni passo (il pannello parte chiuso: prima si vede il biglietto). */
-const APRI = ["Scegli l’occasione", "Scrivi per chi è", "Scegli tema e colori", "Scegli come lo scoprirà", "Aggiungi una foto", "Controlla e crea"] as const;
+const APRI = ["Scegli l’occasione", "Scrivi per chi è", "Scegli tema e colori", "Scegli come lo scoprirà", "Aggiungi foto o musica", "Controlla e crea"] as const;
 
 function Freccia({ su }: { su: boolean }) {
   return (
@@ -127,6 +128,10 @@ export function CreaBiglietto() {
   const [errore, setErrore] = useState<string | null>(null);
   const [erroreFoto, setErroreFoto] = useState<string | null>(null);
   const [accesso, setAccesso] = useState(false);
+  // la musica resta un file nel browser (troppo grande per la bozza in sessione): si carica con «Crea il biglietto»
+  const [musica, setMusica] = useState<File | null>(null);
+  const urlMusica = useMemo(() => (musica ? URL.createObjectURL(musica) : null), [musica]);
+  useEffect(() => () => void (urlMusica && URL.revokeObjectURL(urlMusica)), [urlMusica]);
   const inAttesa = useRef(false);
   const file = useRef<HTMLInputElement>(null);
   const contenuto = useRef<HTMLDivElement>(null);
@@ -225,6 +230,7 @@ export function CreaBiglietto() {
       });
       // l'immagine viaggia da sola (può pesare fino a 900 KB); null la toglie se c'era da un tentativo precedente
       await api(`/api/biglietti/${bid}/copertina`, { metodo: "POST", bigliettoId: bid, corpo: { sfondo: true, dataUrl: s.sfondo } });
+      if (musica) await api(`/api/biglietti/${bid}/musica?nome=${encodeURIComponent(musica.name)}`, { metodo: "POST", bigliettoId: bid, file: musica });
       await api(`/api/biglietti/${bid}/pubblica`, { metodo: "POST", bigliettoId: bid, corpo: { nome: utente.nome } });
       scriviSessione(CHIAVE_SESSIONE, null);
       router.push(`/biglietto/${bid}/gestisci`);
@@ -461,6 +467,10 @@ export function CreaBiglietto() {
           <p className="text-sm text-ink-soft">Più è scura, più si leggono titolo e messaggi.</p>
         </div>
       ) : null}
+      <div className="flex flex-col gap-3">
+        <h3 className="font-semibold">Musica</h3>
+        <SceltaMusica nome={musica?.name ?? null} url={urlMusica} onFile={setMusica} onTogli={() => setMusica(null)} />
+      </div>
     </div>,
 
     // 6 — riepilogo
@@ -474,6 +484,7 @@ export function CreaBiglietto() {
             ["Occasione", occasioneScelta ? `${occasioneScelta.emoji} ${occasioneScelta.voce}` : "", 0],
             ["Tema", modello.nome, 2],
             ["Rivelazione", MODI_RIVELAZIONE.find((m) => m.id === s.rivelazione)?.nome ?? "", 3],
+            ...(musica ? ([["Musica", musica.name, 4]] as const) : []),
             ...(s.dataEvento ? ([["Festa", new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric" }).format(new Date(`${s.dataEvento}T12:00:00`)), 1]] as const) : []),
           ] as const
         ).map(([k, v, passo]) => (
@@ -490,7 +501,7 @@ export function CreaBiglietto() {
       </dl>
       <p className="flex items-start gap-3 rounded-3xl bg-accent-field p-4 text-sm text-accent-2">
         <span aria-hidden="true">💚</span>
-        Dopo potrai condividere il link, vedere chi ha firmato e programmare la consegna: giorno, ora e a chi mandarlo.
+        Dopo potrai condividere il link, vedere chi ha scritto e consegnare la sorpresa quando è pronta.
       </p>
       {errore ? (
         <p role="alert" className="rounded-controllo bg-error-field p-3 text-sm font-semibold text-error">

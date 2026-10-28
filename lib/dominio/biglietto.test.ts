@@ -47,6 +47,8 @@ describe("ordine delle firme", () => {
   });
   it("per data quando non c'è un ordine, e scarta le nascoste", () => {
     expect(firmeOrdinate([f("b", 2), f("a", 1), f("x", 3, true)], null).map((x) => x.id)).toEqual(["a", "b"]);
+    // chi organizza (moderazione) le vede anche nascoste
+    expect(firmeOrdinate([f("b", 2), f("a", 1), f("x", 3, true)], null, true).map((x) => x.id)).toEqual(["a", "b", "x"]);
   });
   it("segue l'ordine dato e mette in coda, per data, chi non c'è ancora", () => {
     expect(firmeOrdinate([f("a", 1), f("b", 2), f("c", 3), f("d", 4)], ["c", "a"]).map((x) => x.id)).toEqual(["c", "a", "b", "d"]);

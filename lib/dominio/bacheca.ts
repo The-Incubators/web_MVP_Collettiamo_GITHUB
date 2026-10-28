@@ -117,6 +117,11 @@ export function rivelazioneValida(v: unknown): ModoRivelazione {
   return MODI_RIVELAZIONE.some((m) => m.id === v) ? (v as ModoRivelazione) : RIVELAZIONE_PREDEFINITA;
 }
 
+/** Storie e film: quanto resta a schermo un testo. Più è lungo, più tempo per leggerlo (con un tetto); la foto aggiunge un po'. */
+export function durataLettura(testo: string, conFoto = false): number {
+  return Math.min(14000, 4000 + [...testo].length * 45) + (conFoto ? 1500 : 0);
+}
+
 // ---------- Data dell'evento ----------
 
 /** «2026-11-03» oppure vuota (è facoltativa). */

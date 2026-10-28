@@ -42,7 +42,7 @@ export function AnteprimaRivelazione({ modo, aspetto, festeggiato }: { modo: Mod
     return (
       <div className="relative flex h-40 flex-col items-center justify-center gap-1 overflow-hidden rounded-2xl bg-[#101512] p-3 text-center text-white" aria-hidden="true">
         <p className="riv-dissolvi font-display text-lg font-bold">{festeggiato.trim() || "Per te"}</p>
-        <p className="riv-dissolvi text-xs uppercase tracking-[0.2em] opacity-70">con affetto da</p>
+        <p className="riv-dissolvi text-xs uppercase tracking-[0.2em] opacity-70">hanno firmato</p>
         <p className="riv-dissolvi text-sm opacity-90">{note.map((n) => n.autore).join(" · ")}</p>
       </div>
     );
