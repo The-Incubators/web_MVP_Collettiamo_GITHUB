@@ -31,6 +31,8 @@ export interface ArchivioBiglietti {
   firma(id: string, firmaId: string): Promise<FirmaServer | null>;
   /** Crea o aggiorna la firma; nFirme sale solo alla creazione. Rifiuta se il biglietto non è aperto. */
   salvaFirma(id: string, f: FirmaServer): Promise<{ nuova: boolean } | { errore: "chiuso" | "pieno" }>;
+  /** Elimina la firma e fa scendere nFirme. Rifiuta se il biglietto non è aperto; false se la firma non c'era. */
+  eliminaFirma(id: string, firmaId: string): Promise<{ eliminata: boolean } | { errore: "chiuso" }>;
   salvaImmagine(id: string, nome: string, img: ImmagineSalvata): Promise<void>;
   leggiImmagine(id: string, nome: string): Promise<ImmagineSalvata | null>;
   eliminaImmagine(id: string, nome: string): Promise<void>;

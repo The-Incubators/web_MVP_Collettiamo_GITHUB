@@ -194,3 +194,21 @@
 .riv-sali {
   animation: riv-sali 9s linear infinite;
 }
+
+/* Bacheca: i coriandoli dopo la firma (con il movimento ridotto non si mostrano affatto, vedi Coriandoli.tsx). */
+@keyframes coriandolo {
+  0% {
+    opacity: 0;
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(105vh) rotate(var(--giro, 360deg));
+  }
+}
+.coriandolo {
+  animation: coriandolo var(--durata, 2.6s) ease-in var(--ritardo, 0s) both;
+}

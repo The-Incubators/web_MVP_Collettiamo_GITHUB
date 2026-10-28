@@ -78,6 +78,18 @@ export function archivioBigliettiFirestore(): ArchivioBiglietti {
         return { nuova: !prima.exists };
       });
     },
+    async eliminaFirma(id, firmaId) {
+      return db.runTransaction(async (tx) => {
+        const rb = col.doc(id);
+        const rf = rb.collection("firme").doc(firmaId);
+        const [b, f] = await Promise.all([tx.get(rb), tx.get(rf)]);
+        if (!b.exists || b.get("stato") !== "aperto") return { errore: "chiuso" as const };
+        if (!f.exists) return { eliminata: false };
+        tx.delete(rf);
+        tx.update(rb, { nFirme: FieldValue.increment(-1) });
+        return { eliminata: true };
+      });
+    },
     async salvaImmagine(id, nome, img) {
       await col.doc(id).collection("immagini").doc(nome).set({ mime: img.mime, dati: Buffer.from(img.dati) });
     },

@@ -68,6 +68,13 @@ export function archivioBigliettiMemoria(): ArchivioBiglietti {
       if (!prima) s.biglietti.set(id, { ...b, nFirme: b.nFirme + 1 });
       return { nuova: !prima };
     },
+    async eliminaFirma(id, firmaId) {
+      const b = s.biglietti.get(id);
+      if (!b || b.stato !== "aperto") return { errore: "chiuso" as const };
+      if (!s.firme.get(id)?.delete(firmaId)) return { eliminata: false };
+      s.biglietti.set(id, { ...b, nFirme: Math.max(0, b.nFirme - 1) });
+      return { eliminata: true };
+    },
     async salvaImmagine(id, nome, img) {
       s.immagini.set(`${id}/${nome}`, { mime: img.mime, dati: new Uint8Array(img.dati) });
     },

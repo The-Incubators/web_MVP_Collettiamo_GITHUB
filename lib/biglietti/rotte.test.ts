@@ -8,7 +8,7 @@ import { POST as pubblica } from "@/app/api/biglietti/[id]/pubblica/route";
 import { POST as copertina } from "@/app/api/biglietti/[id]/copertina/route";
 import { GET as firmeOrg } from "@/app/api/biglietti/[id]/firme/route";
 import { GET as pubblico } from "@/app/api/b/[slug]/route";
-import { POST as firma } from "@/app/api/b/[slug]/firma/route";
+import { DELETE as eliminaFirma, POST as firma } from "@/app/api/b/[slug]/firma/route";
 import { GET as miaFirma } from "@/app/api/b/[slug]/mia-firma/route";
 import { GET as immagine } from "@/app/api/img/b/[id]/[nome]/route";
 
@@ -111,6 +111,36 @@ describe("rotte del biglietto (memoria)", () => {
     expect(pub2.firme[0].ruolo).toBe("Amico del liceo, da sempre e per sempre,");
     const org = await json(await firmeOrg(req(`${B}/biglietti/${id}/firme`, { headers: hu }), ctx({ id })));
     expect(org.firme[0].nome).toBe("Luca");
+  });
+
+  it("bacheca: colore del bigliettino; chi ha firmato elimina il suo messaggio", async () => {
+    const { id, h } = await nuovaBozza();
+    const slug = `prova-bacheca-${Date.now().toString(36)}`;
+    await salva(req(`${B}/biglietti/${id}`, { method: "PATCH", headers: h, body: { dettagli: dettagli(slug), copertina: { modelloId: "auguri-neutro" } } }), ctx({ id }));
+    await pubblica(req(`${B}/biglietti/${id}/pubblica`, { method: "POST", headers: { ...h, "x-uid-prova": "org-3" }, body: {} }), ctx({ id }));
+    const kf = { "x-chiave-firmatario": "c".repeat(43) };
+    const base = { messaggioHtml: "Auguri!", daParteDi: "Anna", nome: "Anna", immagine: { tipo: "caricata", dataUrl: PNG_1PX, larghezza: 1, altezza: 1 } };
+    const manda = (body: unknown) => firma(req(`${B}/b/${slug}/firma`, { method: "POST", headers: kf, body }), ctx({ slug }));
+    await manda({ ...base, coloreNota: "#dde3e4" });
+    const mia = async () => (await json(await miaFirma(req(`${B}/b/${slug}/mia-firma`, { headers: kf }), ctx({ slug })))).firma;
+    // un colore che non è della carta non si salva
+    expect((await mia()).coloreNota).toBeNull();
+    await manda({ ...base, immagine: { tipo: "mantieni" }, coloreNota: "#ddf3e4" });
+    expect((await mia()).coloreNota).toBe("#DDF3E4");
+    // dalla vecchia pagina (senza colore) il colore resta quello di prima
+    await manda({ ...base, immagine: { tipo: "mantieni" } });
+    expect((await mia()).coloreNota).toBe("#DDF3E4");
+    const url = (await mia()).immagine.url as string;
+    const [, , , , idImg, nomeImg] = url.split("/");
+
+    const r = await json(await eliminaFirma(req(`${B}/b/${slug}/firma`, { method: "DELETE", headers: kf }), ctx({ slug })));
+    expect(r.eliminata).toBe(true);
+    expect(await mia()).toBeNull();
+    expect((await json(await pubblico(req(`${B}/b/${slug}`), ctx({ slug })))).biglietto.nFirme).toBe(0);
+    // la foto se ne va con il messaggio
+    expect((await immagine(req(`http://localhost${url}`), ctx({ id: idImg, nome: nomeImg }))).status).toBe(404);
+    // una seconda volta non c'è più niente da eliminare
+    expect((await json(await eliminaFirma(req(`${B}/b/${slug}/firma`, { method: "DELETE", headers: kf }), ctx({ slug })))).eliminata).toBe(false);
   });
 
   it("rifiuta firme vuote, troppo lunghe o senza nome; immagini non valide", async () => {

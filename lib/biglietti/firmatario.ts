@@ -5,6 +5,7 @@ import { chiaveValida, idFirma, nuovaChiave, nuovoId } from "./accesso";
 import { immagineDaDataUrl, nomeDaUrl, urlEsternoAmmesso, urlImmagine } from "./immagini";
 import type { BigliettoServer, FirmaServer } from "./tipi";
 import { emailValida, lunghezzaTesto, MAX_RUOLO, MAX_TESTO_MESSAGGIO, ripulisciHtml, stileValido } from "../dominio/biglietti";
+import { coloreNotaValido } from "../dominio/bacheca";
 import type { ImmagineFirma } from "../tipi";
 
 export function chiaveFirmatario(richiesta: Request): string | null {
@@ -65,6 +66,8 @@ export async function salvaFirmaDaCorpo(b: BigliettoServer, chiave: string, c: R
     immagine,
     daParteDi,
     ruolo: t(c.ruolo, MAX_RUOLO) || null,
+    // chi modifica dalla vecchia pagina di firma non lo manda: resta quello di prima
+    coloreNota: coloreNotaValido(c.coloreNota) ?? prima?.coloreNota ?? null,
     nome,
     cognome: t(c.cognome, 60) || null,
     email: email || null,

@@ -1,12 +1,10 @@
 "use client";
 
-import { fontPerId } from "@/lib/dominio/biglietti";
-import { testoSu } from "@/lib/dominio/bacheca";
-import type { ColoriBacheca } from "@/lib/tipi";
+import { modelloPerId, MODELLI_BIGLIETTO } from "@/lib/dati/modelli-biglietto";
+import { coloriDelModello, COLORI_NOTA, SCURISCI_PREDEFINITO, testoSu } from "@/lib/dominio/bacheca";
+import { fontPerId, testoDaHtml } from "@/lib/dominio/biglietti";
+import { emojiOccasione, type BigliettoPubblico, type ColoriBacheca } from "@/lib/tipi";
 import { useFontBiglietto } from "../useFontBiglietto";
-
-/** I colori dei bigliettini (carta pastello): chi firma ne sceglie uno. */
-export const COLORI_NOTA = ["#FFF4C2", "#FDEBD3", "#DDF3E4", "#FCE1E8", "#E8E1FA", "#FFE8DC"] as const;
 
 export interface NotaBacheca {
   testo: string;
@@ -21,7 +19,11 @@ export const NOTE_ESEMPIO: NotaBacheca[] = [
   { testo: "Sei una persona speciale. Grazie di esserci.", autore: "Elena", colore: COLORI_NOTA[1] },
 ];
 
-const ROTAZIONI = ["-rotate-[1.5deg]", "rotate-[1deg]", "rotate-[0.5deg]", "-rotate-[0.8deg]"];
+/** Le piccole rotazioni dei bigliettini, a turno: sembrano attaccati a mano. */
+export const ROTAZIONI = ["-rotate-[1.5deg]", "rotate-[1deg]", "rotate-[0.5deg]", "-rotate-[0.8deg]"];
+
+/** La carta del bigliettino: angoli, ombra e testo scuro (i colori sono tutti chiari). */
+export const CLASSI_NOTA = "rounded-2xl text-left leading-snug text-[#16241F] shadow-[0_6px_16px_-6px_rgba(0,0,0,0.25)]";
 
 export interface AspettoBacheca {
   titolo: string;
@@ -32,6 +34,20 @@ export interface AspettoBacheca {
   /** dataUrl o url dell'immagine di sfondo; null = gradiente dei colori */
   immagine: string | null;
   scurisci: number;
+}
+
+/** L'aspetto della bacheca di un biglietto pubblicato. Quelli creati prima della bacheca prendono i colori del loro modello. */
+export function aspettoDaBiglietto(b: Pick<BigliettoPubblico, "occasione" | "nome" | "messaggioGruppo" | "copertina">): AspettoBacheca {
+  const modello = modelloPerId(b.copertina.modelloId) ?? MODELLI_BIGLIETTO[0];
+  return {
+    titolo: b.copertina.titolo || b.nome,
+    benvenuto: testoDaHtml(b.messaggioGruppo),
+    emoji: modello.sfondo.motivo || emojiOccasione(b.occasione),
+    fontTitolo: modello.fontBacheca ?? "predefinito",
+    colori: b.copertina.colori ?? coloriDelModello(modello),
+    immagine: b.copertina.immagineUrl,
+    scurisci: b.copertina.scurisci ?? SCURISCI_PREDEFINITO,
+  };
 }
 
 /** Lo sfondo della bacheca: immagine scurita, oppure gradiente dei due colori. */
@@ -51,9 +67,40 @@ export function testoSopra(a: Pick<AspettoBacheca, "colori" | "immagine" | "scur
   return a.immagine ? "#FFFFFF" : testoSu(a.colori.sfondo1);
 }
 
+export function testoMessaggi(n: number): string {
+  return `${n} ${n === 1 ? "messaggio" : "messaggi"}`;
+}
+
+/**
+ * Titolo, benvenuto ed etichetta dei messaggi: la testa della bacheca, uguale nell'anteprima e in quella vera.
+ * `vera`: la bacheca pubblicata, con il titolo come h1 e il benvenuto intero (nell'anteprima si taglia a tre righe).
+ */
+export function TestaBacheca({ aspetto, nMessaggi, compatta = false, vera = false }: { aspetto: AspettoBacheca; nMessaggi: number; compatta?: boolean; vera?: boolean }) {
+  useFontBiglietto([aspetto.fontTitolo]);
+  const Titolo = vera ? "h1" : "p";
+  return (
+    <div className="flex flex-col items-center gap-2 text-center" style={{ color: testoSopra(aspetto), textShadow: aspetto.immagine ? "0 1px 8px rgba(0,0,0,0.45)" : undefined }}>
+      <span aria-hidden="true" className={compatta ? "text-3xl" : "text-[44px] leading-none"}>
+        {aspetto.emoji}
+      </span>
+      <Titolo className={`break-words font-bold leading-tight ${compatta ? "text-2xl" : "text-[30px]"}`} style={{ fontFamily: fontPerId(aspetto.fontTitolo).css }}>
+        {aspetto.titolo}
+      </Titolo>
+      {aspetto.benvenuto.trim() ? <p className={`whitespace-pre-line text-sm opacity-90 ${vera ? "" : "line-clamp-3"}`}>{aspetto.benvenuto}</p> : null}
+      {/* l'accento colora l'etichetta dei messaggi (niente pulsanti finti nell'anteprima: sembrerebbero da cliccare) */}
+      <span
+        className="mt-1 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
+        style={{ textShadow: "none", backgroundColor: aspetto.colori.accento, color: testoSu(aspetto.colori.accento) }}
+      >
+        ✍️ {testoMessaggi(nMessaggi)}
+      </span>
+    </div>
+  );
+}
+
 function Nota({ n, i }: { n: NotaBacheca; i: number }) {
   return (
-    <div className={`flex flex-col gap-2 rounded-2xl p-3 text-left text-[13px] leading-snug text-[#16241F] shadow-[0_6px_16px_-6px_rgba(0,0,0,0.25)] ${ROTAZIONI[i % ROTAZIONI.length]}`} style={{ backgroundColor: n.colore }}>
+    <div className={`flex flex-col gap-2 p-3 text-[13px] ${CLASSI_NOTA} ${ROTAZIONI[i % ROTAZIONI.length]}`} style={{ backgroundColor: n.colore }}>
       <p>{n.testo}</p>
       <p className="font-semibold opacity-70">— {n.autore}</p>
     </div>
@@ -61,13 +108,10 @@ function Nota({ n, i }: { n: NotaBacheca; i: number }) {
 }
 
 /**
- * La bacheca come la vedrà il gruppo: titolo, benvenuto e bigliettini, con il pulsante per scrivere.
+ * La bacheca come la vedrà il gruppo: titolo, benvenuto e bigliettini.
  * Nel wizard è solo un'anteprima (niente si clicca).
  */
 export function AnteprimaBacheca({ aspetto, note = NOTE_ESEMPIO, compatta = false }: { aspetto: AspettoBacheca; note?: NotaBacheca[]; compatta?: boolean }) {
-  useFontBiglietto([aspetto.fontTitolo]);
-  const colore = testoSopra(aspetto);
-  const ombra = aspetto.immagine ? "0 1px 8px rgba(0,0,0,0.45)" : undefined;
   return (
     <div
       aria-label="Anteprima del biglietto"
@@ -75,21 +119,8 @@ export function AnteprimaBacheca({ aspetto, note = NOTE_ESEMPIO, compatta = fals
       className="relative mx-auto flex w-full max-w-[380px] flex-col overflow-hidden rounded-[28px] shadow-sollevata"
       style={stileSfondo(aspetto)}
     >
-      <div className={`flex flex-col items-center gap-2 px-4 text-center ${compatta ? "pt-5" : "pt-7"}`} style={{ color: colore, textShadow: ombra }}>
-        <span aria-hidden="true" className={compatta ? "text-3xl" : "text-[44px] leading-none"}>
-          {aspetto.emoji}
-        </span>
-        <p className={`break-words font-bold leading-tight ${compatta ? "text-2xl" : "text-[30px]"}`} style={{ fontFamily: fontPerId(aspetto.fontTitolo).css }}>
-          {aspetto.titolo}
-        </p>
-        {aspetto.benvenuto.trim() ? <p className="line-clamp-3 whitespace-pre-line text-sm opacity-90">{aspetto.benvenuto}</p> : null}
-        {/* l'accento colora l'etichetta dei messaggi (niente pulsanti finti nell'anteprima: sembrerebbero da cliccare) */}
-        <span
-          className="mt-1 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-          style={{ textShadow: "none", backgroundColor: aspetto.colori.accento, color: testoSu(aspetto.colori.accento) }}
-        >
-          ✍️ {note.length} {note.length === 1 ? "messaggio" : "messaggi"}
-        </span>
+      <div className={`px-4 ${compatta ? "pt-5" : "pt-7"}`}>
+        <TestaBacheca aspetto={aspetto} nMessaggi={note.length} compatta={compatta} />
       </div>
       <div className={`grid grid-cols-2 items-start gap-3 px-4 pt-5 ${compatta ? "pb-4" : "pb-6"}`}>
         {note.map((n, i) => (

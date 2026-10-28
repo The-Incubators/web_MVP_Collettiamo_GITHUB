@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import { MODELLI_BIGLIETTO } from "../dati/modelli-biglietto";
 import { OCCASIONI_BIGLIETTO } from "../tipi";
 import {
+  coloreDellaNota,
+  coloreNotaValido,
+  COLORI_NOTA,
   coloriDelModello,
   coloriValidi,
   dataEventoValida,
@@ -78,5 +81,18 @@ describe("link dal nome del festeggiato", () => {
     const s = slugPerFesteggiato("🎉", () => 0.999);
     expect(s).toBe("biglietto-999999");
     expect(slugBigliettoValido(s)).toBe(true);
+  });
+});
+
+describe("colore dei bigliettini", () => {
+  it("ammette solo i colori della carta, in maiuscolo", () => {
+    expect(coloreNotaValido(COLORI_NOTA[2].toLowerCase())).toBe(COLORI_NOTA[2]);
+    expect(coloreNotaValido("#000000")).toBeNull();
+    expect(coloreNotaValido(undefined)).toBeNull();
+  });
+  it("le firme senza colore lo prendono a turno dalla posizione", () => {
+    expect(coloreDellaNota(null, 0)).toBe(COLORI_NOTA[0]);
+    expect(coloreDellaNota(undefined, COLORI_NOTA.length + 1)).toBe(COLORI_NOTA[1]);
+    expect(coloreDellaNota(COLORI_NOTA[4], 0)).toBe(COLORI_NOTA[4]);
   });
 });

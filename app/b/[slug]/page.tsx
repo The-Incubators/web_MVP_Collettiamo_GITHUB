@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { IntestazioneWizard } from "@/components/biglietto/comuni";
-import { PaginaInvito } from "@/components/biglietto/firma/PaginaInvito";
+import { PaginaBacheca } from "@/components/biglietto/bacheca/PaginaBacheca";
 import { bigliettoPubblico } from "@/lib/biglietti/server";
 
 export const dynamic = "force-dynamic";
@@ -22,17 +21,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** Invito (spec 5.1): resa lato server, così l'anteprima del link nelle chat mostra nome e copertina. */
+/** La bacheca di chi firma: resa lato server, così l'anteprima del link nelle chat mostra nome e copertina. */
 export default async function PaginaBiglietto({ params }: Props) {
   const { slug } = await params;
   const dati = await bigliettoPubblico(slug);
   if (!dati) notFound();
   return (
-    <>
-      <IntestazioneWizard indietro={null} segmenti={2} percento={0} larghezza="max-w-partecipante" accedi={false} />
-      <main className="gutter mx-auto w-full max-w-partecipante pb-16 pt-4">
-        <PaginaInvito b={dati.b} hrefFirma={`/b/${slug}/firma`} />
-      </main>
-    </>
+    <main className="flex flex-1 flex-col">
+      <PaginaBacheca b={dati.b} firme={dati.firme} />
+    </main>
   );
 }

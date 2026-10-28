@@ -338,6 +338,8 @@ export interface Firma {
    * Le firme salvate prima che esistesse non ce l'hanno, quindi può mancare.
    */
   ruolo?: string | null;
+  /** il colore del bigliettino sulla bacheca (uno di COLORI_NOTA); manca nelle firme fatte prima della bacheca */
+  coloreNota?: string | null;
   nome: string;
   cognome: string | null;
   email: string | null;

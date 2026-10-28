@@ -77,6 +77,23 @@ export function testoSu(hex: string): "#16241F" | "#FFFFFF" {
   return (1.05 / (l + 0.05) >= (l + 0.05) / 0.066) ? "#FFFFFF" : "#16241F";
 }
 
+// ---------- Bigliettini ----------
+
+/** I colori dei bigliettini (carta pastello): chi firma ne sceglie uno. */
+export const COLORI_NOTA = ["#FFF4C2", "#FDEBD3", "#DDF3E4", "#FCE1E8", "#E8E1FA", "#FFE8DC"] as const;
+
+/** Il colore scelto da chi firma, se è uno di quelli ammessi; altrimenti null. */
+export function coloreNotaValido(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const c = v.toUpperCase();
+  return (COLORI_NOTA as readonly string[]).includes(c) ? c : null;
+}
+
+/** Il colore con cui disegnare un bigliettino: quello scelto o, per le firme di prima, uno a turno. */
+export function coloreDellaNota(scelto: string | null | undefined, posizione: number): string {
+  return coloreNotaValido(scelto) ?? COLORI_NOTA[posizione % COLORI_NOTA.length];
+}
+
 // ---------- Sfondo ----------
 
 export const SCURISCI_PREDEFINITO = 0.3;
