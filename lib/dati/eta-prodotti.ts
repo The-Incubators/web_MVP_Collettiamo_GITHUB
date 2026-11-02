@@ -50,6 +50,23 @@ export const ETA_PRODOTTI: Record<string, string> = {
   "PRD-163": "ARD", "PRD-164": "RD", "PRD-165": "AR", "PRD-166": "AR", "PRD-167": "AR", "PRD-168": "AR",
   "PRD-169": "ARD", "PRD-170": "AR", "PRD-171": "AR", "PRD-172": "ARD", "PRD-173": "RD", "PRD-174": "AR",
   "PRD-175": "RD", "PRD-176": "RD", "PRD-177": "RD", "PRD-178": "RD", "PRD-179": "RD", "PRD-180": "RD",
+  // dalla playlist «Gifty - oggetti» (2 novembre 2026); i numeri mancanti sono prodotti esclusi dall'importazione
+  "PRD-181": "ARD", "PRD-182": "RD", "PRD-184": "D", "PRD-185": "ARD", "PRD-186": "ARD", "PRD-188": "ARD",
+  "PRD-189": "ARD", "PRD-190": "ARD", "PRD-191": "RD", "PRD-192": "ARD", "PRD-193": "ARD", "PRD-194": "ARD",
+  "PRD-195": "ARD", "PRD-196": "ARD", "PRD-198": "ARD", "PRD-199": "RD", "PRD-200": "D", "PRD-201": "D",
+  "PRD-202": "RD", "PRD-203": "RD", "PRD-204": "RD", "PRD-205": "RD", "PRD-206": "RD", "PRD-207": "RD",
+  "PRD-208": "RD", "PRD-209": "RD", "PRD-210": "D", "PRD-211": "RD", "PRD-212": "RD", "PRD-213": "RD",
+  "PRD-214": "RD", "PRD-215": "RD", "PRD-216": "RD", "PRD-217": "ARD", "PRD-218": "AR", "PRD-219": "D",
+  "PRD-220": "RD", "PRD-221": "RD", "PRD-222": "ARD", "PRD-223": "RD", "PRD-224": "ARD", "PRD-226": "ARD",
+  "PRD-228": "ARD", "PRD-229": "RD", "PRD-230": "RD", "PRD-231": "ARD", "PRD-232": "RD", "PRD-235": "ARD",
+  "PRD-236": "RD", "PRD-237": "RD", "PRD-238": "RD", "PRD-239": "RD", "PRD-240": "RD", "PRD-241": "RD",
+  "PRD-242": "RD", "PRD-243": "ARD", "PRD-245": "ARD", "PRD-246": "RD", "PRD-247": "AR", "PRD-248": "RD",
+  "PRD-249": "RD", "PRD-250": "ARD", "PRD-251": "RD", "PRD-253": "ARD", "PRD-254": "AR", "PRD-255": "ARD",
+  "PRD-256": "AR", "PRD-257": "AR", "PRD-258": "AR", "PRD-259": "RD", "PRD-260": "ARD", "PRD-261": "ARD",
+  "PRD-262": "ARD", "PRD-263": "RD", "PRD-264": "ARD", "PRD-265": "AR", "PRD-267": "RD", "PRD-268": "RD",
+  "PRD-269": "ARD", "PRD-270": "AR", "PRD-271": "ARD", "PRD-272": "RD", "PRD-273": "RD", "PRD-274": "ARD",
+  "PRD-275": "RD", "PRD-276": "RD", "PRD-277": "D", "PRD-279": "RD", "PRD-280": "D", "PRD-281": "RD",
+  "PRD-282": "RD", "PRD-283": "RD", "PRD-284": "ARD", "PRD-285": "ARD", "PRD-286": "D",
 };
 
 /** Le fasce d'età di un prodotto (vuoto se non è classificato, per esempio un regalo da link). */

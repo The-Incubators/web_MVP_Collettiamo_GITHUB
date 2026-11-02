@@ -528,3 +528,20 @@ Richiesta con un mockup sul foglio dei filtri: togliere «Uomo + Donna», aggiun
 - **Da rivedere:** la classificazione è un giudizio, non un dato: va controllata da chi conosce il catalogo.
 
 Verificato nel browser a 390 px: foglio nell'ordine Prezzo, Per chi, Età, Categoria regalo; Bambino 7, Adolescente 64, Adulto + Design 43; `eta=inventata` 180.
+
+## 33. Catalogo: 95 prodotti dalla playlist «Gifty - oggetti» (2 novembre 2026)
+
+Richiesta: aggiungere i prodotti del file `Gifty_database_prodotti_playlist_2Novembre_2026.xlsx` (107 prodotti presi dai video della playlist YouTube, con foto a parte), con i link affiliati.
+
+- **Sorgente:** cartella `catalogo_amazon_playlist/` (il file Excel e `immagini/P001.jpg…`). Il formato è diverso dai pacchetti precedenti (foglio «Prodotti», codici P001…, niente temi né destinatari): `scripts/importa_catalogo.py` lo legge come `SORGENTI_PLAYLIST`, con gli stessi controlli (ASIN univoco in tutto il catalogo, link `amazon.it/dp/<ASIN>`, prezzo plausibile, foto vera e sotto i 2 MB). Le scelte editoriali stanno nel dizionario `PLAYLIST` dello script.
+- **Codici:** P001 → PRD-181 … P107 → PRD-287, sempre lo stesso numero: un prodotto escluso può entrare più avanti senza rinumerare gli altri.
+- **Esclusi (12):** i 3 «Da verificare» (P054, P086, P107) e l'AirTag senza prezzo (P007); il DAC FiiO K17 (P072, 1.126 €, oltre il limite di 1.000 € dello script); 7 già nel catalogo, con lo stesso ASIN (P045, P053, P064) o lo stesso prodotto in un'altra variante (P003 Loop Experience 2, P017 Kindle Paperwhite, P047 power bank Anker 25.000 mAh, P098 Nothing Headphone (1)).
+- **Temi:** dalla categoria del file (Audio, Tech e ricarica, Accessori smartphone, Foto e video, Ufficio → tecnologia; Viaggio → viaggio), con eccezioni prodotto per prodotto (localizzatori e organizer → viaggio + tecnologia; sveglie Braun e da comodino → arredamento). Cucina, pulizia, libri e cura della persona restano senza tema: compaiono nel catalogo e nelle ricerche, non sotto un filtro di categoria. Nessun prodotto ha `sottocategoria`, quindi nessuno finisce in «Design».
+- **Destinatari:** uomo e donna per tutti, tranne il regolabarba (solo uomo). **Età:** classificata a mano come per i primi 180 (`eta-prodotti.ts`).
+- **Testi:** la descrizione è quella del file («scritta da noi», da rivedere); «Perché» nasce da «Idea regalo per» («Chi ha il sonno leggero» → «Per chi ha il sonno leggero.»).
+- **Link:** il file ha i link puliti; il tag `pacestefano77-21` lo aggiunge `catalogo-dati.ts`, come per tutti i prodotti.
+- **Date dei prezzi:** con prezzi di due mesi la nota in fondo al catalogo diceva «il dal 14 ottobre…»: ora dice «Prezzi rilevati su Amazon.it dal 14 ottobre 2026 al 2 novembre 2026».
+- **Foto:** valgono le avvertenze di sempre sui diritti delle immagini prese da Amazon (vedi `AMAZON_AFFILIATES_API.md`).
+- **Per il sito pubblicato:** deploy (codice e foto) e poi scrittura dei 95 prodotti nel database `colletta` senza toccare quelli esistenti (niente `posizione`: compaiono in coda finché non si salva un nuovo ordine dall'area riservata).
+
+Verificato in locale: 275 idee nel catalogo, foto servite per tutti i 95, link con il tag; test del dominio e controllo dei tipi a posto.
