@@ -354,9 +354,10 @@ function SceltaModo({ fase, onScegli }: { fase: Fase; onScegli: (m: ModoRivelazi
  * Apertura («Scopri la sorpresa») → la modalità scelta da chi organizza → alla fine tutti i messaggi insieme.
  * In alto si può passare a un'altra modalità quando si vuole, e spegnere o riaccendere la musica (se c'è):
  * parte con il tocco su «Scopri la sorpresa», perché i browser non fanno partire l'audio da soli.
- * `alto`: a sinistra in alto (es. l'avviso dell'anteprima); `basso`: una barra in fondo, nell'apertura e nella griglia.
+ * `alto`: a sinistra in alto (es. l'avviso dell'anteprima); `chiudi`: in alto a destra, sempre in vista;
+ * `basso`: una barra in fondo, nell'apertura e nella griglia.
  */
-export function Rivelazione({ b, firme, alto, basso }: { b: BigliettoPubblico; firme: Firma[]; alto?: ReactNode; basso?: ReactNode }) {
+export function Rivelazione({ b, firme, alto, chiudi, basso }: { b: BigliettoPubblico; firme: Firma[]; alto?: ReactNode; chiudi?: ReactNode; basso?: ReactNode }) {
   const aspetto = useMemo(() => aspettoDaBiglietto(b), [b]);
   const note = useMemo<Nota[]>(() => firmeOrdinate(firme, b.ordineFirme).map((f, i) => ({ f, colore: coloreDellaNota(f.coloreNota, i) })), [firme, b.ordineFirme]);
   const modo = rivelazioneValida(b.rivelazione);
@@ -422,8 +423,10 @@ export function Rivelazione({ b, firme, alto, basso }: { b: BigliettoPubblico; f
             </button>
           ) : null}
         </div>
+        {/* con `chiudi`, sul telefono le modalità scendono su una riga tutta loro; da sm stanno accanto alla X */}
+        {chiudi ? <div className="pointer-events-auto sm:order-last">{chiudi}</div> : null}
         {fase !== "apertura" && note.length ? (
-          <div className="pointer-events-auto">
+          <div className={`pointer-events-auto ml-auto flex justify-end ${chiudi ? "basis-full justify-center sm:basis-auto" : ""}`}>
             <SceltaModo fase={fase} onScegli={vai} />
           </div>
         ) : null}

@@ -113,7 +113,7 @@ function Campo({ id, etichetta, aiuto, children }: { id: string; etichetta: stri
 
 /**
  * Crea un biglietto (wizard V2, /biglietto/nuovo): sei passi con l'anteprima della bacheca sempre in vista
- * e le scelte in un pannello che sale dal basso. Tutto resta nel browser fino a «Crea il biglietto»:
+ * e le scelte in un pannello che sale dal basso (sullo schermo largo, affiancato e sempre aperto). Tutto resta nel browser fino a «Crea il biglietto»:
  * solo allora nasce la bozza sul server, che si pubblica subito dopo l'accesso.
  */
 export function CreaBiglietto() {
@@ -330,7 +330,7 @@ export function CreaBiglietto() {
       <p className="text-ink-soft">Scegli un tema, poi ritocca i colori come vuoi.</p>
       <div className="flex flex-col gap-3">
         <h3 className="font-semibold">Tema</h3>
-        <div role="group" aria-label="Filtra i temi" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+        <div role="group" aria-label="Filtra i temi" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 lg:-mx-6 lg:px-6">
           <Chip scelto={filtroAttivo === "tutti"} onClick={() => setFiltro("tutti")}>
             Tutti
           </Chip>
@@ -341,7 +341,7 @@ export function CreaBiglietto() {
             </Chip>
           ))}
         </div>
-        <div role="radiogroup" aria-label="Tema" className="-mx-4 grid auto-cols-[112px] grid-flow-col grid-rows-2 gap-3 overflow-x-auto px-4 pb-2">
+        <div role="radiogroup" aria-label="Tema" className="-mx-4 grid auto-cols-[112px] grid-flow-col grid-rows-2 gap-3 overflow-x-auto px-4 pb-2 lg:mx-0 lg:grid-flow-row lg:grid-cols-4 lg:grid-rows-none lg:overflow-visible lg:px-0">
           {temi.map((m) => {
             const c = coloriDelModello(m);
             const scelto = m.id === s.modelloId;
@@ -515,7 +515,7 @@ export function CreaBiglietto() {
     <div className="fixed inset-0 flex flex-col bg-field">
       {/* intestazione: chiudi, passo e barra di avanzamento */}
       <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex w-full max-w-[640px] items-center gap-3 px-4 py-3">
+        <div className="mx-auto flex w-full max-w-[640px] items-center gap-3 px-4 py-3 lg:max-w-[1200px] lg:px-8">
           <Link href="/" aria-label="Chiudi e torna alla home" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-2xl hover:bg-surface-2">
             <span aria-hidden="true">×</span>
           </Link>
@@ -533,16 +533,22 @@ export function CreaBiglietto() {
         </div>
       </header>
 
-      <div className="relative mx-auto w-full max-w-[640px] flex-1 overflow-hidden">
+      {/* sul telefono il pannello sale dal basso sopra il biglietto; da lg in su stanno affiancati, il pannello sempre aperto */}
+      <div className="relative mx-auto w-full max-w-[640px] flex-1 overflow-hidden lg:grid lg:max-w-[1200px] lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:grid-rows-[minmax(0,1fr)] lg:gap-8 lg:px-8 lg:py-6">
         {/* anteprima dal vivo: il pannello chiuso la lascia vedere tutta */}
-        <div className={`absolute inset-0 overflow-y-auto px-6 pt-6 ${aperto ? "pb-[70vh]" : "pb-40"}`}>
-          {pronto ? <AnteprimaBacheca aspetto={aspetto} /> : null}
+        <div className={`absolute inset-0 overflow-y-auto px-6 pt-6 ${aperto ? "pb-[70vh]" : "pb-40"} lg:static lg:flex lg:flex-col lg:px-0 lg:py-2`}>
+          {/* my-auto e non justify-center: un biglietto più alto della colonna resta leggibile dall'alto; zoom lo ingrandisce tutto insieme */}
+          <div className="w-full lg:my-auto lg:[zoom:1.15] xl:[zoom:1.3]">{pronto ? <AnteprimaBacheca aspetto={aspetto} /> : null}</div>
         </div>
 
         {/* pannello delle scelte: chiuso mostra solo il passo e il pulsante per aprirlo */}
-        <section aria-label={PASSI[s.passo]} className={`absolute inset-x-0 bottom-0 flex flex-col rounded-t-[28px] bg-surface shadow-[0_-12px_32px_-8px_rgba(3,57,34,0.18)] ${aperto ? "max-h-[68%]" : ""}`}>
+        <section
+          aria-label={PASSI[s.passo]}
+          className={`absolute inset-x-0 bottom-0 flex flex-col rounded-t-[28px] bg-surface shadow-[0_-12px_32px_-8px_rgba(3,57,34,0.18)] ${aperto ? "max-h-[68%]" : ""} lg:static lg:max-h-none lg:min-h-0 lg:rounded-[28px] lg:border lg:border-line lg:shadow-sollevata`}
+        >
+          <h2 className="hidden px-6 pb-2 pt-6 font-display text-2xl font-bold text-ink lg:block">{PASSI[s.passo]}</h2>
           {aperto ? (
-            <button type="button" onClick={() => setAperto(false)} aria-expanded className="flex flex-col items-stretch px-4 pb-3 pt-2 text-left">
+            <button type="button" onClick={() => setAperto(false)} aria-expanded className="flex flex-col items-stretch px-4 pb-3 pt-2 text-left lg:hidden">
               <span aria-hidden="true" className="mx-auto mb-2 h-1.5 w-10 rounded-full bg-line-forte" />
               <span className="flex items-center justify-between gap-3">
                 <h2 className="font-display text-2xl font-bold text-ink">{PASSI[s.passo]}</h2>
@@ -552,7 +558,7 @@ export function CreaBiglietto() {
               </span>
             </button>
           ) : (
-            <div className="flex flex-col gap-3 px-4 pb-4 pt-2">
+            <div className="flex flex-col gap-3 px-4 pb-4 pt-2 lg:hidden">
               <span aria-hidden="true" className="mx-auto h-1.5 w-10 rounded-full bg-line-forte" />
               <h2 className="font-display text-xl font-bold text-ink">{PASSI[s.passo]}</h2>
               <button
@@ -565,17 +571,15 @@ export function CreaBiglietto() {
               </button>
             </div>
           )}
-          {aperto ? (
-            <div ref={contenuto} className="overflow-y-auto px-4 pb-6">
-              {pronto ? pannelli[s.passo] : null}
-            </div>
-          ) : null}
+          <div ref={contenuto} className={`overflow-y-auto px-4 pb-6 lg:block lg:min-h-0 lg:flex-1 lg:px-6 ${aperto ? "" : "hidden"}`}>
+            {pronto ? pannelli[s.passo] : null}
+          </div>
         </section>
       </div>
 
       {/* Indietro / Avanti */}
       <footer className="border-t border-line bg-surface">
-        <div className="mx-auto flex w-full max-w-[640px] items-center justify-between gap-3 px-4 py-3">
+        <div className="mx-auto flex w-full max-w-[640px] items-center justify-between gap-3 px-4 py-3 lg:max-w-[1200px] lg:px-8">
           <button
             type="button"
             onClick={() => imposta("passo", Math.max(0, s.passo - 1))}
