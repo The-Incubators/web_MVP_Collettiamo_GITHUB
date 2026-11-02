@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { IntestazioneWizard } from "@/components/biglietto/comuni";
-import { PaginaInvito } from "@/components/biglietto/firma/PaginaInvito";
+import { PaginaBacheca } from "@/components/biglietto/bacheca/PaginaBacheca";
+import { PaginaRivelazione } from "@/components/biglietto/bacheca/PaginaRivelazione";
 import { bigliettoPubblico } from "@/lib/biglietti/server";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ anteprima?: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const dati = await bigliettoPubblico(slug);
   if (!dati) return { title: "Biglietto non trovato", robots: { index: false } };
-  const descrizione = `Aggiungi il tuo messaggio al biglietto di gruppo per ${dati.b.festeggiato}.`;
+  const descrizione =
+    dati.b.stato === "consegnato" ? `Un biglietto di gruppo per ${dati.b.festeggiato}: aprilo, è una sorpresa.` : `Aggiungi il tuo messaggio al biglietto di gruppo per ${dati.b.festeggiato}.`;
   return {
     title: dati.b.nome,
     description: descrizione,
@@ -22,17 +23,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-/** Invito (spec 5.1): resa lato server, così l'anteprima del link nelle chat mostra nome e copertina. */
-export default async function PaginaBiglietto({ params }: Props) {
-  const { slug } = await params;
+/**
+ * Un solo link per tutto: la bacheca per firmare finché il biglietto è aperto, la rivelazione dopo la consegna.
+ * `?anteprima=1`: la rivelazione in anteprima, per guardarla prima di consegnare.
+ * Resa lato server, così l'anteprima del link nelle chat mostra nome e copertina.
+ */
+export default async function PaginaBiglietto({ params, searchParams }: Props) {
+  const [{ slug }, { anteprima }] = await Promise.all([params, searchParams]);
   const dati = await bigliettoPubblico(slug);
   if (!dati) notFound();
+  const consegnato = dati.b.stato === "consegnato";
   return (
-    <>
-      <IntestazioneWizard indietro={null} segmenti={2} percento={0} larghezza="max-w-partecipante" accedi={false} />
-      <main className="gutter mx-auto w-full max-w-partecipante pb-16 pt-4">
-        <PaginaInvito b={dati.b} hrefFirma={`/b/${slug}/firma`} />
-      </main>
-    </>
+    <main className="flex flex-1 flex-col">
+      {consegnato || anteprima ? (
+        <PaginaRivelazione b={dati.b} firme={dati.firme} anteprima={!consegnato} />
+      ) : (
+        <PaginaBacheca b={dati.b} firme={dati.firme} />
+      )}
+    </main>
   );
 }

@@ -73,9 +73,9 @@ export function numeroPagine(pagineMessaggi: PaginaImpaginata[]): number {
   return 1 + Math.max(0, pagineMessaggi.length);
 }
 
-/** Le firme da mostrare, nell'ordine scelto (ordineFirme) o per data; le nascoste si scartano. */
-export function firmeOrdinate(firme: Firma[], ordine: string[] | null): Firma[] {
-  const visibili = firme.filter((f) => !f.nascosta);
+/** Le firme da mostrare, nell'ordine scelto (ordineFirme) o per data; le nascoste si scartano (chi organizza le tiene: `ancheNascoste`). */
+export function firmeOrdinate(firme: Firma[], ordine: string[] | null, ancheNascoste = false): Firma[] {
+  const visibili = ancheNascoste ? firme : firme.filter((f) => !f.nascosta);
   if (!ordine) return [...visibili].sort((a, b) => a.creatoIl - b.creatoIl);
   const perId = new Map(visibili.map((f) => [f.id, f]));
   const out: Firma[] = [];

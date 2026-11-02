@@ -8,11 +8,14 @@ interface Stato {
   slug: Map<string, string>;
   firme: Map<string, Map<string, FirmaServer>>;
   immagini: Map<string, ImmagineSalvata>;
+  audio: Map<string, Uint8Array>;
 }
 
 const g = globalThis as typeof globalThis & { __colletta_biglietti?: Stato };
 function stato(): Stato {
-  g.__colletta_biglietti ??= { biglietti: new Map(), slug: new Map(), firme: new Map(), immagini: new Map() };
+  g.__colletta_biglietti ??= { biglietti: new Map(), slug: new Map(), firme: new Map(), immagini: new Map(), audio: new Map() };
+  // un server di prova partito prima che esistesse la musica
+  g.__colletta_biglietti.audio ??= new Map();
   return g.__colletta_biglietti;
 }
 const copia = <T>(v: T): T => structuredClone(v);
@@ -68,6 +71,19 @@ export function archivioBigliettiMemoria(): ArchivioBiglietti {
       if (!prima) s.biglietti.set(id, { ...b, nFirme: b.nFirme + 1 });
       return { nuova: !prima };
     },
+    async eliminaFirma(id, firmaId, opzioni) {
+      const b = s.biglietti.get(id);
+      if (!b || (b.stato !== "aperto" && !opzioni?.qualsiasiStato)) return { errore: "chiuso" as const };
+      if (!s.firme.get(id)?.delete(firmaId)) return { eliminata: false };
+      s.biglietti.set(id, { ...b, nFirme: Math.max(0, b.nFirme - 1) });
+      return { eliminata: true };
+    },
+    async nascondiFirma(id, firmaId, nascosta) {
+      const f = s.firme.get(id)?.get(firmaId);
+      if (!f) return false;
+      s.firme.get(id)!.set(firmaId, { ...f, nascosta });
+      return true;
+    },
     async salvaImmagine(id, nome, img) {
       s.immagini.set(`${id}/${nome}`, { mime: img.mime, dati: new Uint8Array(img.dati) });
     },
@@ -76,6 +92,15 @@ export function archivioBigliettiMemoria(): ArchivioBiglietti {
     },
     async eliminaImmagine(id, nome) {
       s.immagini.delete(`${id}/${nome}`);
+    },
+    async salvaAudio(id, nome, dati) {
+      s.audio.set(`${id}/${nome}`, new Uint8Array(dati));
+    },
+    async leggiAudio(id, nome) {
+      return s.audio.get(`${id}/${nome}`) ?? null;
+    },
+    async eliminaAudio(id, nome) {
+      s.audio.delete(`${id}/${nome}`);
     },
     async perOrganizzatore(uid) {
       return [...s.biglietti.values()].filter((b) => b.organizzatoreUid === uid).sort((a, b) => b.creatoIl - a.creatoIl).map(copia);

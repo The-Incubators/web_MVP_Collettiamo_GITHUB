@@ -307,6 +307,8 @@ export interface ModelloBiglietto {
   testoFisso: string | null;
   ordine: number;
   attivo: boolean;
+  /** il carattere del titolo sulla bacheca (id di FONT_BIGLIETTO); senza, quello predefinito */
+  fontBacheca?: string;
 }
 
 export interface StileFirma {
@@ -336,6 +338,8 @@ export interface Firma {
    * Le firme salvate prima che esistesse non ce l'hanno, quindi può mancare.
    */
   ruolo?: string | null;
+  /** il colore del bigliettino sulla bacheca (uno di COLORI_NOTA); manca nelle firme fatte prima della bacheca */
+  coloreNota?: string | null;
   nome: string;
   cognome: string | null;
   email: string | null;
@@ -352,7 +356,29 @@ export interface CopertinaBiglietto {
   titolo: string;
   sottotitolo: string | null;
   immagineUrl: string | null;
+  /** wizard V2 (bacheca): i tre colori scelti; mancano nei biglietti creati prima */
+  colori?: ColoriBacheca;
+  /** wizard V2: quanto scurire l'immagine di sfondo (0–0,8) perché i testi si leggano */
+  scurisci?: number;
 }
+
+/** I colori della bacheca: gradiente dello sfondo (1 → 2) e accento (pulsanti, firme). */
+export interface ColoriBacheca {
+  sfondo1: string;
+  sfondo2: string;
+  accento: string;
+}
+
+/** La musica del biglietto: un MP3 caricato da chi organizza, che parte quando si apre la sorpresa. */
+export interface MusicaBiglietto {
+  url: string;
+  /** il nome del file, per riconoscerlo nella gestione (resta privato) */
+  nome: string;
+  byte: number;
+}
+
+/** Come il festeggiato scopre i messaggi quando il biglietto viene consegnato. */
+export type ModoRivelazione = "griglia" | "storie" | "film" | "scorrimento";
 
 export interface Biglietto {
   id: string;
@@ -371,6 +397,12 @@ export interface Biglietto {
   emailAlternativa?: string;
   /** quando: istante; data/ora: come le ha scelte chi organizza, nel suo fuso (servono a modificarle) */
   consegna: { quando: number; fuso: string; data: string; ora: string };
+  /** wizard V2: il giorno dell'evento (AAAA-MM-GG), facoltativo; propone la data di consegna */
+  dataEvento?: string;
+  /** wizard V2: come si rivela il biglietto alla consegna */
+  rivelazione?: ModoRivelazione;
+  /** facoltativa; manca nei biglietti che non l'hanno mai avuta */
+  musica?: MusicaBiglietto | null;
   messaggioGruppo: string;
   nome: string;
   copertina: CopertinaBiglietto;
@@ -385,6 +417,8 @@ export interface Biglietto {
 
 /** La vista pubblica del biglietto: ciò che il server consegna alla pagina del firmatario (niente email/token). */
 export interface BigliettoPubblico {
+  /** non è un segreto (è già negli indirizzi delle immagini): serve alla bacheca per riconoscere chi organizza */
+  id: string;
   slug: string;
   organizzatoreNome: string | null;
   occasione: string;
@@ -396,4 +430,8 @@ export interface BigliettoPubblico {
   ordineFirme: string[] | null;
   stato: StatoBiglietto;
   nFirme: number;
+  /** come si rivela alla consegna; manca nei biglietti creati prima della bacheca */
+  rivelazione?: ModoRivelazione;
+  /** la musica della sorpresa (solo l'indirizzo: il nome del file resta a chi organizza) */
+  musica?: { url: string } | null;
 }

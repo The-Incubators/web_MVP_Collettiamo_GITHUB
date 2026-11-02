@@ -8,7 +8,10 @@ export const dynamic = "force-dynamic";
 
 type Ctx = { params: Promise<{ id: string }> };
 
-/** Carica (dataUrl), sceglie dalla libreria (url) o toglie (dataUrl null) l'immagine della copertina e sceglie il modello che la usa. */
+/**
+ * Carica (dataUrl), sceglie dalla libreria (url) o toglie (dataUrl null) l'immagine della copertina e sceglie il modello che la usa.
+ * Con sfondo: true è l'immagine di sfondo della bacheca e il modello non cambia.
+ */
 export async function POST(richiesta: Request, { params }: Ctx) {
   const { id } = await params;
   const { b, esito } = await bigliettoDelProprietario(id, richiesta);
@@ -16,8 +19,10 @@ export async function POST(richiesta: Request, { params }: Ctx) {
   if (b.stato === "consegnato") return errore("Il biglietto è già stato consegnato.", 409);
   const c = await corpoJson(richiesta);
   if (!c) return errore("Richiesta non valida.");
-  const modello = typeof c.modelloId === "string" ? modelloPerId(c.modelloId) : null;
-  if (!modello || (modello.tipo !== "carica-immagine" && modello.tipo !== "foto-intera")) return errore("Modello non valido.");
+  // sfondo: l'immagine di sfondo della bacheca (wizard V2), che va bene con qualsiasi tema: il tema resta quello scelto
+  const sfondo = c.sfondo === true;
+  const modello = sfondo ? modelloPerId(b.copertina.modelloId) : typeof c.modelloId === "string" ? modelloPerId(c.modelloId) : null;
+  if (!modello || (!sfondo && modello.tipo !== "carica-immagine" && modello.tipo !== "foto-intera")) return errore("Modello non valido.");
 
   const archivio = archivioBiglietti();
   let url: string | null = null;
