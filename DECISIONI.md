@@ -569,3 +569,10 @@ Richiesta: applicare il documento «Gifty · Nuove categorie per lo step 3 di Tr
 - **Sessione**: un percorso salvato con i vecchi interessi riparte dalla tappa 3.
 - **Non fatto** (facoltativo nel documento): ordinare le passioni secondo il genere scelto.
 - **Dipendenze**: la mappa comprende i 242 prodotti della sezione 34, quindi va pubblicata insieme o dopo di loro. Finché il database di produzione ha 275 prodotti, Giochi e parte di Bellezza e Stile hanno pochi prodotti e alcune micro restano nascoste.
+
+## 36. Link affiliati: tag del progetto Gifty (`gifty01c-21`)
+
+Richiesta: usare per tutto il catalogo il tracking ID creato su Amazon Associates per il progetto Gifty, `gifty01c-21`, al posto di quello personale `pacestefano77-21` (sezione 15).
+
+- **Codice:** cambia solo `TAG_AFFILIATO_AMAZON` in `lib/dominio/amazon.ts`. Tutti i pulsanti verso Amazon passano da `urlPerAcquisto`, che sostituisce un tag già presente: dal deploy valgono col nuovo tag anche i link salvati prima (prodotti, collette, proposte di votazione). L'area riservata resta senza tag (`linkSchedaAmazon`). I test sull'emulatore leggono il tag dalla costante.
+- **Dati:** nel database `colletta` il campo `urlEsterno` dei prodotti si aggiorna dopo il deploy, solo quel campo e solo se il prodotto non è cambiato dopo la lettura, con il backup dei valori prima e dopo in `backup/`. Le copie dentro collette e proposte restano col vecchio tag nei dati, ma si mostrano col nuovo. Il database `colletta-test` non ha prodotti.

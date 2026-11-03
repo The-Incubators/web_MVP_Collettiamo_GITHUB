@@ -5,7 +5,7 @@
 // diventa un link con un solo tag giusto. Gli altri parametri e il frammento (#…) restano com'erano.
 // Si toccano solo i link di amazon.it: ogni altro indirizzo si lascia com'è.
 
-export const TAG_AFFILIATO_AMAZON = "pacestefano77-21";
+export const TAG_AFFILIATO_AMAZON = "gifty01c-21";
 
 const HOST_AMAZON_IT = new Set(["amazon.it", "www.amazon.it", "m.amazon.it"]);
 

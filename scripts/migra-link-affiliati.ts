@@ -1,4 +1,4 @@
-// Porta i link ai prodotti Amazon.it sul link affiliato (tag pacestefano77-21), nei dati su Firestore.
+// Porta i link ai prodotti Amazon.it sul link affiliato (tag TAG_AFFILIATO_AMAZON, oggi gifty01c-21), nei dati su Firestore.
 //
 //   pnpm migra:link                          prova: mostra che cosa cambierebbe, senza scrivere nulla
 //   pnpm migra:link --applica                scrive, dopo aver salvato un backup in backup/
