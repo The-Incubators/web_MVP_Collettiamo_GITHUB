@@ -545,3 +545,27 @@ Richiesta: aggiungere i prodotti del file `Gifty_database_prodotti_playlist_2Nov
 - **Per il sito pubblicato:** deploy (codice e foto) e poi scrittura dei 95 prodotti nel database `colletta` senza toccare quelli esistenti (niente `posizione`: compaiono in coda finché non si salva un nuovo ordine dall'area riservata).
 
 Verificato in locale: 275 idee nel catalogo, foto servite per tutti i 95, link con il tag; test del dominio e controllo dei tipi a posto.
+
+## 34. Catalogo: 242 prodotti dalla playlist «Gifty - categorie personas» (3 novembre 2026)
+
+Richiesta: aggiungere al catalogo tutti i prodotti della cartella `Playlist_categorie_personas_Novembre_2026` (244 prodotti su Amazon.it ricavati da 26 video di creator italiani, nelle categorie che l'analisi sulle buyer personas indica come scoperte: giochi e LEGO, profumi e beauty, orologi e gioielli, piccoli elettrodomestici, enogastronomia ed esperienze).
+
+- **Sorgente:** cartella `catalogo_amazon_playlist_categorie/` (il file Excel e `immagini/P001.jpg…`; le foto vengono dalla cartella completa fuori dal progetto, perché quella dentro ne aveva 236 su 244). Stesso formato della playlist del 2 novembre, più la colonna «Categoria analisi» che lo script non usa. Le scelte stanno nel dizionario `PLAYLIST_CATEGORIE` dello script; quelle della prima playlist ora si chiamano `PLAYLIST_OGGETTI`.
+- **Codici:** P001 → PRD-301 … P244 → PRD-544 (la prima playlist arriva a PRD-287).
+- **Esclusi (2):** il Casio CA-53WF (P224), senza prezzo; il Kindle 16 GB (P193), già nel catalogo come PRD-148. Entrano invece i 46 prodotti a corrispondenza «Media» (scelti da noi perché il creator non dava un link utilizzabile) e quelli con le note «da verificare» del file: vanno ricontrollati a mano (prezzi anomali di LEGO Tartarughe Ninja, Orient Kamasu ed Echo Dot; titoli Amazon in lingua straniera; edizioni in inglese di Pina Coladice e The Gang).
+- **Temi:** la maggior parte resta senza tema (giochi, profumi, beauty, orologi, cucina): compaiono nel catalogo e nelle ricerche, non sotto un filtro di categoria. Tecnologia per robot, droni, visore e la categoria «Tecnologia» del file; viaggio per beauty case, kit da viaggio, cofanetti con tre giorni in Europa e l'orologio dual time; arredamento per i LEGO da esporre, le decorazioni, le candele e le lampade.
+- **Destinatari:** uomo e donna per tutti, tranne profumi, accessori e orologi da uomo (29, solo uomo) e profumi, trucco e accessori da donna (29, solo donna). I giocattoli valgono per tutti, anche quelli a tema principesse o Barbie.
+- **Età:** classificata a mano come per i prodotti precedenti (`eta-prodotti.ts`); per la prima volta molti prodotti sono solo «Bambino» (36).
+- **Testi, link e foto:** come nella sezione 33.
+
+## 35. «Trova il regalo»: 8 passioni con micro-categorie al posto dei 36 interessi
+
+Richiesta: applicare il documento «Gifty · Nuove categorie per lo step 3 di Trova regalo» (3 novembre 2026, `../Gifty_categorie_step3_macro_micro.md`, con la mappa `../Gifty_mappa_prodotti_categorie_step3.csv`). I 36 interessi erano troppi, 13 trovavano 10 prodotti o meno, e mancavano profumi, gioielli e orologi e giocattoli.
+
+- **Dati** (`lib/regalo/dati.ts`): `CATEGORIE_INTERESSI` sono le 8 macro (Giochi, Bellezza, Cucina e buon gusto, Tecnologia, Stile, Casa, Viaggi, Libri musica e creatività, in quest'ordine di priorità), `INTERESSI` le 34 micro, con la stessa forma di prima (id, categoria = macro, etichetta, icona, parole, temi). Dalle parole del documento è stata tolta «spa», che prendeva «Spacey, tavolino oro» (vedi sopra).
+- **Micro dei prodotti** (`lib/dati/microcategorie-prodotti.ts`): generate dal CSV per tutti i 517 prodotti, lette per codice prodotto come le età. Non c'è un campo nuovo nel database: funziona anche sul sito pubblicato senza riscrivere `prodotti`. Il test fallisce se un prodotto del catalogo non ha micro. Per un prodotto non ancora classificato valgono le parole della micro.
+- **Tappa 3**: si scelgono 1 o 2 passioni (8 riquadri), poi per ogni passione scelta compaiono le sue micro come pillole, facoltative, fino a 3 in tutto, con «Va bene tutto» già selezionato. Una micro (o una passione) si mostra solo se nel catalogo ricevuto dalla pagina ha almeno 6 prodotti: oggi restano nascoste vini, gioielli, abbigliamento, weekend ed eventi. Il messaggio sul limite di scelte sta nella barra in fondo, dove si vede.
+- **Punteggio**: micro scelta 3, passione 2, tema 1 (delle micro scelte, o di tutta la passione con «Va bene tutto»), occasione 2 e destinatario 1 come prima.
+- **Sessione**: un percorso salvato con i vecchi interessi riparte dalla tappa 3.
+- **Non fatto** (facoltativo nel documento): ordinare le passioni secondo il genere scelto.
+- **Dipendenze**: la mappa comprende i 242 prodotti della sezione 34, quindi va pubblicata insieme o dopo di loro. Finché il database di produzione ha 275 prodotti, Giochi e parte di Bellezza e Stile hanno pochi prodotti e alcune micro restano nascoste.

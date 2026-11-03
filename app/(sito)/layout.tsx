@@ -14,6 +14,8 @@ export default function LayoutSito({ children, modale }: { children: React.React
           <Link href="/" className="inline-flex min-h-tocco items-center" aria-label="Gifty, vai alla home">
             <Logo priorita className="h-9" />
           </Link>
+          {/* vuoto; «Trova il regalo» ci mette i suoi passi (components/regalo/parti.tsx) */}
+          <div id="intestazione-passi" className="flex min-w-0 flex-1 justify-center" />
           <div className="flex items-center gap-3">
             <NavigazioneOrizzontale />
             <MenuProfilo />

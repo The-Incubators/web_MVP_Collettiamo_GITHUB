@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { MAX_INTERESSI, MIN_INTERESSI } from "./dati";
+import { MAX_MACRO, MAX_MICRO, MIN_MACRO } from "./dati";
 import {
   avanza,
   cambiaInteresse,
+  cambiaMacro,
   primaTappaIncompleta,
   puoAndareA,
   puoAvanzare,
@@ -11,6 +12,7 @@ import {
   scegliOccasione,
   statoIniziale,
   tappaCompleta,
+  tuttaLaMacro,
   vaiAllaTappa,
 } from "./stato";
 
@@ -18,7 +20,7 @@ import {
 function compilato(fino: number) {
   let s = scegliGenere(statoIniziale(), "donna");
   if (fino >= 2) s = scegliOccasione(s, "compleanno");
-  if (fino >= 3) for (const id of ["musica", "viaggi", "caffe"]) s = cambiaInteresse(s, id);
+  if (fino >= 3) s = cambiaInteresse(cambiaMacro(s, "tecnologia"), "tech-audio");
   return s;
 }
 
@@ -31,12 +33,11 @@ describe("tappe del percorso", () => {
     expect(puoAvanzare(s)).toBe(true);
   });
 
-  it("la terza tappa vuole almeno il minimo di interessi", () => {
+  it("la terza tappa vuole almeno una passione; le micro sono facoltative", () => {
     const s = compilato(2);
-    const conDue = cambiaInteresse(cambiaInteresse(s, "musica"), "viaggi");
-    expect(tappaCompleta(conDue, 3)).toBe(false);
-    expect(tappaCompleta(cambiaInteresse(conDue, "caffe"), 3)).toBe(true);
-    expect(MIN_INTERESSI).toBe(3);
+    expect(tappaCompleta(s, 3)).toBe(false);
+    expect(tappaCompleta(cambiaMacro(s, "giochi"), 3)).toBe(true);
+    expect(MIN_MACRO).toBe(1);
   });
 
   it("si torna indietro ma non si salta avanti", () => {
@@ -74,15 +75,31 @@ describe("scelte", () => {
     expect(scegliOccasione(s, "natale").occasione).toBe("natale");
   });
 
-  it("gli interessi si aggiungono, si togliono e si fermano al massimo", () => {
+  it("le passioni si aggiungono, si tolgono e si fermano al massimo", () => {
     let s = compilato(2);
-    for (const id of ["musica", "viaggi", "caffe", "casa", "fitness"]) s = cambiaInteresse(s, id);
-    expect(s.interessi).toHaveLength(MAX_INTERESSI);
-    expect(cambiaInteresse(s, "yoga").interessi).toHaveLength(MAX_INTERESSI);
-    const senzaMusica = cambiaInteresse(s, "musica");
-    expect(senzaMusica.interessi).not.toContain("musica");
-    expect(cambiaInteresse(senzaMusica, "yoga").interessi).toContain("yoga");
-    expect(cambiaInteresse(s, "non-esiste")).toBe(s);
+    for (const id of ["giochi", "bellezza"]) s = cambiaMacro(s, id);
+    expect(s.macro).toHaveLength(MAX_MACRO);
+    expect(cambiaMacro(s, "viaggi").macro).toEqual(["giochi", "bellezza"]);
+    expect(cambiaMacro(s, "giochi").macro).toEqual(["bellezza"]);
+    expect(cambiaMacro(s, "non-esiste")).toBe(s);
+  });
+
+  it("una micro si sceglie solo se la sua passione è scelta, fino al massimo", () => {
+    let s = cambiaMacro(compilato(2), "tecnologia");
+    expect(cambiaInteresse(s, "giochi-lego")).toBe(s);
+    for (const id of ["tech-audio", "tech-foto", "tech-smartphone"]) s = cambiaInteresse(s, id);
+    expect(s.interessi).toHaveLength(MAX_MICRO);
+    expect(cambiaInteresse(s, "tech-smarthome").interessi).toHaveLength(MAX_MICRO);
+    expect(cambiaInteresse(s, "tech-audio").interessi).toEqual(["tech-foto", "tech-smartphone"]);
+  });
+
+  it("togliendo una passione se ne vanno le sue micro; «va bene tutto» le toglie e lascia la passione", () => {
+    let s = cambiaMacro(cambiaMacro(compilato(2), "tecnologia"), "viaggi");
+    s = cambiaInteresse(cambiaInteresse(s, "tech-audio"), "viaggi-valigie");
+    expect(cambiaMacro(s, "tecnologia").interessi).toEqual(["viaggi-valigie"]);
+    const tutto = tuttaLaMacro(s, "viaggi");
+    expect(tutto.interessi).toEqual(["tech-audio"]);
+    expect(tutto.macro).toEqual(["tecnologia", "viaggi"]);
   });
 });
 
@@ -95,11 +112,19 @@ describe("ripresa dalla sessione", () => {
   it("butta via quello che non riconosce e riporta a una tappa raggiungibile", () => {
     expect(ripulisci(null)).toEqual(statoIniziale());
     expect(ripulisci("niente")).toEqual(statoIniziale());
-    const sporco = ripulisci({ genere: "alieno", occasione: "ferragosto", interessi: ["musica", "nope", "musica"], tappa: 4 });
+    const sporco = ripulisci({ genere: "alieno", occasione: "ferragosto", macro: ["giochi", "nope"], interessi: ["giochi-lego", "tech-audio"], tappa: 4 });
     expect(sporco.genere).toBe(null);
     expect(sporco.occasione).toBe(null);
-    expect(sporco.interessi).toEqual(["musica"]);
+    expect(sporco.macro).toEqual(["giochi"]);
+    expect(sporco.interessi).toEqual(["giochi-lego"]);
     expect(sporco.tappa).toBe(1);
+  });
+
+  it("un percorso salvato con i vecchi interessi torna alla terza tappa", () => {
+    const vecchio = { genere: "donna", occasione: "natale", interessi: ["musica", "viaggi", "caffe"], tappa: 4 };
+    const s = ripulisci(vecchio);
+    expect(s.interessi).toEqual([]);
+    expect(s.tappa).toBe(3);
   });
 
   it("una tappa troppo avanti torna alla prima incompleta", () => {

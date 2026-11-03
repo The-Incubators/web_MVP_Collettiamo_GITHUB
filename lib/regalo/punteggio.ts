@@ -1,12 +1,12 @@
 // Affinità fra le risposte del percorso e i prodotti del nostro catalogo, più i filtri dei risultati.
-// Il percorso di partenza pesava: parole chiave 3, categoria 2, occasione 2, destinatario 1. Qui la «categoria»
-// sono i nostri temi e il «destinatario» i nostri destinatari (uomo, donna).
+// Pesi: micro-categoria scelta 3, macro-categoria scelta 2, tema 1, occasione 2, destinatario 1.
+// Le micro di un prodotto vengono da lib/dati/microcategorie-prodotti.ts; per un prodotto non ancora classificato
+// si ricavano dalle parole delle micro trovate nei suoi testi.
 //
-// Il tema vale 1, non 2: le categorie dell'altro sito erano sette e strette, i nostri temi sono tre e larghissimi
-// (l'arredamento da solo è il 42% del catalogo). A 2 punti un tema valeva quasi quanto una parola trovata nel testo
-// e i risultati venivano fuori appiattiti, con decine di prodotti a pari punteggio: ora il tema separa i pari merito.
-// Nessun prodotto viene escluso dal punteggio: i filtri (prezzo, ordine) restano una scelta esplicita.
+// Il tema vale 1: i nostri temi sono tre e larghissimi (l'arredamento da solo è il 42% del catalogo), quindi serve
+// solo a separare i pari merito. Nessun prodotto viene escluso dal punteggio: il filtro di prezzo resta una scelta esplicita.
 
+import { microDiCatalogo } from "../dati/microcategorie-prodotti";
 import { INTERESSI } from "./dati";
 import type { StatoRicerca } from "./stato";
 import { FASCE_PREZZO, type Prodotto } from "../tipi";
@@ -48,14 +48,25 @@ export function testoProdotto(p: Prodotto): string {
   return normalizza([p.nome, p.descrizione, p.perche ?? "", p.marca, p.sottocategoria ?? ""].join(" "));
 }
 
-export function punteggio(p: Prodotto, s: StatoRicerca, testo = testoProdotto(p)): number {
+/** Le micro-categorie di un prodotto: quelle del catalogo o, se non è ancora classificato, quelle le cui parole sono nei suoi testi. */
+export function microDelProdotto(p: Prodotto, testo?: string): string[] {
+  const note = microDiCatalogo(p);
+  if (note.length) return note;
+  const t = testo ?? testoProdotto(p);
+  return INTERESSI.filter((x) => x.parole.some((parola) => t.includes(normalizza(parola).trimEnd()))).map((x) => x.id);
+}
+
+export function punteggio(p: Prodotto, s: StatoRicerca, testo?: string): number {
   let n = 0;
   const temi = p.temi ?? [];
-  for (const id of s.interessi) {
-    const interesse = perId.get(id);
-    if (!interesse) continue;
-    if (interesse.parole.some((parola) => testo.includes(normalizza(parola).trimEnd()))) n += 3;
-    if (interesse.temi.some((t) => temi.includes(t))) n += 1;
+  const micro = microDelProdotto(p, testo);
+  for (const id of s.interessi) if (micro.includes(id)) n += 3;
+  for (const macro of s.macro) {
+    if (micro.some((m) => perId.get(m)?.categoria === macro)) n += 2;
+    // il tema delle micro scelte di questa macro, o di tutta la macro se si è lasciato «va bene tutto»
+    const delleScelte = s.interessi.map((id) => perId.get(id)).filter((x) => x?.categoria === macro);
+    const affini = delleScelte.length ? delleScelte : INTERESSI.filter((x) => x.categoria === macro);
+    if (affini.some((x) => x?.temi.some((t) => temi.includes(t)))) n += 1;
   }
   // Il catalogo di Amazon non porta ancora le occasioni (`occasioni` è vuoto): la regola resta pronta per quando le avrà.
   if (s.occasione && s.occasione !== "altro" && p.occasioni.includes(s.occasione)) n += 2;
