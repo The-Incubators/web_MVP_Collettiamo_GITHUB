@@ -1,29 +1,33 @@
 "use client";
 
 // Il percorso «Trova il regalo»: quattro tappe (destinatario, occasione, interessi, risultati), nel disegno di
-// UX_V4. Le domande, le 36 scelte d'interesse, il punteggio e la ripresa dalla sessione sono quelli di sempre
-// (lib/regalo); i risultati sono i prodotti del nostro catalogo, con la nostra scheda (SchedaProdotto).
+// UX_V4. Le domande, le passioni (8 macro-categorie con le loro micro), il punteggio e la ripresa dalla sessione
+// stanno in lib/regalo; i risultati sono i prodotti del nostro catalogo, con la nostra scheda (SchedaProdotto).
 //
 // - I prodotti arrivano già con la pagina, quindi non c'è nessuna richiesta che possa fallire: niente «Riprova».
 // - La pausa con l'animazione prima dei risultati è voluta, non un'attesa di rete.
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { SchedaProdotto } from "@/components/SchedaProdotto";
-import { Avanzamento, Chip, Icona, SceltaScheda } from "@/components/regalo/parti";
+import { Avanzamento, Chip, ID_POSTO_PASSI, Icona, SceltaScheda } from "@/components/regalo/parti";
 import { Bottone, Icona as IconaSito } from "@/components/ui";
-import { CATEGORIE_INTERESSI, GENERI, INTERESSI, MAX_INTERESSI, MIN_INTERESSI, OCCASIONI_REGALO } from "@/lib/regalo/dati";
-import { FASCIA_TUTTE, ORDINI, filtriIniziali, ordinaProdotti, type FiltriRisultati, type IdOrdine } from "@/lib/regalo/punteggio";
+import { CATEGORIE_INTERESSI, GENERI, INTERESSI, MAX_MACRO, MAX_MICRO, OCCASIONI_REGALO, SOGLIA_PRODOTTI } from "@/lib/regalo/dati";
+import { FASCIA_TUTTE, filtriIniziali, microDelProdotto, ordinaProdotti, type FiltriRisultati } from "@/lib/regalo/punteggio";
 import {
   avanza,
   cambiaInteresse,
+  cambiaMacro,
   leggiDallaSessione,
   limiteInteressiRaggiunto,
+  limiteMacroRaggiunto,
   puoAvanzare,
   scegliGenere,
   scegliOccasione,
   scriviNellaSessione,
   statoIniziale,
+  tuttaLaMacro,
   vaiAllaTappa,
   type StatoRicerca,
 } from "@/lib/regalo/stato";
@@ -38,10 +42,12 @@ const TESTI: Record<1 | 2 | 3, { titolo: string; testo: string; aiuto: string }>
   2: { titolo: "Qual è l’occasione?", testo: "Scegli cosa si festeggia.", aiuto: "Scegli un’occasione per continuare" },
   3: {
     titolo: "Cosa le appassiona?",
-    testo: `Scegli da ${MIN_INTERESSI} a ${MAX_INTERESSI} interessi.`,
-    aiuto: `Scegli almeno ${MIN_INTERESSI} interessi per continuare`,
+    testo: "Scegli una o due passioni, poi restringi se vuoi.",
+    aiuto: "Scegli almeno una passione per continuare",
   },
 };
+
+const categoriaDi = new Map(INTERESSI.map((x) => [x.id, x.categoria]));
 
 const motoRidotto = () => globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 
@@ -55,6 +61,23 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   const titolo = useRef<HTMLHeadingElement>(null);
   const vistaMostrata = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  // Il posto nell'intestazione del sito dove vanno i passi: esiste solo nel browser, quindi si cerca dopo il primo render.
+  const [postoPassi, setPostoPassi] = useState<HTMLElement | null>(null);
+  useEffect(() => setPostoPassi(document.getElementById(ID_POSTO_PASSI)), []);
+  // L'ultima passione scelta: le sue micro compaiono sotto i riquadri e si portano in vista.
+  const [ultimaMacro, setUltimaMacro] = useState<string | null>(null);
+
+  // Quanti prodotti ha ogni micro e ogni macro in questo catalogo: quelle sotto la soglia non si mostrano.
+  const conteggi = useMemo(() => {
+    const micro = new Map<string, number>();
+    const macro = new Map<string, number>();
+    for (const p of prodotti) {
+      const sue = microDelProdotto(p);
+      for (const id of sue) micro.set(id, (micro.get(id) ?? 0) + 1);
+      for (const c of new Set(sue.map((id) => categoriaDi.get(id)))) if (c) macro.set(c, (macro.get(c) ?? 0) + 1);
+    }
+    return { micro, macro };
+  }, [prodotti]);
 
   // All'arrivo non parte il questionario: si sceglie se rispondere o andare dritti al catalogo.
   // Chi riprende un percorso già cominciato salta la scelta e torna dov'era.
@@ -68,6 +91,11 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   }, []);
 
   useEffect(() => () => clearTimeout(timer.current), []);
+
+  useEffect(() => {
+    if (!ultimaMacro) return;
+    document.getElementById(`micro-${ultimaMacro}`)?.scrollIntoView({ block: "nearest", behavior: motoRidotto() ? "auto" : "smooth" });
+  }, [ultimaMacro]);
 
   // Quando cambia ciò che si vede, il titolo prende il fuoco e la pagina torna in cima.
   const vista = inAttesa ? "attesa" : mostraAvvio ? "avvio" : `tappa-${stato.tappa}`;
@@ -113,9 +141,20 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
     aggiorna(avanza(stato));
   }
 
+  function scegliMacro(id: string) {
+    const togli = stato.macro.includes(id);
+    if (!togli && limiteMacroRaggiunto(stato)) {
+      setMessaggio(`Puoi scegliere al massimo ${MAX_MACRO} passioni. Togline una per sceglierne un’altra.`);
+      return;
+    }
+    setMessaggio("");
+    setUltimaMacro(togli ? null : id);
+    aggiorna(cambiaMacro(stato, id));
+  }
+
   function scegliInteresse(id: string) {
     if (!stato.interessi.includes(id) && limiteInteressiRaggiunto(stato)) {
-      setMessaggio(`Puoi scegliere al massimo ${MAX_INTERESSI} interessi. Togline uno per sceglierne un altro.`);
+      setMessaggio(`Puoi restringere al massimo con ${MAX_MICRO} scelte. Togline una per sceglierne un’altra.`);
       return;
     }
     setMessaggio("");
@@ -125,31 +164,8 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   const genere = GENERI.find((g) => g.id === stato.genere);
   const occasione = OCCASIONI_REGALO.find((o) => o.id === stato.occasione);
 
-  /** Le risposte già date, in alto: toccandole si torna a cambiarle. */
-  function risposteDate() {
-    if (!genere && !occasione) return null;
-    return (
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-ink-soft">Le tue risposte:</span>
-        {genere ? (
-          <button type="button" onClick={() => vaiA(1)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
-            <Icona nome={genere.icona} className="h-4 w-4 text-cta-2" />
-            Per {genere.etichetta.toLowerCase()}
-            <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
-            <span className="sr-only">: cambia</span>
-          </button>
-        ) : null}
-        {occasione && stato.tappa > 2 ? (
-          <button type="button" onClick={() => vaiA(2)} className="inline-flex min-h-10 items-center gap-1.5 rounded-full bg-surface px-3 text-sm font-bold shadow-carta">
-            <Icona nome={occasione.icona} className="h-4 w-4 text-cta-2" />
-            {occasione.etichetta}
-            <IconaSito nome="edit" dimensione={16} className="text-ink-soft" />
-            <span className="sr-only">: cambia</span>
-          </button>
-        ) : null}
-      </div>
-    );
-  }
+  // I passi stanno nell'intestazione, accanto al logo: toccando un passo fatto si torna a cambiare la risposta.
+  const passi = postoPassi ? createPortal(<Avanzamento stato={stato} vaiA={vaiA} />, postoPassi) : null;
 
   const messaggioVivo = (
     <p className="sr-only" role="status" aria-live="polite">
@@ -190,10 +206,15 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
 
   if (stato.tappa === 4) {
     const risultati = ordinaProdotti(prodotti, stato, filtri);
-    const interessi = stato.interessi.map((id) => INTERESSI.find((x) => x.id === id)?.etichetta).filter(Boolean);
+    // «Tecnologia (Cuffie, auricolari e speaker), Viaggi»
+    const interessi = stato.macro.map((id) => {
+      const micro = INTERESSI.filter((x) => x.categoria === id && stato.interessi.includes(x.id)).map((x) => x.etichetta);
+      const nome = CATEGORIE_INTERESSI.find((c) => c.id === id)?.etichetta ?? "";
+      return micro.length ? `${nome} (${micro.join(", ")})` : nome;
+    });
     return (
       <div className="flex flex-col gap-4">
-        <Avanzamento stato={stato} vaiA={vaiA} />
+        {passi}
         <div className="flex flex-col gap-1">
           <h1 ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
             Ecco le idee giuste
@@ -207,17 +228,12 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
               <Chip key={f.id} etichetta={f.etichetta} scelto={filtri.fascia === f.id} onClick={() => setFiltri((x) => ({ ...x, fascia: f.id }))} />
             ))}
           </div>
-          <div role="group" aria-label="Ordina per" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-            {ORDINI.map((o) => (
-              <Chip key={o.id} etichetta={o.etichetta} scelto={filtri.ordine === o.id} onClick={() => setFiltri((x) => ({ ...x, ordine: o.id as IdOrdine }))} />
-            ))}
-          </div>
         </div>
         {risultati.length ? (
           <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {risultati.slice(0, mostra).map((p) => (
               <li key={p.slug}>
-                <SchedaProdotto prodotto={p} />
+                <SchedaProdotto prodotto={p} azione="amazon" />
               </li>
             ))}
           </ul>
@@ -251,23 +267,26 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
   const tappa = stato.tappa as 1 | 2 | 3;
   const testi = TESTI[tappa];
   const bloccato = !puoAvanzare(stato);
-  const nInteressi = stato.interessi.length;
+  const nMacro = stato.macro.length;
+  // La barra in fondo compare solo dopo la prima scelta della tappa: prima lo schermo resta tutto alle scelte.
+  const barraVisibile = tappa === 1 ? Boolean(stato.genere) : tappa === 2 ? Boolean(stato.occasione) : nMacro > 0;
+  // Le passioni con abbastanza prodotti, più quelle già scelte (anche se il catalogo nel frattempo si è svuotato).
+  const macroMostrate = CATEGORIE_INTERESSI.filter((c) => stato.macro.includes(c.id) || (conteggi.macro.get(c.id) ?? 0) >= SOGLIA_PRODOTTI);
 
   return (
-    <div className="mx-auto flex w-full max-w-lg flex-col gap-4">
-      <Avanzamento stato={stato} vaiA={vaiA} />
-      {risposteDate()}
+    <div className="mx-auto flex w-full max-w-lg flex-col gap-3">
+      {passi}
 
-      <div className="flex flex-col gap-2 rounded-3xl bg-surface p-5 shadow-carta">
-        <h1 ref={titolo} tabIndex={-1} className="text-[26px] font-bold leading-tight text-accent-2 outline-none">
+      {/* Titolo, spiegazione e contatore stanno stretti: sul telefono lo spazio serve alle scelte sotto. */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 rounded-3xl bg-surface px-4 py-3 shadow-carta">
+        <h1 ref={titolo} tabIndex={-1} className="w-full text-[22px] font-bold leading-tight text-accent-2 outline-none">
           {tappa === 3 && genere?.id === "uomo" ? "Cosa lo appassiona?" : testi.titolo}
         </h1>
         <p className="text-sm text-ink-soft">{testi.testo}</p>
         {tappa === 3 ? (
-          <p className={`inline-flex items-center gap-1.5 self-start rounded-full px-3 py-1 text-xs font-bold ${nInteressi >= MIN_INTERESSI ? "bg-ok-field text-ok" : "bg-surface-2"}`}>
+          <p className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${nMacro > 0 ? "bg-ok-field text-ok" : "bg-surface-2"}`}>
             <IconaSito nome="check_circle" dimensione={16} />
-            {nInteressi} di {MAX_INTERESSI} selezionati
-            {nInteressi >= MIN_INTERESSI ? " · Ottimo mix!" : ` · minimo ${MIN_INTERESSI}`}
+            {nMacro} di {MAX_MACRO} {nMacro === 1 ? "scelta" : "scelte"}
           </p>
         ) : null}
       </div>
@@ -288,21 +307,33 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
         </div>
       ) : null}
 
+      {tappa === 3 ? (
+        <div role="group" aria-label="Passioni" className="grid grid-cols-2 gap-2">
+          {macroMostrate.map((c) => (
+            <SceltaScheda key={c.id} etichetta={c.etichetta} icona={c.icona} scelto={stato.macro.includes(c.id)} onClick={() => scegliMacro(c.id)} />
+          ))}
+        </div>
+      ) : null}
+
+      {/* Per ogni passione scelta, le sue micro per restringere: facoltative, «Va bene tutto» finché non se ne sceglie una. */}
       {tappa === 3
-        ? CATEGORIE_INTERESSI.map((c) => {
-            const lista = INTERESSI.filter((x) => x.categoria === c.id);
-            const scelti = lista.filter((x) => stato.interessi.includes(x.id)).length;
+        ? stato.macro.map((id) => {
+            const c = CATEGORIE_INTERESSI.find((x) => x.id === id);
+            const micro = INTERESSI.filter((x) => x.categoria === id && (stato.interessi.includes(x.id) || (conteggi.micro.get(x.id) ?? 0) >= SOGLIA_PRODOTTI));
+            if (!c || !micro.length) return null;
+            const nessuna = !micro.some((x) => stato.interessi.includes(x.id));
             return (
-              <section key={c.id} aria-labelledby={`cat-${c.id}`} className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <h2 id={`cat-${c.id}`} className="text-lg font-semibold text-accent-2">
-                    {c.etichetta}
-                  </h2>
-                  {scelti > 0 ? <span className="text-xs font-bold text-cta-2">{scelti === 1 ? "1 selezionato" : `${scelti} selezionati`}</span> : null}
-                </div>
-                <div role="group" aria-label={c.etichetta} className="grid grid-cols-2 gap-2">
-                  {lista.map((x) => (
-                    <SceltaScheda key={x.id} etichetta={x.etichetta} icona={x.icona} scelto={stato.interessi.includes(x.id)} onClick={() => scegliInteresse(x.id)} />
+              <section key={id} id={`micro-${id}`} aria-labelledby={`titolo-micro-${id}`} className="flex scroll-mb-56 flex-col gap-2 rounded-3xl bg-surface p-3 shadow-carta">
+                <h2 id={`titolo-micro-${id}`} className="flex items-center gap-2 text-sm font-bold text-accent-2">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cta text-on-cta">
+                    <Icona nome={c.icona} className="h-4 w-4" />
+                  </span>
+                  {c.etichetta}: qualcosa in particolare?
+                </h2>
+                <div role="group" aria-label={`${c.etichetta}: qualcosa in particolare?`} className="flex flex-wrap gap-2">
+                  <Chip etichetta="Va bene tutto" scelto={nessuna} onClick={() => aggiorna(tuttaLaMacro(stato, id))} />
+                  {micro.map((x) => (
+                    <Chip key={x.id} etichetta={x.etichetta} scelto={stato.interessi.includes(x.id)} onClick={() => scegliInteresse(x.id)} />
                   ))}
                 </div>
               </section>
@@ -310,14 +341,20 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
           })
         : null}
 
-      {messaggio ? (
-        <p role="alert" className="rounded-2xl bg-gold-field p-3 text-sm font-semibold">
-          {messaggio}
-        </p>
-      ) : null}
-
-      {/* La barra dei pulsanti resta in fondo allo schermo, sopra la navigazione. */}
-      <div className="sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-col gap-1 bg-field/95 px-4 pb-2 pt-3 backdrop-blur md:bottom-0">
+      {/* La barra dei pulsanti resta in fondo allo schermo, sopra la navigazione; nascosta finché non si sceglie qualcosa. */}
+      <div
+        aria-hidden={!barraVisibile}
+        inert={!barraVisibile}
+        className={`sticky bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-30 -mx-4 flex flex-col gap-1 bg-field/95 px-4 pb-2 pt-3 backdrop-blur transition-[opacity,transform] duration-300 motion-reduce:transition-none md:bottom-0 ${
+          barraVisibile ? "" : "pointer-events-none invisible translate-y-4 opacity-0"
+        }`}
+      >
+        {/* il limite di scelte si avvisa qui: sotto le scelte la barra lo coprirebbe */}
+        {messaggio ? (
+          <p role="alert" className="mb-1 rounded-2xl bg-gold-field p-3 text-sm font-semibold">
+            {messaggio}
+          </p>
+        ) : null}
         <div className="flex items-center gap-2">
           {tappa > 1 ? (
             <button
@@ -331,9 +368,6 @@ export function TrovaRegalo({ prodotti }: { prodotti: Prodotto[] }) {
           ) : null}
           <Bottone pieno onClick={avanti} disabled={bloccato} aria-describedby="aiuto-regalo">
             {tappa === 3 ? "Trova i regali perfetti" : "Avanti"}
-            {tappa === 3 && nInteressi > 0 ? (
-              <span className="cifre flex h-6 min-w-6 items-center justify-center rounded-full bg-cta px-1.5 text-xs text-accent-2">{nInteressi}</span>
-            ) : null}
             <IconaSito nome="arrow_forward" dimensione={20} />
           </Bottone>
         </div>

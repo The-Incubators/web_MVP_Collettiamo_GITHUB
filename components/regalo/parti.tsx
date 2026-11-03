@@ -15,46 +15,64 @@ export function Icona({ nome, className = "h-6 w-6" }: { nome: string; className
   );
 }
 
-/** Il riquadro dei passi: «Passo 3 di 4», la barra, le etichette. Dai passi già fatti si torna indietro con un tocco. */
+/** Dove l'intestazione del sito (app/(sito)/layout.tsx) lascia il posto ai passi del percorso. */
+export const ID_POSTO_PASSI = "intestazione-passi";
+
+/**
+ * I passi, piccoli, nell'intestazione accanto al logo: tre tondi numerati uniti da una linea, poi il regalo (i risultati).
+ * Fatti: verdi con la spunta, e con un tocco si torna lì a cambiare la risposta. Quello in corso: arancio, con un alone.
+ * Sotto, il nome del passo in corso (non sui risultati).
+ */
 export function Avanzamento({ stato, vaiA }: { stato: StatoRicerca; vaiA: (tappa: number) => void }) {
-  const secondi = Math.max(0, (4 - stato.tappa) * 10);
+  const corrente = TAPPE.find((t) => t.id === stato.tappa);
   return (
-    <nav aria-label="Avanzamento della ricerca" className="flex flex-col gap-2 rounded-2xl bg-surface p-3 shadow-carta">
-      <div className="flex items-center justify-between text-[11px] font-bold">
-        <p className="uppercase tracking-widest text-cta-2">
-          Passo {stato.tappa} di 4 <span aria-hidden="true">●</span>
-        </p>
-        {secondi > 0 ? <p className="text-ink-soft">Circa {secondi} sec rimanenti</p> : null}
-      </div>
-      <ol className="grid grid-cols-4 gap-1.5">
-        {TAPPE.map((tappa) => {
+    <nav aria-label="Avanzamento della ricerca" className="flex flex-col items-center">
+      <ol className="flex items-center">
+        {TAPPE.map((tappa, i) => {
           const attiva = tappa.id === stato.tappa;
           const completata = tappa.id < stato.tappa;
-          const corpo = (
-            <>
-              <span aria-hidden="true" className={`h-1.5 w-full rounded-full ${completata ? "bg-accent" : attiva ? "bg-cta" : "bg-line"}`} />
-              <span className={`flex items-center gap-0.5 text-[11px] font-bold ${attiva ? "text-cta-2" : completata ? "text-ink" : "text-ink-soft/60"}`}>
-                {completata ? <Icona nome="check" className="h-3.5 w-3.5" /> : null}
-                <span className="truncate">{tappa.etichetta}</span>
-                {completata ? <span className="sr-only"> (completato)</span> : null}
-              </span>
-            </>
+          const tondo = (
+            <span
+              aria-hidden="true"
+              className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold transition-colors duration-300 ${
+                completata ? "bg-accent text-on-accent" : attiva ? "bg-cta text-on-cta ring-4 ring-cta-field" : "bg-surface text-ink-soft ring-1 ring-line"
+              }`}
+            >
+              {completata ? <Icona nome="check" className="h-4 w-4" /> : tappa.id === TAPPE.length ? <Icona nome="gift" className="h-3.5 w-3.5" /> : tappa.id}
+            </span>
           );
           return (
-            <li key={tappa.id} className="min-w-0">
+            <li key={tappa.id} className="flex items-center">
+              {i > 0 ? (
+                <span
+                  aria-hidden="true"
+                  className={`h-0.5 w-2.5 rounded-full sm:w-6 ${attiva ? "bg-gradient-to-r from-accent to-cta" : completata ? "bg-accent" : "bg-line"}`}
+                />
+              ) : null}
               {completata && puoAndareA(stato, tappa.id) ? (
-                <button type="button" className="flex min-h-tocco w-full flex-col items-start justify-center gap-1.5" onClick={() => vaiA(tappa.id)}>
-                  {corpo}
+                <button type="button" title={`Cambia: ${tappa.etichetta}`} className="group flex h-8 w-8 items-center justify-center rounded-full" onClick={() => vaiA(tappa.id)}>
+                  <span className="transition-transform group-hover:scale-110">{tondo}</span>
+                  <span className="sr-only">{tappa.etichetta} (completato): cambia</span>
                 </button>
               ) : (
-                <span className="flex min-h-tocco w-full flex-col items-start justify-center gap-1.5" aria-current={attiva ? "step" : undefined}>
-                  {corpo}
+                <span className="flex h-8 w-8 items-center justify-center" aria-current={attiva ? "step" : undefined}>
+                  {tondo}
+                  <span className="sr-only">
+                    {tappa.etichetta}
+                    {completata ? " (completato)" : ""}
+                  </span>
                 </span>
               )}
             </li>
           );
         })}
       </ol>
+      {/* sui risultati basta il regalo arancio */}
+      {stato.tappa < TAPPE.length ? (
+        <p aria-hidden="true" className="-mt-0.5 text-[10px] font-bold uppercase leading-none tracking-wider text-cta-2">
+          {stato.tappa} di {TAPPE.length} · {corrente?.etichetta}
+        </p>
+      ) : null}
     </nav>
   );
 }

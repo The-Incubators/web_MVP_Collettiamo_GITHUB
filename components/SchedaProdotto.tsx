@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BottoneCuore } from "@/components/BottoneCuore";
 import { BottoneListaRegali } from "@/components/BottoneListaRegali";
 import { BottoneLink, Icona, ImmagineProdotto } from "@/components/ui";
+import { urlPerAcquisto } from "@/lib/dominio/amazon";
 import { daProdotto } from "@/lib/dominio/regali";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
@@ -18,9 +19,20 @@ export const PERSONE_PREDEFINITE = 12;
  * La card di un prodotto nelle griglie (catalogo, preferiti, risultati di «Trova il regalo»), come nel
  * disegno di UX_V4: foto con il cuore e la consegna, marca, nome, prezzo, quanto viene a testa in `persone`,
  * «Regalalo» e la lista dei regali. Pensata per stare in due colonne anche sul telefono.
+ * Con `azione="amazon"` (risultati di «Trova il regalo») resta solo «Guarda su Amazon», con l'avviso che il prezzo
+ * può essere cambiato: niente quota a testa, niente colletta né lista.
  */
-export function SchedaProdotto({ prodotto, persone = PERSONE_PREDEFINITE }: { prodotto: Prodotto; persone?: number }) {
+export function SchedaProdotto({
+  prodotto,
+  persone = PERSONE_PREDEFINITE,
+  azione = "colletta",
+}: {
+  prodotto: Prodotto;
+  persone?: number;
+  azione?: "colletta" | "amazon";
+}) {
   const scheda = `/prodotto/${prodotto.slug}`;
+  const amazon = azione === "amazon";
   return (
     <article className="flex h-full flex-col gap-2 rounded-3xl bg-surface p-2.5 shadow-carta sm:p-3">
       <div className="relative">
@@ -43,18 +55,46 @@ export function SchedaProdotto({ prodotto, persone = PERSONE_PREDEFINITE }: { pr
             {prodotto.nome}
           </Link>
         </h3>
-        <p className="cifre mt-auto pt-1 text-2xl font-extrabold text-accent-2">{formattaEuro(prodotto.prezzoCent)}</p>
-        <p className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-bold">
-          In {persone} siete a {formattaEuro(quotaProposta(prodotto.prezzoCent, persone))}
+        <p className="cifre mt-auto pt-1 text-2xl font-extrabold text-accent-2">
+          {formattaEuro(prodotto.prezzoCent)}
+          {amazon ? (
+            <sup aria-hidden="true" className="ml-0.5 text-base">
+              *
+            </sup>
+          ) : null}
         </p>
+        {amazon ? null : (
+          <p className="rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-bold">
+            In {persone} siete a {formattaEuro(quotaProposta(prodotto.prezzoCent, persone))}
+          </p>
+        )}
       </div>
-      <div className="flex flex-col gap-1.5">
-        <BottoneLink href={`/crea?prodotto=${encodeURIComponent(prodotto.slug)}&persone=${persone}`} variante="azione" dimensione="piccolo" pieno>
-          <Icona nome="group" dimensione={18} />
-          Regalalo
-        </BottoneLink>
-        <BottoneListaRegali prodotto={daProdotto(prodotto)} variante="testo" />
-      </div>
+      {amazon ? (
+        <div className="flex flex-col gap-1">
+          {/* testo più piccolo del solito «azione»: in due colonne sul telefono va su due righe ordinate */}
+          <BottoneLink
+            href={urlPerAcquisto(prodotto.urlEsterno)}
+            esterno
+            variante="azione"
+            dimensione="piccolo"
+            pieno
+            className="!gap-1.5 !px-3 !text-sm leading-tight"
+          >
+            <Icona nome="visibility" dimensione={18} />
+            Guarda su Amazon
+            <span className="sr-only"> (si apre in una nuova scheda)</span>
+          </BottoneLink>
+          <p className="px-1 text-center text-[10px] leading-tight text-ink-soft">* Il prezzo potrebbe variare, controlla su Amazon</p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <BottoneLink href={`/crea?prodotto=${encodeURIComponent(prodotto.slug)}&persone=${persone}`} variante="azione" dimensione="piccolo" pieno>
+            <Icona nome="group" dimensione={18} />
+            Regalalo
+          </BottoneLink>
+          <BottoneListaRegali prodotto={daProdotto(prodotto)} variante="testo" />
+        </div>
+      )}
     </article>
   );
 }
