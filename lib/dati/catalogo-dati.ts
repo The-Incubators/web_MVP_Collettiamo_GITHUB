@@ -1,6 +1,6 @@
-// Il catalogo: 180 prodotti reali di Amazon.it importati dalle cartelle catalogo_amazon_*/
+// Il catalogo: 275 prodotti reali di Amazon.it importati dalle cartelle catalogo_amazon_*/
 // (vedi scripts/importa_catalogo.py, che genera catalogo-amazon.json e copia le foto in public/foto-prodotti/).
-// Prezzi rilevati il 14, il 15 e il 16 ottobre 2026: cambiano nel tempo.
+// Prezzi rilevati dal 14 ottobre al 2 novembre 2026: cambiano nel tempo.
 
 import type { Categoria, Prodotto } from "../tipi";
 import { affiliaLink } from "../dominio/amazon";

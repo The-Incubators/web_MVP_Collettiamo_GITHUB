@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Importa il catalogo nell'app da una o più cartelle sorgente (ciascuna con un file Excel e una cartella immagini/).
-Per aggiungere altri prodotti: mettere la nuova cartella accanto alle altre e aggiungerla a SORGENTI.
+Per aggiungere altri prodotti: mettere la nuova cartella accanto alle altre e aggiungerla a SORGENTI (o a SORGENTI_PLAYLIST, per i file nel formato «playlist»).
 
   python3 scripts/importa_catalogo.py
 
@@ -29,6 +29,11 @@ SORGENTI = [
     ("catalogo_amazon_arredamento", "catalogo_amazon_arredamento_design_50_prodotti.xlsx"),
     ("catalogo_amazon_evergreen", "catalogo_amazon_evergreen_viaggio_creator_50_prodotti.xlsx"),
 ]
+# Pacchetti nel formato «playlist» (foglio «Prodotti», codici P001…, foto immagini/P001.jpg): colonne diverse,
+# niente temi né destinatari. Le scelte editoriali per adattarli al catalogo stanno in PLAYLIST, più sotto.
+SORGENTI_PLAYLIST = [
+    ("catalogo_amazon_playlist", "Gifty_database_prodotti_playlist_2Novembre_2026.xlsx", "2026-11-02"),
+]
 M = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 NS = {"m": M}
 
@@ -51,6 +56,52 @@ COLONNE = {
 }
 # Colonne facoltative (presenti solo in alcuni pacchetti)
 COLONNE_FACOLTATIVE = {"Sottocategoria": "sottocategoria"}
+
+COLONNE_PLAYLIST = {
+    "ID": "codice",
+    "Prodotto": "nome",
+    "Marca": "marca",
+    "Categoria": "categoria",
+    "Descrizione (nostra)": "descrizione",
+    "Idea regalo per": "per",
+    "ASIN": "asin",
+    "Link Amazon": "link",
+    "Corrispondenza": "corrispondenza",
+}
+COLONNA_PREZZO_PLAYLIST = "Prezzo indicativo (€)"  # l'intestazione continua con la data: «… al 2/11/2026»
+
+PLAYLIST = {
+    # P001 → PRD-181: il numero resta lo stesso anche se un prodotto escluso entra più avanti
+    "base_id": 180,
+    # fuori finché non si controllano: modello o variante incerti («Da verificare») e l'AirTag senza prezzo;
+    # P072 costa più di 1.000 €, oltre il limite dei prezzi del catalogo
+    "esclusi": {"P007", "P054", "P072", "P086", "P107"},
+    # già nel catalogo: stesso ASIN (P045 = PRD-157, P053 = PRD-152, P064 = PRD-053) o stesso prodotto in un'altra
+    # variante (P003 = PRD-132, P017 = PRD-149, P047 = PRD-156, P098 = PRD-049)
+    "gia_in_catalogo": {"P003", "P017", "P045", "P047", "P053", "P064", "P098"},
+    # dalla categoria del file ai nostri temi; i prodotti di cucina, pulizia, lettura e cura restano senza tema
+    "temi_per_categoria": {
+        "Audio": ["tecnologia"],
+        "Tech e ricarica": ["tecnologia"],
+        "Accessori smartphone": ["tecnologia"],
+        "Foto e video": ["tecnologia"],
+        "Ufficio e produttività": ["tecnologia"],
+        "Viaggio": ["viaggio"],
+    },
+    # eccezioni, prodotto per prodotto
+    "temi": {
+        "P009": ["viaggio", "tecnologia"], "P010": ["viaggio", "tecnologia"], "P011": ["viaggio", "tecnologia"],
+        "P041": ["viaggio", "tecnologia"], "P044": ["viaggio", "tecnologia"], "P048": ["viaggio", "tecnologia"],
+        "P093": ["viaggio", "tecnologia"],
+        "P013": [], "P016": [],
+        "P012": ["arredamento"], "P096": ["arredamento"],
+        "P055": ["tecnologia"], "P066": ["tecnologia"],
+        "P071": ["tecnologia"], "P091": ["tecnologia"], "P095": ["tecnologia"], "P097": ["tecnologia"],
+        "P099": ["tecnologia"], "P100": ["tecnologia"], "P102": ["tecnologia"],
+        "P062": ["viaggio"], "P063": ["viaggio"], "P065": ["viaggio"],
+    },
+    "destinatari": {"P095": ["uomo"]},
+}
 
 MAGIC = {".webp": lambda b: b[:4] == b"RIFF" and b[8:12] == b"WEBP", ".jpg": lambda b: b[:3] == b"\xff\xd8\xff", ".jpeg": lambda b: b[:3] == b"\xff\xd8\xff", ".png": lambda b: b[:8] == b"\x89PNG\r\n\x1a\n"}
 MAX_FOTO_BYTE = 2 * 1024 * 1024
@@ -80,14 +131,23 @@ def errore(msg: str):
     sys.exit(1)
 
 
-def leggi_foglio(file: Path) -> list[dict]:
+def leggi_foglio(file: Path, foglio: "str | None" = None) -> list[dict]:
+    """Le righe del primo foglio (o di quello col nome dato) come dizionari intestazione → valore."""
     z = zipfile.ZipFile(file)
+    percorso = "xl/worksheets/sheet1.xml"
+    if foglio:
+        R = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
+        rel = {r.get("Id"): r.get("Target") for r in ET.fromstring(z.read("xl/_rels/workbook.xml.rels"))}
+        fogli = {f.get("name"): rel[f.get(R)] for f in ET.fromstring(z.read("xl/workbook.xml")).iter(f"{{{M}}}sheet")}
+        if foglio not in fogli:
+            errore(f"{file.name}: manca il foglio {foglio!r}")
+        percorso = "xl/" + fogli[foglio].lstrip("/").removeprefix("xl/")
     condivise = []
     if "xl/sharedStrings.xml" in z.namelist():
         for si in ET.fromstring(z.read("xl/sharedStrings.xml")).findall("m:si", NS):
             condivise.append("".join(t.text or "" for t in si.iter(f"{{{M}}}t")))
     righe = []
-    for r in ET.fromstring(z.read("xl/worksheets/sheet1.xml")).iter(f"{{{M}}}row"):
+    for r in ET.fromstring(z.read(percorso)).iter(f"{{{M}}}row"):
         riga = {}
         for c in r.findall("m:c", NS):
             col = re.match(r"[A-Z]+", c.get("r")).group()
@@ -113,6 +173,59 @@ def si(v) -> bool:
     return (v or "").strip().lower() in ("sì", "si", "yes", "true", "1")
 
 
+def perche_da_destinatario(per: str) -> str:
+    """«Chi lavora al computer fino a tardi» → «Per chi lavora al computer fino a tardi.»; «Pensierino pratico» resta così."""
+    if not per:
+        return ""
+    if re.match(r"(Pensierino|Regalo|Da abbinare)\b", per):
+        frase = per
+    else:
+        frase = "Per " + per[0].lower() + per[1:]
+    return frase if frase.endswith((".", "!", "?")) else frase + "."
+
+
+def righe_playlist(sorgente: Path, nome_file: str, rilevato: str) -> list[dict]:
+    """Un pacchetto «playlist» nel formato dei pacchetti classici: ID PRD-nnn, temi, destinatari, prezzo, immagine."""
+    righe = leggi_foglio(sorgente / nome_file, "Prodotti")
+    colonna_prezzo = next((k for k in righe[0] if k and k.startswith(COLONNA_PREZZO_PLAYLIST)), None)
+    mancanti = [c for c in COLONNE_PLAYLIST if c not in righe[0]] + ([] if colonna_prezzo else [COLONNA_PREZZO_PLAYLIST])
+    if mancanti:
+        errore(f"{sorgente.name}: colonne mancanti nel file: {mancanti}")
+    uscita = []
+    for r in righe:
+        d = {v: pulisci(r.get(k) or "") for k, v in COLONNE_PLAYLIST.items()}
+        if not d["codice"]:
+            continue
+        if not re.fullmatch(r"P\d{3}", d["codice"]):
+            errore(f"{sorgente.name}: codice non valido {d['codice']!r}")
+        if d["codice"] in PLAYLIST["esclusi"] | PLAYLIST["gia_in_catalogo"]:
+            continue
+        if d["corrispondenza"].startswith("Da verificare"):
+            errore(f"{d['codice']}: è «Da verificare» ma non è tra gli esclusi: controllalo e poi decidi")
+        codice = d["codice"]
+        temi = PLAYLIST["temi"].get(codice, PLAYLIST["temi_per_categoria"].get(d["categoria"], []))
+        destinatari = PLAYLIST["destinatari"].get(codice, ["uomo", "donna"])
+        uscita.append(
+            {
+                "id": f"PRD-{PLAYLIST['base_id'] + int(codice[1:]):03d}",
+                "nome": d["nome"],
+                "marca": d["marca"],
+                "descrizione": d["descrizione"],
+                "perche": perche_da_destinatario(d["per"]),
+                "uomo": "sì" if "uomo" in destinatari else "",
+                "donna": "sì" if "donna" in destinatari else "",
+                **{t: ("sì" if t in temi else "") for t in ("viaggio", "tecnologia", "arredamento")},
+                "prezzo": pulisci(r.get(colonna_prezzo) or ""),
+                "asin": d["asin"],
+                "link": d["link"],
+                "immagine": f"immagini/{codice}.jpg",
+                "data": rilevato,
+                "sottocategoria": "",
+            }
+        )
+    return uscita
+
+
 def main():
     prodotti, visti_id, visti_asin, visti_slug = [], set(), set(), set()
     destinazione = RADICE / "public" / "foto-prodotti"
@@ -120,15 +233,22 @@ def main():
     for f in destinazione.glob("*"):
         f.unlink()
 
-    for cartella, nome_file in SORGENTI:
+    pacchetti = [(c, f, None) for c, f in SORGENTI] + SORGENTI_PLAYLIST
+    for cartella, nome_file, rilevato in pacchetti:
         sorgente = RADICE / cartella
-        righe = leggi_foglio(sorgente / nome_file)
-        mancanti = [c for c in COLONNE if c not in righe[0]]
-        if mancanti:
-            errore(f"{cartella}: colonne mancanti nel file: {mancanti}")
-        for r in righe:
-            d = {COLONNE[k]: pulisci(r.get(k) or "") for k in COLONNE}
-            d.update({v: pulisci(r.get(k) or "") for k, v in COLONNE_FACOLTATIVE.items()})
+        if rilevato:
+            # già nella forma interna (chiavi = valori di COLONNE)
+            righe = righe_playlist(sorgente, nome_file, rilevato)
+        else:
+            grezze = leggi_foglio(sorgente / nome_file)
+            mancanti = [c for c in COLONNE if c not in grezze[0]]
+            if mancanti:
+                errore(f"{cartella}: colonne mancanti nel file: {mancanti}")
+            righe = [
+                {**{COLONNE[k]: pulisci(r.get(k) or "") for k in COLONNE}, **{v: pulisci(r.get(k) or "") for k, v in COLONNE_FACOLTATIVE.items()}}
+                for r in grezze
+            ]
+        for d in righe:
             if not re.fullmatch(r"PRD-\d{3}", d["id"]):
                 errore(f"ID non valido: {d['id']!r}")
             if d["id"] in visti_id or d["asin"] in visti_asin:

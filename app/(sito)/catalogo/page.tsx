@@ -99,6 +99,8 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
   const prendi = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : undefined);
   const dati = datiServer();
   const tutti = await dati.elencaProdotti();
+  // «il 14 ottobre 2026», ma con date di mesi diversi «dal 14 ottobre 2026 al 2 novembre 2026» (senza «il»)
+  const rilevazione = testoRilevazioneCatalogo(tutti) || "14 ottobre 2026";
   // Si offrono solo le fasce di prezzo, e d'età, in cui c'è qualcosa.
   const fasce = FASCE_PREZZO.filter((f) => tutti.some((p) => p.prezzoCent > f.minCent && p.prezzoCent <= f.maxCent));
   const fasceEtaPresenti = FASCE_ETA.filter((f) => tutti.some((p) => fasceEta(p).includes(f.id)));
@@ -252,7 +254,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
         </section>
 
         <p className="text-center text-xs font-semibold text-ink-soft">
-          Prezzi rilevati su Amazon.it il {testoRilevazioneCatalogo(tutti) || "14 ottobre 2026"}: possono essere cambiati.
+          Prezzi rilevati su Amazon.it {rilevazione.startsWith("dal ") ? rilevazione : `il ${rilevazione}`}: possono essere cambiati.
         </p>
       </div>
     </div>
