@@ -30,11 +30,9 @@ SORGENTI = [
     ("catalogo_amazon_evergreen", "catalogo_amazon_evergreen_viaggio_creator_50_prodotti.xlsx"),
 ]
 # Pacchetti nel formato «playlist» (foglio «Prodotti», codici P001…, foto immagini/P001.jpg): colonne diverse,
-# niente temi né destinatari. Le scelte editoriali per adattarli al catalogo stanno in PLAYLIST, più sotto.
-SORGENTI_PLAYLIST = [
-    ("catalogo_amazon_playlist", "Gifty_database_prodotti_playlist_2Novembre_2026.xlsx", "2026-11-02"),
-]
-M = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+# niente temi né destinatari. Le scelte editoriali per adattarli al catalogo stanno in un dizionario per pacchetto
+# (PLAYLIST_OGGETTI, PLAYLIST_CATEGORIE), più sotto, dove c'è anche l'elenco SORGENTI_PLAYLIST.
+M ="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 NS = {"m": M}
 
 COLONNE = {
@@ -70,7 +68,8 @@ COLONNE_PLAYLIST = {
 }
 COLONNA_PREZZO_PLAYLIST = "Prezzo indicativo (€)"  # l'intestazione continua con la data: «… al 2/11/2026»
 
-PLAYLIST = {
+# Playlist «Gifty - oggetti» (2 novembre 2026)
+PLAYLIST_OGGETTI = {
     # P001 → PRD-181: il numero resta lo stesso anche se un prodotto escluso entra più avanti
     "base_id": 180,
     # fuori finché non si controllano: modello o variante incerti («Da verificare») e l'AirTag senza prezzo;
@@ -102,6 +101,43 @@ PLAYLIST = {
     },
     "destinatari": {"P095": ["uomo"]},
 }
+
+# Playlist «Gifty - categorie personas» (3 novembre 2026): giochi, LEGO, profumi, beauty, orologi, elettrodomestici…
+PLAYLIST_CATEGORIE = {
+    # P001 → PRD-301: i codici della playlist precedente arrivano a PRD-287, si riparte da un numero tondo
+    "base_id": 300,
+    # il Casio CA-53WF non ha prezzo
+    "esclusi": {"P224"},
+    # il Kindle 16 GB è già nel catalogo in un'altra versione (PRD-148)
+    "gia_in_catalogo": {"P193"},
+    "temi_per_categoria": {"Tecnologia": ["tecnologia"]},
+    "temi": {
+        # giochi elettronici, robot e visori
+        **{c: ["tecnologia"] for c in ("P056", "P057", "P062", "P077", "P079", "P082", "P084", "P093", "P094", "P098")},
+        "P189": ["viaggio", "tecnologia"],
+        # beauty case, kit da viaggio, cofanetti con tre giorni in Europa, orologio dual time
+        **{c: ["viaggio"] for c in ("P126", "P149", "P162", "P164", "P217")},
+        # LEGO da esporre, decorazioni, candele e lampade
+        **{c: ["arredamento"] for c in ("P034", "P036", "P037", "P048", "P055", "P069", "P167", "P170", "P171", "P174", "P175", "P181", "P183")},
+    },
+    # profumi, accessori e orologi da uomo; profumi, trucco e accessori da donna. I giocattoli valgono per tutti.
+    "destinatari": {
+        **{c: ["uomo"] for c in (
+            "P100", "P101", "P103", "P111", "P112", "P142", "P150", "P151", "P152", "P194", "P195", "P201", "P202", "P203",
+            "P204", "P205", "P208", "P209", "P210", "P211", "P212", "P213", "P214", "P215", "P217", "P218", "P221", "P226", "P228",
+        )},
+        **{c: ["donna"] for c in (
+            "P104", "P105", "P106", "P107", "P109", "P110", "P113", "P114", "P120", "P121", "P122", "P123", "P125", "P126",
+            "P127", "P129", "P131", "P132", "P133", "P134", "P135", "P139", "P140", "P141", "P145", "P147", "P148", "P154", "P180",
+        )},
+    },
+}
+
+# (cartella, file Excel, data di rilevazione dei prezzi, scelte editoriali)
+SORGENTI_PLAYLIST = [
+    ("catalogo_amazon_playlist", "Gifty_database_prodotti_playlist_2Novembre_2026.xlsx", "2026-11-02", PLAYLIST_OGGETTI),
+    ("catalogo_amazon_playlist_categorie", "Gifty_database_prodotti_playlist_categorie_3Novembre_2026.xlsx", "2026-11-03", PLAYLIST_CATEGORIE),
+]
 
 MAGIC = {".webp": lambda b: b[:4] == b"RIFF" and b[8:12] == b"WEBP", ".jpg": lambda b: b[:3] == b"\xff\xd8\xff", ".jpeg": lambda b: b[:3] == b"\xff\xd8\xff", ".png": lambda b: b[:8] == b"\x89PNG\r\n\x1a\n"}
 MAX_FOTO_BYTE = 2 * 1024 * 1024
@@ -184,7 +220,7 @@ def perche_da_destinatario(per: str) -> str:
     return frase if frase.endswith((".", "!", "?")) else frase + "."
 
 
-def righe_playlist(sorgente: Path, nome_file: str, rilevato: str) -> list[dict]:
+def righe_playlist(sorgente: Path, nome_file: str, rilevato: str, PLAYLIST: dict) -> list[dict]:
     """Un pacchetto «playlist» nel formato dei pacchetti classici: ID PRD-nnn, temi, destinatari, prezzo, immagine."""
     righe = leggi_foglio(sorgente / nome_file, "Prodotti")
     colonna_prezzo = next((k for k in righe[0] if k and k.startswith(COLONNA_PREZZO_PLAYLIST)), None)
@@ -233,12 +269,12 @@ def main():
     for f in destinazione.glob("*"):
         f.unlink()
 
-    pacchetti = [(c, f, None) for c, f in SORGENTI] + SORGENTI_PLAYLIST
-    for cartella, nome_file, rilevato in pacchetti:
+    pacchetti = [(c, f, None, None) for c, f in SORGENTI] + SORGENTI_PLAYLIST
+    for cartella, nome_file, rilevato, scelte in pacchetti:
         sorgente = RADICE / cartella
         if rilevato:
             # già nella forma interna (chiavi = valori di COLONNE)
-            righe = righe_playlist(sorgente, nome_file, rilevato)
+            righe = righe_playlist(sorgente, nome_file, rilevato, scelte)
         else:
             grezze = leggi_foglio(sorgente / nome_file)
             mancanti = [c for c in COLONNE if c not in grezze[0]]

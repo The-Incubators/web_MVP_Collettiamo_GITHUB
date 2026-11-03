@@ -545,3 +545,15 @@ Richiesta: aggiungere i prodotti del file `Gifty_database_prodotti_playlist_2Nov
 - **Per il sito pubblicato:** deploy (codice e foto) e poi scrittura dei 95 prodotti nel database `colletta` senza toccare quelli esistenti (niente `posizione`: compaiono in coda finché non si salva un nuovo ordine dall'area riservata).
 
 Verificato in locale: 275 idee nel catalogo, foto servite per tutti i 95, link con il tag; test del dominio e controllo dei tipi a posto.
+
+## 34. Catalogo: 242 prodotti dalla playlist «Gifty - categorie personas» (3 novembre 2026)
+
+Richiesta: aggiungere al catalogo tutti i prodotti della cartella `Playlist_categorie_personas_Novembre_2026` (244 prodotti su Amazon.it ricavati da 26 video di creator italiani, nelle categorie che l'analisi sulle buyer personas indica come scoperte: giochi e LEGO, profumi e beauty, orologi e gioielli, piccoli elettrodomestici, enogastronomia ed esperienze).
+
+- **Sorgente:** cartella `catalogo_amazon_playlist_categorie/` (il file Excel e `immagini/P001.jpg…`; le foto vengono dalla cartella completa fuori dal progetto, perché quella dentro ne aveva 236 su 244). Stesso formato della playlist del 2 novembre, più la colonna «Categoria analisi» che lo script non usa. Le scelte stanno nel dizionario `PLAYLIST_CATEGORIE` dello script; quelle della prima playlist ora si chiamano `PLAYLIST_OGGETTI`.
+- **Codici:** P001 → PRD-301 … P244 → PRD-544 (la prima playlist arriva a PRD-287).
+- **Esclusi (2):** il Casio CA-53WF (P224), senza prezzo; il Kindle 16 GB (P193), già nel catalogo come PRD-148. Entrano invece i 46 prodotti a corrispondenza «Media» (scelti da noi perché il creator non dava un link utilizzabile) e quelli con le note «da verificare» del file: vanno ricontrollati a mano (prezzi anomali di LEGO Tartarughe Ninja, Orient Kamasu ed Echo Dot; titoli Amazon in lingua straniera; edizioni in inglese di Pina Coladice e The Gang).
+- **Temi:** la maggior parte resta senza tema (giochi, profumi, beauty, orologi, cucina): compaiono nel catalogo e nelle ricerche, non sotto un filtro di categoria. Tecnologia per robot, droni, visore e la categoria «Tecnologia» del file; viaggio per beauty case, kit da viaggio, cofanetti con tre giorni in Europa e l'orologio dual time; arredamento per i LEGO da esporre, le decorazioni, le candele e le lampade.
+- **Destinatari:** uomo e donna per tutti, tranne profumi, accessori e orologi da uomo (29, solo uomo) e profumi, trucco e accessori da donna (29, solo donna). I giocattoli valgono per tutti, anche quelli a tema principesse o Barbie.
+- **Età:** classificata a mano come per i prodotti precedenti (`eta-prodotti.ts`); per la prima volta molti prodotti sono solo «Bambino» (36).
+- **Testi, link e foto:** come nella sezione 33.
