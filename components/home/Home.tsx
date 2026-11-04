@@ -9,7 +9,8 @@ import type { Prodotto } from "@/lib/tipi";
 /**
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
- * Da «Come funziona» in giù le sezioni sono le stesse.
+ * Sotto, la classica ha «Come funziona», il biglietto, le garanzie e «Idee più amate»; la nuova va dritta ai regali
+ * più amati (la stessa sezione, con un altro titolo).
  * Su «/» va `HOME_ATTIVA`; la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di gruppo» della
  * nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  * Per tornare alla classica basta cambiare questa riga.
@@ -197,14 +198,14 @@ function Garanzie() {
   );
 }
 
-function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
+function IdeeInEvidenza({ inEvidenza, titolo }: { inEvidenza: Prodotto[]; titolo: string }) {
   if (!inEvidenza.length) return null;
   return (
     <section aria-labelledby="idee" className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 id="idee" className="text-xl font-semibold text-accent-2">
-            Idee più amate
+            {titolo}
           </h2>
           <p className="text-sm text-ink-soft">Pronte da regalare in gruppo</p>
         </div>
@@ -253,11 +254,21 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
   return (
     <div className="gutter pb-10 pt-4 sm:pt-10">
       <div className="mx-auto flex max-w-lg flex-col gap-8">
-        {versione === "nuova" ? <AperturaNuova /> : <AperturaClassica />}
-        <ComeFunziona />
-        <SchedaBiglietto />
-        <Garanzie />
-        <IdeeInEvidenza inEvidenza={inEvidenza} />
+        {versione === "nuova" ? (
+          // la nuova va dai pulsanti dritta ai regali
+          <>
+            <AperturaNuova />
+            <IdeeInEvidenza inEvidenza={inEvidenza} titolo="I Regali più amati dai nostri clienti" />
+          </>
+        ) : (
+          <>
+            <AperturaClassica />
+            <ComeFunziona />
+            <SchedaBiglietto />
+            <Garanzie />
+            <IdeeInEvidenza inEvidenza={inEvidenza} titolo="Idee più amate" />
+          </>
+        )}
       </div>
     </div>
   );
