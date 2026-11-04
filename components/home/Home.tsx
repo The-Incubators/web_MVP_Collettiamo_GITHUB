@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { BottoneCuore } from "@/components/BottoneCuore";
 import { BottoneLink, Icona, ImmagineProdotto, type NomeIcona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
+import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
 import type { Prodotto } from "@/lib/tipi";
@@ -10,7 +12,7 @@ import type { Prodotto } from "@/lib/tipi";
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
  * Sotto, la classica ha «Come funziona», il biglietto, le garanzie e «Idee più amate»; la nuova va dritta ai regali
- * più amati (la stessa sezione, con un altro titolo).
+ * più amati (`RegaliPiuAmati`: gli stessi due prodotti, con «Guarda su Amazon»).
  * Su «/» va `HOME_ATTIVA`; la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di gruppo» della
  * nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  * Per tornare alla classica basta cambiare questa riga.
@@ -198,14 +200,14 @@ function Garanzie() {
   );
 }
 
-function IdeeInEvidenza({ inEvidenza, titolo }: { inEvidenza: Prodotto[]; titolo: string }) {
+function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
   if (!inEvidenza.length) return null;
   return (
     <section aria-labelledby="idee" className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 id="idee" className="text-xl font-semibold text-accent-2">
-            {titolo}
+            Idee più amate
           </h2>
           <p className="text-sm text-ink-soft">Pronte da regalare in gruppo</p>
         </div>
@@ -246,6 +248,48 @@ function IdeeInEvidenza({ inEvidenza, titolo }: { inEvidenza: Prodotto[]; titolo
   );
 }
 
+/**
+ * I regali in evidenza della home nuova: titolo in corsivo al centro, il cuore dei preferiti sulla foto e
+ * «Guarda su Amazon» al posto di «Regala in gruppo» e della quota a testa (per il gruppo c'è /regalo-di-gruppo).
+ */
+function RegaliPiuAmati({ inEvidenza }: { inEvidenza: Prodotto[] }) {
+  if (!inEvidenza.length) return null;
+  return (
+    <section aria-labelledby="regali-amati" className="flex flex-col gap-6">
+      <Separatore />
+      <h2 id="regali-amati" className="text-center font-sans text-xl font-bold italic leading-snug text-ink">
+        I Regali più amati dai nostri clienti…
+      </h2>
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {inEvidenza.map((p) => (
+          <li key={p.slug} className="flex flex-col gap-2 rounded-3xl bg-surface p-4 shadow-carta">
+            <div className="relative">
+              <Link href={`/prodotto/${p.slug}`} className="block overflow-hidden rounded-2xl" tabIndex={-1} aria-hidden="true">
+                <ImmagineProdotto prodotto={p} className="h-44" />
+              </Link>
+              <BottoneCuore slug={p.slug} nome={p.nome} className="absolute right-2 top-2" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 className="min-w-0 truncate text-xl font-semibold text-accent-2">
+                  <Link href={`/prodotto/${p.slug}`}>{p.nome}</Link>
+                </h3>
+                <span className="cifre shrink-0 text-xl font-extrabold text-accent">{formattaEuro(p.prezzoCent)}</span>
+              </div>
+              {p.perche || p.descrizione ? <p className="line-clamp-1 text-sm text-ink-soft">{p.perche || p.descrizione}</p> : null}
+            </div>
+            <a href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO} className={`${CLASSI_SECONDARIO} text-base`}>
+              Guarda su Amazon
+              <Icona nome="open_in_new" dimensione={20} />
+              <span className="sr-only"> (si apre in una nuova scheda)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 /** La home intera; le idee in evidenza vengono dal catalogo vero, nell'ordine deciso nell'area riservata. */
 export async function PaginaHome({ versione }: { versione: VersioneHome }) {
   const prodotti = await datiServer().elencaProdotti();
@@ -258,7 +302,7 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
           // la nuova va dai pulsanti dritta ai regali
           <>
             <AperturaNuova />
-            <IdeeInEvidenza inEvidenza={inEvidenza} titolo="I Regali più amati dai nostri clienti" />
+            <RegaliPiuAmati inEvidenza={inEvidenza} />
           </>
         ) : (
           <>
@@ -266,7 +310,7 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
             <ComeFunziona />
             <SchedaBiglietto />
             <Garanzie />
-            <IdeeInEvidenza inEvidenza={inEvidenza} titolo="Idee più amate" />
+            <IdeeInEvidenza inEvidenza={inEvidenza} />
           </>
         )}
       </div>
