@@ -102,6 +102,9 @@ function AperturaNuova() {
           <Icona nome="visibility" dimensione={18} />
           Guarda cosa vedranno i partecipanti
         </Link>
+        <Link href="/regalo-di-gruppo" className={CLASSI_SECONDARIO}>
+          Come funziona il regalo di gruppo
+        </Link>
       </div>
     </section>
   );
