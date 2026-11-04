@@ -10,7 +10,8 @@ import type { Prodotto } from "@/lib/tipi";
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
  * Da «Come funziona» in giù le sezioni sono le stesse.
- * Su «/» va `HOME_ATTIVA`; tutte e due restano visibili su /home-classica e /home-nuova (non indicizzate).
+ * Su «/» va `HOME_ATTIVA`; la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di gruppo» della
+ * nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  * Per tornare alla classica basta cambiare questa riga.
  */
 export const HOME_ATTIVA: VersioneHome = "nuova";
@@ -91,7 +92,7 @@ function AperturaNuova() {
       </div>
       <Separatore />
       <div className="flex flex-col gap-2">
-        <BottoneLink href="/catalogo" variante="azione" pieno className="px-4">
+        <BottoneLink href="/regalo-di-gruppo" variante="azione" pieno className="px-4">
           Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
         <Link href={`/c/${SLUG_DEMO}`} className={CLASSI_SECONDARIO}>
