@@ -206,6 +206,27 @@
   animation: riv-entra 600ms ease-out;
 }
 
+/* Rivelazione: «Apri il Biglietto» pulsa piano (si illumina e manda un alone) per invitare al tocco.
+   Il colore dell'alone arriva da --riv-alone; con il movimento ridotto resta fermo (regola generale sopra). */
+@keyframes riv-chiama {
+  0% {
+    box-shadow: 0 0 0 0 var(--riv-alone);
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+    transform: scale(1.04);
+  }
+  100% {
+    box-shadow: 0 0 0 22px transparent;
+    filter: brightness(1);
+    transform: scale(1);
+  }
+}
+.riv-chiama {
+  animation: riv-chiama 2.2s ease-out infinite;
+}
+
 /* Bacheca: i coriandoli dopo la firma (con il movimento ridotto non si mostrano affatto, vedi Coriandoli.tsx). */
 @keyframes coriandolo {
   0% {

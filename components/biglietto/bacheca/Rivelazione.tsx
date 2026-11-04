@@ -108,11 +108,11 @@ function Apertura({ aspetto, festeggiato, n, onApri }: { aspetto: AspettoBacheca
         type="button"
         onClick={onApri}
         autoFocus
-        className="mt-2 inline-flex min-h-14 items-center gap-2 rounded-full px-8 text-lg font-bold shadow-sollevata"
-        style={{ backgroundColor: accento, color: testoSu(accento) }}
+        className="riv-chiama mt-2 inline-flex min-h-14 items-center gap-2 rounded-full px-8 text-lg font-bold shadow-sollevata"
+        style={{ backgroundColor: accento, color: testoSu(accento), "--riv-alone": `${accento}aa` } as CSSProperties}
       >
         <Icona nome="redeem" dimensione={24} />
-        Scopri la sorpresa
+        Apri il Biglietto
       </button>
     </div>
   );
@@ -385,9 +385,9 @@ function SceltaModo({ fase, onScegli }: { fase: Fase; onScegli: (m: ModoRivelazi
 
 /**
  * La rivelazione: cosa vede il festeggiato quando il biglietto è consegnato.
- * Apertura («Scopri la sorpresa») → la modalità scelta da chi organizza → alla fine tutti i messaggi insieme.
+ * Apertura («Apri il Biglietto») → la modalità scelta da chi organizza → alla fine tutti i messaggi insieme.
  * In alto si può passare a un'altra modalità quando si vuole, e spegnere o riaccendere la musica (se c'è):
- * parte con il tocco su «Scopri la sorpresa», perché i browser non fanno partire l'audio da soli.
+ * parte con il tocco su «Apri il Biglietto», perché i browser non fanno partire l'audio da soli.
  * `alto`: a sinistra in alto (es. l'avviso dell'anteprima); `chiudi`: in alto a destra, sempre in vista;
  * `basso`: una barra in fondo, nell'apertura e nella griglia.
  */
