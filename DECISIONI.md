@@ -595,3 +595,14 @@ Richiesta: piccole differenze nel catalogo secondo da dove si arriva. Dalla home
 - **Gruppo** (`CATALOGO_GRUPPO`, cioè `/catalogo?modo=gruppo`): com'era, con «Idee da dividere tra amici…», «Simula per N invitati», la quota a testa, «Regalalo» e la lista regali. Ci portano la pagina del regalo di gruppo (/regalo-di-gruppo: «Organizza un regalo di gruppo» e «Tutte»), le mie collette, la pagina di chi partecipa, la votazione, il rendiconto, la chiusura del wizard della colletta e il biglietto («Sfoglia le idee regalo»).
 - **Singolo** (barra in basso, Trova il regalo, preferiti, scheda prodotto): senza la frase sulla quota e senza la simulazione; ogni scheda ha «Aggiungi ai preferiti» (lo stesso preferito del cuore, a scritta) e «Guarda su Amazon» con il link affiliato.
 - **Scheda del prodotto** (/prodotto/…, pagina e popup; aggiunta lo stesso giorno): anche lei con `?modo=`, che le passa il catalogo (`conModo`). Gruppo: com'era, con «Calcola la quota con gli amici», «Organizza la colletta», la lista per la votazione e «I soldi della colletta non passano da Gifty». Singolo: i dettagli, «Aggiungi ai preferiti» e «Guarda su Amazon», senza la parte sulla colletta. «Catalogo» in alto riporta al catalogo della stessa variante. «Vuoi solo il biglietto?» resta in tutte e due.
+
+## 39. Prodotti fatti da Gifty: la cover iPhone personalizzata (TEST_1, 4 novembre 2026)
+
+Richiesta: un prodotto nuovo, primo dei «Regali più amati dai nostri clienti…» e nel catalogo, con una scheda fatta a passi (le tue foto → il tuo fumetto → la tua cover) e «Provalo con le tue foto (gratis)».
+
+- **Dove sta**: `lib/dati/prodotti-gifty.ts` (`PRODOTTI_GIFTY`), nel codice e non nel database `prodotti`: non ha un link Amazon e non passa dalle collette né da «Trova il regalo», che si aspettano un prodotto Amazon. Le immagini sono in `public/prodotti-gifty/cover-iphone/`.
+- **Scheda** (`components/SchedaProdottoGifty.tsx`): nella home le stelle (voto Gifty, 5), i «likes» dimostrativi dove sono attivi, il cuore, i tre passi in fila con le frecce, nome, prezzo e il pulsante. Nel catalogo, dove la scheda è stretta, i passi stanno uno sotto l'altro e il cuore accanto al prezzo.
+- **Catalogo**: per primo in tutte e due le varianti, se passa i filtri (per chi, categoria, prezzo, testo cercato); con il filtro dell'età non compare, perché non è classificato. Il conto delle idee lo comprende.
+- **«Provalo con le tue foto (gratis)»**: porta a https://your-pet-comics.web.app/ (`urlProva`), in una scheda nuova; non è un link affiliato. Senza indirizzo il pulsante si vedrebbe ma non porterebbe da nessuna parte.
+- **Immagini**: dagli originali, ridotte a 300 px di altezza (la foto della ragazza resta a 210 px, com'era l'originale).
+- **Limiti noti**: non c'è una scheda /prodotto/… per questo prodotto; il cuore lo segna, ma la pagina «Preferiti» per ora mostra solo i prodotti del database.

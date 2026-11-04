@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { FiltriCatalogo } from "@/components/FiltriCatalogo";
 import { PERSONE_PREDEFINITE, SchedaProdotto } from "@/components/SchedaProdotto";
+import { SchedaProdottoGifty } from "@/components/SchedaProdottoGifty";
 import { Icona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { FASCE_ETA, fasceEta } from "@/lib/dati/eta-prodotti";
+import { PRODOTTI_GIFTY, prodottoGiftyNeiFiltri } from "@/lib/dati/prodotti-gifty";
 import { testoRilevazioneCatalogo } from "@/lib/dominio/regali";
 import { DESTINATARI, FASCE_PREZZO, TEMI, type Prodotto } from "@/lib/tipi";
 import { MODO_CATALOGO_PREDEFINITO, modoCatalogo } from "@/lib/ux";
@@ -132,8 +134,19 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
   const filtrati = (await dati.elencaProdotti(filtri)).filter((p) => (!design || !!p.sottocategoria) && (!eta || fasceEta(p).includes(eta)));
   const prodotti = cerca ? filtrati.filter((p) => cercaNelTesto(p, normalizza(cerca))) : filtrati;
   const visibili = prodotti.slice(0, mostra);
+  // i prodotti fatti da Gifty vengono per primi, se passano i filtri (per l'età non sono classificati: con quel filtro no)
+  const gifty = PRODOTTI_GIFTY.filter((p) =>
+    prodottoGiftyNeiFiltri(p, {
+      per: filtri.per,
+      tema: filtri.tema,
+      prezzo: FASCE_PREZZO.find((f) => f.id === filtri.fascia),
+      testo: cerca ? normalizza(cerca) : undefined,
+      altriFiltri: !!eta || design,
+    }),
+  );
   const nFiltri = [stato.per, stato.eta, stato.tema, stato.fascia].filter(Boolean).length;
-  const conteggio = prodotti.length === 1 ? "1 idea" : `${prodotti.length} idee`;
+  const trovati = gifty.length + prodotti.length;
+  const conteggio = trovati === 1 ? "1 idea" : `${trovati} idee`;
 
   // le etichette dei filtri attivi, ognuna con il suo collegamento per toglierla
   const etichette: { testo: string; via: string }[] = [
@@ -150,7 +163,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
         <div className="flex flex-col gap-1">
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Catalogo regali</h1>
-            <span className="cifre rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">{tutti.length} idee</span>
+            <span className="cifre rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">{tutti.length + PRODOTTI_GIFTY.length} idee</span>
           </div>
           {gruppo ? <p className="text-sm text-ink-soft">Idee da dividere tra amici: scegli, e la quota la calcoliamo noi.</p> : null}
         </div>
@@ -231,7 +244,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
         ) : null}
 
         <section aria-label="Prodotti" className="flex flex-col gap-4">
-          {prodotti.length === 0 ? (
+          {trovati === 0 ? (
             <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
               <Icona nome="search" dimensione={32} className="text-ink-soft" />
               <p className="font-semibold">Nessun regalo con questi filtri.</p>
@@ -241,6 +254,11 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             </div>
           ) : (
             <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+              {gifty.map((p) => (
+                <li key={p.slug}>
+                  <SchedaProdottoGifty prodotto={p} compatta />
+                </li>
+              ))}
               {visibili.map((p) => (
                 <li key={p.slug}>
                   <SchedaProdotto prodotto={p} persone={persone} azione={gruppo ? "colletta" : "singolo"} />

@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { BottoneCuore } from "@/components/BottoneCuore";
+import { SchedaProdottoGifty } from "@/components/SchedaProdottoGifty";
+import { conLikesDimostrativi, likesDimostrativi, Stelle } from "@/components/Stelle";
 import { BottoneLink, Icona, ImmagineProdotto, type NomeIcona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
+import { PRODOTTI_GIFTY } from "@/lib/dati/prodotti-gifty";
 import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
 import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import { formattaEuro } from "@/lib/dominio/importi";
@@ -14,7 +17,7 @@ import { CATALOGO_GRUPPO, conModo, type VersioneHome } from "@/lib/ux";
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
  * Sotto, la classica ha «Come funziona», il biglietto, le garanzie e «Idee più amate»; la nuova va dritta ai regali
- * più amati (`RegaliPiuAmati`: gli stessi due prodotti, con le stelle del backoffice e «Guarda su Amazon»).
+ * più amati (`RegaliPiuAmati`: prima i prodotti Gifty, poi gli stessi due, con le stelle del backoffice e «Guarda su Amazon»).
  * Su «/» va `HOME_ATTIVA` (lib/ux.ts); la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di
  * gruppo» della nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  */
@@ -249,36 +252,6 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
   );
 }
 
-/** Le stelle (da 1 a 5) che chi gestisce il sito ha dato al prodotto nel backoffice del catalogo; senza voto 3, come lì. */
-function Stelle({ n }: { n: number }) {
-  return (
-    <span className="flex items-center gap-1" title="Il voto di Gifty">
-      <span className="flex text-[#F5B301]" aria-hidden="true">
-        {[1, 2, 3, 4, 5].map((k) => (
-          <svg key={k} viewBox="0 0 24 24" width={16} height={16} fill={k <= n ? "currentColor" : "none"} stroke="currentColor" strokeWidth={1.8} strokeLinejoin="round">
-            <path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" />
-          </svg>
-        ))}
-      </span>
-      <span className="text-[11px] font-semibold text-ink-soft">
-        <span className="sr-only">{n} stelle su 5, </span>voto Gifty
-      </span>
-    </span>
-  );
-}
-
-/**
- * «Likes» dimostrativi: un numero inventato ma fisso per ogni prodotto (non cambia a ogni visita).
- * Si vedono solo dove c'è LIKES_DIMOSTRATIVI=1 (in locale, sul sito di test); in produzione no, perché
- * sarebbero un apprezzamento falso per chi visita davvero il sito. Vanno sostituiti con un conteggio vero.
- */
-function likesDimostrativi(slug: string): string {
-  let h = 0;
-  for (const c of slug) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  const n = 300 + (h % 2200);
-  return n >= 1000 ? `${(n / 1000).toFixed(1).replace(".", ",")}k likes` : `${n} likes`;
-}
-
 /**
  * I regali in evidenza della home nuova: titolo in corsivo al centro, il cuore dei preferiti sulla foto e
  * «Guarda su Amazon» al posto di «Regala in gruppo» e della quota a testa (per il gruppo c'è /regalo-di-gruppo).
@@ -292,6 +265,12 @@ function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto
         I Regali più amati dai nostri clienti…
       </h2>
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* per primi i prodotti fatti da Gifty (lib/dati/prodotti-gifty.ts) */}
+        {PRODOTTI_GIFTY.map((p) => (
+          <li key={p.slug}>
+            <SchedaProdottoGifty prodotto={p} conLikes={conLikes} />
+          </li>
+        ))}
         {inEvidenza.map((p) => (
           <li key={p.slug} className="flex flex-col gap-2 rounded-3xl bg-surface p-4 shadow-carta">
             <div className="flex items-start justify-between gap-2">
@@ -338,7 +317,7 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
           // la nuova va dai pulsanti dritta ai regali
           <>
             <AperturaNuova />
-            <RegaliPiuAmati inEvidenza={inEvidenza} stelle={impostazioni?.stelle ?? {}} conLikes={process.env.LIKES_DIMOSTRATIVI === "1"} />
+            <RegaliPiuAmati inEvidenza={inEvidenza} stelle={impostazioni?.stelle ?? {}} conLikes={conLikesDimostrativi()} />
           </>
         ) : (
           <>
