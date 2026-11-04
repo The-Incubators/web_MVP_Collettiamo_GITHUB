@@ -19,10 +19,8 @@ function Corpo({ f, grande }: { f: Firma; grande?: boolean }) {
   return (
     <>
       <div className="whitespace-normal break-words" dangerouslySetInnerHTML={{ __html: f.messaggioHtml }} />
-      <p className={`font-semibold opacity-75 ${grande ? "text-lg" : ""}`}>
-        — {f.daParteDi}
-        {f.ruolo ? <span className="block text-xs font-normal">{f.ruolo}</span> : null}
-      </p>
+      {/* solo il nome: il ruolo («Collega») sotto la firma è stato tolto il 4 novembre 2026 */}
+      <p className={`font-semibold opacity-75 ${grande ? "text-lg" : ""}`}>— {f.daParteDi}</p>
       {f.immagine?.attribuzione ? <p className="text-[10px] opacity-60">{f.immagine.attribuzione}</p> : null}
     </>
   );
@@ -77,7 +75,7 @@ export function NotaFirma({
   );
 }
 
-/** Il bigliettino grande, uno alla volta (rivelazione: storie e film). */
+/** Il bigliettino grande, uno alla volta (rivelazione: storia e film). */
 export function NotaGrande({ f, colore, className = "" }: { f: Firma; colore: string; className?: string }) {
   return (
     <article aria-label={`Messaggio di ${f.daParteDi}`} className={`flex w-full max-w-md flex-col gap-3 p-6 text-xl ${CLASSI_NOTA} ${className}`} style={{ backgroundColor: colore }}>

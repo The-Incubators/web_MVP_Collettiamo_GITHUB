@@ -10,22 +10,16 @@ import { Rivelazione } from "./bacheca/Rivelazione";
  * Un biglietto di esempio, già firmato da sei persone e consegnato: si vede la sorpresa come la vedrà
  * il festeggiato, con le quattro modalità. Solo l'anteprima: si chiude con la X in alto a destra.
  * Tutto è inventato; nulla viene letto o salvato.
- * Le «foto» sono illustrazioni generate qui (sfumatura ed emoji): nessuna immagine di persone vere.
+ * Le foto vengono da Pexels (licenza libera, senza obbligo di citarle): originali in Foto_Biglietto_Anteprima/,
+ * ridotte a 900 px di larghezza in public/biglietto-esempio/. I testi sono scritti per stare con la foto.
  */
-function foto(tinta: number, emoji: string): string {
-  const c1 = `hsl(${tinta} 70% 78%)`;
-  const c2 = `hsl(${(tinta + 35) % 360} 65% 60%)`;
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c1}'/><stop offset='1' stop-color='${c2}'/></linearGradient></defs><rect width='400' height='300' fill='url(#g)'/><text x='200' y='185' font-size='110' text-anchor='middle'>${emoji}</text></svg>`;
-  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-}
-
-const ESEMPI: { daParteDi: string; ruolo: string; testo: string; font: string; colore: string; dimensione: DimensioneTesto; foto?: [number, string] }[] = [
-  { daParteDi: "Marco", ruolo: "Collega", testo: "Tanti auguri Giulia! Grazie per le risate di ogni giorno. 🎉", font: "predefinito", colore: "#16241F", dimensione: "m", foto: [20, "🍕"] },
-  { daParteDi: "Sara", ruolo: "Amicizia di sempre", testo: "<b>Buon compleanno!</b> Vent'anni di avventure insieme, e siamo solo all'inizio. ❤️", font: "indie-flower", colore: "#7A2E4A", dimensione: "m" },
-  { daParteDi: "Luca", ruolo: "Famiglia", testo: "Auguri sorellina! Stasera la torta la scelgo io. 🎂", font: "playfair-display", colore: "#1E3A66", dimensione: "m", foto: [45, "🐶"] },
-  { daParteDi: "Elena", ruolo: "Dai tempi della scuola", testo: "Ti ricordi la gita in montagna? <i>Rifacciamola presto!</i>", font: "courier-prime", colore: "#0B5E4C", dimensione: "m", foto: [140, "⛰️"] },
-  { daParteDi: "Paolo", ruolo: "Collega", testo: "Cento di questi giorni, Giulia! 🥂", font: "parisienne", colore: "#8A5A1A", dimensione: "l" },
-  { daParteDi: "Chiara", ruolo: "Vicina di casa", testo: "Che sia un anno pieno di cose belle, come te. 🌻", font: "predefinito", colore: "#16241F", dimensione: "m" },
+const ESEMPI: { daParteDi: string; ruolo: string; testo: string; font: string; colore: string; dimensione: DimensioneTesto; foto: [string, number, number] }[] = [
+  { daParteDi: "Marco", ruolo: "Collega", testo: "Tanti auguri Giulia! Grazie per le risate di ogni giorno. 🎉", font: "predefinito", colore: "#16241F", dimensione: "m", foto: ["marco", 900, 600] },
+  { daParteDi: "Sara", ruolo: "Amicizia di sempre", testo: "<b>Buon compleanno!</b> Ti ricordi questa foto? Vent'anni di avventure insieme, e siamo solo all'inizio. ❤️", font: "indie-flower", colore: "#7A2E4A", dimensione: "m", foto: ["sara", 900, 1137] },
+  { daParteDi: "Luca", ruolo: "Famiglia", testo: "Auguri sorellina! Stasera la torta la porto io, e le candeline le spegni tu. 🎂", font: "playfair-display", colore: "#1E3A66", dimensione: "m", foto: ["luca", 900, 506] },
+  { daParteDi: "Elena", ruolo: "Dai tempi della scuola", testo: "Ti ricordi l'estate al mare? <i>Rifacciamola presto!</i> 🎈", font: "courier-prime", colore: "#0B5E4C", dimensione: "m", foto: ["elena", 900, 1353] },
+  { daParteDi: "Paolo", ruolo: "Collega", testo: "Cento di questi giorni, Giulia! Stasera si brinda tutti insieme. 🥂", font: "parisienne", colore: "#8A5A1A", dimensione: "l", foto: ["paolo", 900, 600] },
+  { daParteDi: "Chiara", ruolo: "Vicina di casa", testo: "Che sia un anno leggero come un palloncino e pieno di cose belle, come te. 🌸", font: "predefinito", colore: "#16241F", dimensione: "m", foto: ["chiara", 900, 1350] },
 ];
 
 const FIRME: Firma[] = ESEMPI.map((e, i) => ({
@@ -33,7 +27,7 @@ const FIRME: Firma[] = ESEMPI.map((e, i) => ({
   uid: "",
   messaggioHtml: e.testo,
   stile: { font: e.font, colore: e.colore, dimensione: e.dimensione },
-  immagine: e.foto ? { tipo: "caricata", url: foto(...e.foto), larghezza: 400, altezza: 300, attribuzione: null } : null,
+  immagine: { tipo: "caricata", url: `/biglietto-esempio/${e.foto[0]}.jpg`, larghezza: e.foto[1], altezza: e.foto[2], attribuzione: null },
   daParteDi: e.daParteDi,
   ruolo: e.ruolo,
   coloreNota: COLORI_NOTA[i % COLORI_NOTA.length],

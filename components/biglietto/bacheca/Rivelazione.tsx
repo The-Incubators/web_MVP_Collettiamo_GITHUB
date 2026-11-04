@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Icona, type NomeIcona } from "@/components/ui";
 import { coloreDellaNota, durataLettura, MODI_RIVELAZIONE, rivelazioneValida, testoSu } from "@/lib/dominio/bacheca";
 import { firmeOrdinate } from "@/lib/dominio/biglietto";
@@ -13,7 +13,11 @@ import { Coriandoli } from "./Coriandoli";
 import { NotaFirma, NotaGrande } from "./NotaFirma";
 
 const PASSO_MS = 100;
+/** Storia e film scorrono al doppio della velocità di partenza (4 novembre 2026): le durate di `durataLettura` si dimezzano. */
+const VELOCITA = 2;
 const SFONDO_SCURO = "#101512";
+/** L'altezza dei comandi in alto (X, modalità), misurata in `Rivelazione`: le barre di avanzamento stanno subito sotto. */
+const SOTTO_I_COMANDI = "var(--riv-alto, 4.25rem)";
 
 type Fase = "apertura" | ModoRivelazione;
 
@@ -33,7 +37,7 @@ function useProgresso(chiave: string, durata: number, inPausa: boolean, onFine: 
   fine.current = onFine;
   useEffect(() => {
     if (inPausa) return;
-    const t = setInterval(() => setStato((s) => ({ chiave, p: Math.min(1, (s.chiave === chiave ? s.p : 0) + PASSO_MS / durata) })), PASSO_MS);
+    const t = setInterval(() => setStato((s) => ({ chiave, p: Math.min(1, (s.chiave === chiave ? s.p : 0) + (PASSO_MS * VELOCITA) / durata) })), PASSO_MS);
     return () => clearInterval(t);
   }, [chiave, durata, inPausa]);
   useEffect(() => {
@@ -69,7 +73,7 @@ function BottoneTondo({ icona, etichetta, onClick }: { icona: NomeIcona; etichet
   );
 }
 
-/** Indietro, pausa, avanti: in fondo a storie e film. */
+/** Indietro, pausa, avanti: in fondo a storia e film. */
 function Comandi({ pausa, onPausa, onIndietro, onAvanti, conteggio, extra }: { pausa: boolean; onPausa: () => void; onIndietro: () => void; onAvanti: () => void; conteggio?: string; extra?: ReactNode }) {
   return (
     <div className="flex items-center justify-center gap-3 px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3">
@@ -114,9 +118,9 @@ function Apertura({ aspetto, festeggiato, n, onApri }: { aspetto: AspettoBacheca
   );
 }
 
-// ---------- Storie: un messaggio alla volta ----------
+// ---------- Storia: un messaggio alla volta ----------
 
-function Storie({ note, aspetto, onFine }: { note: Nota[]; aspetto: AspettoBacheca; onFine: () => void }) {
+function Storia({ note, aspetto, onFine }: { note: Nota[]; aspetto: AspettoBacheca; onFine: () => void }) {
   const [i, setI] = useState(0);
   const [pausa, setPausa] = useState(false);
   const { f, colore } = note[i];
@@ -124,13 +128,16 @@ function Storie({ note, aspetto, onFine }: { note: Nota[]; aspetto: AspettoBache
   const indietro = useCallback(() => setI((x) => Math.max(0, x - 1)), []);
   const p = useProgresso(f.id, durataLettura(testoDaHtml(f.messaggioHtml), !!f.immagine), pausa, avanti);
   useTasti(avanti, indietro, () => setPausa((x) => !x));
+  // il tratto già visto nel colore del testo sullo sfondo (scuro sui colori chiari), quello da vedere chiaro
+  const pieno = testoSopra(aspetto);
+  const traccia = pieno === "#FFFFFF" ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.8)";
 
   return (
     <div className="fixed inset-0 flex flex-col" style={stileSfondo(aspetto)}>
-      <div className="flex gap-1 px-4 pt-[4.25rem]" aria-hidden="true">
+      <div className="flex gap-1.5 px-4" style={{ paddingTop: SOTTO_I_COMANDI }} aria-hidden="true">
         {note.map((n, k) => (
-          <span key={n.f.id} className="h-1 flex-1 overflow-hidden rounded-full bg-white/40">
-            <span className="block h-full bg-white" style={{ width: k < i ? "100%" : k === i ? `${p * 100}%` : "0%" }} />
+          <span key={n.f.id} className="h-1.5 flex-1 overflow-hidden rounded-full" style={{ backgroundColor: traccia }}>
+            <span className="block h-full" style={{ backgroundColor: pieno, width: k < i ? "100%" : k === i ? `${p * 100}%` : "0%" }} />
           </span>
         ))}
       </div>
@@ -219,8 +226,8 @@ function Film({ note, aspetto, b, onFine }: { note: Nota[]; aspetto: AspettoBach
 
   return (
     <div className="fixed inset-0 flex flex-col text-white" style={{ background: `radial-gradient(circle at 50% 30%, ${aspetto.colori.accento}33, transparent 65%), ${SFONDO_SCURO}` }}>
-      <div className="mx-4 mt-[4.25rem] h-1 overflow-hidden rounded-full bg-white/20" aria-hidden="true">
-        <span className="block h-full bg-white/80" style={{ width: `${((i + p) / scene.length) * 100}%` }} />
+      <div className="mx-4 h-1.5 overflow-hidden rounded-full bg-white/30" style={{ marginTop: SOTTO_I_COMANDI }} aria-hidden="true">
+        <span className="block h-full bg-white" style={{ width: `${((i + p) / scene.length) * 100}%` }} />
       </div>
       <div className="flex flex-1 flex-col overflow-y-auto px-6 py-6 text-center">
         <div key={scena.chiave} className="riv-entra mx-auto my-auto flex w-full justify-center">
@@ -269,6 +276,32 @@ function Appare({ children, className = "" }: { children: ReactNode; className?:
   );
 }
 
+/** In fondo allo schermo, finché sotto c'è ancora qualcosa da leggere: una freccia che invita a scorrere. */
+function InvitoAScorrere() {
+  const [visibile, setVisibile] = useState(false);
+  useEffect(() => {
+    const controlla = () => setVisibile(window.innerHeight + window.scrollY < document.documentElement.scrollHeight - 160);
+    controlla();
+    window.addEventListener("scroll", controlla, { passive: true });
+    window.addEventListener("resize", controlla);
+    return () => {
+      window.removeEventListener("scroll", controlla);
+      window.removeEventListener("resize", controlla);
+    };
+  }, []);
+  return (
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none fixed inset-x-0 bottom-0 z-20 flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))] transition-opacity duration-300 ${visibile ? "opacity-100" : "opacity-0"}`}
+    >
+      <span className="flex flex-col items-center rounded-full bg-black/40 px-4 pb-1 pt-2 text-xs font-semibold text-white backdrop-blur">
+        Scorri
+        <Icona nome="expand_more" dimensione={28} className="motion-safe:animate-bounce" />
+      </span>
+    </div>
+  );
+}
+
 function Scorrimento({ note, aspetto, onFine }: { note: Nota[]; aspetto: AspettoBacheca; onFine: () => void }) {
   return (
     <>
@@ -289,6 +322,7 @@ function Scorrimento({ note, aspetto, onFine }: { note: Nota[]; aspetto: Aspetto
           </button>
         </Appare>
       </div>
+      <InvitoAScorrere />
     </>
   );
 }
@@ -366,6 +400,16 @@ export function Rivelazione({ b, firme, alto, chiudi, basso }: { b: BigliettoPub
   const audio = useRef<HTMLAudioElement>(null);
   const [suona, setSuona] = useState(false);
   const musica = b.musica?.url ?? null;
+  const comandi = useRef<HTMLDivElement>(null);
+  const [altoComandi, setAltoComandi] = useState(0);
+
+  useEffect(() => {
+    const el = comandi.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const o = new ResizeObserver(() => setAltoComandi(el.offsetHeight));
+    o.observe(el);
+    return () => o.disconnect();
+  }, []);
 
   function suonaMusica() {
     // se il browser rifiuta (o il file non si carica) la sorpresa va avanti lo stesso, in silenzio
@@ -386,7 +430,7 @@ export function Rivelazione({ b, firme, alto, chiudi, basso }: { b: BigliettoPub
   }, [vai]);
 
   return (
-    <div className="relative flex min-h-dvh flex-col">
+    <div className="relative flex min-h-dvh flex-col" style={altoComandi ? ({ "--riv-alto": `${altoComandi}px` } as CSSProperties) : undefined}>
       {fase === "apertura" ? (
         <Apertura
           aspetto={aspetto}
@@ -399,7 +443,7 @@ export function Rivelazione({ b, firme, alto, chiudi, basso }: { b: BigliettoPub
           }}
         />
       ) : fase === "storie" ? (
-        <Storie note={note} aspetto={aspetto} onFine={finale} />
+        <Storia note={note} aspetto={aspetto} onFine={finale} />
       ) : fase === "film" ? (
         <Film note={note} aspetto={aspetto} b={b} onFine={finale} />
       ) : fase === "scorrimento" ? (
@@ -408,7 +452,7 @@ export function Rivelazione({ b, firme, alto, chiudi, basso }: { b: BigliettoPub
         <Griglia note={note} aspetto={aspetto} onRivedi={() => vai("apertura")} spazioSotto={!!basso} />
       )}
 
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-2 p-3">
+      <div ref={comandi} className="pointer-events-none fixed inset-x-0 top-0 z-30 flex flex-wrap items-start justify-between gap-2 p-3">
         <div className="pointer-events-auto flex flex-wrap items-center gap-2">
           {alto}
           {musica && fase !== "apertura" ? (
