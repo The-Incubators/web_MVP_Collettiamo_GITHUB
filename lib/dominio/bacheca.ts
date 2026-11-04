@@ -106,7 +106,7 @@ export function scurisciValido(v: unknown): number {
 
 export const MODI_RIVELAZIONE: { id: ModoRivelazione; nome: string; descrizione: string }[] = [
   { id: "griglia", nome: "Griglia", descrizione: "Tutti i messaggi compaiono insieme, come una parete di bigliettini." },
-  { id: "storie", nome: "Storie", descrizione: "Un messaggio alla volta, si va avanti con un tocco." },
+  { id: "storie", nome: "Storia", descrizione: "Un messaggio alla volta, si va avanti con un tocco." },
   { id: "film", nome: "Film", descrizione: "Parte da solo su sfondo scuro e finisce con i nomi di tutti." },
   { id: "scorrimento", nome: "Scorrimento", descrizione: "I messaggi appaiono uno dopo l’altro mentre si scorre." },
 ];
@@ -117,7 +117,7 @@ export function rivelazioneValida(v: unknown): ModoRivelazione {
   return MODI_RIVELAZIONE.some((m) => m.id === v) ? (v as ModoRivelazione) : RIVELAZIONE_PREDEFINITA;
 }
 
-/** Storie e film: quanto resta a schermo un testo. Più è lungo, più tempo per leggerlo (con un tetto); la foto aggiunge un po'. */
+/** Storia e film: quanto resta a schermo un testo (alla velocità di partenza: vedi VELOCITA in Rivelazione.tsx). Più è lungo, più tempo per leggerlo (con un tetto); la foto aggiunge un po'. */
 export function durataLettura(testo: string, conFoto = false): number {
   return Math.min(14000, 4000 + [...testo].length * 45) + (conFoto ? 1500 : 0);
 }
