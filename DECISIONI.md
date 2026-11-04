@@ -576,3 +576,11 @@ Richiesta: usare per tutto il catalogo il tracking ID creato su Amazon Associate
 
 - **Codice:** cambia solo `TAG_AFFILIATO_AMAZON` in `lib/dominio/amazon.ts`. Tutti i pulsanti verso Amazon passano da `urlPerAcquisto`, che sostituisce un tag già presente: dal deploy valgono col nuovo tag anche i link salvati prima (prodotti, collette, proposte di votazione). L'area riservata resta senza tag (`linkSchedaAmazon`). I test sull'emulatore leggono il tag dalla costante.
 - **Dati:** nel database `colletta` il campo `urlEsterno` dei prodotti si aggiorna dopo il deploy, solo quel campo e solo se il prodotto non è cambiato dopo la lettura, con il backup dei valori prima e dopo in `backup/`. Le copie dentro collette e proposte restano col vecchio tag nei dati, ma si mostrano col nuovo. Il database `colletta-test` non ha prodotti.
+
+## 37. Home nuova in prova, la classica resta (4 novembre 2026)
+
+Richiesta: sperimentare una home diversa senza perdere quella di prima, per poterla rimettere.
+
+- **Due versioni, una sola pagina** (`components/home/Home.tsx`): cambia solo la parte in alto. La «nuova» apre con «Regalare qualcosa di originale, non è mai stato così facile…» e tre strade separate da una riga: «Trova un regalo originale» (con sotto «fatti aiutare dal nostro motore di ricerca (15 sec)»), «Invia un biglietto di Auguri» con «Guarda un esempio», «Organizza un regalo di gruppo» con «Guarda cosa vedranno i partecipanti». Da «Come funziona» in giù le sezioni sono le stesse della classica.
+- **Quale si vede su «/»**: la costante `HOME_ATTIVA` (oggi `"nuova"`); per tornare alla classica si cambia quella riga. La classica è anche su `/regalo-di-gruppo`: ci porta «Organizza un regalo di gruppo» della nuova, e da lì si prosegue come prima (catalogo, esempio per i partecipanti). La nuova resta anche su `/home-nuova`. Tutte e due escluse dai motori di ricerca, perché una delle due è sempre uguale a «/».
+- La riga grigia sotto «Trova un regalo originale» si può toccare, ma per tastiera e lettori di schermo il link è uno solo (è nascosta a loro).
