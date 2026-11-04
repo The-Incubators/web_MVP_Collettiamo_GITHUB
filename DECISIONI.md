@@ -615,3 +615,14 @@ Richiesta: in fondo ai «Regali più amati dai nostri clienti…» un pulsante �
 - **Scheda**: la stessa dei primi due (`SchedaRegaloAmato`), che ora sta in un file suo perché la usano sia il server sia il browser.
 - **Fine dell'elenco**: finiti i prodotti il pulsante sparisce e il segno della tastiera passa al primo dei nuovi. Mentre carica il pulsante dice «Carico…» e non si disattiva davvero (`aria-disabled`), per non perdere il segno; un lettore di schermo sente «Caricati altri 3 regali».
 - **Cosa resta uguale**: i prodotti Gifty restano solo in cima; la home classica non ha il pulsante.
+
+## 41. Reminder: compleanni e ricorrenze da non dimenticare (4 novembre 2026)
+
+Richiesta: una sezione «Reminder», nella barra in basso al posto di «Collette», dove registrare compleanni e ricorrenze e vederle in un calendario mese per mese; più avanti una notifica push qualche settimana prima.
+
+- **Barra**: «Reminder» (campanella) prende il posto di «Collette». Le collette restano raggiungibili dal menu del profilo («Le mie collette») e dalla dashboard.
+- **Una ricorrenza**: per chi è (o il nome), tipo (compleanno, anniversario, onomastico, altra), giorno e mese, anno facoltativo (serve solo a dire «Compie 40 anni» o «36° anniversario»), preavviso da 1 a 4 settimane (2 di base) e una nota facoltativa, per esempio un'idea regalo. Torna ogni anno; chi è nato il 29 febbraio negli anni non bisestili compare il 28.
+- **Dove si salva**: come i preferiti. Senza account nel browser; con l'account su Firestore in /utenti/{uid}/reminder/{id}, e accedendo quelli del browser passano all'account. Le notifiche potranno partire solo per chi ha un account: dal browser il server non li vede. Massimo 300 per persona.
+- **Regole Firestore**: solo il proprietario legge e scrive, con gli stessi controlli di `lib/dominio/reminder.ts` (campi ammessi, date possibili, lunghezze). Vanno pubblicate insieme al sito (`firebase deploy --only firestore`), altrimenti chi ha un account non riesce a salvare. I test delle regole sono in tests/regole ma non sono stati fatti girare: su questo Mac manca Java per l'emulatore.
+- **Pagina** (/reminder, non indicizzata): «In arrivo» con le prossime 3 (quanto manca, «Trova un regalo», «Modifica»; la data è piena quando si è già dentro il preavviso), poi il calendario del mese con frecce e «Torna a oggi»: i giorni con ricorrenze sono evidenziati e toccandoli si filtra l'elenco del mese sotto. Dopo un salvataggio il calendario va al mese in cui la ricorrenza cade la prossima volta.
+- **Notifiche**: non ci sono ancora, e la pagina lo dice. Per farle è già pronto `dataAvviso` (il giorno in cui avvisare); serviranno un service worker, il permesso del browser, i token salvati per utente e un invio programmato dal server.
