@@ -3,6 +3,7 @@ import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { calcolaChiusura } from "@/lib/dominio/quota";
 import type { Colletta, Partecipante } from "@/lib/tipi";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
@@ -124,7 +125,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
         </p>
         <h2 className="text-2xl font-bold">Organizzi anche tu un regalo di gruppo?</h2>
         <p className="text-sm opacity-90">Scegli il regalo, manda il link nella chat e firmate il biglietto insieme.</p>
-        <BottoneLink href="/catalogo" variante="azione" pieno className="mt-1">
+        <BottoneLink href={CATALOGO_GRUPPO} variante="azione" pieno className="mt-1">
           Guarda il catalogo <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
       </section>

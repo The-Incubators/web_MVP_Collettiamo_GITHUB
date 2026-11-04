@@ -13,6 +13,7 @@ import { MAX_PROPOSTE_PER_PERSONA, proposteDi, testoTempoRimasto } from "@/lib/d
 import type { ProdottoColletta } from "@/lib/tipi";
 import { Stelle } from "./Stelle";
 import type { Partecipazione } from "./usePartecipazione";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 const CHIAVE_NOME = "colletta.nome";
 
@@ -237,7 +238,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
         )
       ) : null}
 
-      <BottoneLink href="/catalogo" variante="testuale" className="self-center text-sm">
+      <BottoneLink href={CATALOGO_GRUPPO} variante="testuale" className="self-center text-sm">
         Organizzi anche tu un regalo di gruppo?
       </BottoneLink>
       {/* La pagina ha link ai prodotti di Amazon.it: la dichiarazione richiesta dal programma di affiliazione, in fondo. */}

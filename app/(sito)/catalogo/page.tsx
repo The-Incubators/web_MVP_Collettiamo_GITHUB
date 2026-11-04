@@ -7,6 +7,7 @@ import { datiServer } from "@/lib/dati";
 import { FASCE_ETA, fasceEta } from "@/lib/dati/eta-prodotti";
 import { testoRilevazioneCatalogo } from "@/lib/dominio/regali";
 import { DESTINATARI, FASCE_PREZZO, TEMI, type Prodotto } from "@/lib/tipi";
+import { MODO_CATALOGO_PREDEFINITO, modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
@@ -20,9 +21,10 @@ const PER_PAGINA = 24;
 
 /**
  * Tutto lo stato della pagina vive nell'indirizzo, così la pagina filtrata si può condividere:
- * filtri, ricerca (`q`), persone della simulazione e quanti prodotti si vedono (`mostra`).
+ * filtri, ricerca (`q`), persone della simulazione, quanti prodotti si vedono (`mostra`) e la variante (`modo`:
+ * «gruppo» o «singolo», vedi lib/ux.ts; si scrive solo se non è quella predefinita).
  */
-type Stato = { per?: string; eta?: string; tema?: string; fascia?: string; q?: string; persone?: string; mostra?: string };
+type Stato = { modo?: string; per?: string; eta?: string; tema?: string; fascia?: string; q?: string; persone?: string; mostra?: string };
 
 /**
  * Le categorie del filtro: i tre temi del catalogo più «Design», che non è un tema nei dati ma sono i pezzi
@@ -112,10 +114,13 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
     tema: TEMI.find((c) => c === prendi("tema")),
     fascia: FASCE_PREZZO.find((f) => f.id === prendi("fascia"))?.id,
   };
+  const modo = modoCatalogo(prendi("modo"));
+  const gruppo = modo === "gruppo";
   const cerca = (prendi("q") ?? "").trim().slice(0, 60);
   const persone = Math.max(2, Math.min(50, Math.floor(Number(prendi("persone"))) || PERSONE_PREDEFINITE));
   const mostra = Math.max(PER_PAGINA, Math.floor(Number(prendi("mostra"))) || PER_PAGINA);
   const stato: Stato = {
+    modo: modo !== MODO_CATALOGO_PREDEFINITO ? modo : undefined,
     ...filtri,
     eta,
     tema: filtri.tema ?? (design ? DESIGN : undefined),
@@ -147,13 +152,13 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Catalogo regali</h1>
             <span className="cifre rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">{tutti.length} idee</span>
           </div>
-          <p className="text-sm text-ink-soft">Idee da dividere tra amici: scegli, e la quota la calcoliamo noi.</p>
+          {gruppo ? <p className="text-sm text-ink-soft">Idee da dividere tra amici: scegli, e la quota la calcoliamo noi.</p> : null}
         </div>
 
         <div className="flex items-center gap-2">
           {/* un modulo GET: la ricerca finisce nell'indirizzo come i filtri, e funziona anche senza JavaScript */}
           <form action="/catalogo" role="search" className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-full bg-surface px-4 shadow-carta focus-within:ring-2 focus-within:ring-accent">
-            {Object.entries({ per: stato.per, eta: stato.eta, tema: stato.tema, fascia: stato.fascia, persone: stato.persone }).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
+            {Object.entries({ modo: stato.modo, per: stato.per, eta: stato.eta, tema: stato.tema, fascia: stato.fascia, persone: stato.persone }).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
             <Icona nome="search" dimensione={22} className="text-ink-soft" />
             <label htmlFor="cerca-catalogo" className="sr-only">
               Cerca nel catalogo
@@ -198,37 +203,39 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
           </ul>
         ) : null}
 
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-2 py-1.5 pl-4 pr-1.5" role="group" aria-label="Simula la quota a testa">
-          <p className="flex items-center gap-2 text-sm font-bold">
-            <Icona nome="groups" dimensione={20} className="text-cta-2" />
-            Simula per <span className="cifre">{persone}</span> invitati
-          </p>
-          <div className="flex items-center gap-1">
-            <Link
-              href={href(stato, { persone: String(Math.max(2, persone - 1)), mostra: stato.mostra })}
-              scroll={false}
-              aria-label="Una persona in meno"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
-            >
-              <Icona nome="remove" dimensione={20} />
-            </Link>
-            <Link
-              href={href(stato, { persone: String(Math.min(50, persone + 1)), mostra: stato.mostra })}
-              scroll={false}
-              aria-label="Una persona in più"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
-            >
-              <Icona nome="add" dimensione={20} />
-            </Link>
+        {gruppo ? (
+          <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-2 py-1.5 pl-4 pr-1.5" role="group" aria-label="Simula la quota a testa">
+            <p className="flex items-center gap-2 text-sm font-bold">
+              <Icona nome="groups" dimensione={20} className="text-cta-2" />
+              Simula per <span className="cifre">{persone}</span> invitati
+            </p>
+            <div className="flex items-center gap-1">
+              <Link
+                href={href(stato, { persone: String(Math.max(2, persone - 1)), mostra: stato.mostra })}
+                scroll={false}
+                aria-label="Una persona in meno"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
+              >
+                <Icona nome="remove" dimensione={20} />
+              </Link>
+              <Link
+                href={href(stato, { persone: String(Math.min(50, persone + 1)), mostra: stato.mostra })}
+                scroll={false}
+                aria-label="Una persona in più"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
+              >
+                <Icona nome="add" dimensione={20} />
+              </Link>
+            </div>
           </div>
-        </div>
+        ) : null}
 
         <section aria-label="Prodotti" className="flex flex-col gap-4">
           {prodotti.length === 0 ? (
             <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
               <Icona nome="search" dimensione={32} className="text-ink-soft" />
               <p className="font-semibold">Nessun regalo con questi filtri.</p>
-              <Link href="/catalogo" className="text-sm font-bold text-cta-2 underline underline-offset-4">
+              <Link href={href({ modo: stato.modo }, {})} className="text-sm font-bold text-cta-2 underline underline-offset-4">
                 Azzera tutto
               </Link>
             </div>
@@ -236,7 +243,7 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
             <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
               {visibili.map((p) => (
                 <li key={p.slug}>
-                  <SchedaProdotto prodotto={p} persone={persone} />
+                  <SchedaProdotto prodotto={p} persone={persone} azione={gruppo ? "colletta" : "singolo"} />
                 </li>
               ))}
             </ul>

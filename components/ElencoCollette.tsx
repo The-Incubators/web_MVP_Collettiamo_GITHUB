@@ -8,6 +8,7 @@ import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { avanzamento } from "@/lib/dominio/partecipanti";
 import type { Colletta } from "@/lib/tipi";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 function Scheda({ c, onElimina }: { c: Colletta; onElimina: (slug: string) => Promise<void> }) {
   const [chiedo, setChiedo] = useState(false);
@@ -113,7 +114,7 @@ function Contenuto() {
     <div className="mx-auto flex max-w-dashboard flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Le mie collette</h1>
-        <BottoneLink href="/catalogo" dimensione="piccolo">
+        <BottoneLink href={CATALOGO_GRUPPO} dimensione="piccolo">
           <Icona nome="add" dimensione={18} />
           Nuova
         </BottoneLink>
@@ -127,7 +128,7 @@ function Contenuto() {
           </span>
           <p className="font-display text-xl font-semibold text-accent-2">Ancora nessuna colletta</p>
           <p className="text-sm text-ink-soft">Scegli un regalo e manda il link al gruppo.</p>
-          <BottoneLink href="/catalogo" pieno className="mt-2">
+          <BottoneLink href={CATALOGO_GRUPPO} pieno className="mt-2">
             Organizza un regalo
           </BottoneLink>
         </div>
