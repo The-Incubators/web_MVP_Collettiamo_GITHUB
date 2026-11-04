@@ -586,3 +586,12 @@ Richiesta: sperimentare una home diversa senza perdere quella di prima, per pote
 - **«Likes» dimostrativi**: un numero inventato, fisso per prodotto, che si vede solo con `LIKES_DIMOSTRATIVI=1` (in locale e sul sito di test). In produzione non c'è: per chi visita davvero il sito sarebbe un apprezzamento falso. Da sostituire con il conto vero dei cuori.
 - **Quale si vede su «/»**: la costante `HOME_ATTIVA` (oggi `"nuova"`); per tornare alla classica si cambia quella riga. La classica è anche su `/regalo-di-gruppo`: ci porta «Organizza un regalo di gruppo» della nuova, e da lì si prosegue come prima (catalogo, esempio per i partecipanti). La nuova resta anche su `/home-nuova`. Tutte e due escluse dai motori di ricerca, perché una delle due è sempre uguale a «/».
 - La riga grigia sotto «Trova un regalo originale» si può toccare, ma per tastiera e lettori di schermo il link è uno solo (è nascosta a loro).
+
+## 38. Catalogo in due varianti: regalo singolo e regalo di gruppo (4 novembre 2026)
+
+Richiesta: piccole differenze nel catalogo secondo da dove si arriva. Dalla home nuova si ipotizza un regalo singolo; dal regalo di gruppo, la colletta.
+
+- **Come si sceglie**: `?modo=gruppo` o `?modo=singolo` nell'indirizzo (lib/ux.ts, `modoCatalogo`). Senza, vale quella che va con la home attiva: con `HOME_ATTIVA = "nuova"` è «singolo», con la classica tornerebbe «gruppo» come prima. Il modo resta con filtri, ricerca, simulazione e «Mostra altre idee».
+- **Gruppo** (`CATALOGO_GRUPPO`, cioè `/catalogo?modo=gruppo`): com'era, con «Idee da dividere tra amici…», «Simula per N invitati», la quota a testa, «Regalalo» e la lista regali. Ci portano la pagina del regalo di gruppo (/regalo-di-gruppo: «Organizza un regalo di gruppo» e «Tutte»), le mie collette, la pagina di chi partecipa, la votazione, il rendiconto, la chiusura del wizard della colletta e il biglietto («Sfoglia le idee regalo»).
+- **Singolo** (barra in basso, Trova il regalo, preferiti, scheda prodotto): senza la frase sulla quota e senza la simulazione; ogni scheda ha «Aggiungi ai preferiti» (lo stesso preferito del cuore, a scritta) e «Guarda su Amazon» con il link affiliato.
+- **Non fatto**: la scheda del singolo prodotto (/prodotto/…) è la stessa nei due percorsi, con il calcolo della quota e «Regalalo»; il suo «Torna al catalogo» va al catalogo predefinito.

@@ -8,19 +8,16 @@ import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
 import type { Prodotto } from "@/lib/tipi";
+import { CATALOGO_GRUPPO, type VersioneHome } from "@/lib/ux";
 
 /**
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
  * Sotto, la classica ha «Come funziona», il biglietto, le garanzie e «Idee più amate»; la nuova va dritta ai regali
  * più amati (`RegaliPiuAmati`: gli stessi due prodotti, con le stelle del backoffice e «Guarda su Amazon»).
- * Su «/» va `HOME_ATTIVA`; la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di gruppo» della
- * nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
- * Per tornare alla classica basta cambiare questa riga.
+ * Su «/» va `HOME_ATTIVA` (lib/ux.ts); la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di
+ * gruppo» della nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  */
-export const HOME_ATTIVA: VersioneHome = "nuova";
-
-export type VersioneHome = "classica" | "nuova";
 
 /** Le stesse 12 persone che il calcolatore della scheda prodotto propone come punto di partenza. */
 const PERSONE_ESEMPIO = 12;
@@ -47,7 +44,7 @@ function AperturaClassica() {
         <br />e tu sai sempre chi manca…
       </p>
       <div className="flex w-full flex-col gap-2 pt-1">
-        <BottoneLink href="/catalogo" variante="azione" pieno className="px-4">
+        <BottoneLink href={CATALOGO_GRUPPO} variante="azione" pieno className="px-4">
           Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
         <Link
@@ -215,7 +212,7 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
           </h2>
           <p className="text-sm text-ink-soft">Pronte da regalare in gruppo</p>
         </div>
-        <Link href="/catalogo" className="flex min-h-tocco items-center text-xs font-bold text-accent">
+        <Link href={CATALOGO_GRUPPO} className="flex min-h-tocco items-center text-xs font-bold text-accent">
           Tutte <Icona nome="chevron_right" dimensione={16} />
         </Link>
       </div>

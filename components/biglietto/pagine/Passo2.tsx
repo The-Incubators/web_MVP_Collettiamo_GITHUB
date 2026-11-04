@@ -11,6 +11,7 @@ import { BottonePillola, CLASSI_INPUT, EtichettaCampo, IntestazioneWizard } from
 import { AnteprimaLink, CampoRicco, fusoDelBrowser, SelettoreData, SelettoreFuso, SelettoreOra, type StatoLink } from "../campi";
 import { StatoBozza } from "../StatoBozza";
 import { useBozza } from "../useBozza";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 interface Modulo {
   d: DatiDettagli & { messaggioGruppo: string };
@@ -200,7 +201,7 @@ function RiquadroRegalo() {
       <div className="flex flex-col gap-3 px-4 pb-4 text-sm">
         <p>Con una colletta ognuno mette la sua quota: i soldi arrivano direttamente a chi organizza, mai a noi.</p>
         <div className="flex flex-wrap gap-x-6 gap-y-1">
-          <Link href="/catalogo" className="inline-flex min-h-tocco items-center font-semibold text-accent-2 underline underline-offset-4">
+          <Link href={CATALOGO_GRUPPO} className="inline-flex min-h-tocco items-center font-semibold text-accent-2 underline underline-offset-4">
             Sfoglia le idee regalo
           </Link>
           <Link href="/crea" className="inline-flex min-h-tocco items-center font-semibold text-accent-2 underline underline-offset-4">

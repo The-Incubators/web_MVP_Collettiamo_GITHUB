@@ -53,3 +53,30 @@ export const UX_PREDEFINITA = VARIANTI_UX[0];
 export function varianteUx(id: string | undefined | null): VarianteUx {
   return VARIANTI_UX.find((v) => v.id === id && v.disponibile) ?? UX_PREDEFINITA;
 }
+
+// ---------- Home e catalogo: due percorsi, regalo singolo e regalo di gruppo (4 novembre 2026) ----------
+
+export type VersioneHome = "classica" | "nuova";
+
+/**
+ * Quale home va su «/» (components/home/Home.tsx): la «nuova», in prova, o la «classica» sul regalo di gruppo,
+ * che intanto resta su /regalo-di-gruppo. Per tornare alla classica basta cambiare questa riga.
+ */
+export const HOME_ATTIVA: VersioneHome = "nuova";
+
+/**
+ * Il catalogo ha due varianti, secondo da dove si arriva (`?modo=` nell'indirizzo):
+ * «gruppo» (dal regalo di gruppo e dalle collette) con la frase sulla quota, «Simula per N invitati», la quota a
+ * testa e «Regalalo»; «singolo» senza tutto questo, con «Aggiungi ai preferiti» e «Guarda su Amazon».
+ * Senza `modo` (barra in basso, Trova il regalo, preferiti…) vale quella che va con la home attiva.
+ */
+export type ModoCatalogo = "gruppo" | "singolo";
+
+export const MODO_CATALOGO_PREDEFINITO: ModoCatalogo = HOME_ATTIVA === "nuova" ? "singolo" : "gruppo";
+
+/** Il catalogo del regalo di gruppo: lo usano le pagine del regalo di gruppo e delle collette. */
+export const CATALOGO_GRUPPO = "/catalogo?modo=gruppo";
+
+export function modoCatalogo(v: string | undefined): ModoCatalogo {
+  return v === "gruppo" || v === "singolo" ? v : MODO_CATALOGO_PREDEFINITO;
+}

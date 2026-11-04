@@ -17,6 +17,7 @@ import { RisultatoVotazione } from "./RisultatoVotazione";
 import { VotazioneGruppo } from "./VotazioneGruppo";
 import { Passi, RiquadroColletta, Testata } from "./Testata";
 import { usePartecipazione } from "./usePartecipazione";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 /**
  * Le schermate di chi partecipa. «metodo» contiene anche la dichiarazione («Hai pagato?»), come nel disegno
@@ -445,7 +446,7 @@ function VistaStato({
         </p>
         <h2 className="text-2xl font-bold">Stai pensando a un altro regalo di gruppo?</h2>
         <p className="text-sm opacity-90">Organizza una colletta in due minuti, senza inseguire nessuno.</p>
-        <BottoneLink href="/catalogo" variante="azione" pieno className="mt-1">
+        <BottoneLink href={CATALOGO_GRUPPO} variante="azione" pieno className="mt-1">
           Organizza una colletta <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
       </section>

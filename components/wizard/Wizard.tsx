@@ -31,6 +31,7 @@ import {
   type Passo,
   type StatoWizard,
 } from "./stato";
+import { CATALOGO_GRUPPO } from "@/lib/ux";
 
 /**
  * I passi che si vedono sono cinque: «La quota» e «Come ti pagano» (passi 3 e 4 dello stato, che restano
@@ -283,7 +284,7 @@ export function Wizard() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-3">
           {s.passo === 1 ? (
-            <Link href="/catalogo" aria-label="Torna al catalogo" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
+            <Link href={CATALOGO_GRUPPO} aria-label="Torna al catalogo" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
               <Icona nome="close" />
             </Link>
           ) : (

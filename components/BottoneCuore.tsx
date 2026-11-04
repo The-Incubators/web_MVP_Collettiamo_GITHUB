@@ -23,3 +23,22 @@ export function BottoneCuore({ slug, nome, className = "" }: { slug: string; nom
     </button>
   );
 }
+
+/** Lo stesso preferito, come pillola con la scritta (catalogo del regalo singolo, sopra «Guarda su Amazon»). */
+export function BottonePreferitiTesto({ slug, nome }: { slug: string; nome: string }) {
+  const { preferiti, toggle } = usePreferiti();
+  const dentro = preferiti.has(slug);
+  return (
+    <button
+      type="button"
+      aria-pressed={dentro}
+      aria-label={dentro ? `Nei preferiti: ${nome}, tocca per toglierlo` : `Aggiungi ai preferiti: ${nome}`}
+      onClick={() => toggle(slug)}
+      className={`flex min-h-tocco w-full items-center justify-center gap-1.5 rounded-full px-3 text-xs font-bold transition-colors ${
+        dentro ? "bg-cta-field text-cta-2" : "bg-surface-2 text-ink hover:bg-line"
+      }`}
+    >
+      {dentro ? "Nei preferiti" : "Aggiungi ai preferiti"}
+    </button>
+  );
+}
