@@ -29,7 +29,7 @@ const CARTELLA = "/prodotti-gifty/cover-iphone";
 
 export const PRODOTTI_GIFTY: ProdottoGifty[] = [
   {
-    // «Prodotto Gifty TEST_1» (4 novembre 2026). Le foto sono miniature provvisorie: vanno sostituite con gli originali.
+    // «Prodotto Gifty TEST_1» (4 novembre 2026). Immagini ridotte a 300 px di altezza (circa 3 volte come si vedono).
     id: "GIFTY-TEST-1",
     slug: "cover-iphone-personalizzata",
     nome: "Cover iPhone personalizzata",
@@ -37,11 +37,11 @@ export const PRODOTTI_GIFTY: ProdottoGifty[] = [
     descrizione: "Le tue foto diventano un fumetto stampato sulla cover del telefono.",
     stelle: 5,
     passi: [
-      { titolo: "Le tue foto", immagini: [`${CARTELLA}/foto-1.jpg`, `${CARTELLA}/foto-2.png`] },
-      { titolo: "Il tuo fumetto", immagini: [`${CARTELLA}/fumetto.png`] },
+      { titolo: "Le tue foto", immagini: [`${CARTELLA}/foto-1.jpg`, `${CARTELLA}/foto-2.jpg`] },
+      { titolo: "Il tuo fumetto", immagini: [`${CARTELLA}/fumetto.jpg`] },
       { titolo: "La tua cover", immagini: [`${CARTELLA}/cover.png`] },
     ],
-    urlProva: null,
+    urlProva: "https://your-pet-comics.web.app/",
     destinatari: ["uomo", "donna"],
     temi: ["tecnologia"],
   },

@@ -1,7 +1,6 @@
 import { BottoneCuore } from "@/components/BottoneCuore";
 import { likesDimostrativi, Stelle } from "@/components/Stelle";
 import { Icona } from "@/components/ui";
-import { REL_LINK_PRODOTTO } from "@/lib/dominio/amazon";
 import { formattaEuro } from "@/lib/dominio/importi";
 import type { ProdottoGifty } from "@/lib/dati/prodotti-gifty";
 
@@ -81,7 +80,7 @@ export function SchedaProdottoGifty({ prodotto, compatta, conLikes }: { prodotto
       </div>
 
       {prodotto.urlProva ? (
-        <a href={prodotto.urlProva} target="_blank" rel={REL_LINK_PRODOTTO} className={`${prova} ${compatta ? "text-sm" : "text-base"}`}>
+        <a href={prodotto.urlProva} target="_blank" rel="noopener" className={`${prova} ${compatta ? "text-sm" : "text-base"}`}>
           Provalo con le tue foto (gratis)
           <span className="sr-only"> (si apre in una nuova scheda)</span>
         </a>
