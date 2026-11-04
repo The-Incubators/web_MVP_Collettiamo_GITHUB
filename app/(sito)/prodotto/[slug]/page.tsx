@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
 import { Icona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
+import { conModo, modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -18,10 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * La pagina intera del prodotto: si vede aprendo il link diretto, ricaricando, o arrivando da fuori.
  * Dal catalogo invece lo stesso contenuto compare in un popup, senza lasciare la pagina
- * (vedi app/(sito)/@modale/(.)prodotto/[slug]/page.tsx).
+ * (vedi app/(sito)/@modale/(.)prodotto/[slug]/page.tsx). `?modo=` sceglie la variante, come nel catalogo.
  */
-export default async function SchedaProdottoPagina({ params }: Props) {
+export default async function SchedaProdottoPagina({ params, searchParams }: Props) {
   const { slug } = await params;
+  const v = (await searchParams).modo;
+  const modo = modoCatalogo(typeof v === "string" ? v : undefined);
   const p = await datiServer().prodotto(slug);
   if (!p || !p.attivo) notFound();
 
@@ -30,8 +33,9 @@ export default async function SchedaProdottoPagina({ params }: Props) {
       <div className="mx-auto flex max-w-catalogo flex-col gap-6">
         <DettaglioProdotto
           p={p}
+          modo={modo}
           indietro={
-            <Link href="/catalogo" className="inline-flex min-h-10 items-center gap-1 rounded-full bg-surface-2 pl-3 pr-4 text-sm font-bold">
+            <Link href={conModo("/catalogo", modo)} className="inline-flex min-h-10 items-center gap-1 rounded-full bg-surface-2 pl-3 pr-4 text-sm font-bold">
               <Icona nome="arrow_back" dimensione={18} /> Catalogo
             </Link>
           }
