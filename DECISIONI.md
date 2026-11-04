@@ -606,3 +606,12 @@ Richiesta: un prodotto nuovo, primo dei «Regali più amati dai nostri clienti�
 - **«Provalo con le tue foto (gratis)»**: porta a https://your-pet-comics.web.app/ (`urlProva`), in una scheda nuova; non è un link affiliato. Senza indirizzo il pulsante si vedrebbe ma non porterebbe da nessuna parte.
 - **Immagini**: dagli originali, ridotte a 300 px di altezza (la foto della ragazza resta a 210 px, com'era l'originale).
 - **Limiti noti**: non c'è una scheda /prodotto/… per questo prodotto; il cuore lo segna, ma la pagina «Preferiti» per ora mostra solo i prodotti del database.
+
+## 40. «Carica altri prodotti» nella home nuova (4 novembre 2026)
+
+Richiesta: in fondo ai «Regali più amati dai nostri clienti…» un pulsante «Carica altri prodotti» che ne aggiunge 3 a ogni clic.
+
+- **Da dove arrivano**: dal server, 3 alla volta (`components/home/altriRegali.ts`, una server action), nello stesso ordine dei primi due della home e con le stelle del backoffice. Così la home non scarica tutto il catalogo: i 516 prodotti peserebbero centinaia di KB solo per due schede visibili. Ogni clic legge il catalogo come una visita alla home.
+- **Scheda**: la stessa dei primi due (`SchedaRegaloAmato`), che ora sta in un file suo perché la usano sia il server sia il browser.
+- **Fine dell'elenco**: finiti i prodotti il pulsante sparisce e il segno della tastiera passa al primo dei nuovi. Mentre carica il pulsante dice «Carico…» e non si disattiva davvero (`aria-disabled`), per non perdere il segno; un lettore di schermo sente «Caricati altri 3 regali».
+- **Cosa resta uguale**: i prodotti Gifty restano solo in cima; la home classica non ha il pulsante.

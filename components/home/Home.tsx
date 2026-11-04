@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { BottoneCuore } from "@/components/BottoneCuore";
 import { SchedaProdottoGifty } from "@/components/SchedaProdottoGifty";
-import { conLikesDimostrativi, likesDimostrativi, Stelle } from "@/components/Stelle";
+import { CaricaAltriRegali } from "@/components/home/CaricaAltriRegali";
+import { CLASSI_RIQUADRO_REGALO, CLASSI_SECONDARIO, PRIMI_REGALI, SchedaRegaloAmato } from "@/components/home/SchedaRegaloAmato";
+import { conLikesDimostrativi } from "@/components/Stelle";
 import { BottoneLink, Icona, ImmagineProdotto, type NomeIcona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { PRODOTTI_GIFTY } from "@/lib/dati/prodotti-gifty";
-import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
 import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
@@ -17,7 +17,8 @@ import { CATALOGO_GRUPPO, conModo, type VersioneHome } from "@/lib/ux";
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
  * 4 novembre 2026) e la «nuova», in prova, con tre strade (trova un regalo, biglietto, regalo di gruppo).
  * Sotto, la classica ha «Come funziona», il biglietto, le garanzie e «Idee più amate»; la nuova va dritta ai regali
- * più amati (`RegaliPiuAmati`: prima i prodotti Gifty, poi gli stessi due, con le stelle del backoffice e «Guarda su Amazon»).
+ * più amati (`RegaliPiuAmati`: prima i prodotti Gifty, poi gli stessi due, con le stelle del backoffice e «Guarda su Amazon»,
+ * e in fondo «Carica altri prodotti», che ne aggiunge 3 alla volta).
  * Su «/» va `HOME_ATTIVA` (lib/ux.ts); la classica è anche su /regalo-di-gruppo, dove porta «Organizza un regalo di
  * gruppo» della nuova, e la nuova su /home-nuova (tutte e due non indicizzate).
  */
@@ -33,10 +34,6 @@ const PASSI: { titolo: string; testo?: string; icona: NomeIcona | null; tinta: s
   { titolo: "Noi teniamo il conto", testo: "Vedi chi ha pagato, senza chiedere", icona: "checklist_rtl", tinta: "bg-gold-field text-gold" },
   { titolo: "Crea un biglietto di auguri che tutti possano firmare facilmente", icona: null, tinta: "bg-surface ring-2 ring-accent" },
 ];
-
-/** Il pulsante grigio sotto quelli arancioni. */
-const CLASSI_SECONDARIO =
-  "flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte";
 
 function AperturaClassica() {
   return (
@@ -256,7 +253,17 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
  * I regali in evidenza della home nuova: titolo in corsivo al centro, il cuore dei preferiti sulla foto e
  * «Guarda su Amazon» al posto di «Regala in gruppo» e della quota a testa (per il gruppo c'è /regalo-di-gruppo).
  */
-function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto[]; stelle: Record<string, number>; conLikes: boolean }) {
+function RegaliPiuAmati({
+  inEvidenza,
+  stelle,
+  conLikes,
+  ciSonoAltri,
+}: {
+  inEvidenza: Prodotto[];
+  stelle: Record<string, number>;
+  conLikes: boolean;
+  ciSonoAltri: boolean;
+}) {
   if (!inEvidenza.length) return null;
   return (
     <section aria-labelledby="regali-amati" className="flex flex-col gap-6">
@@ -264,7 +271,7 @@ function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto
       <h2 id="regali-amati" className="text-center font-sans text-xl font-bold italic leading-snug text-ink">
         I Regali più amati dai nostri clienti…
       </h2>
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <CaricaAltriRegali ciSonoAltri={ciSonoAltri} conLikes={conLikes}>
         {/* per primi i prodotti fatti da Gifty (lib/dati/prodotti-gifty.ts) */}
         {PRODOTTI_GIFTY.map((p) => (
           <li key={p.slug}>
@@ -272,34 +279,11 @@ function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto
           </li>
         ))}
         {inEvidenza.map((p) => (
-          <li key={p.slug} className="flex flex-col gap-2 rounded-3xl bg-surface p-4 shadow-carta">
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex min-h-10 flex-col justify-center gap-0.5">
-                <Stelle n={stelleDi(stelle, p.slug)} />
-                {conLikes ? <span className="text-xs font-semibold text-ink">{likesDimostrativi(p.slug)}</span> : null}
-              </div>
-              <BottoneCuore slug={p.slug} nome={p.nome} />
-            </div>
-            <Link href={`/prodotto/${p.slug}`} className="block overflow-hidden rounded-2xl" tabIndex={-1} aria-hidden="true">
-              <ImmagineProdotto prodotto={p} className="h-44" />
-            </Link>
-            <div className="flex flex-col gap-1">
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="min-w-0 truncate text-xl font-semibold text-accent-2">
-                  <Link href={`/prodotto/${p.slug}`}>{p.nome}</Link>
-                </h3>
-                <span className="cifre shrink-0 text-xl font-extrabold text-accent">{formattaEuro(p.prezzoCent)}</span>
-              </div>
-              {p.perche || p.descrizione ? <p className="line-clamp-1 text-sm text-ink-soft">{p.perche || p.descrizione}</p> : null}
-            </div>
-            <a href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO} className={`${CLASSI_SECONDARIO} text-base`}>
-              Guarda su Amazon
-              <Icona nome="open_in_new" dimensione={20} />
-              <span className="sr-only"> (si apre in una nuova scheda)</span>
-            </a>
+          <li key={p.slug} className={CLASSI_RIQUADRO_REGALO}>
+            <SchedaRegaloAmato prodotto={p} stelle={stelleDi(stelle, p.slug)} conLikes={conLikes} />
           </li>
         ))}
-      </ul>
+      </CaricaAltriRegali>
     </section>
   );
 }
@@ -308,7 +292,7 @@ function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto
 export async function PaginaHome({ versione }: { versione: VersioneHome }) {
   const dati = datiServer();
   const [prodotti, impostazioni] = await Promise.all([dati.elencaProdotti(), versione === "nuova" ? dati.impostazioniCatalogo() : null]);
-  const inEvidenza = prodotti.slice(0, 2);
+  const inEvidenza = prodotti.slice(0, PRIMI_REGALI);
 
   return (
     <div className="gutter pb-10 pt-4 sm:pt-10">
@@ -317,7 +301,12 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
           // la nuova va dai pulsanti dritta ai regali
           <>
             <AperturaNuova />
-            <RegaliPiuAmati inEvidenza={inEvidenza} stelle={impostazioni?.stelle ?? {}} conLikes={conLikesDimostrativi()} />
+            <RegaliPiuAmati
+              inEvidenza={inEvidenza}
+              stelle={impostazioni?.stelle ?? {}}
+              conLikes={conLikesDimostrativi()}
+              ciSonoAltri={prodotti.length > PRIMI_REGALI}
+            />
           </>
         ) : (
           <>
