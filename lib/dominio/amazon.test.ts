@@ -24,6 +24,10 @@ describe("link affiliati Amazon.it", () => {
     expect(conv("https://www.amazon.it/dp/B0C4P1MF8V#customerReviews")).toMatchObject({ url: `https://www.amazon.it/dp/B0C4P1MF8V?tag=${TAG}#customerReviews` });
     expect(conv("https://www.amazon.it/dp/B0C4P1MF8V?th=1#a?b=c")).toMatchObject({ url: `https://www.amazon.it/dp/B0C4P1MF8V?th=1&tag=${TAG}#a?b=c` });
   });
+  it("il tag è quello del progetto Gifty, e i link con il vecchio tag personale passano a quello", () => {
+    expect(TAG).toBe("gifty01c-21");
+    expect(urlPerAcquisto("https://www.amazon.it/dp/B0FNN81ZMJ?tag=pacestefano77-21")).toBe("https://www.amazon.it/dp/B0FNN81ZMJ?tag=gifty01c-21");
+  });
   it("tag già presente: lo sostituisce, nella stessa posizione, senza duplicarlo", () => {
     expect(conv("https://www.amazon.it/dp/B0C4P1MF8V?tag=altro-21")).toEqual({ stato: "convertito", url: `https://www.amazon.it/dp/B0C4P1MF8V?tag=${TAG}` });
     expect(conv("https://www.amazon.it/dp/B0C4P1MF8V?th=1&tag=altro-21&psc=1#x")).toMatchObject({ url: `https://www.amazon.it/dp/B0C4P1MF8V?th=1&tag=${TAG}&psc=1#x` });

@@ -6,6 +6,7 @@
 import { createUserWithEmailAndPassword, signInAnonymously, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { setLogLevel } from "firebase/firestore";
 import { beforeAll, describe, expect, it } from "vitest";
+import { TAG_AFFILIATO_AMAZON } from "../../lib/dominio/amazon";
 import { ErroreDominio } from "../../lib/dominio/operazioni";
 import { collettaDiProva } from "../../lib/dominio/fixture";
 import type { Dati } from "../../lib/dati/tipi";
@@ -316,7 +317,7 @@ describe("area riservata: ordine del catalogo con Firestore e Auth veri (emulato
 });
 
 describe("migrazione dei link affiliati su Firestore (emulatore)", () => {
-  const TAGGED = (asin: string) => `https://www.amazon.it/dp/${asin}?tag=pacestefano77-21`;
+  const TAGGED = (asin: string) => `https://www.amazon.it/dp/${asin}?tag=${TAG_AFFILIATO_AMAZON}`;
 
   it("converte i soli campi pertinenti, è idempotente e si può annullare dal backup", async () => {
     const { dbAdmin } = await import("../../lib/firebase/admin");
@@ -348,14 +349,14 @@ describe("migrazione dei link affiliati su Firestore (emulatore)", () => {
     expect((await eseguiPiano(archivio, piano)).scritti).toBe(6);
 
     expect((await db.collection("prodotti").doc("a").get()).get("urlEsterno")).toBe(TAGGED("B0C4P1MF8V"));
-    expect((await db.collection("prodotti").doc("b").get()).get("urlEsterno")).toBe("https://www.amazon.it/dp/B0F6V789N8?th=1&tag=pacestefano77-21#x");
+    expect((await db.collection("prodotti").doc("b").get()).get("urlEsterno")).toBe(`https://www.amazon.it/dp/B0F6V789N8?th=1&tag=${TAG_AFFILIATO_AMAZON}#x`);
     expect((await db.collection("prodotti").doc("c").get()).get("urlEsterno")).toBe(TAGGED("B0C8HD6F5W"));
     expect((await db.collection("prodotti").doc("d").get()).get("urlEsterno")).toBe(TAGGED("B07J5PGC8W")); // creato dall'ASIN
     expect((await db.collection("prodotti").doc("e").get()).get("urlEsterno")).toBe("https://www.amazon.com/dp/B0B8P52RKW"); // altro dominio
     expect((await db.collection("prodotti").doc("f").get()).get("urlEsterno")).toBe("https:/amazon it/dp/X"); // malformato
     expect((await db.collection("collette").doc("c1").get()).get("prodotto.urlEsterno")).toBe(TAGGED("B0C4P1MF8V"));
     expect((await db.collection("collette").doc("c2").get()).get("prodotto.urlEsterno")).toBe("https://www.amazon.it/dp/B0AAAAAAAA"); // a mano
-    expect((await db.collection("collette").doc("c1").collection("proposte").doc("p1").get()).get("prodotto.urlEsterno")).toContain("tag=pacestefano77-21");
+    expect((await db.collection("collette").doc("c1").collection("proposte").doc("p1").get()).get("prodotto.urlEsterno")).toContain(`tag=${TAG_AFFILIATO_AMAZON}`);
     // il resto dei documenti non è cambiato
     const a = (await db.collection("prodotti").doc("a").get()).data()!;
     expect(a).toMatchObject({ nome: "a", prezzoCent: 1000, asin: "B0C4P1MF8V", immagine: { foto: "/foto-prodotti/PRD-001.webp" }, attivo: true });
