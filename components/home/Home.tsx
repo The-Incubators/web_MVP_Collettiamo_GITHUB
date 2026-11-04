@@ -4,6 +4,7 @@ import { BottoneLink, Icona, ImmagineProdotto, type NomeIcona } from "@/componen
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
+import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
 import type { Prodotto } from "@/lib/tipi";
@@ -251,7 +252,7 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
   );
 }
 
-/** Le stelle (da 1 a 5) che chi gestisce il sito ha dato al prodotto nel backoffice del catalogo. */
+/** Le stelle (da 1 a 5) che chi gestisce il sito ha dato al prodotto nel backoffice del catalogo; senza voto 3, come lì. */
 function Stelle({ n }: { n: number }) {
   return (
     <span className="flex items-center gap-1" title="Il voto di Gifty">
@@ -298,7 +299,7 @@ function RegaliPiuAmati({ inEvidenza, stelle, conLikes }: { inEvidenza: Prodotto
           <li key={p.slug} className="flex flex-col gap-2 rounded-3xl bg-surface p-4 shadow-carta">
             <div className="flex items-start justify-between gap-2">
               <div className="flex min-h-10 flex-col justify-center gap-0.5">
-                {stelle[p.slug] ? <Stelle n={stelle[p.slug]} /> : null}
+                <Stelle n={stelleDi(stelle, p.slug)} />
                 {conLikes ? <span className="text-xs font-semibold text-ink">{likesDimostrativi(p.slug)}</span> : null}
               </div>
               <BottoneCuore slug={p.slug} nome={p.nome} />
