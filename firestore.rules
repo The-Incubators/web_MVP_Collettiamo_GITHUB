@@ -24,6 +24,20 @@ service cloud.firestore {
         && collettaDi(slug).votazione.scade > request.time;
     }
 
+    function reminderValido(d) {
+      return d.keys().hasOnly(['nome', 'tipo', 'giorno', 'mese', 'anno', 'preavvisoSettimane', 'nota', 'aggiornatoIl'])
+        && d.keys().hasAll(['nome', 'tipo', 'giorno', 'mese', 'anno', 'preavvisoSettimane', 'nota', 'aggiornatoIl'])
+        && d.nome is string && d.nome.size() >= 1 && d.nome.size() <= 60
+        && d.tipo in ['compleanno', 'anniversario', 'onomastico', 'altro']
+        && d.mese is int && d.mese >= 1 && d.mese <= 12
+        && d.giorno is int && d.giorno >= 1
+        && d.giorno <= [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][d.mese - 1]
+        && (d.anno == null || (d.anno is int && d.anno >= 1900 && d.anno <= 2100))
+        && d.preavvisoSettimane in [1, 2, 3, 4]
+        && d.nota is string && d.nota.size() <= 200
+        && d.aggiornatoIl == request.time;
+    }
+
     match /prodotti/{id} {
       allow read: if autenticato();
       allow write: if false;                 // solo Admin SDK (script di seed)
@@ -39,6 +53,15 @@ service cloud.firestore {
                               && prodotto.size() <= 80
                               && request.resource.data.keys().hasOnly(['creatoIl'])
                               && request.resource.data.creatoIl == request.time;
+      }
+
+      // I Reminder (compleanni e ricorrenze), solo del proprietario. Stessi controlli di lib/dominio/reminder.ts;
+      // il 29 febbraio è ammesso (negli anni non bisestili si festeggia il 28).
+      match /reminder/{id} {
+        allow read, delete: if autenticato() && request.auth.uid == uid;
+        allow create, update: if autenticato() && request.auth.uid == uid
+                              && id.matches('^[A-Za-z0-9_-]{6,40}$')
+                              && reminderValido(request.resource.data);
       }
     }
 

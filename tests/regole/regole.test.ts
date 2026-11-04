@@ -335,6 +335,53 @@ describe("preferiti", () => {
   });
 });
 
+describe("reminder", () => {
+  const rem = (db: ReturnType<typeof comePersona>, uid: string, id = "abcdef123456") => doc(db, "utenti", uid, "reminder", id);
+  const dati = (p: Record<string, unknown> = {}) => ({
+    nome: "Giulia",
+    tipo: "compleanno",
+    giorno: 29,
+    mese: 2,
+    anno: null,
+    preavvisoSettimane: 2,
+    nota: "",
+    aggiornatoIl: serverTimestamp(),
+    ...p,
+  });
+  it("ognuno legge, scrive e cancella solo i propri", async () => {
+    const db = comeOrg(ORG);
+    await assertSucceeds(setDoc(rem(db, ORG), dati()));
+    await assertSucceeds(setDoc(rem(db, ORG), dati({ anno: 1990, nota: "ama il cioccolato" })));
+    await assertSucceeds(getDocs(collection(db, "utenti", ORG, "reminder")));
+    await assertSucceeds(deleteDoc(rem(db, ORG)));
+  });
+  it("nessuno tocca quelli di un altro, e senza account niente", async () => {
+    await env.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(rem(ctx.firestore(), ALTRO_ORG), { ...dati(), aggiornatoIl: new Date() });
+    });
+    const db = comeOrg(ORG);
+    await assertFails(getDoc(rem(db, ALTRO_ORG)));
+    await assertFails(getDocs(collection(db, "utenti", ALTRO_ORG, "reminder")));
+    await assertFails(setDoc(rem(db, ALTRO_ORG, "altroid123"), dati()));
+    await assertFails(deleteDoc(rem(db, ALTRO_ORG)));
+    await assertFails(setDoc(rem(env.unauthenticatedContext().firestore(), ORG), dati()));
+  });
+  it("rifiuta date impossibili, campi in più o mancanti, testi troppo lunghi", async () => {
+    const db = comeOrg(ORG);
+    await assertFails(setDoc(rem(db, ORG), dati({ giorno: 31, mese: 4 })));
+    await assertFails(setDoc(rem(db, ORG), dati({ mese: 13 })));
+    await assertFails(setDoc(rem(db, ORG), dati({ tipo: "boh" })));
+    await assertFails(setDoc(rem(db, ORG), dati({ preavvisoSettimane: 9 })));
+    await assertFails(setDoc(rem(db, ORG), dati({ nome: "x".repeat(61) })));
+    await assertFails(setDoc(rem(db, ORG), dati({ nota: "x".repeat(201) })));
+    await assertFails(setDoc(rem(db, ORG), dati({ email: "x@example.com" })));
+    await assertFails(setDoc(rem(db, ORG), dati({ aggiornatoIl: new Date(0) })));
+    const { nota: _nota, ...senzaNota } = dati();
+    await assertFails(setDoc(rem(db, ORG), senzaNota));
+    await assertFails(setDoc(rem(db, ORG, "corto"), dati()));
+  });
+});
+
 describe("biglietto di auguri", () => {
   it("dal browser nessuno legge o scrive biglietti, firme e link: passa tutto dal server", async () => {
     await env.withSecurityRulesDisabled(async (c) => {

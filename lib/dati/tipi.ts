@@ -1,5 +1,6 @@
 import type { Operazione } from "../dominio/operazioni";
 import type { ImpostazioniCatalogo } from "../dominio/ordineCatalogo";
+import type { Reminder } from "../dominio/reminder";
 import { chiaveSottocategoria } from "../dominio/regali";
 import { FASCE_PREZZO, type Colletta, type Evento, type FiltriProdotti, NuovaProposta, NuovoEvento, Partecipante, Prodotto, ProdottoColletta, Proposta, Voto } from "../tipi";
 
@@ -58,6 +59,11 @@ export interface Dati extends DatiLettura {
   /** I preferiti di chi ha un account: gli slug dei prodotti del catalogo. */
   preferiti(uid: string): Promise<string[]>;
   impostaPreferito(uid: string, prodottoSlug: string, preferito: boolean): Promise<void>;
+  /** I Reminder (compleanni e ricorrenze) di chi ha un account. */
+  reminder(uid: string): Promise<Reminder[]>;
+  /** Crea o sostituisce una ricorrenza, con il suo id. */
+  salvaReminder(uid: string, r: Reminder): Promise<void>;
+  eliminaReminder(uid: string, id: string): Promise<void>;
   /** Registra che un promemoria è stato inoltrato: incrementa `solleciti` sulle righe e scrive l'evento. */
   registraSolleciti(slug: string, pid: string[], momento: string): Promise<void>;
 }

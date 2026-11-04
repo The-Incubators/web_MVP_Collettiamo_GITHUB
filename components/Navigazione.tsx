@@ -5,13 +5,16 @@ import { usePathname } from "next/navigation";
 import { usePreferiti } from "./PreferitiProvider";
 import { Icona, type NomeIcona } from "./ui/Icona";
 
-/** Le cinque voci principali: barra in basso sul telefono, collegamenti nell'intestazione da tablet in su. */
+/**
+ * Le cinque voci principali: barra in basso sul telefono, collegamenti nell'intestazione da tablet in su.
+ * «Reminder» ha preso il posto di «Collette» (4 novembre 2026): le collette restano nel menu del profilo.
+ */
 const VOCI: { href: string; testo: string; icona: NomeIcona }[] = [
   { href: "/", testo: "Home", icona: "home" },
   { href: "/catalogo", testo: "Catalogo", icona: "grid_view" },
   { href: "/regalo", testo: "Trova regalo", icona: "auto_awesome" },
   { href: "/preferiti", testo: "Preferiti", icona: "favorite" },
-  { href: "/le-mie-collette", testo: "Collette", icona: "featured_seasonal_and_gifts" },
+  { href: "/reminder", testo: "Reminder", icona: "notifications" },
 ];
 
 /**

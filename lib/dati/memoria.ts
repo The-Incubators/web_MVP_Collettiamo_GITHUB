@@ -11,6 +11,7 @@ import {
   type Risultato,
 } from "../dominio/operazioni";
 import type { ImpostazioniCatalogo } from "../dominio/ordineCatalogo";
+import { MAX_REMINDER, oggiLocale, validaReminder, type Reminder } from "../dominio/reminder";
 import { chiusuraVotazione, idVoto, MAX_PROPOSTE_PER_PERSONA, proposteDi, votazioneScaduta } from "../dominio/votazione";
 import type { Colletta, Evento, FiltriProdotti, NuovaProposta, NuovoEvento, Partecipante, Prodotto, ProdottoColletta, Proposta, Voto } from "../tipi";
 import { CATALOGO } from "./catalogo-dati";
@@ -25,6 +26,7 @@ interface Archivio {
   proposte: Map<string, Map<string, Proposta>>;
   voti: Map<string, Map<string, Voto>>;
   preferiti: Map<string, Set<string>>;
+  reminder: Map<string, Map<string, Reminder>>;
   impostazioniCatalogo: ImpostazioniCatalogo | null;
   ascoltatori: Set<() => void>;
 }
@@ -41,6 +43,7 @@ function archivio(): Archivio {
       proposte: new Map(),
       voti: new Map(),
       preferiti: new Map(),
+      reminder: new Map(),
       impostazioniCatalogo: null,
       ascoltatori: new Set(),
     };
@@ -180,6 +183,23 @@ export function creaDatiMemoria(uid: string): Dati {
       if (preferito) insieme.add(prodottoSlug);
       else insieme.delete(prodottoSlug);
       a.preferiti.set(uid, insieme);
+    },
+
+    async reminder(utente) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi leggere i reminder di altri.");
+      return [...(a.reminder.get(uid)?.values() ?? [])].map(copia);
+    },
+    async salvaReminder(utente, grezzo) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi modificare i reminder di altri.");
+      const r = validaReminder(grezzo, oggiLocale());
+      const miei = a.reminder.get(uid) ?? new Map<string, Reminder>();
+      if (!miei.has(r.id) && miei.size >= MAX_REMINDER) throw new ErroreDominio("Hai raggiunto il numero massimo di ricorrenze.");
+      miei.set(r.id, r);
+      a.reminder.set(uid, miei);
+    },
+    async eliminaReminder(utente, id) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi modificare i reminder di altri.");
+      a.reminder.get(uid)?.delete(id);
     },
 
     async salvaUtente() {

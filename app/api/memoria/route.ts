@@ -9,7 +9,7 @@ const METODI_AMMESSI = new Set([
   "elencaProdotti", "prodotto", "colletta", "partecipanti", "salvaUtente", "slugLibero", "creaColletta",
   "aggiornaColletta", "eliminaBozza", "elencaCollette", "eventi", "registraEvento", "esegui",
   "aggiungiInvitati", "registraSolleciti", "proposte", "voti", "impostaProposteIniziali", "aggiungiProposta",
-  "rimuoviProposta", "vota", "preferiti", "impostaPreferito",
+  "rimuoviProposta", "vota", "preferiti", "impostaPreferito", "reminder", "salvaReminder", "eliminaReminder",
 ]);
 
 /** Ponte fra il browser e l'adattatore in memoria. Esiste solo quando Firebase non è configurato. */

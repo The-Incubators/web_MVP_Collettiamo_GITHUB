@@ -24,6 +24,7 @@ import {
 import { authFirebase, dbFirebase } from "../firebase/client";
 import { creaInvitati, eseguiOperazione, ErroreDominio } from "../dominio/operazioni";
 import { MAX_PROPOSTE_PER_PERSONA } from "../dominio/votazione";
+import { oggiLocale, ripulisciElenco, validaReminder } from "../dominio/reminder";
 import type { Colletta } from "../tipi";
 import { collettaDaDoc, docDaColletta, docDaPartecipante, docDaProposta, eventoDaDoc, partecipanteDaDoc, prodottoDaDoc, propostaDaDoc, votoDaDoc } from "./mappa";
 import { idVoto } from "../dominio/votazione";
@@ -142,6 +143,21 @@ export function creaDatiFirestore(): Dati {
       const ref = doc(db, "utenti", utente, "preferiti", prodottoSlug);
       if (preferito) await setDoc(ref, { creatoIl: serverTimestamp() });
       else await deleteDoc(ref);
+    },
+
+    async reminder(utente) {
+      const snap = await getDocs(collection(db, "utenti", utente, "reminder"));
+      return ripulisciElenco(
+        snap.docs.map((d) => ({ ...d.data(), id: d.id })),
+        oggiLocale(),
+      );
+    },
+    async salvaReminder(utente, grezzo) {
+      const { id, ...r } = validaReminder(grezzo, oggiLocale());
+      await setDoc(doc(db, "utenti", utente, "reminder", id), { ...r, aggiornatoIl: serverTimestamp() });
+    },
+    async eliminaReminder(utente, id) {
+      await deleteDoc(doc(db, "utenti", utente, "reminder", id));
     },
 
     async salvaUtente(u) {
