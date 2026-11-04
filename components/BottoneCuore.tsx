@@ -24,8 +24,11 @@ export function BottoneCuore({ slug, nome, className = "" }: { slug: string; nom
   );
 }
 
-/** Lo stesso preferito, come pillola con la scritta (catalogo del regalo singolo, sopra «Guarda su Amazon»). */
-export function BottonePreferitiTesto({ slug, nome }: { slug: string; nome: string }) {
+/**
+ * Lo stesso preferito, come pillola con la scritta, sopra «Guarda su Amazon» nel regalo singolo:
+ * piccola nel catalogo, `grande` nella scheda del prodotto.
+ */
+export function BottonePreferitiTesto({ slug, nome, grande }: { slug: string; nome: string; grande?: boolean }) {
   const { preferiti, toggle } = usePreferiti();
   const dentro = preferiti.has(slug);
   return (
@@ -34,7 +37,7 @@ export function BottonePreferitiTesto({ slug, nome }: { slug: string; nome: stri
       aria-pressed={dentro}
       aria-label={dentro ? `Nei preferiti: ${nome}, tocca per toglierlo` : `Aggiungi ai preferiti: ${nome}`}
       onClick={() => toggle(slug)}
-      className={`flex min-h-tocco w-full items-center justify-center gap-1.5 rounded-full px-3 text-xs font-bold transition-colors ${
+      className={`flex w-full items-center justify-center gap-1.5 rounded-full px-3 font-bold transition-colors ${grande ? "min-h-azione text-base" : "min-h-tocco text-xs"} ${
         dentro ? "bg-cta-field text-cta-2" : "bg-surface-2 text-ink hover:bg-line"
       }`}
     >

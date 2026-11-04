@@ -8,7 +8,7 @@ import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
 import type { Prodotto } from "@/lib/tipi";
-import { CATALOGO_GRUPPO, type VersioneHome } from "@/lib/ux";
+import { CATALOGO_GRUPPO, conModo, type VersioneHome } from "@/lib/ux";
 
 /**
  * Le due home del sito. Cambia solo la parte in alto: la «classica» (il titolo sul regalo di gruppo, fino al
@@ -219,7 +219,7 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
       <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {inEvidenza.map((p) => (
           <li key={p.slug} className="flex flex-col gap-2 rounded-3xl bg-surface p-4 shadow-carta">
-            <Link href={`/prodotto/${p.slug}`} className="relative block overflow-hidden rounded-2xl">
+            <Link href={conModo(`/prodotto/${p.slug}`, "gruppo")} className="relative block overflow-hidden rounded-2xl">
               <ImmagineProdotto prodotto={p} className="h-44" />
               <span className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-gold-field px-2 py-1 text-[11px] font-bold text-ink shadow-carta">
                 <Icona nome="group" dimensione={14} />
@@ -229,7 +229,7 @@ function IdeeInEvidenza({ inEvidenza }: { inEvidenza: Prodotto[] }) {
             <div className="flex flex-col gap-1">
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="min-w-0 truncate text-xl font-semibold text-accent-2">
-                  <Link href={`/prodotto/${p.slug}`}>{p.nome}</Link>
+                  <Link href={conModo(`/prodotto/${p.slug}`, "gruppo")}>{p.nome}</Link>
                 </h3>
                 <span className="cifre shrink-0 text-xl font-extrabold text-accent">{formattaEuro(p.prezzoCent)}</span>
               </div>

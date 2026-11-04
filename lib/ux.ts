@@ -69,6 +69,7 @@ export const HOME_ATTIVA: VersioneHome = "nuova";
  * «gruppo» (dal regalo di gruppo e dalle collette) con la frase sulla quota, «Simula per N invitati», la quota a
  * testa e «Regalalo»; «singolo» senza tutto questo, con «Aggiungi ai preferiti» e «Guarda su Amazon».
  * Senza `modo` (barra in basso, Trova il regalo, preferiti…) vale quella che va con la home attiva.
+ * Anche la scheda del prodotto (/prodotto/…) ha le due varianti, e il catalogo le passa la sua.
  */
 export type ModoCatalogo = "gruppo" | "singolo";
 
@@ -79,4 +80,9 @@ export const CATALOGO_GRUPPO = "/catalogo?modo=gruppo";
 
 export function modoCatalogo(v: string | undefined): ModoCatalogo {
   return v === "gruppo" || v === "singolo" ? v : MODO_CATALOGO_PREDEFINITO;
+}
+
+/** Un indirizzo del catalogo o di una scheda prodotto nella variante `modo` (si scrive solo se non è quella predefinita). */
+export function conModo(percorso: string, modo: ModoCatalogo): string {
+  return modo === MODO_CATALOGO_PREDEFINITO ? percorso : `${percorso}?modo=${modo}`;
 }

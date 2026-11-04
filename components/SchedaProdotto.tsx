@@ -7,6 +7,7 @@ import { daProdotto } from "@/lib/dominio/regali";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { quotaProposta } from "@/lib/dominio/quota";
 import type { Prodotto } from "@/lib/tipi";
+import { conModo } from "@/lib/ux";
 
 export function testoConsegna(giorni: number): string {
   return giorni === 1 ? "Consegna stimata: 1 giorno" : `Consegna stimata: ${giorni} giorni`;
@@ -32,9 +33,10 @@ export function SchedaProdotto({
   persone?: number;
   azione?: "colletta" | "amazon" | "singolo";
 }) {
-  const scheda = `/prodotto/${prodotto.slug}`;
   const amazon = azione === "amazon";
   const singolo = azione === "singolo";
+  // la scheda del prodotto si apre nella stessa variante: «Regalalo» va col regalo di gruppo, gli altri col singolo
+  const scheda = conModo(`/prodotto/${prodotto.slug}`, singolo || amazon ? "singolo" : "gruppo");
   return (
     <article className="flex h-full flex-col gap-2 rounded-3xl bg-surface p-2.5 shadow-carta sm:p-3">
       <div className="relative">

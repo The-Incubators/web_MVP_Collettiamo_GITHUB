@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
 import { PopupProdotto } from "@/components/PopupProdotto";
 import { datiServer } from "@/lib/dati";
+import { modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
@@ -10,14 +11,22 @@ export const dynamic = "force-dynamic";
  * posto di cambiare pagina si apre un popup sopra quella dov'eri. Lo stesso indirizzo aperto da fuori,
  * o ricaricato, mostra la pagina intera (app/(sito)/prodotto/[slug]/page.tsx): il link resta condivisibile.
  */
-export default async function PopupSchedaProdotto({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PopupSchedaProdotto({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const { slug } = await params;
+  const v = (await searchParams).modo;
+  const modo = modoCatalogo(typeof v === "string" ? v : undefined);
   const p = await datiServer().prodotto(slug);
   if (!p || !p.attivo) notFound();
 
   return (
     <PopupProdotto titolo={p.nome}>
-      <DettaglioProdotto p={p} comeTitolo="h2" />
+      <DettaglioProdotto p={p} modo={modo} comeTitolo="h2" />
     </PopupProdotto>
   );
 }
