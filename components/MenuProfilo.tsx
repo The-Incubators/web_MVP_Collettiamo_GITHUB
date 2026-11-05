@@ -8,8 +8,8 @@ import { useApp } from "./AppProvider";
 import { Icona } from "./ui/Icona";
 
 /**
- * Il tondo in alto a destra: iniziali di chi ha accesso, altrimenti l'omino. Apre le voci secondarie;
- * quelle principali stanno nella barra in basso (telefono) o nell'intestazione (da tablet in su).
+ * Il tondo dell'account in alto a destra, da tablet in su (sul telefono c'è «Account» nella barra in basso): iniziali di
+ * chi ha accesso, altrimenti l'omino. Apre le voci secondarie; quelle principali stanno nell'intestazione.
  */
 export function MenuProfilo() {
   const { utente, pronto, auth } = useApp();
@@ -40,7 +40,7 @@ export function MenuProfilo() {
   }, [aperto]);
 
   const voci: { href: string; testo: string }[] = [
-    { href: "/crea", testo: "Organizza una colletta" },
+    { href: "/crea", testo: "Organizza un regalo di gruppo" },
     { href: "/account", testo: "Il tuo account" },
     ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : []),
     { href: "/privacy", testo: "Come trattiamo i dati" },
@@ -56,12 +56,12 @@ export function MenuProfilo() {
         aria-expanded={aperto}
         aria-controls="menu-profilo"
         onClick={() => setAperto((a) => !a)}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-on-accent transition-transform active:scale-95"
+        className="tondo-account transition-transform active:scale-95"
       >
         {aperto ? (
           <Icona nome="close" dimensione={22} />
         ) : conAccount ? (
-          <span aria-hidden="true" className="font-display text-sm font-bold">
+          <span aria-hidden="true">
             {inizialiDi(conAccount.nome || conAccount.email || "?")}
           </span>
         ) : (

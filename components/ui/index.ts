@@ -12,3 +12,6 @@ export * from "./RigaPartecipante";
 export * from "./SchedaScelta";
 export * from "./Interruttore";
 export * from "./Dialogo";
+export * from "./Carta";
+export * from "./IconaTratto";
+export * from "./Iniziali";

@@ -3,30 +3,29 @@ import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "reac
 import { REL_LINK_PRODOTTO } from "@/lib/dominio/amazon";
 
 /**
- * Direzione A (5 novembre 2026): bottoni verdi con angoli da 10 px, l'arancio resta per nastro e dettagli.
- * - `primario`: verde del marchio, l'azione principale di una schermata.
- * - `azione`: le conversioni (Partecipo, Firma, Apri la raccolta…): verde come il primario, testo più grande e ombra.
- * - `secondario`: chiaro con bordo. `testuale`: solo testo.
+ * I pulsanti di Gifty UX v2 (docs/specs/gifty-ux-v2/design.md §4, classi `.btn` in app/sistema.css): 48 px, raggio 10,
+ * Source Sans 700.
+ * - `primario`: verde pieno, l'azione principale di un blocco (una sola per blocco). `azione` è lo stesso pulsante,
+ *   il nome resta per le conversioni già scritte così.
+ * - `contorno` (anche `secondario`): bordo verde su bianco, per le azioni alternative alla principale.
+ * - `quieto` (anche `testuale`): pillola verde tinta per le azioni secondarie dentro un blocco. Mai testo flottante
+ *   (Cri, 5 novembre 2026): anche le vecchie azioni «testuali» prendono il fondo tinto.
  */
-export type VarianteBottone = "primario" | "azione" | "secondario" | "testuale";
+export type VarianteBottone = "primario" | "azione" | "contorno" | "secondario" | "quieto" | "testuale";
 export type DimensioneBottone = "normale" | "piccolo";
 
 export function classiBottone(variante: VarianteBottone = "primario", dimensione: DimensioneBottone = "normale", extra = ""): string {
-  const base =
-    "inline-flex select-none items-center justify-center gap-2 rounded-controllo font-bold transition-[background-color,border-color,transform] active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50 disabled:active:translate-y-0";
-  const misura =
-    variante === "testuale"
-      ? "min-h-tocco px-2 text-base"
-      : dimensione === "piccolo"
-        ? `min-h-tocco px-4 ${variante === "azione" ? "text-[19px]" : "text-sm"}`
-        : `min-h-azione px-6 ${variante === "azione" ? "text-[19px]" : "text-base"}`;
-  const colori = {
-    primario: "bg-accent text-on-accent hover:bg-accent-2",
-    azione: "bg-accent text-on-accent shadow-sollevata hover:bg-accent-2",
-    secondario: "border-[1.5px] border-line bg-surface text-accent hover:border-accent",
-    testuale: "text-accent underline-offset-4 hover:underline",
+  const tipo = {
+    primario: "btn-primario",
+    azione: "btn-primario",
+    contorno: "btn-contorno",
+    secondario: "btn-contorno",
+    quieto: "btn-quieto",
+    testuale: "btn-quieto",
   }[variante];
-  return `${base} ${misura} ${colori} ${extra}`.trim();
+  // piccolo: alto 44 px (il minimo per il tocco) e testo 14 px
+  const misura = dimensione === "piccolo" && tipo !== "btn-quieto" ? "min-h-tocco px-4 text-sm" : "";
+  return `btn ${tipo} select-none disabled:cursor-not-allowed ${misura} ${extra}`.replace(/\s+/g, " ").trim();
 }
 
 interface ProprietaComuni {

@@ -1,20 +1,18 @@
 import Link from "next/link";
-import { Icona } from "@/components/ui";
+import { IconaTratto } from "@/components/ui/IconaTratto";
 
 /**
- * Il tutorial «Guarda come si fa» (decisioni di Cri, 5 novembre 2026): una pastiglia dentro la scheda, mai un'azione
- * principale né un link di testo. Il ▶ indica un video, quindi compare solo con `video`, quando il link apre il video
- * del tutorial; fino ad allora la pastiglia porta all'esempio, senza icona.
+ * La pillola «Guarda come si fa» (design.md §4; decisioni di Cri, 5 novembre 2026): tonda, 44 px, filo `line-strong`,
+ * sempre dentro il blocco a cui appartiene, accanto o dopo l'azione principale; mai un'azione principale né un link di
+ * testo. Il ▶ in un tondo verde indica un video, quindi compare solo con `video`, quando il link apre il video del
+ * tutorial; fino ad allora la pillola porta all'esempio, senza icona.
  */
 export function ChipTutorial({ href, video = false, className = "" }: { href: string; video?: boolean; className?: string }) {
   return (
-    <Link
-      href={href}
-      className={`inline-flex min-h-tocco shrink-0 items-center gap-1.5 rounded-full border border-line bg-field px-3 py-1 text-xs font-bold text-ink-soft transition-colors hover:border-accent hover:text-accent ${video ? "pl-1.5" : ""} ${className}`}
-    >
+    <Link href={href} className={`pillola ${className}`.trim()}>
       {video ? (
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-field text-accent">
-          <Icona nome="play_arrow" dimensione={16} piena />
+        <span className="play">
+          <IconaTratto nome="play" />
         </span>
       ) : null}
       Guarda come si fa
