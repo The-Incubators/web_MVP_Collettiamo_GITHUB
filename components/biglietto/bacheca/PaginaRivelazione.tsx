@@ -4,11 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Icona } from "@/components/ui";
-import { testoSu } from "@/lib/dominio/bacheca";
 import type { BigliettoPubblico, Firma } from "@/lib/tipi";
 import { baseUrlClient } from "@/lib/url";
 import { Finestra } from "../comuni";
-import { aspettoDaBiglietto } from "./AnteprimaBacheca";
 import { Avviso, condividiLink, useAvviso } from "./Avviso";
 import { Rivelazione } from "./Rivelazione";
 import { useOrganizzatore } from "./useOrganizzatore";
@@ -23,7 +21,6 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
   const [avviso, setAvviso] = useAvviso();
   const [riapri, setRiapri] = useState(false);
   const [invio, setInvio] = useState(false);
-  const accento = aspettoDaBiglietto(b).colori.accento;
 
   async function manda() {
     const url = `${baseUrlClient()}/b/${b.slug}`;
@@ -44,7 +41,7 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
   }
 
   const alto = anteprima ? (
-    <Link href={`/b/${b.slug}`} className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-white/90 py-1 pl-2 pr-4 text-sm font-semibold text-[#16241F] shadow-sollevata hover:bg-white">
+    <Link href={`/b/${b.slug}`} className="btn btn-quieto bg-surface shadow-carta">
       <Icona nome="close" dimensione={20} />
       Anteprima · torna alla bacheca
     </Link>
@@ -52,17 +49,12 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
 
   const basso =
     !anteprima && organizzatore ? (
-      <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => void manda()}
-          className="inline-flex min-h-14 flex-1 items-center justify-center gap-2 rounded-full px-5 text-[17px] font-bold shadow-sollevata"
-          style={{ backgroundColor: accento, color: testoSu(accento) }}
-        >
-          <Icona nome="share" dimensione={22} />
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" onClick={() => void manda()} className="btn btn-primario flex-1">
+          <Icona nome="share" dimensione={20} />
           Manda a {b.festeggiato}
         </button>
-        <button type="button" onClick={() => setRiapri(true)} className="inline-flex min-h-14 items-center gap-1.5 rounded-full bg-white px-5 font-semibold text-[#16241F] shadow-sollevata hover:bg-white/90">
+        <button type="button" onClick={() => setRiapri(true)} className="btn btn-quieto bg-surface">
           <Icona nome="lock_open" dimensione={20} />
           Riapri
         </button>
@@ -77,10 +69,10 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
         <div className="flex flex-col gap-4">
           <p>Il link torna a essere la bacheca e si potranno aggiungere altri messaggi. La sorpresa si rivede quando lo consegni di nuovo.</p>
           <div className="flex flex-col gap-2 sm:flex-row-reverse">
-            <button type="button" disabled={invio} onClick={() => void confermaRiapri()} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full bg-accent-2 px-5 font-bold text-white disabled:opacity-60">
-              {invio ? "Un momento…" : "Riapri"}
+            <button type="button" disabled={invio} aria-busy={invio || undefined} onClick={() => void confermaRiapri()} className="btn btn-primario flex-1">
+              Riapri
             </button>
-            <button type="button" onClick={() => setRiapri(false)} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full border border-line px-5 font-semibold hover:bg-surface-2">
+            <button type="button" onClick={() => setRiapri(false)} className="btn btn-contorno flex-1">
               Annulla
             </button>
           </div>

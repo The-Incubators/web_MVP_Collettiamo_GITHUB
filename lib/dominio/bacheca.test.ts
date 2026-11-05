@@ -8,6 +8,15 @@ import {
   coloriDelModello,
   coloriValidi,
   dataEventoValida,
+  elencoNomi,
+  inizialiDi,
+  nomeOccasione,
+  occasioneBigliettoValida,
+  OCCASIONI_EDITOR,
+  stileCartaDi,
+  STILI_CARTA,
+  titoloAnteprima,
+  titoloDopoCambioOccasione,
   durataLettura,
   htmlDaTestoSemplice,
   NOME_ESEMPIO,
@@ -101,5 +110,62 @@ describe("colore dei bigliettini", () => {
     expect(coloreDellaNota(null, 0)).toBe(COLORI_NOTA[0]);
     expect(coloreDellaNota(undefined, COLORI_NOTA.length + 1)).toBe(COLORI_NOTA[1]);
     expect(coloreDellaNota(COLORI_NOTA[4], 0)).toBe(COLORI_NOTA[4]);
+  });
+});
+
+describe("occasioni dell'editor (elenco unico)", () => {
+  it("sono le dieci, ognuna con il titolo che contiene il nome", () => {
+    expect(OCCASIONI_EDITOR).toHaveLength(10);
+    for (const o of OCCASIONI_EDITOR) expect(titoloPredefinito(o.id, "Luca")).toContain("Luca");
+    expect(titoloPredefinito("natale", "Luca")).toBe("Buon Natale, Luca!");
+  });
+  it("il server accetta le dieci e quelle di prima, nient'altro", () => {
+    expect(occasioneBigliettoValida("san-valentino")).toBe(true);
+    expect(occasioneBigliettoValida("condoglianze")).toBe(true);
+    expect(occasioneBigliettoValida("boh")).toBe(false);
+    expect(occasioneBigliettoValida(3)).toBe(false);
+  });
+  it("il nome da mostrare, anche per le occasioni di prima", () => {
+    expect(nomeOccasione("san-valentino")).toBe("San Valentino");
+    expect(nomeOccasione("guarisci")).toBe("Guarisci presto");
+  });
+});
+
+describe("cambio dell'occasione dalla gestione", () => {
+  it("il titolo proposto segue la nuova occasione", () => {
+    expect(titoloDopoCambioOccasione("Buon compleanno, Marta!", "compleanno", "laurea", "Marta")).toBe("Complimenti per la laurea, Marta!");
+    expect(titoloDopoCambioOccasione("", "compleanno", "natale", "Marta")).toBe("Buon Natale, Marta!");
+  });
+  it("il titolo scritto da chi organizza resta", () => {
+    expect(titoloDopoCambioOccasione("Evviva Marta", "compleanno", "laurea", "Marta")).toBe("Evviva Marta");
+  });
+});
+
+describe("stili della carta e nomi", () => {
+  it("quattro stili con colori validi, riconosciuti dal modello", () => {
+    expect(STILI_CARTA.map((s) => s.nome)).toEqual(["Avorio", "Menta", "Pesca", "Verde"]);
+    for (const s of STILI_CARTA) expect(coloriValidi(s.colori)).not.toBeNull();
+    expect(stileCartaDi("carta-menta")?.nome).toBe("Menta");
+    expect(stileCartaDi("compleanno-palloncini")).toBeNull();
+  });
+  it("i modelli degli stili esistono, così il server li accetta", () => {
+    for (const s of STILI_CARTA) expect(MODELLI_BIGLIETTO.some((m) => m.id === s.id)).toBe(true);
+  });
+  it("i nomi in fila con la «e», senza doppioni né vuoti", () => {
+    expect(elencoNomi(["Chiara", "Paolo", " ", "Chiara", "Luca"])).toBe("Chiara, Paolo e Luca");
+    expect(elencoNomi(["Chiara"])).toBe("Chiara");
+    expect(elencoNomi([])).toBe("");
+  });
+  it("le iniziali sono le prime due lettere", () => {
+    expect(inizialiDi(" chiara")).toBe("CH");
+    expect(inizialiDi("É")).toBe("É");
+  });
+});
+
+describe("titolo dell'anteprima dell'editor", () => {
+  it("senza nome toglie il nome, con il nome è il predefinito", () => {
+    expect(titoloAnteprima("compleanno", "")).toBe("Buon compleanno!");
+    expect(titoloAnteprima("compleanno", "Marta")).toBe("Buon compleanno, Marta!");
+    expect(titoloAnteprima("altro", " ")).toBe("Auguri!");
   });
 });

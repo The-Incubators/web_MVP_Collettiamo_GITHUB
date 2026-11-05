@@ -30,6 +30,11 @@ const VOCI: Voce[] = [
   { id: "grazie-cuore", nome: "Grazie di cuore", occasioni: ["grazie", "insegnante", "allenatore"], sfondo: { tipo: "gradiente", da: "#E6F0E6", a: "#CDE3CD", motivo: "🙏" }, testoFisso: "Grazie di cuore", coloreTitolo: "#2A4A2A", fontBacheca: "playfair-display" },
   { id: "guarisci-fiore", nome: "Rimettiti presto", occasioni: ["guarisci"], sfondo: { tipo: "gradiente", da: "#FFF6D9", a: "#FFE7AC", motivo: "🌷" }, testoFisso: "Rimettiti presto", coloreTitolo: "#7A5A1A", fontBacheca: "indie-flower" },
   { id: "festa-coriandoli", nome: "Si festeggia", occasioni: ["festa", "ricorrenze", "anniversario-lavoro"], sfondo: { tipo: "gradiente", da: "#FFE6D9", a: "#FFCBB2", motivo: "🎊" }, testoFisso: "Si festeggia!", coloreTitolo: "#7A3A1A", fontBacheca: "amatic-sc" },
+  // i quattro stili della carta dell'editor (lib/dominio/bacheca.ts, STILI_CARTA): tinta piena, titolo a mano
+  { id: "carta-avorio", nome: "Avorio", occasioni: [], sfondo: { tipo: "tinta", colore: "#F7F0E6", motivo: "" }, testoFisso: "Auguri!", coloreTitolo: "#033922", fontBacheca: "mano" },
+  { id: "carta-menta", nome: "Menta", occasioni: [], sfondo: { tipo: "tinta", colore: "#E9F2EC", motivo: "" }, testoFisso: "Auguri!", coloreTitolo: "#033922", fontBacheca: "mano" },
+  { id: "carta-pesca", nome: "Pesca", occasioni: [], sfondo: { tipo: "tinta", colore: "#FFE9DE", motivo: "" }, testoFisso: "Auguri!", coloreTitolo: "#033922", fontBacheca: "mano" },
+  { id: "carta-verde", nome: "Verde", occasioni: [], sfondo: { tipo: "tinta", colore: "#033922", motivo: "" }, testoFisso: "Auguri!", coloreTitolo: "#FFFFFF", fontBacheca: "mano" },
   { id: "auguri-neutro", nome: "Auguri", occasioni: ["altro", "ricorrenze", "capo", "anniversario-lavoro", "condoglianze", "animale", "festa", "saluto", "pensione", "insegnante", "allenatore", "grazie"], sfondo: { tipo: "gradiente", da: "#EDF1EE", a: "#D7E6DE", motivo: "✍️" }, testoFisso: "Auguri!", coloreTitolo: "#16241F", fontBacheca: "poppins" },
 ];
 

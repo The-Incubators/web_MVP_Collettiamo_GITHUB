@@ -2,7 +2,7 @@ import { archivioBiglietti } from "@/lib/biglietti";
 import { impronta, nuovaChiave, nuovoId, utenteDa } from "@/lib/biglietti/accesso";
 import { corpoJson, errore, risposta } from "@/lib/biglietti/rotte";
 import type { BigliettoServer } from "@/lib/biglietti/tipi";
-import { OCCASIONI_BIGLIETTO } from "@/lib/tipi";
+import { occasioneBigliettoValida } from "@/lib/dominio/bacheca";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function POST(richiesta: Request) {
   const c = await corpoJson(richiesta);
   const occasione = typeof c?.occasione === "string" ? c.occasione : "";
-  if (!OCCASIONI_BIGLIETTO.some((o) => o.valore === occasione)) return errore("Scegli un'occasione.");
+  if (!occasioneBigliettoValida(occasione)) return errore("Scegli un'occasione.");
   const utente = await utenteDa(richiesta);
   const chiave = nuovaChiave();
   const adesso = Date.now();

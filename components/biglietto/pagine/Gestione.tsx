@@ -1,53 +1,60 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { BloccoInvito } from "@/components/BloccoInvito";
-import { BottoneCopia, Icona } from "@/components/ui";
-import { classiBottone } from "@/components/ui/Bottone";
-import { coloreDellaNota, MODI_RIVELAZIONE, rivelazioneValida } from "@/lib/dominio/bacheca";
-import { messaggioInvitoBiglietto, messaggioPromemoriaBiglietto, testoDaHtml } from "@/lib/dominio/biglietti";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { IconaTratto, Iniziali, SceltaGrande } from "@/components/ui";
+import {
+  coloreDellaNota,
+  inizialiDi,
+  MODI_RIVELAZIONE,
+  nomeOccasione,
+  nomeRivelazione,
+  OCCASIONI_EDITOR,
+  rivelazioneValida,
+  stileCartaDi,
+  STILI_CARTA,
+} from "@/lib/dominio/bacheca";
+import { messaggioInvitoBiglietto } from "@/lib/dominio/biglietti";
 import { firmeOrdinate } from "@/lib/dominio/biglietto";
+import { linkWhatsApp } from "@/lib/dominio/messaggi";
+import { VOCI_ACCOUNT } from "@/lib/navigazione";
 import { baseUrlClient } from "@/lib/url";
 import type { Biglietto, Firma, ModoRivelazione } from "@/lib/tipi";
-import { AnteprimaBacheca, aspettoDaBiglietto } from "../bacheca/AnteprimaBacheca";
-import { AnteprimaRivelazione } from "../bacheca/AnteprimeRivelazione";
+import { CartaBiglietto, aspettoDaBiglietto } from "../bacheca/AnteprimaBacheca";
 import { Avviso, condividiLink, useAvviso } from "../bacheca/Avviso";
-import { BottoneNota, NotaFirma } from "../bacheca/NotaFirma";
+import { NotaFirma } from "../bacheca/NotaFirma";
 import { SceltaMusica } from "../bacheca/SceltaMusica";
-import { Finestra, IntestazioneWizard } from "../comuni";
+import { Finestra } from "../comuni";
 import { StatoBozza } from "../StatoBozza";
 import { useBozza } from "../useBozza";
 
-const STATI: Record<Biglietto["stato"], string> = { bozza: "Bozza", aperto: "In raccolta", chiuso: "Chiuso", consegnato: "Consegnato" };
+const MIEI_BIGLIETTI = VOCI_ACCOUNT.find((v) => v.testo === "I miei biglietti")?.href ?? "/account";
 
-const CLASSI_SEZIONE = "flex flex-col gap-4 rounded-3xl bg-surface p-5 shadow-carta";
+/** Il colore della miniatura di ogni stile, come nell'editor. */
+const TINTA_STILE: Record<string, string> = {
+  "carta-avorio": "var(--card-paper)",
+  "carta-menta": "var(--wall)",
+  "carta-pesca": "var(--peach)",
+  "carta-verde": "var(--green)",
+};
 
-function Contatore({ etichetta, valore }: { etichetta: string; valore: number }) {
-  return (
-    <div className="flex flex-1 flex-col items-center gap-0.5 rounded-2xl bg-surface p-3 shadow-carta">
-      <span className="font-display text-3xl font-bold">{valore}</span>
-      <span className="text-xs font-bold uppercase tracking-widest text-ink-soft">{etichetta}</span>
-    </div>
-  );
-}
+type Modifica = "occasione" | "stile" | "rivelazione" | "musica";
 
 /**
- * La gestione del biglietto (dopo il wizard si arriva qui): com'è, quanti hanno scritto, il link da mandare,
- * la moderazione dei messaggi (nascondi / elimina), la modalità della rivelazione e la consegna 🎁.
+ * La gestione del biglietto (Gifty UX v2, design.md §5, prototipi/biglietto-gestisci.html): indietro verso «I miei
+ * biglietti», l'anteprima, Firme con «Manda il link a chi firma», «Manda il biglietto a Marta», le scelte come righe con
+ * la matita. La moderazione dei messaggi resta sulla bacheca (/b/[slug]), dove chi organizza nasconde ed elimina.
  */
 export function Gestione({ id }: { id: string }) {
   const { b, setB, stato, api } = useBozza(id);
   const [firme, setFirme] = useState<Firma[] | null>(null);
-  const [filtro, setFiltro] = useState<"tutti" | "nascosti">("tutti");
   const [url, setUrl] = useState("");
   const [avviso, setAvviso] = useAvviso();
-  const [daEliminare, setDaEliminare] = useState<Firma | null>(null);
   const [conferma, setConferma] = useState<"consegna" | "riapri" | null>(null);
+  const [modifica, setModifica] = useState<Modifica | null>(null);
   const [attesa, setAttesa] = useState(false);
   const [caricaMusica, setCaricaMusica] = useState(false);
   const [erroreMusica, setErroreMusica] = useState<string | null>(null);
-  const promemoria = useRef<HTMLParagraphElement>(null);
 
   const caricaFirme = useCallback(() => {
     api<{ firme: Firma[] }>(`/api/biglietti/${id}/firme`, { bigliettoId: id })
@@ -62,45 +69,20 @@ export function Gestione({ id }: { id: string }) {
   }, [b?.slug]);
 
   const ordinate = useMemo(() => (b && firme ? firmeOrdinate(firme, b.ordineFirme, true) : []), [b, firme]);
-  const colori = useMemo(() => new Map(ordinate.map((f, i) => [f.id, coloreDellaNota(f.coloreNota, i)])), [ordinate]);
+  const visibili = ordinate.filter((f) => !f.nascosta);
 
-  async function nascondi(f: Firma) {
-    try {
-      await api(`/api/biglietti/${id}/firme/${f.id}`, { metodo: "PATCH", bigliettoId: id, corpo: { nascosta: !f.nascosta } });
-      setFirme((x) => x && x.map((y) => (y.id === f.id ? { ...y, nascosta: !f.nascosta } : y)));
-      setAvviso(f.nascosta ? "Il messaggio è di nuovo visibile." : "Messaggio nascosto: lo vedi solo tu.");
-    } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non ci sono riuscito. Riprova.");
-    }
-  }
-
-  async function elimina() {
-    const f = daEliminare;
-    if (!f) return;
+  /** Salva una scelta dalla gestione e chiude il foglio. */
+  async function salva(corpo: Record<string, unknown>) {
+    if (!b) return;
     setAttesa(true);
     try {
-      await api(`/api/biglietti/${id}/firme/${f.id}`, { metodo: "DELETE", bigliettoId: id });
-      setFirme((x) => x && x.filter((y) => y.id !== f.id));
-      if (b) setB({ ...b, nFirme: Math.max(0, b.nFirme - 1) });
-      setAvviso("Messaggio eliminato.");
+      const r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}`, { metodo: "PATCH", bigliettoId: id, corpo });
+      setB(r.biglietto);
+      setModifica(null);
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a eliminare il messaggio. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a salvare. Riprova.");
     } finally {
       setAttesa(false);
-      setDaEliminare(null);
-    }
-  }
-
-  async function rivelazione(m: ModoRivelazione) {
-    if (!b) return;
-    const prima = b;
-    setB({ ...b, rivelazione: m });
-    try {
-      const r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}`, { metodo: "PATCH", bigliettoId: id, corpo: { rivelazione: m } });
-      setB(r.biglietto);
-    } catch (e) {
-      setB(prima);
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a salvare. Riprova.");
     }
   }
 
@@ -121,13 +103,19 @@ export function Gestione({ id }: { id: string }) {
     }
   }
 
+  async function manda() {
+    if (!b) return;
+    setAvviso(await condividiLink(url, b.nome, `${b.festeggiato}, c’è una sorpresa per te 🎁`));
+  }
+
   async function consegna(azione: "consegna" | "riapri") {
     setAttesa(true);
     try {
       const r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}/consegna`, { metodo: "POST", bigliettoId: id, corpo: { azione } });
       setB(r.biglietto);
       setConferma(null);
-      setAvviso(azione === "consegna" ? `Consegnato! Ora manda il link a ${r.biglietto.festeggiato}.` : "Biglietto riaperto: si può di nuovo scrivere.");
+      if (azione === "consegna") await manda();
+      else setAvviso("Biglietto riaperto: si può di nuovo scrivere.");
     } catch (e) {
       setAvviso(e instanceof Error ? e.message : "Non ci sono riuscito. Riprova.");
     } finally {
@@ -135,233 +123,173 @@ export function Gestione({ id }: { id: string }) {
     }
   }
 
+  async function copia() {
+    try {
+      await navigator.clipboard.writeText(url);
+      setAvviso("Link copiato: incollalo dove vuoi.");
+    } catch {
+      setAvviso(url);
+    }
+  }
+
+  const indietro = (
+    <Link className="btn btn-quieto" href={MIEI_BIGLIETTI}>
+      <IconaTratto nome="sx" />I miei biglietti
+    </Link>
+  );
+
   if (!b) {
     return (
-      <>
-        <IntestazioneWizard indietro="/" larghezza="max-w-[720px]" />
-        <main className="gutter">
-          <StatoBozza stato={stato === "ok" ? "carica" : stato} />
-        </main>
-      </>
+      <div className="gestione-b pagina">
+        <div className="su">{indietro}</div>
+        <StatoBozza stato={stato === "ok" ? "carica" : stato} />
+      </div>
     );
   }
 
   const aspetto = aspettoDaBiglietto(b);
   const modo = rivelazioneValida(b.rivelazione);
-  const nascosti = ordinate.filter((f) => f.nascosta);
-  const elenco = filtro === "nascosti" ? nascosti : ordinate;
-  const visibili = ordinate.filter((f) => !f.nascosta);
   const consegnato = b.stato === "consegnato";
-  const quando = b.consegnatoIl
-    ? new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Rome" }).format(new Date(b.consegnatoIl))
-    : "";
+  const stile = stileCartaDi(b.copertina.modelloId);
 
   return (
-    <>
-      <IntestazioneWizard indietro="/" larghezza="max-w-[720px]" />
-      <main className="gutter mx-auto flex w-full max-w-[720px] flex-col gap-6 pb-16 pt-6">
-        <header className="flex flex-col gap-2">
-          <p className="inline-flex items-center gap-1.5 self-start rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold">
-            <span aria-hidden="true">{consegnato ? "🎁" : b.stato === "aperto" ? "🟢" : "📝"}</span>
-            {STATI[b.stato]}
-          </p>
-          <h1 className="font-display text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">{b.nome}</h1>
-          <p className="text-ink-soft">
-            Per <strong className="text-ink">{b.festeggiato}</strong>
-          </p>
-          {b.stato === "bozza" ? (
-            <Link href={`/biglietto/${id}/anteprima`} className={classiBottone("primario", "normale", "self-start")}>
-              Vai all’anteprima per pubblicarlo
+    <div className="gestione-b pagina">
+      <div className="su">
+        {indietro}
+        <h1 className="t-pagina">Il biglietto per {b.festeggiato}</h1>
+      </div>
+
+      {b.stato === "bozza" ? (
+        <Link href={`/biglietto/${id}/anteprima`} className="btn btn-primario">
+          Vai all’anteprima per pubblicarlo
+        </Link>
+      ) : (
+        <div className="corpo">
+          <div className="colonna-carta">
+            <CartaBiglietto aspetto={aspetto}>
+              {visibili.slice(0, 6).map((f, i) => (
+                <NotaFirma key={f.id} f={f} colore={coloreDellaNota(f.coloreNota, i)} />
+              ))}
+            </CartaBiglietto>
+            <Link href={`/b/${b.slug}`} className="btn btn-quieto">
+              {consegnato ? "Apri la sorpresa" : "Apri la bacheca"}
             </Link>
-          ) : null}
-        </header>
+          </div>
 
-        {b.stato !== "bozza" ? (
-          <section className={CLASSI_SEZIONE} aria-label="Il biglietto">
-            <AnteprimaBacheca
-              aspetto={aspetto}
-              compatta
-              note={visibili.slice(0, 4).map((f) => ({ testo: testoDaHtml(f.messaggioHtml), autore: f.daParteDi, colore: colori.get(f.id) ?? coloreDellaNota(f.coloreNota, 0) }))}
-            />
-            <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
-              <Link href={`/b/${b.slug}`} className={classiBottone("primario", "normale")}>
-                {consegnato ? "Apri la sorpresa" : "Apri la bacheca"}
-              </Link>
-              {!consegnato ? (
-                <Link href={`/b/${b.slug}?anteprima=1`} className={classiBottone("secondario", "normale")}>
-                  Guarda come lo vedrà {b.festeggiato}
-                </Link>
+          <div>
+            <section className="blocco" aria-labelledby="t-firme">
+              <h2 id="t-firme" className="t-sezione">
+                Firme
+              </h2>
+              {visibili.length ? (
+                <ul className="firme-b">
+                  {visibili.map((f) => (
+                    <li key={f.id}>
+                      <Iniziali testo={inizialiDi(f.daParteDi)} />
+                      {f.daParteDi}
+                    </li>
+                  ))}
+                </ul>
               ) : null}
-            </div>
-          </section>
-        ) : null}
-
-        <div className="flex gap-3" role="group" aria-label="In numeri">
-          <Contatore etichetta="Messaggi" valore={visibili.length} />
-          <Contatore etichetta="Foto" valore={visibili.filter((f) => f.immagine).length} />
-          <Contatore etichetta="Nascosti" valore={nascosti.length} />
-        </div>
-
-        {b.stato === "aperto" && url ? (
-          <section className={CLASSI_SEZIONE}>
-            <h2 className="text-xl font-semibold text-accent-2">Raccogli i messaggi</h2>
-            <BloccoInvito url={url} messaggio={messaggioInvitoBiglietto(b, url)} />
-            <details className="group">
-              <summary className="min-h-tocco cursor-pointer py-2 font-semibold text-accent-2">Un promemoria per chi non ha ancora scritto</summary>
-              <div className="flex flex-col gap-3 pt-2">
-                <p ref={promemoria} className="whitespace-pre-wrap rounded-controllo border border-line bg-surface-2 p-3">
-                  {messaggioPromemoriaBiglietto(b, url)}
-                </p>
-                <BottoneCopia testo={messaggioPromemoriaBiglietto(b, url)} etichetta="Copia il promemoria" sorgente={promemoria} piccolo={false} />
-              </div>
-            </details>
-          </section>
-        ) : null}
-
-        {b.stato === "aperto" || consegnato ? (
-          <section className={CLASSI_SEZIONE}>
-            <h2 className="text-xl font-semibold text-accent-2">Consegna</h2>
-            {consegnato ? (
-              <>
-                <p>
-                  Consegnato{quando ? ` il ${quando}` : ""}. Il link ora mostra la sorpresa: mandalo a <strong>{b.festeggiato}</strong>.
-                </p>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <button
-                    type="button"
-                    onClick={() => void condividiLink(url, b.nome, `${b.festeggiato}, c’è una sorpresa per te 🎁`).then((a) => a && setAvviso(a))}
-                    className={classiBottone("primario", "normale")}
-                  >
-                    <Icona nome="share" dimensione={20} />
-                    Manda a {b.festeggiato}
-                  </button>
-                  <button type="button" onClick={() => setConferma("riapri")} className={classiBottone("secondario", "normale")}>
-                    <Icona nome="lock_open" dimensione={20} />
-                    Riapri per altri messaggi
+              {b.stato === "aperto" && url ? (
+                <div className="azioni">
+                  <a className="btn btn-primario" href={linkWhatsApp(messaggioInvitoBiglietto(b, url))} target="_blank" rel="noopener noreferrer">
+                    <IconaTratto nome="whatsapp" />
+                    Manda il link a chi firma
+                  </a>
+                  <button type="button" className="btn btn-contorno" onClick={() => void copia()}>
+                    <IconaTratto nome="copia" />
+                    Copia il link
                   </button>
                 </div>
-              </>
-            ) : (
-              <>
-                <p className="text-ink-soft">
-                  Quando i messaggi ci sono tutti, consegnalo: nessuno potrà più scrivere e lo stesso link diventerà la sorpresa per {b.festeggiato}. Se serve, potrai riaprirlo.
-                </p>
-                <button type="button" onClick={() => setConferma("consegna")} className={classiBottone("primario", "normale", "self-start")}>
-                  <span aria-hidden="true">🎁</span>
-                  Consegna ora
-                </button>
-              </>
-            )}
-          </section>
-        ) : null}
+              ) : null}
+            </section>
 
-        <section className={CLASSI_SEZIONE}>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold text-accent-2">Messaggi ({ordinate.length})</h2>
-            <div role="group" aria-label="Quali messaggi mostrare" className="flex rounded-full bg-surface-2 p-1">
-              {(
-                [
-                  ["tutti", `Tutti ${ordinate.length}`],
-                  ["nascosti", `Nascosti ${nascosti.length}`],
-                ] as const
-              ).map(([v, etichetta]) => (
-                <button
-                  key={v}
-                  type="button"
-                  aria-pressed={filtro === v}
-                  onClick={() => setFiltro(v)}
-                  className={`min-h-10 rounded-full px-4 text-sm font-semibold ${filtro === v ? "bg-surface shadow-carta" : "text-ink-soft hover:text-ink"}`}
-                >
-                  {etichetta}
+            <section className="blocco" aria-labelledby="t-consegna">
+              <h2 id="t-consegna" className="t-sezione">
+                Consegna a {b.festeggiato}
+              </h2>
+              <div className="azioni">
+                <button type="button" className="btn btn-contorno" onClick={() => (consegnato ? void manda() : setConferma("consegna"))}>
+                  <IconaTratto nome="regalo" />
+                  Manda il biglietto a {b.festeggiato}
                 </button>
-              ))}
-            </div>
-          </div>
-          <p className="text-sm text-ink-soft">Un messaggio nascosto resta qui, ma non compare né sulla bacheca né nella sorpresa.</p>
-          {firme === null ? (
-            <p className="text-ink-soft">Un momento…</p>
-          ) : elenco.length === 0 ? (
-            <p className="rounded-2xl bg-surface-2 p-4 text-center text-ink-soft">
-              {filtro === "nascosti" ? "Nessun messaggio nascosto." : "Ancora nessun messaggio. Manda il link al gruppo!"}
-            </p>
-          ) : (
-            <div className="columns-1 gap-4 rounded-2xl bg-surface-2 p-4 sm:columns-2">
-              {elenco.map((f, i) => (
-                <NotaFirma key={f.id} f={f} i={i} colore={colori.get(f.id) ?? coloreDellaNota(f.coloreNota, i)} attenuata={f.nascosta} etichette={f.nascosta ? ["Nascosto"] : []}>
-                  <BottoneNota
-                    icona={f.nascosta ? "visibility" : "visibility_off"}
-                    etichetta={f.nascosta ? `Mostra il messaggio di ${f.daParteDi}` : `Nascondi il messaggio di ${f.daParteDi}`}
-                    onClick={() => void nascondi(f)}
-                  />
-                  <BottoneNota icona="delete" etichetta={`Elimina il messaggio di ${f.daParteDi}`} onClick={() => setDaEliminare(f)} />
-                </NotaFirma>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {b.stato !== "bozza" ? (
-          <section className={CLASSI_SEZIONE}>
-            <h2 className="text-xl font-semibold text-accent-2">Come lo scopre {b.festeggiato}</h2>
-            <p className="text-sm text-ink-soft">Puoi cambiarlo quando vuoi, anche dopo la consegna.</p>
-            <div role="radiogroup" aria-label="Come si rivela il biglietto" className="grid gap-3 sm:grid-cols-2">
-              {MODI_RIVELAZIONE.map((m) => {
-                const scelto = modo === m.id;
-                return (
-                  <button
-                    key={m.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={scelto}
-                    onClick={() => void rivelazione(m.id)}
-                    className={`flex flex-col gap-3 rounded-3xl border-2 p-4 text-left transition-colors ${scelto ? "border-accent bg-accent-field" : "border-line bg-surface hover:border-line-forte"}`}
-                  >
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-lg font-bold">{m.nome}</span>
-                      {scelto ? (
-                        <span aria-hidden="true" className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-sm text-on-accent">
-                          ✓
-                        </span>
-                      ) : null}
-                    </span>
-                    <AnteprimaRivelazione modo={m.id} aspetto={aspetto} festeggiato={b.festeggiato} />
-                    <span className="text-sm text-ink-soft">{m.descrizione}</span>
+                {consegnato ? (
+                  <button type="button" className="btn btn-quieto" onClick={() => setConferma("riapri")}>
+                    Riapri per altri messaggi
                   </button>
-                );
-              })}
-            </div>
-          </section>
-        ) : null}
+                ) : (
+                  <Link href={`/b/${b.slug}?anteprima=1`} className="btn btn-quieto">
+                    Guarda come lo vedrà {b.festeggiato}
+                  </Link>
+                )}
+              </div>
+            </section>
 
-        {b.stato !== "bozza" ? (
-          <section className={CLASSI_SEZIONE}>
-            <h2 className="text-xl font-semibold text-accent-2">Musica</h2>
-            <SceltaMusica
-              nome={b.musica?.nome ?? null}
-              url={b.musica?.url ?? null}
-              onFile={(f) => void musica(f)}
-              onTogli={() => void musica(null)}
-              attesa={caricaMusica}
-              errore={erroreMusica}
-            />
-          </section>
-        ) : null}
-      </main>
+            <section className="blocco" aria-labelledby="t-scelte">
+              <h2 id="t-scelte" className="t-sezione">
+                Le tue scelte
+              </h2>
+              <dl className="riep-b">
+                {(
+                  [
+                    ["Occasione", nomeOccasione(b.occasione), "occasione", !consegnato, "Modifica l'occasione"],
+                    ["Stile", stile?.nome ?? "", "stile", !consegnato, "Modifica lo stile"],
+                    ["Come lo scopre", nomeRivelazione(modo), "rivelazione", true, "Modifica come lo scopre"],
+                    ["Musica", b.musica?.nome ?? "", "musica", true, "Modifica la musica"],
+                  ] as const
+                ).map(([k, v, m, attiva, etichetta]) => (
+                  <div key={k}>
+                    <dt>{k}</dt>
+                    <dd>{v || "–"}</dd>
+                    {attiva ? (
+                      <button type="button" className="icona-btn" aria-label={etichetta} onClick={() => setModifica(m)}>
+                        <IconaTratto nome="matita" />
+                      </button>
+                    ) : null}
+                  </div>
+                ))}
+              </dl>
+            </section>
+          </div>
+        </div>
+      )}
 
       <Avviso testo={avviso} />
 
-      <Finestra aperta={!!daEliminare} onChiudi={() => setDaEliminare(null)} titolo={`Eliminare il messaggio di ${daEliminare?.daParteDi ?? ""}?`}>
-        <div className="flex flex-col gap-4">
-          <p>Sparisce per sempre, con la sua foto. Se vuoi solo toglierlo dalla vista, nascondilo: potrai rimostrarlo quando vuoi.</p>
-          <div className="flex flex-col gap-2 sm:flex-row-reverse">
-            <button type="button" disabled={attesa} onClick={() => void elimina()} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full bg-error px-5 font-bold text-white disabled:opacity-60">
-              {attesa ? "Un momento…" : "Elimina"}
+      <Finestra aperta={modifica === "occasione"} onChiudi={() => setModifica(null)} titolo="Che cosa si festeggia?">
+        <div className="chips" role="radiogroup" aria-label="Occasione">
+          {OCCASIONI_EDITOR.map((o) => (
+            <button key={o.id} type="button" className="chip" role="radio" aria-checked={b.occasione === o.id} disabled={attesa} onClick={() => void salva({ occasione: o.id })}>
+              {o.etichetta}
             </button>
-            <button type="button" onClick={() => setDaEliminare(null)} className={classiBottone("secondario", "normale", "flex-1")}>
-              Annulla
-            </button>
-          </div>
+          ))}
         </div>
+      </Finestra>
+
+      <Finestra aperta={modifica === "stile"} onChiudi={() => setModifica(null)} titolo="Stile">
+        <div className="temi" role="radiogroup" aria-label="Stile">
+          {STILI_CARTA.map((st) => (
+            <button key={st.id} type="button" role="radio" aria-checked={stile?.id === st.id} disabled={attesa} onClick={() => void salva({ stile: st.id })}>
+              <i style={{ background: TINTA_STILE[st.id] }} />
+              {st.nome}
+            </button>
+          ))}
+        </div>
+      </Finestra>
+
+      <Finestra aperta={modifica === "rivelazione"} onChiudi={() => setModifica(null)} titolo="Come lo scoprirà">
+        <div role="radiogroup" aria-label="Come lo scoprirà" className="grid gap-3">
+          {MODI_RIVELAZIONE.map((m) => (
+            <SceltaGrande key={m.id} scelto={modo === m.id} nome={m.nome} onScegli={() => void salva({ rivelazione: m.id as ModoRivelazione })}>
+              {m.descrizione}
+            </SceltaGrande>
+          ))}
+        </div>
+      </Finestra>
+
+      <Finestra aperta={modifica === "musica"} onChiudi={() => setModifica(null)} titolo="Musica">
+        <SceltaMusica nome={b.musica?.nome ?? null} url={b.musica?.url ?? null} onFile={(f) => void musica(f)} onTogli={() => void musica(null)} attesa={caricaMusica} errore={erroreMusica} />
       </Finestra>
 
       <Finestra
@@ -369,22 +297,22 @@ export function Gestione({ id }: { id: string }) {
         onChiudi={() => setConferma(null)}
         titolo={conferma === "riapri" ? "Riaprire il biglietto?" : `Consegnare il biglietto a ${b.festeggiato}?`}
       >
-        <div className="flex flex-col gap-4">
-          <p>
+        <div className="grid gap-4">
+          <p className="m-0">
             {conferma === "riapri"
               ? "Il link torna a essere la bacheca e si potranno aggiungere altri messaggi. La sorpresa si rivede quando lo consegni di nuovo."
               : `Da quel momento nessuno potrà più scrivere e il link mostrerà la sorpresa. Poi mandalo a ${b.festeggiato}.`}
           </p>
           <div className="flex flex-col gap-2 sm:flex-row-reverse">
-            <button type="button" disabled={attesa} onClick={() => conferma && void consegna(conferma)} className={classiBottone("primario", "normale", "flex-1")}>
-              {attesa ? "Un momento…" : conferma === "riapri" ? "Riapri" : "Consegna 🎁"}
+            <button type="button" disabled={attesa} aria-busy={attesa || undefined} onClick={() => conferma && void consegna(conferma)} className="btn btn-primario flex-1">
+              {conferma === "riapri" ? "Riapri" : "Consegna"}
             </button>
-            <button type="button" onClick={() => setConferma(null)} className={classiBottone("secondario", "normale", "flex-1")}>
+            <button type="button" onClick={() => setConferma(null)} className="btn btn-contorno flex-1">
               Annulla
             </button>
           </div>
         </div>
       </Finestra>
-    </>
+    </div>
   );
 }

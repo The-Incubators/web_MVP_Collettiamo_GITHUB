@@ -43,19 +43,16 @@ export function SceltaMusica({
 
   const messaggio = erroreFile ?? errore;
   return (
-    <div className="flex flex-col gap-3">
+    <div className="musica-b">
       {nome && url ? (
-        <div className="flex flex-col gap-3 rounded-3xl border border-line bg-surface p-4">
-          <p className="flex items-center gap-2 font-semibold">
-            <span aria-hidden="true">🎵</span>
-            <span className="break-all">{nome}</span>
-          </p>
+        <div className="file">
+          <p className="m-0 break-all font-bold">{nome}</p>
           <audio controls src={url} preload="metadata" className="w-full" aria-label={`Ascolta ${nome}`} />
-          <div className="flex flex-wrap gap-x-5">
-            <button type="button" disabled={attesa} onClick={() => file.current?.click()} className="min-h-tocco text-sm font-semibold text-accent-2 underline underline-offset-4 disabled:opacity-50">
+          <div className="azioni">
+            <button type="button" className="btn btn-quieto" disabled={attesa} onClick={() => file.current?.click()}>
               Cambia musica
             </button>
-            <button type="button" disabled={attesa} onClick={onTogli} className="min-h-tocco text-sm font-semibold text-error underline underline-offset-4 disabled:opacity-50">
+            <button type="button" className="btn btn-quieto pericolo" disabled={attesa} onClick={onTogli}>
               Togli la musica
             </button>
           </div>
@@ -64,6 +61,7 @@ export function SceltaMusica({
         <button
           type="button"
           disabled={attesa}
+          aria-busy={attesa || undefined}
           onClick={() => file.current?.click()}
           onDragOver={(e) => {
             e.preventDefault();
@@ -75,27 +73,24 @@ export function SceltaMusica({
             setTrascina(false);
             scegli(e.dataTransfer.files?.[0]);
           }}
-          className={`flex min-h-24 flex-col items-center justify-center gap-1 rounded-3xl border-2 border-dashed p-4 text-center transition-colors disabled:opacity-60 ${trascina ? "border-accent bg-accent-field" : "border-line-forte bg-surface-2 hover:border-accent"}`}
+          className={`scelta-file ${trascina ? "sopra" : ""}`}
         >
-          <span aria-hidden="true" className="text-2xl">
-            🎵
-          </span>
-          <span className="font-semibold">{attesa ? "Carico la musica…" : "Carica un MP3"}</span>
-          <span className="text-sm text-ink-soft">Tocca per sceglierlo o trascinalo qui. Al massimo 3 MB: meglio un pezzo di circa un minuto.</span>
+          <b>{attesa ? "Carico la musica…" : "Carica un MP3"}</b>
+          <span className="t-piccolo muted">Tocca per sceglierlo o trascinalo qui. Al massimo 3 MB: meglio un pezzo di circa un minuto.</span>
         </button>
       )}
       <input ref={file} type="file" accept="audio/mpeg,.mp3" className="sr-only" tabIndex={-1} onChange={(e) => (scegli(e.target.files?.[0]), (e.target.value = ""))} />
       {attesa && nome ? (
-        <p role="status" className="text-sm text-ink-soft">
+        <p role="status" className="t-piccolo muted m-0">
           Carico la musica…
         </p>
       ) : null}
       {messaggio ? (
-        <p role="alert" className="text-sm font-semibold text-error">
+        <p role="alert" className="errore-testo m-0">
           {messaggio}
         </p>
       ) : null}
-      <p className="text-sm text-ink-soft">Parte quando si apre la sorpresa e ricomincia da capo finché la si guarda. Usa solo musica che puoi condividere.</p>
+      <p className="t-piccolo muted m-0">Parte quando si apre la sorpresa e ricomincia da capo finché la si guarda. Usa solo musica che puoi condividere.</p>
     </div>
   );
 }

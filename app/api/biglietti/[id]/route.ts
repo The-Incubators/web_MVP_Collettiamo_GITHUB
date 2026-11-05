@@ -7,9 +7,12 @@ import {
   coloriValidi,
   dataEventoValida,
   htmlDaTestoSemplice,
+  occasioneBigliettoValida,
   rivelazioneValida,
   scurisciValido,
   slugPerFesteggiato,
+  stileCartaDi,
+  titoloDopoCambioOccasione,
   titoloEffettivo,
 } from "@/lib/dominio/bacheca";
 import {
@@ -45,6 +48,8 @@ export async function GET(richiesta: Request, { params }: Ctx) {
  *   Il link si crea qui dal nome del festeggiato; email e consegna si scelgono dopo, dalla gestione.
  * - colonne.
  * - rivelazione (dalla gestione; anche dopo la consegna).
+ * - stile (dalla gestione, Gifty UX v2): uno dei quattro colori della carta.
+ * - occasione (dalla gestione, Gifty UX v2): il titolo proposto segue la nuova occasione, quello scritto resta.
  */
 export async function PATCH(richiesta: Request, { params }: Ctx) {
   const { id } = await params;
@@ -148,6 +153,18 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
         scurisci: scurisciValido(k.scurisci),
       },
     });
+  }
+
+  if (c.occasione !== undefined) {
+    if (!occasioneBigliettoValida(c.occasione)) return errore("Scegli un'occasione.");
+    const titolo = titoloDopoCambioOccasione(b.copertina.titolo || b.nome, b.occasione, c.occasione, b.festeggiato);
+    Object.assign(patch, { occasione: c.occasione, nome: titolo.slice(0, MAX_NOME_BIGLIETTO), copertina: { ...(patch.copertina ?? b.copertina), titolo } });
+  }
+
+  if (c.stile !== undefined) {
+    const stile = typeof c.stile === "string" ? stileCartaDi(c.stile) : null;
+    if (!stile) return errore("Tema non valido.");
+    patch.copertina = { ...(patch.copertina ?? b.copertina), modelloId: stile.id, colori: { ...stile.colori } };
   }
 
   if (c.colonne === 1 || c.colonne === 2 || c.colonne === 3) patch.colonne = c.colonne;
