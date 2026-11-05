@@ -34,3 +34,13 @@ export function sezioneDi(percorso: string): Sezione | null {
   if (primo === undefined) return "home";
   return SEZIONI[primo] ?? null;
 }
+
+/**
+ * Il piè di pagina non c'è nei percorsi a passi (domande, wizard, editor del biglietto, accesso): a metà di un compito
+ * distrae (audit T-05).
+ */
+export function piePaginaVisibile(percorso: string): boolean {
+  const p = percorso.split(/[?#]/)[0];
+  if (p === "/regalo" || ["/crea", "/accedi", "/biglietto/nuovo"].some((x) => p.startsWith(x))) return false;
+  return !/^\/biglietto\/[^/]+\/(dettagli|design|anteprima)/.test(p);
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCorniceInerte } from "@/components/CorniceSito";
 import { useApp } from "@/components/AppProvider";
 import { BottoneGoogle } from "@/components/BottoneGoogle";
 import { ErroreApi, leggiSessione, salvaChiaveBozza, scriviSessione, useApi } from "@/lib/biglietti/client";
@@ -117,6 +118,7 @@ function Campo({ id, etichetta, aiuto, children }: { id: string; etichetta: stri
  * solo allora nasce la bozza sul server, che si pubblica subito dopo l'accesso.
  */
 export function CreaBiglietto() {
+  useCorniceInerte();
   const router = useRouter();
   const api = useApi();
   const { utente, auth, modalita } = useApp();

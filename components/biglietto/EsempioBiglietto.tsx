@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCorniceInerte } from "@/components/CorniceSito";
 import { Icona } from "@/components/ui";
 import { COLORI_NOTA } from "@/lib/dominio/bacheca";
 import type { BigliettoPubblico, DimensioneTesto, Firma } from "@/lib/tipi";
@@ -57,6 +58,7 @@ const BIGLIETTO: BigliettoPubblico = {
 };
 
 export function EsempioBiglietto() {
+  useCorniceInerte();
   return (
     <Rivelazione
       b={BIGLIETTO}

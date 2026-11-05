@@ -129,10 +129,6 @@ export function ScegliRegalo({
             <div className="flex min-w-0 flex-col gap-0.5">
               <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{valore.nome}</p>
               <p className="cifre text-xl font-extrabold text-accent-2">{formattaEuro(valore.prezzoCent)}</p>
-              <p className="flex items-center gap-1 text-xs text-ink-soft">
-                <Icona nome="local_shipping" dimensione={16} />
-                Consegna stimata in {valore.consegnaGiorni} {valore.consegnaGiorni === 1 ? "giorno" : "giorni"}
-              </p>
             </div>
           </div>
         </div>

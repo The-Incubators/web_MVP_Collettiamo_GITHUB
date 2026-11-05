@@ -1,11 +1,10 @@
-import Link from "next/link";
 import { SchedaProdottoGifty } from "@/components/SchedaProdottoGifty";
 import { CaricaAltriRegali } from "@/components/home/CaricaAltriRegali";
-import { CLASSI_RIQUADRO_REGALO, CLASSI_SECONDARIO, PRIMI_REGALI, SchedaRegaloAmato } from "@/components/home/SchedaRegaloAmato";
+import { CLASSI_RIQUADRO_REGALO, PRIMI_REGALI, SchedaRegaloAmato } from "@/components/home/SchedaRegaloAmato";
+import { ChipTutorial } from "@/components/ChipTutorial";
 import { conLikesDimostrativi } from "@/components/Stelle";
-import { BottoneLink, Icona } from "@/components/ui";
+import { BottoneLink, Icona, type NomeIcona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
-import { SLUG_DEMO } from "@/lib/dati/demo";
 import { PRODOTTI_GIFTY } from "@/lib/dati/prodotti-gifty";
 import { stelleDi } from "@/lib/dominio/ordineCatalogo";
 import type { Prodotto } from "@/lib/tipi";
@@ -23,48 +22,63 @@ function Separatore() {
   return <hr className="mx-6 border-t-2 border-line-forte md:hidden" />;
 }
 
+/** Le tre porte della home (audit H-01): una sola azione principale ciascuna; il tutorial è la pastiglia «Come si fa». */
+const PORTE: { titolo: string; testo: string; azione: string; href: string; icona: NomeIcona; tinta: string; tutorial?: string }[] = [
+  {
+    titolo: "Trova un regalo originale",
+    testo: "Rispondi a poche domande su chi lo riceve.",
+    azione: "Trova un regalo",
+    href: "/regalo",
+    icona: "auto_awesome",
+    tinta: "bg-cta-field text-cta-2",
+  },
+  {
+    titolo: "Organizza un regalo di gruppo",
+    testo: "Un link nella chat, e sai sempre chi ha partecipato.",
+    azione: "Organizza un regalo",
+    href: "/crea",
+    icona: "groups",
+    tinta: "bg-ok-field text-accent",
+    tutorial: "/regalo-di-gruppo#come-funziona",
+  },
+  {
+    titolo: "Un biglietto firmato da tutti",
+    testo: "Dediche e foto, da mandare con un link.",
+    azione: "Crea un biglietto",
+    href: "/biglietto/nuovo",
+    icona: "draw",
+    tinta: "bg-gold-field text-gold",
+    tutorial: "/biglietto/esempio",
+  },
+];
+
 function AperturaNuova() {
   return (
-    <section className="flex flex-col gap-6 text-center md:gap-8 md:text-left">
+    <section className="flex flex-col gap-6 md:gap-8">
       {/* direzione A: titolo grande in Urbanist verde, allineato a sinistra da tablet in su */}
-      <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-[-0.035em] text-accent md:text-[56px]">
+      <h1 className="text-center text-[34px] font-extrabold leading-[1.08] tracking-[-0.035em] text-accent md:text-left md:text-[56px]">
         Regalare qualcosa di originale,
         <br className="hidden md:inline" /> non è mai stato così facile…
       </h1>
-      <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
-        <div className="flex flex-col gap-2">
-          <BottoneLink href="/regalo" variante="azione" pieno className="px-4">
-            Trova un regalo originale
-          </BottoneLink>
-          {/* la riga sotto dice quanto ci vuole; si può toccare anche lei, ma per tastiera e lettori di schermo il link è uno solo */}
-          <Link href="/regalo" tabIndex={-1} aria-hidden="true" className={`${CLASSI_SECONDARIO} py-2 leading-tight`}>
-            fatti aiutare dal nostro motore di ricerca (15 sec)
-          </Link>
-        </div>
-        <Separatore />
-        <div className="flex flex-col gap-2">
-          <BottoneLink href="/biglietto/nuovo" variante="azione" pieno className="px-4">
-            Invia un biglietto di Auguri
-          </BottoneLink>
-          <Link href="/biglietto/esempio" className={CLASSI_SECONDARIO}>
-            <Icona nome="visibility" dimensione={18} />
-            Guarda un esempio
-          </Link>
-        </div>
-        <Separatore />
-        <div className="flex flex-col gap-2">
-          <BottoneLink href="/regalo-di-gruppo" variante="azione" pieno className="px-4">
-            Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
-          </BottoneLink>
-          <Link href={`/c/${SLUG_DEMO}`} className={CLASSI_SECONDARIO}>
-            <Icona nome="visibility" dimensione={18} />
-            Guarda un esempio
-          </Link>
-          <Link href="/regalo-di-gruppo" className={CLASSI_SECONDARIO}>
-            Come funziona il regalo di gruppo
-          </Link>
-        </div>
-      </div>
+      <ul className="flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-6">
+        {PORTE.map((p) => (
+          <li key={p.href} className="flex flex-col gap-3 rounded-3xl bg-surface p-5 shadow-carta">
+            <div className="flex items-center justify-between gap-3">
+              <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${p.tinta}`}>
+                <Icona nome={p.icona} />
+              </span>
+              {p.tutorial ? <ChipTutorial href={p.tutorial} /> : null}
+            </div>
+            <div className="flex flex-col">
+              <h2 className="font-sans text-lg font-bold leading-snug text-accent-2">{p.titolo}</h2>
+              <p className="text-sm text-ink-soft">{p.testo}</p>
+            </div>
+            <BottoneLink href={p.href} variante="azione" pieno className="mt-auto px-4">
+              {p.azione}
+            </BottoneLink>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -89,7 +103,7 @@ function RegaliPiuAmati({
     <section aria-labelledby="regali-amati" className="flex flex-col gap-6">
       <Separatore />
       <h2 id="regali-amati" className="text-center font-sans text-xl font-bold italic leading-snug text-ink">
-        I Regali più amati dai nostri clienti…
+        Idee scelte da noi
       </h2>
       <CaricaAltriRegali ciSonoAltri={ciSonoAltri} conLikes={conLikes}>
         {/* per primi i prodotti fatti da Gifty (lib/dati/prodotti-gifty.ts) */}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChipTutorial } from "@/components/ChipTutorial";
 import { BottoneLink, Icona, ImmagineProdotto, type NomeIcona } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
@@ -37,13 +38,7 @@ function AperturaClassica() {
         <BottoneLink href={CATALOGO_GRUPPO} variante="azione" pieno className="px-4">
           Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
         </BottoneLink>
-        <Link
-          href={`/c/${SLUG_DEMO}`}
-          className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
-        >
-          <Icona nome="visibility" dimensione={18} />
-          Guarda un esempio
-        </Link>
+        <ChipTutorial href={`/c/${SLUG_DEMO}`} className="self-center" />
       </div>
     </section>
   );
@@ -51,9 +46,9 @@ function AperturaClassica() {
 
 function ComeFunziona() {
   return (
-    <section aria-labelledby="come-funziona" className="flex flex-col gap-2">
+    <section id="come-funziona" aria-labelledby="come-funziona-titolo" className="flex scroll-mt-24 flex-col gap-2">
       <div className="flex items-center justify-between">
-        <h2 id="come-funziona" className="text-xl font-semibold text-accent-2">
+        <h2 id="come-funziona-titolo" className="text-xl font-semibold text-accent-2">
           Come funziona
         </h2>
         <span className="text-xs font-semibold text-ink-soft">{PASSI.length} semplici passi</span>
@@ -89,7 +84,7 @@ function SchedaBiglietto() {
         <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gold-field text-gold shadow-carta">
           <Icona nome="favorite" dimensione={28} piena />
         </span>
-        <span className="rounded-full bg-gold-line/40 px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-ink">Gratuito</span>
+        <ChipTutorial href="/biglietto/esempio" />
       </div>
       <div className="flex flex-col gap-1">
         <h2 className="text-xl font-semibold text-accent-2">Biglietto firmato da tutti</h2>
@@ -109,13 +104,6 @@ function SchedaBiglietto() {
           <Icona nome="draw" dimensione={20} />
           Crea un biglietto
         </BottoneLink>
-        <Link
-          href="/biglietto/esempio"
-          className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
-        >
-          <Icona nome="visibility" dimensione={18} />
-          Guarda un esempio
-        </Link>
       </div>
     </section>
   );
