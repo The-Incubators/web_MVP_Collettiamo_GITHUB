@@ -42,8 +42,7 @@ export function MenuProfilo() {
   const voci: { href: string; testo: string }[] = [
     { href: "/crea", testo: "Organizza una colletta" },
     { href: "/biglietto/nuovo", testo: "Biglietto di auguri" },
-    ...(conAccount ? [{ href: "/le-mie-collette", testo: "Le mie collette" }] : []),
-    { href: "/reminder", testo: "Ricorrenze" },
+    { href: "/account", testo: "Il tuo account" },
     ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : []),
     { href: "/privacy", testo: "Come trattiamo i dati" },
   ];

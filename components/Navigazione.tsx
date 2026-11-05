@@ -8,13 +8,14 @@ import { Icona, type NomeIcona } from "./ui/Icona";
 
 /**
  * Le voci principali (Gifty-spec-prodotto.md §5): barra in basso sul telefono, collegamenti nell'intestazione da
- * tablet in su. Le ricorrenze e le collette stanno nel menu del profilo finché non arriva /account (S-11).
+ * tablet in su. «Account» è solo nella barra: nell'intestazione l'account è il tondo del profilo (MenuProfilo).
  */
-const VOCI: { href: string; testo: string; icona: NomeIcona; sezione: Sezione }[] = [
+const VOCI: { href: string; testo: string; icona: NomeIcona; sezione: Sezione; soloBarra?: true; testoBarra?: string }[] = [
   { href: "/", testo: "Home", icona: "home", sezione: "home" },
   { href: "/idee", testo: "Idee regalo", icona: "auto_awesome", sezione: "idee" },
-  { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo" },
+  { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo", testoBarra: "Gruppo" },
   { href: "/preferiti", testo: "Preferiti", icona: "favorite", sezione: "preferiti" },
+  { href: "/account", testo: "Account", icona: "account_circle", sezione: "account", soloBarra: true },
 ];
 
 /**
@@ -60,6 +61,7 @@ export function BarraNavigazione() {
                 <Link
                   href={v.href}
                   aria-current={corrente ? "page" : undefined}
+                  aria-label={v.testoBarra ? v.testo : undefined}
                   className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-bold leading-none ${corrente ? "text-accent" : "text-ink-soft"}`}
                 >
                   {/* flex, non in riga: un'icona in riga si porta sotto lo spazio della linea di base (8 px in più) */}
@@ -67,7 +69,7 @@ export function BarraNavigazione() {
                     <Icona nome={v.icona} piena={corrente} />
                     {v.href === "/preferiti" ? <ContatorePreferiti n={preferiti.size} /> : null}
                   </span>
-                  {v.testo}
+                  {v.testoBarra ?? v.testo}
                 </Link>
               </li>
             );
@@ -85,7 +87,7 @@ export function NavigazioneOrizzontale() {
   return (
     <nav aria-label="Principale" className="hidden md:block">
       <ul className="flex items-center gap-1">
-        {VOCI.map((v) => {
+        {VOCI.filter((v) => !v.soloBarra).map((v) => {
           const corrente = attiva(percorso, v.sezione);
           return (
             <li key={v.href}>
