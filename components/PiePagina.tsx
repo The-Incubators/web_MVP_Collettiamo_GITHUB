@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { DICHIARAZIONE_AFFILIATO_AMAZON } from "@/lib/dominio/amazon";
 import { Logo } from "@/components/ui";
+import { VOCI_ACCOUNT } from "@/lib/navigazione";
 
 /**
- * Il piè di pagina di Gifty UX v2 (design.md §6, T-01; prototipi/comuni.js): un gruppo per servizio, poi la riga con il
- * marchio e «Privacy e dati». Sotto, la dichiarazione di affiliazione Amazon, che è obbligatoria.
+ * Il piè di pagina di Gifty UX v2 (design.md §6, T-01; prototipi/comuni.js): quattro colonne larghe uguali, una per
+ * servizio più l'account (le stesse voci del menu utente), poi la riga con il marchio, «Privacy e dati» e «Termini e
+ * condizioni». La dichiarazione di affiliazione Amazon sta nei Termini (revisione di Cri, 5 novembre 2026).
  */
 const GRUPPI: { titolo: string; voci: { href: string; testo: string }[] }[] = [
   {
@@ -28,14 +29,7 @@ const GRUPPI: { titolo: string; voci: { href: string; testo: string }[] }[] = [
       { href: "/biglietto/esempio", testo: "Biglietto di esempio" },
     ],
   },
-  {
-    titolo: "Account",
-    voci: [
-      { href: "/le-mie-collette", testo: "I miei regali di gruppo" },
-      { href: "/reminder", testo: "Ricorrenze" },
-      { href: "/preferiti", testo: "Preferiti" },
-    ],
-  },
+  { titolo: "Account", voci: VOCI_ACCOUNT },
 ];
 
 export function PiePagina() {
@@ -46,7 +40,7 @@ export function PiePagina() {
           <nav key={g.titolo} aria-label={g.titolo}>
             <h2>{g.titolo}</h2>
             {g.voci.map((v) => (
-              <Link key={v.href} href={v.href}>
+              <Link key={v.testo} href={v.href}>
                 {v.testo}
               </Link>
             ))}
@@ -56,9 +50,11 @@ export function PiePagina() {
           <Link href="/" className="marchio" aria-label="Gifty, vai alla home">
             <Logo className="h-7" />
           </Link>
-          <Link href="/privacy">Privacy e dati</Link>
+          <div className="piede-legali">
+            <Link href="/privacy">Privacy e dati</Link>
+            <Link href="/termini">Termini e condizioni</Link>
+          </div>
         </div>
-        <p className="piede-affiliato">{DICHIARAZIONE_AFFILIATO_AMAZON}</p>
       </div>
     </footer>
   );

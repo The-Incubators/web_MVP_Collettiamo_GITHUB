@@ -16,9 +16,21 @@ export const SOGLIA_PRODOTTI = 6;
 
 export const TAPPE = [
   { id: 1, etichetta: "Destinatario", icona: "users" },
-  { id: 2, etichetta: "Occasione", icona: "calendar" },
-  { id: 3, etichetta: "Interessi", icona: "music" },
-  { id: 4, etichetta: "Trovato!", icona: "gift" },
+  { id: 2, etichetta: "Età", icona: "cake" },
+  { id: 3, etichetta: "Occasione", icona: "calendar" },
+  { id: 4, etichetta: "Interessi", icona: "music" },
+  { id: 5, etichetta: "Trovato!", icona: "gift" },
+] as const;
+
+/**
+ * Le fasce d'età della seconda domanda (revisione di Cri, 5 novembre 2026): sono le quattro del catalogo
+ * (lib/dati/eta-prodotti.ts, B, A, R, D), che ha prodotti per ognuna. Gli id sono quelli di `FASCE_ETA`.
+ */
+export const FASCE_ETA_DOMANDA = [
+  { id: "bambino", etichetta: "Fino a 12 anni" },
+  { id: "adolescente", etichetta: "Da 13 a 17 anni" },
+  { id: "ragazzo", etichetta: "Da 18 a 29 anni" },
+  { id: "adulto", etichetta: "Dai 30 anni in su" },
 ] as const;
 
 /** I valori corrispondono ai nostri `destinatari` ("donna", "uomo"). */

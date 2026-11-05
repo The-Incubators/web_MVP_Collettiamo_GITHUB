@@ -55,7 +55,7 @@ function CaroselloAnteprima({ b, librerie }: { b: Biglietto; librerie: Librerie 
 export function Passo4({ id, librerie }: { id: string; librerie: Librerie }) {
   const router = useRouter();
   const { b, setB, stato, api } = useBozza(id);
-  const { utente, auth, modalita } = useApp();
+  const { utente, auth } = useApp();
   const [dettagli, setDettagli] = useState(false);
   const [accesso, setAccesso] = useState(false);
   const [condividi, setCondividi] = useState(false);
@@ -168,7 +168,6 @@ export function Passo4({ id, librerie }: { id: string; librerie: Librerie }) {
         <div className="flex flex-col items-center gap-4 text-center">
           <p>Per pubblicare il biglietto serve un account: così potrai gestirlo anche da un altro dispositivo. La bozza resta com’è.</p>
           <BottoneGoogle onClick={() => void accedi()} />
-          {modalita === "memoria" ? <p className="text-xs text-ink-soft">Senza Firebase l’accesso è finto e immediato.</p> : null}
         </div>
       </Finestra>
 

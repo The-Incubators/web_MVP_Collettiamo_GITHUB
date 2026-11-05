@@ -1,12 +1,17 @@
 // La macchina a stati del percorso «Trova il regalo»: funzioni pure, nessun DOM.
 // Le regole sono quelle del percorso di partenza: si torna a una tappa già raggiunta, non si salta avanti.
 
-import { CATEGORIE_INTERESSI, GENERI, INTERESSI, MAX_MACRO, MAX_MICRO, MIN_MACRO, OCCASIONI_REGALO } from "./dati";
+import { CATEGORIE_INTERESSI, FASCE_ETA_DOMANDA, GENERI, INTERESSI, MAX_MACRO, MAX_MICRO, MIN_MACRO, OCCASIONI_REGALO } from "./dati";
+
+// Le tappe: 1 per chi, 2 l'età, 3 l'occasione, 4 gli interessi; 5 vuol dire questionario completo (i risultati).
+export const TAPPA_RISULTATI = 5;
 
 export interface StatoRicerca {
   genere: string | null;
+  /** la fascia d'età (un id di FASCE_ETA_DOMANDA) */
+  eta: string | null;
   occasione: string | null;
-  /** le macro-categorie scelte nella terza tappa (da MIN_MACRO a MAX_MACRO) */
+  /** le macro-categorie scelte nella quarta tappa (da MIN_MACRO a MAX_MACRO) */
   macro: string[];
   /** le micro-categorie scelte per restringere, solo delle macro scelte; nessuna = «va bene tutto» */
   interessi: string[];
@@ -17,9 +22,11 @@ const idMacro = new Set<string>(CATEGORIE_INTERESSI.map((c) => c.id));
 const macroDi = new Map(INTERESSI.map((x) => [x.id, x.categoria]));
 const idOccasioni = new Set<string>(OCCASIONI_REGALO.map((o) => o.id));
 const idGeneri = new Set<string>(GENERI.map((g) => g.id));
+const idEta = new Set<string>(FASCE_ETA_DOMANDA.map((f) => f.id));
 
 export const statoIniziale = (): StatoRicerca => ({
   genere: null,
+  eta: null,
   occasione: null,
   macro: [],
   interessi: [],
@@ -28,21 +35,26 @@ export const statoIniziale = (): StatoRicerca => ({
 
 export function tappaCompleta(s: StatoRicerca, tappa: number): boolean {
   if (tappa === 1) return Boolean(s.genere);
-  if (tappa === 2) return Boolean(s.occasione);
-  if (tappa === 3) return s.macro.length >= MIN_MACRO;
+  if (tappa === 2) return Boolean(s.eta);
+  if (tappa === 3) return Boolean(s.occasione);
+  if (tappa === 4) return s.macro.length >= MIN_MACRO;
   return false;
 }
 
-export const puoAvanzare = (s: StatoRicerca): boolean => s.tappa < 4 && tappaCompleta(s, s.tappa);
+export const puoAvanzare = (s: StatoRicerca): boolean => s.tappa < TAPPA_RISULTATI && tappaCompleta(s, s.tappa);
 
-/** La prima tappa non ancora valida (4 se il questionario è completo). */
-export const primaTappaIncompleta = (s: StatoRicerca): number => [1, 2, 3].find((t) => !tappaCompleta(s, t)) ?? 4;
+/** La prima tappa non ancora valida (TAPPA_RISULTATI se il questionario è completo). */
+export const primaTappaIncompleta = (s: StatoRicerca): number => [1, 2, 3, 4].find((t) => !tappaCompleta(s, t)) ?? TAPPA_RISULTATI;
 
 export const puoAndareA = (s: StatoRicerca, tappa: number): boolean =>
-  tappa >= 1 && tappa <= 4 && tappa <= primaTappaIncompleta(s);
+  tappa >= 1 && tappa <= TAPPA_RISULTATI && tappa <= primaTappaIncompleta(s);
 
 export function scegliGenere(s: StatoRicerca, genere: string): StatoRicerca {
   return idGeneri.has(genere) ? { ...s, genere } : s;
+}
+
+export function scegliEta(s: StatoRicerca, eta: string): StatoRicerca {
+  return idEta.has(eta) ? { ...s, eta } : s;
 }
 
 export function scegliOccasione(s: StatoRicerca, occasione: string): StatoRicerca {
@@ -89,8 +101,9 @@ export function ripulisci(grezzo: unknown): StatoRicerca {
   const r = grezzo as Record<string, unknown>;
   let s = base;
   if (typeof r.genere === "string") s = scegliGenere(s, r.genere);
+  if (typeof r.eta === "string") s = scegliEta(s, r.eta);
   if (typeof r.occasione === "string") s = scegliOccasione(s, r.occasione);
-  // un percorso salvato con i vecchi 36 interessi non ha `macro`: si riparte dalla terza tappa
+  // un percorso salvato con i vecchi 36 interessi non ha `macro`: si riparte dalla domanda sugli interessi
   const macro = Array.isArray(r.macro) ? [...new Set(r.macro)] : [];
   for (const id of macro) if (typeof id === "string") s = cambiaMacro(s, id);
   const scelti = Array.isArray(r.interessi) ? [...new Set(r.interessi)] : [];

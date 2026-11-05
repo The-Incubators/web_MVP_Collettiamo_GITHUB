@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { ChipTutorial } from "@/components/ChipTutorial";
 import { BottoneLink, Icona } from "@/components/ui";
 
 /**
@@ -17,17 +17,16 @@ export default function PaginaBiglietto() {
     <div className="gutter pb-10 pt-4 sm:pt-10">
       <div className="mx-auto flex max-w-lg flex-col gap-6">
         <header className="flex flex-col gap-1">
-          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Biglietto di auguri</h1>
+          <div className="titolo-con-pillola">
+            <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Biglietto di auguri</h1>
+            <ChipTutorial href="/biglietto/esempio" />
+          </div>
           <p className="text-ink-soft">Lo firmano tutti, con dediche e foto. Lo mandi con un link.</p>
         </header>
         <BottoneLink href="/biglietto/nuovo" variante="azione" pieno>
           <Icona nome="draw" dimensione={20} />
           Crea un biglietto
         </BottoneLink>
-        <Link href="/biglietto/esempio" className="inline-flex min-h-tocco items-center justify-center gap-1.5 text-sm font-bold text-accent underline underline-offset-4">
-          <Icona nome="visibility" dimensione={18} />
-          Guarda un esempio
-        </Link>
       </div>
     </div>
   );

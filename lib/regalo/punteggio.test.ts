@@ -1,8 +1,21 @@
 import { describe, expect, it } from "vitest";
 import { CATALOGO } from "../dati/catalogo-dati";
 import type { Prodotto } from "../tipi";
-import { contaPassioni, FASCIA_TUTTE, filtriIniziali, microDelProdotto, normalizza, ordinaProdotti, punteggio, testoProdotto } from "./punteggio";
-import { cambiaInteresse, cambiaMacro, scegliGenere, scegliOccasione, statoIniziale } from "./stato";
+import { FASCE_ETA, fasceEta } from "../dati/eta-prodotti";
+import { FASCE_ETA_DOMANDA } from "./dati";
+import {
+  adattoAllEta,
+  contaPassioni,
+  FASCIA_TUTTE,
+  filtriIniziali,
+  microDelProdotto,
+  normalizza,
+  ordinaProdotti,
+  perEta,
+  punteggio,
+  testoProdotto,
+} from "./punteggio";
+import { cambiaInteresse, cambiaMacro, scegliEta, scegliGenere, scegliOccasione, statoIniziale } from "./stato";
 
 function prodotto(p: Partial<Prodotto> & { slug: string }): Prodotto {
   return {
@@ -142,5 +155,41 @@ describe("contaPassioni", () => {
     expect(c.micro["casa-luci"]).toBe(2);
     expect(c.macro.casa).toBe(2);
     expect(c.macro.tecnologia).toBe(1);
+  });
+});
+
+describe("fascia d'età", () => {
+  // dal catalogo (lib/dati/eta-prodotti.ts): PRD-339 solo bambino, PRD-063 solo adulto, PRD-002 tutte e quattro
+  const bimbo = prodotto({ slug: "bimbo", id: "PRD-339" });
+  const adulto = prodotto({ slug: "adulto", id: "PRD-063" });
+  const tutti = prodotto({ slug: "tutti", id: "PRD-002" });
+  const daLink = prodotto({ slug: "da-link" });
+
+  it("le fasce della domanda sono quelle del catalogo", () => {
+    expect(FASCE_ETA_DOMANDA.map((f) => f.id)).toEqual(FASCE_ETA.map((f) => f.id));
+  });
+
+  it("tiene i prodotti della fascia scelta e quelli senza età; senza fascia tiene tutto", () => {
+    expect(adattoAllEta(bimbo, "bambino")).toBe(true);
+    expect(adattoAllEta(adulto, "bambino")).toBe(false);
+    expect(adattoAllEta(tutti, "bambino")).toBe(true);
+    expect(adattoAllEta(daLink, "bambino")).toBe(true);
+    expect(adattoAllEta(adulto, null)).toBe(true);
+    expect(perEta([bimbo, adulto, tutti, daLink], "adulto").map((p) => p.slug)).toEqual(["adulto", "tutti", "da-link"]);
+  });
+
+  it("i risultati escludono i prodotti di un'altra età", () => {
+    const s = scegliEta(conScelte(["casa"]), "bambino");
+    expect(ordinaProdotti([adulto, bimbo, tutti], s).map((p) => p.slug).sort()).toEqual(["bimbo", "tutti"]);
+    expect(ordinaProdotti([adulto, bimbo, tutti], conScelte(["casa"]))).toHaveLength(3);
+  });
+
+  it("sul catalogo vero ogni fascia ha idee, e tutte sono di quella fascia", () => {
+    for (const f of FASCE_ETA_DOMANDA) {
+      const s = scegliEta(conScelte(["giochi"]), f.id);
+      const risultati = ordinaProdotti(CATALOGO, s);
+      expect(risultati.length).toBeGreaterThan(0);
+      for (const p of risultati) expect(fasceEta(p).length === 0 || fasceEta(p).includes(f.id)).toBe(true);
+    }
   });
 });

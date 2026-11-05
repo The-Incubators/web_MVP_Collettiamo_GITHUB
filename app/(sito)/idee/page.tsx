@@ -9,13 +9,13 @@ import { etichettaPer } from "@/lib/regalo/indirizzo";
 
 /**
  * Idee regalo (Gifty UX v2, prototipi/idee.html; spec S-02): la prima domanda di «Trova il regalo» è già qui
- * (decisione 4, I-01), accanto «Sfoglia il catalogo», sotto «Idee scelte da noi» dal catalogo vero, nell'ordine curato.
+ * (decisione 4, I-01), accanto «Sfoglia il catalogo», sotto «Le nostre scelte» dal catalogo vero, nell'ordine curato.
  */
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Idee regalo",
-  description: "Trova un'idea regalo per qualcuno: rispondi a tre domande o sfoglia il catalogo.",
+  description: "Trova un'idea regalo per qualcuno: rispondi a quattro domande o sfoglia il catalogo.",
 };
 
 /** Due file da quattro su desktop. */
@@ -32,7 +32,7 @@ export default async function PaginaIdee() {
           <h1 className="t-pagina">Idee regalo</h1>
           <div className="due">
             <div className="blocco-domanda">
-              <IndicatorePassi passo={1} totale={3} />
+              <IndicatorePassi passo={1} totale={4} />
               <h2 className="t-sezione" id="domanda-per-chi">
                 Per chi cerchi un regalo?
               </h2>
@@ -64,7 +64,7 @@ export default async function PaginaIdee() {
       <section className="sezione">
         <div className="pagina">
           <div className="testa-sezione">
-            <h2 className="t-sezione">Idee scelte da noi</h2>
+            <h2 className="t-sezione">Le nostre scelte</h2>
           </div>
           <div className="griglia-prodotti">
             {idee.map((p) => (

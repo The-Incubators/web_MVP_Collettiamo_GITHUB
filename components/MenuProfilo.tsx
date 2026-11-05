@@ -4,12 +4,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { inizialiDi } from "@/lib/dominio/partecipanti";
+import { VOCI_ACCOUNT } from "@/lib/navigazione";
 import { useApp } from "./AppProvider";
 import { Icona } from "./ui/Icona";
 
 /**
- * Il tondo dell'account in alto a destra, da tablet in su (sul telefono c'è «Account» nella barra in basso): iniziali di
- * chi ha accesso, altrimenti l'omino. Apre le voci secondarie; quelle principali stanno nell'intestazione.
+ * Il tondo dell'account: iniziali di chi ha accesso, altrimenti l'omino. Apre I miei regali, I miei biglietti, Il mio
+ * account, poi Accedi o Esci (revisione di Cri, 5 novembre 2026): «Esci» sta solo qui. Da tablet in su è
+ * nell'intestazione; sul telefono, dove l'intestazione non lo mostra, lo stesso menu è nella pagina dell'account.
  */
 export function MenuProfilo() {
   const { utente, pronto, auth } = useApp();
@@ -39,12 +41,9 @@ export function MenuProfilo() {
     };
   }, [aperto]);
 
-  const voci: { href: string; testo: string }[] = [
-    { href: "/crea", testo: "Organizza un regalo di gruppo" },
-    { href: "/account", testo: "Il tuo account" },
-    ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : []),
-    { href: "/privacy", testo: "Come trattiamo i dati" },
-  ];
+  const voci = [...VOCI_ACCOUNT, ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : [])];
+  // finché «I miei biglietti» porta all'account, su /account è accesa solo «Il mio account»
+  const corrente = [...voci].reverse().find((v) => v.href === percorso)?.testo;
   const classe = "flex min-h-12 w-full items-center gap-3 rounded-controllo px-4 text-base font-semibold hover:bg-surface-2";
 
   return (
@@ -81,11 +80,11 @@ export function MenuProfilo() {
           ) : null}
           <ul className="flex flex-col">
             {voci.map((v) => (
-              <li key={v.href}>
+              <li key={v.testo}>
                 <Link
                   href={v.href}
-                  aria-current={percorso === v.href ? "page" : undefined}
-                  className={`${classe} ${percorso === v.href ? "bg-accent-field text-accent" : ""}`}
+                  aria-current={v.testo === corrente ? "page" : undefined}
+                  className={`${classe} ${v.testo === corrente ? "bg-accent-field text-accent" : ""}`}
                 >
                   {v.testo}
                 </Link>

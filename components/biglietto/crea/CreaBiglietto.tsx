@@ -121,7 +121,7 @@ export function CreaBiglietto() {
   useCorniceInerte();
   const router = useRouter();
   const api = useApi();
-  const { utente, auth, modalita } = useApp();
+  const { utente, auth } = useApp();
   const [s, setS] = useState<Stato>(statoIniziale);
   const [pronto, setPronto] = useState(false);
   const [aperto, setAperto] = useState(false);
@@ -607,7 +607,6 @@ export function CreaBiglietto() {
         <div className="flex flex-col items-center gap-4 text-center">
           <p>Con un account ritrovi il biglietto da qualsiasi dispositivo e vedi chi ha firmato. Quello che hai preparato resta com’è.</p>
           <BottoneGoogle onClick={() => void accedi()} />
-          {modalita === "memoria" ? <p className="text-xs text-ink-soft">Senza Firebase l’accesso è finto e immediato.</p> : null}
         </div>
       </Finestra>
     </div>
