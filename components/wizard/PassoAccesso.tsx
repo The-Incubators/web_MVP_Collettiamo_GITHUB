@@ -57,7 +57,7 @@ export function PassoAccesso({ prima }: { prima: () => void }) {
       const { accessoImmediato } = await auth.inviaLinkEmail(indirizzo, "");
       if (!accessoImmediato) setInviata(indirizzo.trim());
     } catch {
-      setErrore("Non sono riuscito a mandare il collegamento. Riprova fra poco.");
+      setErrore("Non siamo riusciti a mandare il link. Riprova fra poco.");
     } finally {
       setOccupato(false);
     }

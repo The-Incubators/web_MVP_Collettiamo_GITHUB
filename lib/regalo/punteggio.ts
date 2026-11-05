@@ -17,7 +17,7 @@ export const ORDINI = [
   { id: "rilevanza", etichetta: "Rilevanza" },
   { id: "scelti", etichetta: "I nostri preferiti" },
   { id: "prezzo-su", etichetta: "Dal più economico" },
-  { id: "prezzo-giu", etichetta: "Dal meno economico" },
+  { id: "prezzo-giu", etichetta: "Dal più caro" },
 ] as const;
 
 export type IdOrdine = (typeof ORDINI)[number]["id"];

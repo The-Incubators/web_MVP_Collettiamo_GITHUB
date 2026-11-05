@@ -50,4 +50,6 @@ Dopo: video dei tutorial (regalo di gruppo, biglietto), poi il ▶ sulla pillola
 
 ## Aperto
 
+- Prima del lancio, su Firebase vero: provare la cancellazione dell'account (Admin SDK), le regole Firestore (test con l'emulatore, serve Java) e gli indici; cancellare anche le ricevute in Storage con l'account.
+- Promemoria (D-12) e conferma via email della cancellazione: servono il servizio email (D-18).
 - La cover iPhone di Gifty non compare più: rimetterla nel catalogo o toglierla.

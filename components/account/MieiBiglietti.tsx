@@ -53,7 +53,7 @@ export function MieiBiglietti() {
       </div>
       {errore ? (
         <p className="errore-testo" role="alert">
-          Non sono riuscito a caricare i biglietti. Riprova fra poco.
+          Non siamo riusciti a caricare i biglietti. Riprova fra poco.
         </p>
       ) : dati === null ? (
         <p role="status" className="muted">

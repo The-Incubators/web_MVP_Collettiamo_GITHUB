@@ -101,7 +101,7 @@ export function PaginaGruppo({ slug, catalogo, biglietto }: { slug: string; cata
     try {
       await scrivi(consegna(c!, Date.now()));
     } catch (e) {
-      g.setAvviso(e instanceof ErroreDominio ? e.message : "Non posso farlo adesso.");
+      g.setAvviso(e instanceof ErroreDominio ? e.message : "Adesso non si può fare.");
     }
   }
 
@@ -112,7 +112,7 @@ export function PaginaGruppo({ slug, catalogo, biglietto }: { slug: string; cata
       const patch = chiusuraVotazione(c!, ps, vs, Date.now());
       if (patch) await g.aggiorna(patch);
     } catch {
-      g.setAvviso("Non sono riuscito a salvare: ho annullato la modifica. Riprova fra poco.");
+      g.setAvviso("Non siamo riusciti a salvare e la modifica è stata annullata. Riprova fra poco.");
     } finally {
       setOccupato(false);
     }
@@ -128,7 +128,7 @@ export function PaginaGruppo({ slug, catalogo, biglietto }: { slug: string; cata
       await g.aggiorna(patch);
       setDaVotare([]);
     } catch (e) {
-      g.setAvviso(e instanceof ErroreDominio ? e.message : "Non sono riuscito a salvare: ho annullato la modifica. Riprova fra poco.");
+      g.setAvviso(e instanceof ErroreDominio ? e.message : "Non siamo riusciti a salvare e la modifica è stata annullata. Riprova fra poco.");
     } finally {
       setOccupato(false);
     }

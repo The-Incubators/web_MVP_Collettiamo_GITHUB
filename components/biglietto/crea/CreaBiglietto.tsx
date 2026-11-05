@@ -199,7 +199,7 @@ export function CreaBiglietto({ gruppo = null }: { gruppo?: GruppoBiglietto | nu
         inAttesa.current = true;
         setAccesso(true);
       } else {
-        setErrore(e instanceof Error ? e.message : "Non sono riuscito a creare il biglietto. Riprova.");
+        setErrore(e instanceof Error ? e.message : "Non siamo riusciti a creare il biglietto. Riprova.");
       }
       setInvio(false);
     }

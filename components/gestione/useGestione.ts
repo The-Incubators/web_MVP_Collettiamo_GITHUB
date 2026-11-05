@@ -84,7 +84,7 @@ export function useGestione(slug: string) {
           return [...mappa.values()];
         });
       } catch (e) {
-        setAvviso(e instanceof ErroreDominio ? e.message : "Non posso farlo adesso.");
+        setAvviso(e instanceof ErroreDominio ? e.message : "Adesso non si può fare.");
         return;
       }
       try {
@@ -92,7 +92,7 @@ export function useGestione(slug: string) {
       } catch {
         setColletta(prima.colletta);
         setRighe(prima.righe);
-        setAvviso("Non sono riuscito a salvare: ho annullato la modifica. Riprova fra poco.");
+        setAvviso("Non siamo riusciti a salvare e la modifica è stata annullata. Riprova fra poco.");
       }
     },
     [dati, slug, utente],
@@ -110,7 +110,7 @@ export function useGestione(slug: string) {
         return true;
       } catch {
         setColletta(prima);
-        setAvviso("Non sono riuscito a salvare: ho annullato la modifica. Riprova fra poco.");
+        setAvviso("Non siamo riusciti a salvare e la modifica è stata annullata. Riprova fra poco.");
         return false;
       }
     },
@@ -124,7 +124,7 @@ export function useGestione(slug: string) {
         await dati.aggiungiInvitati(slug, [nome]);
         return true;
       } catch {
-        setAvviso("Non sono riuscito ad aggiungere il nome. Riprova.");
+        setAvviso("Non siamo riusciti ad aggiungere il nome. Riprova.");
         return false;
       }
     },

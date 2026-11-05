@@ -17,7 +17,7 @@ export function titoloPubblico(input: { festeggiato: string; quotaCent: number; 
   if (input.votazione) return input.sorpresa ? "Scegliamo insieme un regalo a sorpresa" : `Scegliamo insieme il regalo per ${input.festeggiato}`;
   return input.sorpresa
     ? "Un regalo a sorpresa"
-    : `Regalo per ${input.festeggiato} · ${formattaEuro(input.quotaCent)} a testa`;
+    : `Regalo per ${input.festeggiato}, ${formattaEuro(input.quotaCent)} a testa`;
 }
 
 export function descrizionePubblica(input: { prodottoNome: string; organizzatoreNome: string; sorpresa: boolean; votazione?: boolean }): string {

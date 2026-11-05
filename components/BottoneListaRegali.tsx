@@ -25,7 +25,7 @@ export function BottoneListaRegali({ prodotto, className = "", variante = "piu" 
         } ${className}`}
       >
         {dentro ? <IconaSpunta width={20} height={20} /> : <IconaPiu width={20} height={20} />}
-        {dentro ? "Nella lista per la votazione" : "Aggiungi alla lista per votazione"}
+        {dentro ? "Nella lista per la votazione" : "Aggiungi alla lista per la votazione"}
       </button>
     );
   }

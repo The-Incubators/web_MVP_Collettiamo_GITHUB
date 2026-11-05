@@ -36,6 +36,7 @@ const GIORNI_SETTIMANA = [
 const IN_ARRIVO = 3;
 
 const maiuscola = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const minuscola = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 const iconaTipo = (r: Reminder): NomeIcona => TIPI_RICORRENZA.find((t) => t.id === r.tipo)?.icona ?? "event";
 
 /**
@@ -141,7 +142,7 @@ export function PaginaReminder() {
                 <Icona nome="cake" dimensione={32} />
               </span>
               <p className="font-display text-xl font-semibold text-accent-2">Nessuna ricorrenza, per ora</p>
-              <p className="text-sm text-ink-soft">Aggiungi il primo compleanno: lo vedrai nel calendario e non ti sfuggirà più.</p>
+              <p className="text-sm text-ink-soft">Aggiungi il primo compleanno: lo vedrai nel calendario.</p>
             </div>
           )}
           <Calendario
@@ -191,7 +192,7 @@ function InArrivo({ elenco, oggi, onApri }: { elenco: Reminder[]; oggi: Giorno; 
                   <p className="text-sm text-ink-soft">
                     <span className="sr-only">{testoData(data)}, </span>
                     {etichettaTipo(r.tipo)}
-                    {anni ? ` · ${anni}` : ""}
+                    {anni ? `, ${minuscola(anni)}` : ""}
                   </p>
                 </div>
                 <span className="cifre shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-bold text-accent">{testoMancano(giorni)}</span>
@@ -339,8 +340,8 @@ function Calendario({
                   <div className="flex min-w-0 flex-1 flex-col">
                     <p className="truncate font-semibold text-ink">{r.nome}</p>
                     <p className="text-sm text-ink-soft">
-                      {giorno} {nomeMese} · {etichettaTipo(r.tipo)}
-                      {anni ? ` · ${anni}` : ""}
+                      {giorno} {nomeMese}, {etichettaTipo(r.tipo).toLowerCase()}
+                      {anni ? `, ${minuscola(anni)}` : ""}
                     </p>
                     {r.nota ? <p className="line-clamp-2 text-sm italic text-ink-soft">{r.nota}</p> : null}
                   </div>

@@ -12,7 +12,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Anteprima della colletta";
+export const alt = "Anteprima del regalo di gruppo";
 
 // Colori del marchio (sezione 15). Nessun font esterno: si usa quello incorporato in ImageResponse.
 const VERDE = "#0B5E4C";
@@ -31,7 +31,7 @@ export default async function Immagine({ params }: { params: Promise<{ slug: str
   const a = visibile && !inVoto ? avanzamento(visibile) : null;
   const testoAvanzamento = inVoto ? "" : visibile
     ? visibile.nConfermati > 0
-      ? `${visibile.nConfermati} ${visibile.nConfermati === 1 ? "persona" : "persone"} su ${Math.max(visibile.previsti, visibile.nAttesi)} hanno già partecipato`
+      ? `${visibile.nConfermati} ${visibile.nConfermati === 1 ? "persona" : "persone"} su ${Math.max(visibile.previsti, visibile.nAttesi)} ${visibile.nConfermati === 1 ? "ha" : "hanno"} già partecipato`
       : `${visibile.organizzatoreNome} organizza il regalo di gruppo`
     : "";
 

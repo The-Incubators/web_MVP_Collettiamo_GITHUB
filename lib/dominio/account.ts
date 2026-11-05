@@ -61,7 +61,7 @@ export function voceBiglietto(b: Pick<Biglietto, "id" | "slug" | "festeggiato" |
   if (creato) {
     const giorno = b.dataEvento ? giornoDaIso(b.dataEvento) : null;
     const quando = giorno ? ` il ${dataBreve(istanteRoma(giorno, 12))}` : "";
-    supporto = b.collettaSlug ? `Del regalo di gruppo, ${firme(b.nFirme)}` : `${occasione}${quando}, ${firme(b.nFirme)}`;
+    supporto = b.collettaSlug ? `Con il regalo di gruppo, ${firme(b.nFirme)}` : `${occasione}${quando}, ${firme(b.nFirme)}`;
   } else {
     supporto = [occasione, b.organizzatoreNome?.trim() ? `creato da ${b.organizzatoreNome.trim()}` : ""].filter(Boolean).join(", ");
   }

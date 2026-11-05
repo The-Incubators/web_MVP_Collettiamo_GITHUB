@@ -127,7 +127,7 @@ describe("occasioni dell'editor (elenco unico)", () => {
   });
   it("il nome da mostrare, anche per le occasioni di prima", () => {
     expect(nomeOccasione("san-valentino")).toBe("San Valentino");
-    expect(nomeOccasione("guarisci")).toBe("Guarisci presto");
+    expect(nomeOccasione("guarisci")).toBe("Rimettiti presto");
   });
 });
 

@@ -65,7 +65,7 @@ export function Chiusura({ slug }: { slug: string }) {
   }, [strada, economici, dati, totale]);
 
   if (g.carico === "caricamento") return <p className="py-10 text-center text-ink-soft">Carico la raccolta…</p>;
-  if (!c) return <p className="py-10 text-center text-ink-soft">Questa colletta non esiste.</p>;
+  if (!c) return <p className="py-10 text-center text-ink-soft">Questo regalo di gruppo non esiste.</p>;
 
   const url = linkColletta(typeof window === "undefined" ? "" : baseUrlClient(), slug);
   const quota = quotaEffettiva(c);
@@ -101,7 +101,7 @@ export function Chiusura({ slug }: { slug: string }) {
       },
     });
     setOccupato(false);
-    if (!ok) setErrore("Non sono riuscito a chiudere la colletta. Riprova.");
+    if (!ok) setErrore("Non siamo riusciti a chiudere la raccolta. Riprova.");
   }
 
   async function caricaFile(file: File) {
@@ -125,7 +125,7 @@ export function Chiusura({ slug }: { slug: string }) {
         <header className="flex flex-col gap-2 rounded-3xl bg-accent p-6 text-on-accent">
           <p className="inline-flex items-center gap-1 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
             <Icona nome="check_circle" dimensione={16} />
-            Colletta chiusa
+            Raccolta chiusa
           </p>
           <h1 className="text-[28px] font-bold leading-tight">Regalo comprato! 🎉</h1>
           <p className="text-sm opacity-90">Il regalo per {c.festeggiato} è stato acquistato.</p>
@@ -186,7 +186,7 @@ export function Chiusura({ slug }: { slug: string }) {
         <header className="flex flex-col gap-2 rounded-3xl bg-accent p-6 text-on-accent" aria-live="polite">
           <p className="inline-flex items-center gap-1 self-start rounded-full bg-white/15 px-3 py-1 text-xs font-bold">
             <Icona nome="verified" dimensione={16} />
-            {c.nConfermati} {c.nConfermati === 1 ? "confermato" : "confermati"} · Raccolta completata
+            {c.nConfermati} {c.nConfermati === 1 ? "confermato" : "confermati"}, raccolta completata
           </p>
           <h1 className="text-[28px] font-bold leading-tight">Hai tutto quello che serve! 🎉</h1>
           <p className="text-sm opacity-90">
@@ -194,7 +194,7 @@ export function Chiusura({ slug }: { slug: string }) {
           </p>
         </header>
       ) : (
-        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Chiudi la colletta</h1>
+        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Chiudi la raccolta</h1>
       )}
 
       {g.avviso ? (
@@ -211,7 +211,7 @@ export function Chiusura({ slug }: { slug: string }) {
               Mancano {formattaEuro(mancante)}
             </h2>
             <p className="text-sm">
-              Sono {quoteMancanti(prezzo, totale, quota)} {quoteMancanti(prezzo, totale, quota) === 1 ? "quota" : "quote"} da {formattaEuro(quota)}. Nessuna di queste strade scrive a chi non ha pagato.
+              Sono {quoteMancanti(prezzo, totale, quota)} {quoteMancanti(prezzo, totale, quota) === 1 ? "quota" : "quote"} da {formattaEuro(quota)}. Nessuna di queste scelte manda messaggi a chi non ha pagato.
             </p>
           </div>
           <h3 className="font-sans text-xs font-bold uppercase tracking-widest text-ink-soft">Come procedere</h3>
@@ -408,7 +408,7 @@ export function Chiusura({ slug }: { slug: string }) {
           ) : null}
           <Bottone variante="azione" pieno onClick={() => void chiudi()} disabled={occupato}>
             <Icona nome="done_all" dimensione={22} />
-            {occupato ? "Chiudo…" : "Chiudi la colletta"}
+            {occupato ? "Chiudo…" : "Chiudi la raccolta"}
           </Bottone>
           <p className="text-center text-xs text-ink-soft">Fallo dopo aver comprato il regalo: chi apre il link vedrà il rendiconto.</p>
         </>

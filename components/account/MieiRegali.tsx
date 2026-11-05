@@ -67,7 +67,7 @@ export function MieiRegali() {
       </div>
       {errore ? (
         <p className="errore-testo" role="alert">
-          Non sono riuscito a caricare i regali. Riprova fra poco.
+          Non siamo riusciti a caricare i regali. Riprova fra poco.
         </p>
       ) : voci === null ? (
         <p role="status" className="muted">

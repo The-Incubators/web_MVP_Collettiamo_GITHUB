@@ -33,7 +33,7 @@ export function FormAccesso() {
       .then((u) => {
         if (u) router.replace(destinazioneSicura(leggiLocale(CHIAVE_DOPO)));
       })
-      .catch(() => setErrore("Il collegamento non è più valido. Chiedine uno nuovo."));
+      .catch(() => setErrore("Il link non è più valido. Chiedine uno nuovo."));
   }, [auth, router]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export function FormAccesso() {
       const { accessoImmediato } = await auth.inviaLinkEmail(email, nome);
       if (!accessoImmediato) setInviata(true);
     } catch {
-      setErrore("Non sono riuscito a mandare il collegamento. Riprova fra poco.");
+      setErrore("Non siamo riusciti a mandare il link. Riprova fra poco.");
     } finally {
       setOccupato(false);
     }
@@ -92,7 +92,7 @@ export function FormAccesso() {
           <Icona nome="redeem" dimensione={32} />
         </span>
         <h1 className="text-[28px] font-bold leading-tight text-accent-2">Accedi</h1>
-        <p className="text-sm text-ink-soft">Un attimo, con il tuo account Google.</p>
+        <p className="text-sm text-ink-soft">Ti basta il tuo account Google.</p>
       </div>
 
       {modalita === "firestore" ? (
@@ -111,7 +111,7 @@ export function FormAccesso() {
       ) : inviata ? (
         <Avviso tono="positivo" titolo="Controlla la posta" live>
           <p>
-            Ti abbiamo scritto a <strong>{email}</strong>. Apri il collegamento da questo dispositivo per entrare.
+            Ti abbiamo scritto a <strong>{email}</strong>. Apri il link da questo dispositivo per entrare.
           </p>
         </Avviso>
       ) : (
