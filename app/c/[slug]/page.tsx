@@ -6,6 +6,7 @@ import { SLUG_DEMO } from "@/lib/dati/demo";
 import { righePubbliche } from "@/lib/dati/pubblico";
 import { descrizionePubblica, titoloPubblico } from "@/lib/dominio/messaggi";
 import { quotaEffettiva } from "@/lib/dominio/quota";
+import { nomeRegalo } from "@/lib/dominio/regali";
 import { slugValido } from "@/lib/dominio/slug";
 import type { Colletta } from "@/lib/tipi";
 
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const votazione = !!c.votazione && !c.votazione.chiusa;
   const titolo = titoloPubblico({ festeggiato: c.festeggiato, quotaCent: quotaEffettiva(c), sorpresa: c.sorpresa, votazione });
-  const descrizione = descrizionePubblica({ prodottoNome: c.prodotto.nome, organizzatoreNome: c.organizzatoreNome, sorpresa: c.sorpresa, votazione });
+  const descrizione = descrizionePubblica({ prodottoNome: nomeRegalo(c.prodotto), organizzatoreNome: c.organizzatoreNome, sorpresa: c.sorpresa, votazione });
   const immagine = { url: `/c/${slug}/opengraph-image`, width: 1200, height: 630, alt: titolo };
 
   return {

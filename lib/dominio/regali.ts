@@ -29,6 +29,13 @@ export function regaloDaScegliere(p: ProdottoColletta): boolean {
   return p.prodottoId === null && p.prezzoCent === 0 && p.nome === "";
 }
 
+export const NOME_REGALO_DA_SCEGLIERE = "Regalo da scegliere";
+
+/** Il nome da mostrare: quello del regalo, o «Regalo da scegliere» per un gruppo partito dalle adesioni. */
+export function nomeRegalo(p: ProdottoColletta): string {
+  return regaloDaScegliere(p) ? NOME_REGALO_DA_SCEGLIERE : p.nome;
+}
+
 /** Lo stesso regalo: stesso prodotto del catalogo, oppure stesso nome, prezzo e link. */
 export function stessoRegalo(a: ProdottoColletta, b: ProdottoColletta): boolean {
   if (a.prodottoId && b.prodottoId) return a.prodottoId === b.prodottoId;

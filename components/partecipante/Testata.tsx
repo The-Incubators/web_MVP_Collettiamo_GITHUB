@@ -2,6 +2,7 @@ import { Barra, Icona, ImmagineProdotto } from "@/components/ui";
 import { etichettaOccasione } from "@/lib/regalo/dati";
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
+import { nomeRegalo, regaloDaScegliere } from "@/lib/dominio/regali";
 import { avanzamento, inizialiDi } from "@/lib/dominio/partecipanti";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import type { Colletta, Partecipante } from "@/lib/tipi";
@@ -92,8 +93,8 @@ export function Testata({ colletta: c, righe, scaduta }: { colletta: Colletta; r
           <ImmagineProdotto prodotto={c.prodotto} className="aspect-square h-full" />
         </div>
         <div className="flex min-w-0 flex-col gap-1">
-          <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{c.prodotto.nome}</p>
-          <p className="cifre font-bold">{formattaEuro(c.prodotto.prezzoCent)}</p>
+          <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{nomeRegalo(c.prodotto)}</p>
+          {regaloDaScegliere(c.prodotto) ? null : <p className="cifre font-bold">{formattaEuro(c.prodotto.prezzoCent)}</p>}
         </div>
       </div>
 

@@ -1,20 +1,19 @@
 import { IconaTratto, ImmagineProdotto, type NomeIconaTratto } from "@/components/ui";
 import type { ProdottoColletta } from "@/lib/tipi";
 
+/** Una riga del biglietto: il testo deciso, oppure in grigio il nome di quello che manca. */
+export type RigaCarta = { testo: string; vuota?: boolean };
+
 export interface RigheAnteprima {
   festeggiato: string;
   /** "Compleanno, 14 dicembre" */
   quando: string;
-  /** null finché non si arriva al passo 3 */
-  regali: ProdottoColletta[] | null;
-  /** "10 € a testa"; vuota = ancora da decidere */
-  quota: string | null;
-  /** "10 persone nella chat", null prima del passo 5 */
-  persone: string | null;
-  /** "Adesioni fino al 12 dicembre, 20:00" */
-  limite: string | null;
-  /** "Rimborsi con PayPal, Satispay, contanti", null prima del passo 6 */
-  rimborsi: string | null;
+  /** "10 persone nella chat", o vuota «Persone nella chat» */
+  persone: RigaCarta;
+  /** la quota, oppure le miniature del regalo o dei regali da votare */
+  cosa: RigaCarta | ProdottoColletta[];
+  /** "Rimborsi con PayPal", o vuota «Come ti rimborsano» */
+  rimborsi: RigaCarta;
   /** il nome di chi organizza, se ha già un account */
   organizzatore: string | null;
 }
@@ -29,13 +28,13 @@ export function FotoRegalo({ p }: { p: ProdottoColletta }) {
   );
 }
 
-function Riga({ icona, children, vuota = false }: { icona: NomeIconaTratto; children: React.ReactNode; vuota?: boolean }) {
+function Riga({ icona, r }: { icona: NomeIconaTratto; r: RigaCarta }) {
   return (
     <div>
       <dt>
         <IconaTratto nome={icona} />
       </dt>
-      <dd className={vuota ? "vuota" : undefined}>{children}</dd>
+      <dd className={r.vuota ? "vuota" : undefined}>{r.testo}</dd>
     </div>
   );
 }
@@ -50,45 +49,23 @@ export function Anteprima({ r }: { r: RigheAnteprima }) {
       <div className="carta">
         <p className="mano">Il regalo di gruppo per {r.festeggiato.trim() || "…"}</p>
         <dl>
-          <Riga icona="calendario">{r.quando}</Riga>
-          {r.regali === null ? (
-            <Riga icona="regalo" vuota>
-              Regalo o quota
-            </Riga>
+          <Riga icona="calendario" r={{ testo: r.quando }} />
+          <Riga icona="gruppo" r={r.persone} />
+          {Array.isArray(r.cosa) ? (
+            <div>
+              <dt>
+                <IconaTratto nome="regalo" />
+              </dt>
+              <dd className="miniature">
+                {r.cosa.map((p, i) => (
+                  <FotoRegalo key={`${p.nome}-${i}`} p={p} />
+                ))}
+              </dd>
+            </div>
           ) : (
-            <>
-              {r.regali.length ? (
-                <div>
-                  <dt>
-                    <IconaTratto nome="regalo" />
-                  </dt>
-                  <dd className="miniature">
-                    {r.regali.map((p, i) => (
-                      <FotoRegalo key={`${p.nome}-${i}`} p={p} />
-                    ))}
-                  </dd>
-                </div>
-              ) : null}
-              <Riga icona="gruppo">{r.quota ?? "Quota"}</Riga>
-            </>
+            <Riga icona="regalo" r={r.cosa} />
           )}
-          {r.persone ? (
-            <>
-              <Riga icona="gruppo">{r.persone}</Riga>
-              {r.limite ? <Riga icona="calendario">{r.limite}</Riga> : null}
-            </>
-          ) : (
-            <Riga icona="gruppo" vuota>
-              Persone nella chat
-            </Riga>
-          )}
-          {r.rimborsi ? (
-            <Riga icona="spunta">{r.rimborsi}</Riga>
-          ) : (
-            <Riga icona="spunta" vuota>
-              Come ti rimborsano
-            </Riga>
-          )}
+          <Riga icona="spunta" r={r.rimborsi} />
         </dl>
         {r.organizzatore ? <span className="esempio-etichetta firma-anteprima">organizzato da {r.organizzatore}</span> : null}
       </div>

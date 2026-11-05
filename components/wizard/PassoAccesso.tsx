@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { CampoModulo, Input } from "@/components/ui";
+import { CampoModulo, IconaTratto, Input } from "@/components/ui";
 import { CHIAVE_DOPO_ACCESSO, scriviLocale } from "@/lib/auth/tipi";
 
 /** Il logo di Google a colori, come nel prototipo (`.btn-google`). */
@@ -18,11 +18,11 @@ function LogoGoogle() {
 }
 
 /**
- * Passo 6 (prototipi/crea.html; D-13, spec §7.2): l'accesso si chiede solo qui. Con Google o con il collegamento via
- * email; il lavoro resta salvato nel browser e, appena c'è l'account, il wizard crea il gruppo da solo. Il collegamento
- * via email apre /accedi, che poi riporta qui (`CHIAVE_DOPO_ACCESSO`).
+ * L'accesso dentro il riepilogo (design.md §10.1, decisione 10; D-13): «Accedi con Google» accede e crea; oppure il
+ * collegamento via email, che apre /accedi e poi riporta qui (`CHIAVE_DOPO_ACCESSO`), dove il gruppo si crea da solo.
+ * `prima` segna nello stato che, appena c'è l'account, il gruppo va creato.
  */
-export function PassoAccesso() {
+export function PassoAccesso({ prima }: { prima: () => void }) {
   const { auth } = useApp();
   const [email, setEmail] = useState("");
   const [errore, setErrore] = useState<string | null>(null);
@@ -33,6 +33,7 @@ export function PassoAccesso() {
   async function google() {
     setErroreGoogle(null);
     setOccupato(true);
+    prima();
     scriviLocale(CHIAVE_DOPO_ACCESSO, "/crea");
     try {
       await auth.accediConGoogle();
@@ -43,18 +44,18 @@ export function PassoAccesso() {
     }
   }
 
-  async function mandaLink(e: React.FormEvent) {
-    e.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+  async function manda(indirizzo: string) {
+    if (!/^\S+@\S+\.\S+$/.test(indirizzo.trim())) {
       setErrore("Controlla l'indirizzo email.");
       return;
     }
     setErrore(null);
     setOccupato(true);
+    prima();
     scriviLocale(CHIAVE_DOPO_ACCESSO, "/crea");
     try {
-      const { accessoImmediato } = await auth.inviaLinkEmail(email, "");
-      if (!accessoImmediato) setInviata(email.trim());
+      const { accessoImmediato } = await auth.inviaLinkEmail(indirizzo, "");
+      if (!accessoImmediato) setInviata(indirizzo.trim());
     } catch {
       setErrore("Non sono riuscito a mandare il collegamento. Riprova fra poco.");
     } finally {
@@ -64,17 +65,34 @@ export function PassoAccesso() {
 
   if (inviata) {
     return (
-      <div className="accesso" role="status">
-        <p className="t-titolo">Controlla la posta</p>
-        <p>
-          Ti abbiamo scritto a <strong>{inviata}</strong>. Apri il collegamento da questo dispositivo per entrare.
-        </p>
-      </div>
+      <section className="accesso" aria-labelledby="t-acc" role="status">
+        <span className="stato">
+          <IconaTratto nome="email" />
+          Link mandato
+        </span>
+        <h2 id="t-acc" className="t-titolo">
+          Apri il link che hai ricevuto a {inviata}
+        </h2>
+        <p>Aprilo da questo dispositivo: il regalo di gruppo si crea appena accedi.</p>
+        <div>
+          <button type="button" className="btn btn-quieto" disabled={occupato} aria-busy={occupato || undefined} onClick={() => void manda(inviata)}>
+            Mandamelo di nuovo
+          </button>
+        </div>
+        {errore ? (
+          <p className="errore-testo" role="alert">
+            {errore}
+          </p>
+        ) : null}
+      </section>
     );
   }
 
   return (
-    <form className="accesso" onSubmit={mandaLink} noValidate>
+    <section className="accesso" aria-labelledby="t-acc">
+      <h2 id="t-acc" className="t-titolo">
+        Accedi per creare il regalo di gruppo
+      </h2>
       <button type="button" className="btn btn-google" onClick={() => void google()} disabled={occupato}>
         <LogoGoogle />
         Accedi con Google
@@ -85,22 +103,31 @@ export function PassoAccesso() {
         </p>
       ) : null}
       <p className="oppure">oppure</p>
-      <CampoModulo id="email" etichetta="La tua email" errore={errore ?? undefined}>
-        <Input
-          id="email"
-          type="email"
-          inputMode="email"
-          autoComplete="email"
-          placeholder="nome@esempio.it"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          errore={!!errore}
-          aria-describedby={errore ? "email-errore" : undefined}
-        />
-      </CampoModulo>
-      <button type="submit" className="btn btn-contorno" disabled={occupato} aria-busy={occupato || undefined}>
-        Mandami il link per accedere
-      </button>
-    </form>
+      <form
+        className="accesso-email"
+        noValidate
+        onSubmit={(e) => {
+          e.preventDefault();
+          void manda(email);
+        }}
+      >
+        <CampoModulo id="email" etichetta="La tua email" errore={errore ?? undefined}>
+          <Input
+            id="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            placeholder="nome@esempio.it"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            errore={!!errore}
+            aria-describedby={errore ? "email-errore" : undefined}
+          />
+        </CampoModulo>
+        <button type="submit" className="btn btn-contorno" disabled={occupato} aria-busy={occupato || undefined}>
+          Mandami il link per accedere
+        </button>
+      </form>
+    </section>
   );
 }

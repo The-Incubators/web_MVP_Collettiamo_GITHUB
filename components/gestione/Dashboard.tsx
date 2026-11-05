@@ -10,6 +10,7 @@ import { dataBreve } from "@/lib/dominio/date";
 import { euroPerCampo, formattaEuro, leggiEuro } from "@/lib/dominio/importi";
 import { linkColletta, linkWhatsApp, messaggioDopoVoto, messaggioInvito, messaggioVotazione } from "@/lib/dominio/messaggi";
 import { votazioneInCorso } from "@/lib/dominio/votazione";
+import { nomeRegalo } from "@/lib/dominio/regali";
 import { RisultatoVotazione } from "@/components/partecipante/RisultatoVotazione";
 import { SezioneVotazione } from "./SezioneVotazione";
 import { avanzamento, contantiDaRicevere, daConfermare, ordinaPartecipanti } from "@/lib/dominio/partecipanti";
@@ -294,7 +295,7 @@ export function Dashboard({ slug }: { slug: string }) {
   }
 
   const a = avanzamento(c);
-  const mancanti = quoteMancanti(c.prodotto.prezzoCent, c.totaleConfermatoCent, quota);
+  const mancanti = quoteMancanti(a.obiettivoCent, c.totaleConfermatoCent, quota);
   const scaduta = adesso > 0 && adesso > c.scadenza;
   const giorni = adesso ? giorniAllaScadenza(c.scadenza, adesso) : 0;
   const dichiarati = daConfermare(righe).filter((r) => r.metodo !== "contanti");
@@ -366,7 +367,7 @@ export function Dashboard({ slug }: { slug: string }) {
           </div>
           <div className="min-w-0">
             <p className="text-xs text-ink-soft">Il regalo</p>
-            <p className="truncate font-display text-lg font-semibold">{c.prodotto.nome}</p>
+            <p className="truncate font-display text-lg font-semibold">{nomeRegalo(c.prodotto)}</p>
             <p className="cifre text-xs font-bold text-cta-2">Obiettivo: {formattaEuro(a.obiettivoCent)}</p>
           </div>
         </div>

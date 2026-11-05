@@ -6,22 +6,31 @@ import { NOME_SEGNAPOSTO, ORE } from "@/lib/dominio/votazione";
 import type { ProdottoColletta } from "@/lib/tipi";
 import {
   aperturaDaStato,
+  bozzaDaRiprendere,
+  budgetPrevisto,
+  conMetodi,
   conRegaloAlVoto,
   conRegaloScelto,
   erroriPasso,
-  intervalloQuote,
+  fineVoto,
+  fineVotoDaStato,
   inVotazione,
   leggiStato,
-  limitePredefinito,
+  limite,
   MAX_REGALI,
+  metodiDaStato,
   nuovaColletta,
   occasioneValida,
-  oreVotazione,
+  passoDopo,
+  passoPrima,
   personeDivisione,
+  posizione,
   primoPassoConErrori,
   quotaDaStato,
   scadenzaDaStato,
+  senzaMetodi,
   senzaRegalo,
+  sequenza,
   statoDaColletta,
   statoIniziale,
   testoMetodi,
@@ -44,17 +53,14 @@ const zaino = regalo("Zaino", 16564);
 const instax = regalo("Instax", 18982, 2);
 
 /** Uno stato compilato fino al passo 5, con la partenza scelta. */
-function compilato(partenza: "adesioni" | "regalo", extra: Partial<StatoWizard> = {}): StatoWizard {
+function compilato(partenza: "adesioni" | "regalo" | "voto", extra: Partial<StatoWizard> = {}): StatoWizard {
   return {
     ...statoIniziale("org-1"),
     festeggiato: "Mauro",
     occasione: "compleanno",
     dataRegalo: "2026-12-14",
     partenza,
-    quotaEuro: partenza === "adesioni" ? "10" : "",
-    regali: partenza === "regalo" ? [zaino] : [],
-    limiteData: "2026-12-12",
-    limiteOra: "20:00",
+    regali: partenza === "regalo" ? [zaino] : partenza === "voto" ? [zaino, instax] : [],
     paypalAttivo: true,
     paypal: "paypal.me/cri",
     contantiAttivo: true,
@@ -62,123 +68,129 @@ function compilato(partenza: "adesioni" | "regalo", extra: Partial<StatoWizard> 
   };
 }
 
-describe("wizard: stato di partenza e lavoro salvato", () => {
-  it("parte dal passo 1, compleanno, 10 persone, chi organizza partecipa, nessuna sorpresa", () => {
+describe("procedura: stato di partenza e bozza", () => {
+  it("parte dal passo 1, compleanno, 10 persone, 10 € proposti, chi organizza partecipa (D-16), nessuna sorpresa", () => {
     const s = statoIniziale();
-    expect(s).toMatchObject({ passo: 1, uid: null, occasione: "compleanno", chat: 10, partecipo: true, sorpresa: false, partenza: null, limiteOra: "20:00" });
+    expect(s).toMatchObject({ passo: 1, uid: null, occasione: "compleanno", chat: 10, quotaEuro: "10", partecipo: true, sorpresa: false, partenza: null, daProdotto: false });
   });
 
-  it("riprende il lavoro di nessuno o della stessa persona, non quello di un altro né di un'altra versione", () => {
-    const anonimo = JSON.stringify({ ...statoIniziale(null), festeggiato: "Mauro", passo: 6 });
-    expect(leggiStato(anonimo, "org-1")).toMatchObject({ festeggiato: "Mauro", passo: 6, uid: "org-1" });
-    const mio = JSON.stringify({ ...statoIniziale("org-1"), festeggiato: "Elena" });
-    expect(leggiStato(mio, "org-1")?.festeggiato).toBe("Elena");
-    expect(leggiStato(mio, "org-2")).toBeNull();
-    expect(leggiStato(JSON.stringify({ passo: 3, festeggiato: "x" }), null)).toBeNull();
+  it("riprende la bozza di nessuno o della stessa persona, non quella di un altro né di un'altra versione", () => {
+    const anonima = JSON.stringify({ ...statoIniziale(null), festeggiato: "Mauro", passo: 6 });
+    expect(leggiStato(anonima, "org-1")).toMatchObject({ festeggiato: "Mauro", passo: 6, uid: "org-1" });
+    const mia = JSON.stringify({ ...statoIniziale("org-1"), festeggiato: "Elena" });
+    expect(leggiStato(mia, "org-1")?.festeggiato).toBe("Elena");
+    expect(leggiStato(mia, "org-2")).toBeNull();
+    expect(leggiStato(JSON.stringify({ versione: 2, passo: 3, festeggiato: "x" }), null)).toBeNull();
     expect(leggiStato("non json", null)).toBeNull();
     expect(leggiStato(null, null)).toBeNull();
+    expect(leggiStato(JSON.stringify({ ...statoIniziale(), passo: 9 }), null)?.passo).toBe(1);
+  });
+
+  it("«Riprendi il regalo per…» solo se c'è il nome di chi si festeggia", () => {
+    expect(bozzaDaRiprendere(null)).toBe(false);
+    expect(bozzaDaRiprendere(statoIniziale())).toBe(false);
+    expect(bozzaDaRiprendere({ ...statoIniziale(), festeggiato: "Mauro" })).toBe(true);
   });
 
   it("accetta solo le dieci occasioni dell'elenco unico", () => {
     expect(occasioneValida("san-valentino")).toBe("san-valentino");
-    expect(occasioneValida("compleanno")).toBe("compleanno");
     expect(occasioneValida("condoglianze")).toBeNull();
     expect(occasioneValida(null)).toBeNull();
   });
 });
 
-describe("wizard: regali scelti e da votare", () => {
-  it("«Scegli questo regalo» sostituisce; «Aggiungi al voto» aggiunge senza doppioni fino a cinque", () => {
-    let s = conRegaloScelto(statoIniziale(), zaino);
-    expect(s).toMatchObject({ partenza: "regalo", regali: [zaino] });
-    expect(inVotazione(s)).toBe(false);
-    s = conRegaloAlVoto(s, instax);
-    expect(s.regali).toEqual([zaino, instax]);
-    expect(inVotazione(s)).toBe(true);
-    s = conRegaloAlVoto(s, instax);
-    expect(s.regali).toHaveLength(2);
-    for (const n of ["A", "B", "C", "D"]) s = conRegaloAlVoto(s, regalo(n, 1000));
-    expect(s.regali).toHaveLength(MAX_REGALI);
-    s = conRegaloScelto(s, instax);
-    expect(s.regali).toEqual([instax]);
-  });
-
-  it("«Aggiungi al voto» partendo dalle adesioni riparte dal solo regalo; «Togli» toglie quello indicato", () => {
-    const s = conRegaloAlVoto({ ...statoIniziale(), partenza: "adesioni", regali: [zaino] }, instax);
-    expect(s).toMatchObject({ partenza: "regalo", regali: [instax] });
-    expect(senzaRegalo({ ...s, regali: [zaino, instax] }, 0).regali).toEqual([instax]);
+describe("procedura: ordine dei passi", () => {
+  it("sei passi; dal prodotto quattro, senza «da dove vuoi iniziare» né la scelta del regalo", () => {
+    expect(sequenza({ daProdotto: false })).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(sequenza({ daProdotto: true })).toEqual([1, 2, 5, 6]);
+    expect(posizione({ daProdotto: false, passo: 3 })).toEqual({ n: 3, totale: 6 });
+    expect(posizione({ daProdotto: true, passo: 5 })).toEqual({ n: 3, totale: 4 });
+    expect(passoDopo({ daProdotto: true, passo: 2 })).toBe(5);
+    expect(passoPrima({ daProdotto: true, passo: 5 })).toBe(2);
+    expect(passoPrima({ daProdotto: false, passo: 1 })).toBeNull();
+    expect(passoDopo({ daProdotto: false, passo: 6 })).toBe(6);
   });
 });
 
-describe("wizard: persone e quote", () => {
+describe("procedura: regali scelti e da votare", () => {
+  it("«Scegli questo regalo» sostituisce; «Aggiungi al regalo» aggiunge senza doppioni fino a cinque", () => {
+    let s = conRegaloScelto(statoIniziale(), zaino);
+    expect(s).toMatchObject({ partenza: "regalo", regali: [zaino] });
+    s = conRegaloAlVoto(s, instax);
+    expect(s).toMatchObject({ partenza: "voto", regali: [instax] });
+    expect(inVotazione(s)).toBe(false);
+    s = conRegaloAlVoto(s, zaino);
+    expect(inVotazione(s)).toBe(true);
+    s = conRegaloAlVoto(s, zaino);
+    expect(s.regali).toHaveLength(2);
+    for (const n of ["A", "B", "C", "D"]) s = conRegaloAlVoto(s, regalo(n, 1000));
+    expect(s.regali).toHaveLength(MAX_REGALI);
+    expect(senzaRegalo(s, 0).regali[0]).toEqual(zaino);
+  });
+});
+
+describe("procedura: persone e quote", () => {
   it("divide fra le persone della chat, meno chi organizza se non partecipa (D-16)", () => {
     expect(personeDivisione({ chat: 10, partecipo: true })).toBe(10);
     expect(personeDivisione({ chat: 10, partecipo: false })).toBe(9);
     expect(personeDivisione({ chat: 1, partecipo: false })).toBe(1);
   });
 
-  it("prima le adesioni: la quota proposta; con il regalo: il prezzo diviso al centesimo per eccesso", () => {
+  it("prima le adesioni: la quota proposta e il budget previsto; con il regalo il prezzo diviso; con il voto non si sa", () => {
     expect(quotaDaStato(compilato("adesioni"))).toBe(1000);
+    expect(budgetPrevisto(compilato("adesioni"))).toBe(10000);
+    expect(budgetPrevisto(compilato("adesioni", { partecipo: false }))).toBe(9000);
     expect(quotaDaStato(compilato("adesioni", { quotaEuro: "" }))).toBeNull();
     expect(quotaDaStato(compilato("regalo"))).toBe(1657);
     expect(quotaDaStato(compilato("regalo", { partecipo: false }))).toBe(1841);
-  });
-
-  it("durante il voto la quota non si sa: si mostra la più bassa e la più alta", () => {
-    const s = compilato("regalo", { regali: [zaino, instax] });
-    expect(quotaDaStato(s)).toBeNull();
-    expect(intervalloQuote(s)).toEqual([1657, 1899]);
-    expect(intervalloQuote(compilato("regalo"))).toBeNull();
+    expect(quotaDaStato(compilato("voto"))).toBeNull();
   });
 });
 
-describe("wizard: data limite delle adesioni (D-15)", () => {
-  it("propone la data del regalo meno consegna e un giorno, alle 20:00, mai prima di oggi", () => {
-    expect(limitePredefinito({ dataRegalo: "2026-12-14", partenza: "adesioni", regali: [] }, ADESSO)).toBe("2026-12-12");
-    expect(limitePredefinito({ dataRegalo: "2026-12-14", partenza: "regalo", regali: [zaino, instax] }, ADESSO)).toBe("2026-12-11");
-    expect(limitePredefinito({ dataRegalo: "2026-11-06", partenza: "adesioni", regali: [] }, ADESSO)).toBe("2026-11-05");
-    expect(limitePredefinito({ dataRegalo: "", partenza: null, regali: [] }, ADESSO)).toBe("");
+describe("procedura: data limite e fine della votazione", () => {
+  it("la data limite proposta è il giorno prima della festa alle 20:00, mai prima di oggi; si cambia nel riepilogo", () => {
+    expect(limite({ dataRegalo: "2026-12-14", limiteData: "", limiteOra: "" }, ADESSO)).toEqual({ data: "2026-12-13", ora: "20:00" });
+    expect(limite({ dataRegalo: "2026-11-06", limiteData: "", limiteOra: "" }, ADESSO)).toEqual({ data: "2026-11-05", ora: "20:00" });
+    expect(limite({ dataRegalo: "2026-12-14", limiteData: "2026-12-10", limiteOra: "18:30" }, ADESSO)).toEqual({ data: "2026-12-10", ora: "18:30" });
+    expect(scadenzaDaStato({ dataRegalo: "2026-12-14", limiteData: "", limiteOra: "" }, ADESSO)).toBe(istanteRoma({ a: 2026, m: 12, g: 13 }, 20));
+    expect(scadenzaDaStato({ dataRegalo: "", limiteData: "", limiteOra: "" }, ADESSO)).toBeNull();
   });
 
-  it("legge data e ora a Roma; senza una delle due non c'è scadenza", () => {
-    expect(scadenzaDaStato({ limiteData: "2026-12-12", limiteOra: "20:00" })).toBe(istanteRoma({ a: 2026, m: 12, g: 12 }, 20));
-    expect(scadenzaDaStato({ limiteData: "2026-12-12", limiteOra: "21:30" })).toBe(istanteRoma({ a: 2026, m: 12, g: 12 }, 21, 30));
-    expect(scadenzaDaStato({ limiteData: "", limiteOra: "20:00" })).toBeNull();
-    expect(scadenzaDaStato({ limiteData: "2026-12-12", limiteOra: "25:00" })).toBeNull();
-  });
-
-  it("il voto dura un giorno, o meno se la data limite arriva prima, mai sotto un'ora", () => {
-    expect(oreVotazione(compilato("regalo"), ADESSO)).toBe(24);
-    expect(oreVotazione(compilato("regalo", { limiteData: "2026-11-05", limiteOra: "20:00" }), ADESSO)).toBe(10);
-    expect(oreVotazione(compilato("regalo", { limiteData: "2026-11-05", limiteOra: "10:30" }), ADESSO)).toBe(1);
+  it("la votazione finisce fra quattro giorni alle 20:00, ma non dopo la data limite; si sceglie data e ora", () => {
+    expect(fineVoto(compilato("voto"), ADESSO)).toEqual({ data: "2026-11-09", ora: "20:00" });
+    expect(fineVoto(compilato("voto", { dataRegalo: "2026-11-07" }), ADESSO)).toEqual({ data: "2026-11-06", ora: "20:00" });
+    expect(fineVotoDaStato(compilato("voto", { fineVotoData: "2026-11-08", fineVotoOra: "12:15" }), ADESSO)).toBe(istanteRoma({ a: 2026, m: 11, g: 8 }, 12, 15));
   });
 });
 
-describe("wizard: controlli dei passi", () => {
+describe("procedura: controlli dei passi", () => {
   it("passo 1: il nome e una data da domani in poi", () => {
     const vuoto = erroriPasso(statoIniziale(), 1, ADESSO);
-    expect(vuoto.festeggiato).toBe("Scrivi il nome di chi festeggiamo");
+    expect(vuoto.festeggiato).toBe("Scrivi il nome di chi festeggiate");
     expect(vuoto.dataRegalo).toBeTruthy();
     expect(erroriPasso({ ...compilato("adesioni"), dataRegalo: "2026-11-05" }, 1, ADESSO).dataRegalo).toBe("Scegli una data da domani in poi");
     expect(erroriPasso(compilato("adesioni"), 1, ADESSO)).toEqual({});
   });
 
-  it("passi 2 e 3: la partenza, poi la quota o almeno un regalo", () => {
-    expect(erroriPasso(statoIniziale(), 2, ADESSO).partenza).toBeTruthy();
-    expect(erroriPasso(compilato("adesioni", { quotaEuro: "zero" }), 3, ADESSO).quotaEuro).toBeTruthy();
-    expect(erroriPasso(compilato("regalo", { regali: [] }), 3, ADESSO).regali).toBeTruthy();
-    expect(erroriPasso(compilato("regalo"), 3, ADESSO)).toEqual({});
+  it("passo 2: almeno due persone; dal prodotto serve il regalo", () => {
+    expect(erroriPasso(compilato("adesioni", { chat: 1 }), 2, ADESSO).chat).toBeTruthy();
+    expect(erroriPasso(compilato("regalo", { daProdotto: true, regali: [] }), 2, ADESSO).regali).toBeTruthy();
+    expect(erroriPasso(compilato("regalo", { daProdotto: true }), 2, ADESSO)).toEqual({});
   });
 
-  it("passo 4: almeno due persone e una data limite futura", () => {
-    expect(erroriPasso(compilato("adesioni", { chat: 1 }), 4, ADESSO).chat).toBeTruthy();
-    expect(erroriPasso(compilato("adesioni", { limiteData: "2026-11-04" }), 4, ADESSO).limite).toBe("La data limite è già passata");
-    expect(erroriPasso(compilato("adesioni", { limiteData: "" }), 4, ADESSO).limite).toBeTruthy();
+  it("passo 4: la quota, il regalo, o da due regali in su con una fine del voto futura ed entro la data limite", () => {
+    expect(erroriPasso(compilato("adesioni", { quotaEuro: "zero" }), 4, ADESSO).quotaEuro).toBeTruthy();
+    expect(erroriPasso(compilato("regalo", { regali: [] }), 4, ADESSO).regali).toBeTruthy();
+    expect(erroriPasso(compilato("voto", { regali: [zaino] }), 4, ADESSO).regali).toBe("Scegli almeno due regali da votare");
+    expect(erroriPasso(compilato("voto", { fineVotoData: "2026-11-04", fineVotoOra: "20:00" }), 4, ADESSO).fineVoto).toBe("La fine della votazione è già passata");
+    expect(erroriPasso(compilato("voto", { fineVotoData: "2026-12-13", fineVotoOra: "21:00" }), 4, ADESSO).fineVoto).toBe("La votazione deve finire entro la data limite delle adesioni");
+    expect(erroriPasso(compilato("voto"), 4, ADESSO)).toEqual({});
     expect(erroriPasso(compilato("adesioni"), 4, ADESSO)).toEqual({});
   });
 
   it("passo 5: almeno un metodo, e i dati dei metodi scelti", () => {
     const nessuno = compilato("adesioni", { paypalAttivo: false, contantiAttivo: false });
+    expect(senzaMetodi(nessuno)).toBe(true);
     expect(erroriPasso(nessuno, 5, ADESSO).metodi).toBeTruthy();
     const e = erroriPasso(compilato("adesioni", { satispayAttivo: true, satispay: "12", bonificoAttivo: true, iban: "IT00", intestatario: "" }), 5, ADESSO);
     expect(Object.keys(e).sort()).toEqual(["iban", "intestatario", "satispay"]);
@@ -186,17 +198,33 @@ describe("wizard: controlli dei passi", () => {
     expect(testoMetodi(compilato("adesioni", { satispayAttivo: true }))).toBe("PayPal, Satispay, contanti");
   });
 
-  it("prima di creare il gruppo trova il primo passo da correggere", () => {
-    expect(primoPassoConErrori(compilato("regalo"), 5, ADESSO)).toBeNull();
-    expect(primoPassoConErrori(compilato("regalo", { festeggiato: " " }), 5, ADESSO)).toBe(1);
-    expect(primoPassoConErrori(compilato("regalo", { contantiAttivo: false, paypalAttivo: false }), 5, ADESSO)).toBe(5);
+  it("passo 6: la data limite delle adesioni non è passata", () => {
+    expect(erroriPasso(compilato("adesioni", { limiteData: "2026-11-04", limiteOra: "20:00" }), 6, ADESSO).limite).toBe("La data limite è già passata");
+    expect(erroriPasso(compilato("adesioni"), 6, ADESSO)).toEqual({});
+  });
+
+  it("prima di creare il gruppo trova il primo passo da correggere, nel percorso giusto", () => {
+    expect(primoPassoConErrori(compilato("regalo"), ADESSO)).toBeNull();
+    expect(primoPassoConErrori(compilato("regalo", { festeggiato: " " }), ADESSO)).toBe(1);
+    expect(primoPassoConErrori(compilato("regalo", { contantiAttivo: false, paypalAttivo: false }), ADESSO)).toBe(5);
+    expect(primoPassoConErrori(compilato("voto", { regali: [zaino] }), ADESSO)).toBe(4);
+    // dal prodotto il passo 4 non c'è: il regalo si controlla al passo 2
+    expect(primoPassoConErrori(compilato("regalo", { daProdotto: true, regali: [] }), ADESSO)).toBe(2);
   });
 });
 
-describe("wizard: la colletta che nasce", () => {
+describe("procedura: i metodi dell'ultima volta", () => {
+  it("ritrova i metodi di una colletta di prima come campi del modulo", () => {
+    const m = metodiDaStato(compilato("adesioni", { satispayAttivo: true, satispay: "3470000000" }));
+    const s = conMetodi(statoIniziale(), m);
+    expect(s).toMatchObject({ paypalAttivo: true, paypal: "paypal.me/cri", satispayAttivo: true, satispay: "3470000000", contantiAttivo: true, bonificoAttivo: false });
+  });
+});
+
+describe("procedura: la colletta che nasce", () => {
   const base = { slug: "abc234defg", uid: "org-1", organizzatoreNome: " Cri ", adesso: ADESSO };
 
-  it("prima le adesioni (F-01): nessun regalo, quota fissa proposta, scadenza scelta (AC-01)", () => {
+  it("prima le adesioni (F-01): nessun regalo, quota fissa proposta, scadenza il giorno prima della festa alle 20 (AC-01)", () => {
     const c = nuovaColletta(compilato("adesioni"), base);
     expect(regaloDaScegliere(c.prodotto)).toBe(true);
     expect(c).toMatchObject({
@@ -210,11 +238,10 @@ describe("wizard: la colletta che nasce", () => {
       listaAperta: true,
       stato: "bozza",
       totaleConfermatoCent: 0,
-      nConfermati: 0,
       votazione: null,
       sorpresa: false,
     });
-    expect(c.scadenza).toBe(istanteRoma({ a: 2026, m: 12, g: 12 }, 20));
+    expect(c.scadenza).toBe(istanteRoma({ a: 2026, m: 12, g: 13 }, 20));
     expect(giornoRoma(c.dataRegalo)).toEqual({ a: 2026, m: 12, g: 14 });
     expect(quotaEffettiva(c)).toBe(1000);
   });
@@ -226,32 +253,32 @@ describe("wizard: la colletta che nasce", () => {
     expect(quotaEffettiva({ ...c, nAderenti: 12 })).toBe(1381);
   });
 
-  it("più regali (F-03): il segnaposto del voto e una votazione che parte all'apertura", () => {
-    const s = compilato("regalo", { regali: [zaino, instax] });
+  it("votiamo il regalo (F-03): il segnaposto e una votazione che finisce alla data e all'ora scelte", () => {
+    const s = compilato("voto", { fineVotoData: "2026-11-08", fineVotoOra: "18:00" });
     const c = nuovaColletta(s, base);
     expect(c.prodotto.nome).toBe(NOME_SEGNAPOSTO);
-    expect(c.votazione).toMatchObject({ durataOre: 24, consentiProposte: true, apertaIl: null, chiusa: false });
+    expect(c.votazione).toMatchObject({ consentiProposte: true, apertaIl: null, chiusa: false });
+    const scade = istanteRoma({ a: 2026, m: 11, g: 8 }, 18);
     const apertura = aperturaDaStato(s, ADESSO);
-    expect(apertura).toMatchObject({ stato: "aperta", votazione: { apertaIl: ADESSO, scade: ADESSO + 24 * ORE } });
+    expect(apertura).toMatchObject({ stato: "aperta", votazione: { apertaIl: ADESSO, scade, durataOre: Math.round((scade - ADESSO) / ORE) } });
     expect(aperturaDaStato(compilato("adesioni"), ADESSO)).toEqual({ stato: "aperta" });
   });
 
   it("una bozza del wizard di prima si riapre con le sue risposte", () => {
     const c = nuovaColletta(compilato("regalo", { satispayAttivo: true, satispay: "3470000000" }), base);
-    const s = statoDaColletta(c, "org-1");
-    expect(s).toMatchObject({
+    expect(statoDaColletta(c, "org-1")).toMatchObject({
       slug: "abc234defg",
       festeggiato: "Mauro",
       dataRegalo: "2026-12-14",
       partenza: "regalo",
       regali: [zaino],
       chat: 10,
-      limiteData: "2026-12-12",
+      limiteData: "2026-12-13",
       limiteOra: "20:00",
       satispayAttivo: true,
     });
     expect(statoDaColletta(nuovaColletta(compilato("adesioni", { quotaEuro: "12,50" }), base), "org-1")).toMatchObject({ partenza: "adesioni", quotaEuro: "12,5" });
-    const voto = statoDaColletta(nuovaColletta(compilato("regalo", { regali: [zaino, instax] }), base), "org-1", [zaino, instax]);
-    expect(voto.regali).toEqual([zaino, instax]);
+    const voto = statoDaColletta(nuovaColletta(compilato("voto"), base), "org-1", [zaino, instax]);
+    expect(voto).toMatchObject({ partenza: "voto", regali: [zaino, instax] });
   });
 });

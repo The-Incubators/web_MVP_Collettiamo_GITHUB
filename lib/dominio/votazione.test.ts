@@ -104,4 +104,12 @@ describe("durante il voto non si paga", () => {
     const chiusa = { ...ctx, colletta: { ...ctx.colletta, votazione: { ...ctx.colletta.votazione!, chiusa: true } } };
     expect(() => eseguiOperazione({ tipo: "aderisci", nome: "Anna" }, chiusa)).not.toThrow();
   });
+  it("chi organizza entra nella divisione anche con il voto aperto (D-16), ma non paga", () => {
+    const c = inVoto();
+    const ctx = { colletta: c, pid: c.organizzatoreUid, riga: null, causaliAltre: [], uid: c.organizzatoreUid, ora: ORA };
+    const r = eseguiOperazione({ tipo: "aderisci", nome: "Marco" }, ctx);
+    expect(r.righe[0].valore).toMatchObject({ id: c.organizzatoreUid, stato: "aderito", uidAnonimo: c.organizzatoreUid });
+    expect(r.colletta.nAderenti).toBe(1);
+    expect(() => eseguiOperazione({ tipo: "sceglieMetodo", metodo: "paypal" }, { ...ctx, riga: r.righe[0].valore })).toThrow(ErroreDominio);
+  });
 });

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/components/AppProvider";
 import { IconaTratto, SpuntaRiga } from "@/components/ui";
-import { alGiorno, dataBreve } from "@/lib/dominio/date";
+import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { linkColletta, linkWhatsApp, messaggioChat } from "@/lib/dominio/messaggi";
 import { quotaEffettiva } from "@/lib/dominio/quota";
@@ -14,8 +14,9 @@ import { etichettaOccasione } from "@/lib/regalo/dati";
 import type { Colletta, Metodi, Proposta } from "@/lib/tipi";
 import { baseUrlClient } from "@/lib/url";
 import { Anteprima } from "./Anteprima";
+import { BarraProcedura } from "./BarraProcedura";
 
-/** Il numero di persone della chat scritto al passo 4 (la colletta tiene quelle della divisione). */
+/** Il numero di persone della chat scritto al passo 2 (la colletta tiene quelle della divisione). */
 export const CHIAVE_CHAT_CREATO = "gifty.wizard.creato";
 
 function chatScritta(slug: string): number | null {
@@ -27,8 +28,6 @@ function chatScritta(slug: string): number | null {
   }
 }
 
-const ora = (ms: number) => new Intl.DateTimeFormat("it-IT", { timeZone: "Europe/Rome", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(ms));
-
 function testoMetodi(m: Metodi): string {
   return [m.paypal.attivo ? "PayPal" : null, m.satispay.attivo ? "Satispay" : null, m.bonifico.attivo ? "bonifico" : null, m.contanti.attivo ? "contanti" : null]
     .filter(Boolean)
@@ -36,7 +35,7 @@ function testoMetodi(m: Metodi): string {
 }
 
 /**
- * Il passo 7 (prototipi/crea.html): il gruppo è già creato e aperto (G-09). Il messaggio per la chat cambia subito con
+ * «Condividi», dopo la creazione (prototipi/crea.html, passo 7): il gruppo è già creato e aperto (G-09). Il messaggio per la chat cambia subito con
  * «È una sorpresa» (G-08), che si salva sulla colletta; «Condividi su WhatsApp», «Copia il link», «Vai al regalo di gruppo».
  */
 export function PassoCondividi({ slug }: { slug: string }) {
@@ -79,11 +78,14 @@ export function PassoCondividi({ slug }: { slug: string }) {
 
   if (!c) {
     return (
-      <div className="pagina wizard">
-        <p role="status" className="muted attesa">
-          {problema ?? "Un momento…"}
-        </p>
-      </div>
+      <>
+        <BarraProcedura creato hrefChiudi={`/gestisci/${slug}`} />
+        <main className="pagina wizard">
+          <p role="status" className="muted attesa">
+            {problema ?? "Un momento…"}
+          </p>
+        </main>
+      </>
     );
   }
 
@@ -118,7 +120,9 @@ export function PassoCondividi({ slug }: { slug: string }) {
   const regali = colletta.votazione ? candidati.map((p) => p.prodotto) : regaloDaScegliere(colletta.prodotto) ? [] : [colletta.prodotto];
 
   return (
-    <div className="pagina wizard">
+    <>
+    <BarraProcedura creato hrefChiudi={`/gestisci/${slug}`} />
+    <main className="pagina wizard">
       <div className="modulo pronto">
         <span className="stato">
           <IconaTratto nome="spunta" />
@@ -141,7 +145,7 @@ export function PassoCondividi({ slug }: { slug: string }) {
             <IconaTratto nome="whatsapp" />
             Condividi su WhatsApp<span className="sr-only"> (si apre in una nuova scheda)</span>
           </a>
-          <button type="button" className="btn btn-contorno" onClick={() => void copia()} aria-live="polite">
+          <button type="button" className="btn btn-quieto" onClick={() => void copia()} aria-live="polite">
             <IconaTratto nome="copia" />
             {copiato ? "Link copiato" : "Copia il link"}
           </button>
@@ -159,14 +163,13 @@ export function PassoCondividi({ slug }: { slug: string }) {
         r={{
           festeggiato: colletta.festeggiato,
           quando: `${etichettaOccasione(colletta.occasione)}, ${dataBreve(colletta.dataRegalo)}`,
-          regali,
-          quota: quota ? `${formattaEuro(quota)} a testa` : colletta.votazione ? "Quota secondo il regalo votato" : null,
-          persone: `${chat} persone nella chat`,
-          limite: `Adesioni fino ${alGiorno(colletta.scadenza)}, ${ora(colletta.scadenza)}`,
-          rimborsi: `Rimborsi con ${testoMetodi(colletta.metodi)}`,
+          persone: { testo: `${chat} persone nella chat` },
+          cosa: regali.length ? regali : { testo: quota ? `${formattaEuro(quota)} a testa` : "Quota a testa", vuota: !quota },
+          rimborsi: { testo: `Rimborsi con ${testoMetodi(colletta.metodi)}` },
           organizzatore: colletta.organizzatoreNome || null,
         }}
       />
-    </div>
+    </main>
+    </>
   );
 }

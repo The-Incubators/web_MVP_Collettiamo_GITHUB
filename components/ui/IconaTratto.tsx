@@ -82,6 +82,26 @@ const PERCORSI = {
       <path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 1c-1-.5-1.5-1-2-2l1-1-1-2Z" fill="currentColor" stroke="none" />
     </>
   ),
+  chiudi: <path d="M6 6l12 12M18 6 6 18" />,
+  cerca: (
+    <>
+      <circle cx="11" cy="11" r="6" />
+      <path d="m20 20-4.5-4.5" />
+    </>
+  ),
+  email: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </>
+  ),
+  cestino: (
+    <>
+      <path d="M4 7h16" />
+      <path d="M9 7V4h6v3" />
+      <path d="M6 7l1 13h10l1-13" />
+    </>
+  ),
   calendario: (
     <>
       <rect x="4" y="5" width="16" height="15" rx="2" />

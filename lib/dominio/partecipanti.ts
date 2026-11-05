@@ -1,4 +1,5 @@
 import type { Colletta, Partecipante } from "../tipi";
+import { regaloDaScegliere } from "./regali";
 
 const ORDINE_STATO = { dichiarato: 0, aderito: 1, invitato: 2, confermato: 3, rinunciato: 4 } as const;
 
@@ -18,9 +19,12 @@ export function ordinaPartecipanti(righe: Partecipante[]): Partecipante[] {
   );
 }
 
-/** Obiettivo, confermato e percentuale (0-100) per la barra. */
-export function avanzamento(c: Pick<Colletta, "prodotto" | "totaleConfermatoCent">) {
-  const obiettivoCent = c.prodotto.prezzoCent;
+/**
+ * Obiettivo, confermato e percentuale (0-100) per la barra. Senza regalo (partito dalle adesioni, F-01) l'obiettivo è
+ * il budget previsto: la quota proposta per le persone attese.
+ */
+export function avanzamento(c: Pick<Colletta, "prodotto" | "totaleConfermatoCent"> & Partial<Pick<Colletta, "quotaCent" | "previsti">>) {
+  const obiettivoCent = regaloDaScegliere(c.prodotto) ? (c.quotaCent ?? 0) * Math.max(1, c.previsti ?? 1) : c.prodotto.prezzoCent;
   const percento = obiettivoCent > 0 ? Math.min(100, Math.round((c.totaleConfermatoCent / obiettivoCent) * 100)) : 0;
   return { obiettivoCent, confermatoCent: c.totaleConfermatoCent, percento };
 }

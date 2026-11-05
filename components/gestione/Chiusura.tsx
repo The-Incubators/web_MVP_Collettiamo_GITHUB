@@ -9,6 +9,7 @@ import { urlPerAcquisto } from "@/lib/dominio/amazon";
 import { dataConGiorno } from "@/lib/dominio/date";
 import { euroPerCampo, formattaEuro, leggiEuro } from "@/lib/dominio/importi";
 import { linkColletta } from "@/lib/dominio/messaggi";
+import { nomeRegalo, regaloDaScegliere } from "@/lib/dominio/regali";
 import { testiPromemoria } from "@/lib/dominio/promemoria";
 import { calcolaChiusura, quotaEffettiva, quoteMancanti } from "@/lib/dominio/quota";
 import { spostaScadenza } from "@/lib/dominio/scadenza";
@@ -52,7 +53,7 @@ export function Chiusura({ slug }: { slug: string }) {
 
   // La spesa parte dal prezzo del regalo.
   useEffect(() => {
-    if (c && spesa === "") setSpesa(euroPerCampo(c.prodotto.prezzoCent));
+    if (c && spesa === "" && !regaloDaScegliere(c.prodotto)) setSpesa(euroPerCampo(c.prodotto.prezzoCent));
   }, [c, spesa]);
 
   useEffect(() => {
@@ -302,15 +303,19 @@ export function Chiusura({ slug }: { slug: string }) {
               <ImmagineProdotto prodotto={c.prodotto} className="aspect-square h-full" />
             </div>
             <div className="min-w-0">
-              <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{c.prodotto.nome}</p>
-              <p className="cifre font-extrabold">
-                {formattaEuro(c.prodotto.prezzoCent)} <span className="text-xs font-normal text-ink-soft">prezzo stimato</span>
-              </p>
+              <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{nomeRegalo(c.prodotto)}</p>
+              {regaloDaScegliere(c.prodotto) ? null : (
+                <p className="cifre font-extrabold">
+                  {formattaEuro(c.prodotto.prezzoCent)} <span className="text-xs font-normal text-ink-soft">prezzo stimato</span>
+                </p>
+              )}
             </div>
           </div>
-          <BottoneLink href={urlPerAcquisto(c.prodotto.urlEsterno)} esterno variante="secondario" pieno>
-            Compra su Amazon.it <Icona nome="open_in_new" dimensione={20} />
-          </BottoneLink>
+          {c.prodotto.urlEsterno ? (
+            <BottoneLink href={urlPerAcquisto(c.prodotto.urlEsterno)} esterno variante="secondario" pieno>
+              Compra su Amazon.it <Icona nome="open_in_new" dimensione={20} />
+            </BottoneLink>
+          ) : null}
           <Campo etichetta="Quanto hai speso davvero? (€)" inputMode="decimal" value={spesa} onChange={(e) => setSpesa(e.target.value)} />
           <div className="flex flex-col gap-2">
             <Campo

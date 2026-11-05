@@ -1,18 +1,20 @@
 "use client";
 
-// I passi del wizard che chiedono dati (prototipi/crea.html): 1 per chi è, 2 da dove vuoi iniziare, 3A la quota,
-// 4 la chat e la data limite, 5 i rimborsi. Il passo 3B (i regali) sta in PassoRegali, l'accesso in PassoAccesso.
+// I passi della procedura (design.md §10.1, prototipi/crea.html): 1 per chi è, 2 le persone nella chat, 3 da dove vuoi
+// iniziare, 4 la quota, il regalo o i regali da votare, 5 i rimborsi. Il riepilogo con l'accesso sta in PassoRiepilogo.
 
-import { CampoModulo, Chip, Contatore, Input, InputImporto, SceltaGrande, SpuntaRiga } from "@/components/ui";
+import { useState, type ReactNode } from "react";
+import { CampoModulo, Chip, IconaTratto, Input, InputImporto, SceltaGrande, SpuntaRiga } from "@/components/ui";
 import { aggiungiGiorni, giornoInIso, giornoRoma } from "@/lib/dominio/date";
-import { formattaEuro } from "@/lib/dominio/importi";
+import { formattaEuro, leggiEuro } from "@/lib/dominio/importi";
 import { OCCASIONI_REGALO } from "@/lib/regalo/dati";
-import { inVotazione, intervalloQuote, MAX_PERSONE, MIN_PERSONE, personeDivisione, quotaDaStato } from "@/lib/wizard/stato";
+import type { ProdottoColletta } from "@/lib/tipi";
+import { budgetPrevisto, fineVoto, MAX_PERSONE, MAX_REGALI, MIN_PERSONE, personeDivisione, quotaDaStato, senzaRegalo, type Partenza } from "@/lib/wizard/stato";
 import { FotoRegalo } from "./Anteprima";
 import type { PropsPasso } from "./tipi";
 
 /** Il testo dell'errore accanto al campo; `id` lo collega al campo con aria-describedby. */
-function Errore({ id, testo }: { id: string; testo?: string }) {
+export function Errore({ id, testo }: { id: string; testo?: string }) {
   return testo ? (
     <p className="errore-testo" id={id} role="alert">
       {testo}
@@ -20,10 +22,27 @@ function Errore({ id, testo }: { id: string; testo?: string }) {
   ) : null;
 }
 
+/** Il regalo con la foto, il nome, il prezzo e un'azione a destra («Cambia», «Togli»). */
+export function RigaRegalo({ p, children }: { p: ProdottoColletta; children: ReactNode }) {
+  return (
+    <div className="regalo-scelto">
+      <span className="lastra">
+        <FotoRegalo p={p} />
+      </span>
+      <span className="n">
+        {p.nome}
+        <br />
+        <span className="t-cifra">{formattaEuro(p.prezzoCent)}</span>
+      </span>
+      {children}
+    </div>
+  );
+}
+
 export function PassoPerChi({ s, cambia, errori, adesso }: PropsPasso) {
   return (
     <>
-      <CampoModulo id="nome" etichetta="Nome del festeggiato o della festeggiata" errore={errori.festeggiato}>
+      <CampoModulo id="nome" etichetta="Nome" errore={errori.festeggiato}>
         <Input
           id="nome"
           larghezza="nome"
@@ -47,7 +66,7 @@ export function PassoPerChi({ s, cambia, errori, adesso }: PropsPasso) {
           ))}
         </div>
       </div>
-      <CampoModulo id="data" etichetta="Quando festeggiamo" errore={errori.dataRegalo}>
+      <CampoModulo id="data" etichetta="Quando festeggiate" errore={errori.dataRegalo}>
         <Input
           id="data"
           type="date"
@@ -63,112 +82,253 @@ export function PassoPerChi({ s, cambia, errori, adesso }: PropsPasso) {
   );
 }
 
-export function PassoPartenza({ s, cambia }: PropsPasso) {
-  const regali = s.regali;
+/** Passo 2: il contatore con il numero scrivibile, «Partecipo anch'io» (D-16) e, dal prodotto, il regalo con la quota. */
+export function PassoPersone({ s, cambia, errori, idTitolo, onCambiaRegalo }: PropsPasso & { idTitolo: string; onCambiaRegalo: () => void }) {
+  const [testo, setTesto] = useState(String(s.chat));
+  const imposta = (n: number) => {
+    setTesto(String(n));
+    cambia({ chat: n });
+  };
+  const regalo = s.daProdotto ? s.regali[0] : null;
+  const quota = quotaDaStato(s);
   return (
-    <div role="radiogroup" aria-label="Da dove vuoi iniziare" className="scelte">
-      <SceltaGrande scelto={s.partenza === "adesioni"} nome="Prima raccolgo le adesioni" onScegli={() => cambia({ partenza: "adesioni" })}>
-        Proponi una quota a testa. Il regalo lo scegliete dopo, nel budget.
+    <>
+      {regalo ? (
+        <div>
+          <RigaRegalo p={regalo}>
+            <button type="button" className="btn btn-quieto" onClick={onCambiaRegalo}>
+              Cambia<span className="sr-only"> il regalo</span>
+            </button>
+          </RigaRegalo>
+        </div>
+      ) : null}
+      <div className="campo">
+        <span className="contatore" role="group" aria-labelledby={idTitolo}>
+          <button type="button" aria-label="Una persona in meno" disabled={s.chat <= MIN_PERSONE} onClick={() => imposta(Math.max(MIN_PERSONE, s.chat - 1))}>
+            <IconaTratto nome="meno" />
+          </button>
+          <input
+            inputMode="numeric"
+            value={testo}
+            aria-label="Persone nella chat"
+            aria-invalid={errori.chat ? true : undefined}
+            aria-describedby={errori.chat ? "chat-errore" : undefined}
+            onChange={(e) => {
+              const t = e.target.value.replace(/\D/g, "").slice(0, 3);
+              setTesto(t);
+              cambia({ chat: t ? Number(t) : 0 });
+            }}
+          />
+          <button type="button" aria-label="Una persona in più" disabled={s.chat >= MAX_PERSONE} onClick={() => imposta(Math.min(MAX_PERSONE, s.chat + 1))}>
+            <IconaTratto nome="piu" />
+          </button>
+        </span>
+        <Errore id="chat-errore" testo={errori.chat} />
+      </div>
+      <SpuntaRiga checked={s.partecipo} onChange={(e) => cambia({ partecipo: e.target.checked })}>
+        Partecipo anch&apos;io alla divisione
+      </SpuntaRiga>
+      {regalo && quota ? (
+        <div className="calcolo" aria-live="polite">
+          <span>Quota a testa, se aderite in {personeDivisione(s)}</span>
+          <span className="t-cifra">{formattaEuro(quota)}</span>
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+/** Passo 3: le tre partenze; un tocco sceglie e va avanti (design.md §10.1, decisione 4). */
+export function PassoPartenza({ s, idTitolo, onPartenza }: { s: PropsPasso["s"]; idTitolo: string; onPartenza: (p: Partenza) => void }) {
+  return (
+    <div role="radiogroup" aria-labelledby={idTitolo} className="scelte">
+      <SceltaGrande scelto={s.partenza === "adesioni"} nome="Prima le adesioni" onScegli={() => onPartenza("adesioni")}>
+        Proponi una quota a testa. Il regalo lo scegliete dopo.
       </SceltaGrande>
-      <SceltaGrande
-        scelto={s.partenza === "regalo"}
-        nome="Ho scelto il regalo"
-        onScegli={() => cambia({ partenza: "regalo" })}
-        extra={
-          regali.length ? (
-            <span className="regali-scelti">
-              {regali.map((p, i) => (
-                <span key={`${p.nome}-${i}`} className="regalo-scelto piccolo">
-                  <span className="lastra">
-                    <FotoRegalo p={p} />
-                  </span>
-                  <span className="n">
-                    {p.nome}
-                    <br />
-                    <span className="t-cifra">{formattaEuro(p.prezzoCent)}</span>
-                  </span>
-                </span>
-              ))}
-            </span>
-          ) : null
-        }
-      >
-        Dal catalogo o da un link. Puoi aggiungerne altri da votare.
+      <SceltaGrande scelto={s.partenza === "regalo"} nome="Ho scelto il regalo" onScegli={() => onPartenza("regalo")}>
+        Dal catalogo o da un link.
+      </SceltaGrande>
+      <SceltaGrande scelto={s.partenza === "voto"} nome="Votiamo il regalo" onScegli={() => onPartenza("voto")}>
+        Da due a cinque regali: votano tutti quelli che aderiscono.
       </SceltaGrande>
     </div>
   );
 }
 
+/** Passo 4, prima le adesioni: la quota (10 € proposti) e il budget previsto (decisione 8). */
 export function PassoQuota({ s, cambia, errori }: PropsPasso) {
-  return (
-    <CampoModulo id="quota" etichetta="Quota proposta" errore={errori.quotaEuro}>
-      <InputImporto
-        id="quota"
-        value={s.quotaEuro}
-        onChange={(e) => cambia({ quotaEuro: e.target.value })}
-        className={`input w-importo${errori.quotaEuro ? " errore" : ""}`}
-        aria-invalid={errori.quotaEuro ? true : undefined}
-        aria-describedby={errori.quotaEuro ? "quota-errore" : undefined}
-      />
-    </CampoModulo>
-  );
-}
-
-export function PassoChat({ s, cambia, errori }: PropsPasso) {
-  const persone = personeDivisione(s);
-  const quota = quotaDaStato(s);
-  const intervallo = intervalloQuote(s);
+  const budget = budgetPrevisto(s);
   return (
     <>
       <div className="campo">
-        <span className="etichetta" id="l-pers">
-          Quante persone ci sono nella chat
-        </span>
-        <Contatore
-          etichettaId="l-pers"
-          valore={s.chat}
-          min={MIN_PERSONE}
-          max={MAX_PERSONE}
-          onCambia={(chat) => cambia({ chat })}
-          etichettaMeno="Una persona in meno"
-          etichettaPiu="Una persona in più"
+        <InputImporto
+          id="quota"
+          value={s.quotaEuro}
+          onChange={(e) => cambia({ quotaEuro: e.target.value })}
+          className={`input w-importo${errori.quotaEuro ? " errore" : ""}`}
+          aria-invalid={errori.quotaEuro ? true : undefined}
+          aria-describedby={errori.quotaEuro ? "quota-errore" : undefined}
         />
-        <Errore id="chat-errore" testo={errori.chat} />
+        <Errore id="quota-errore" testo={errori.quotaEuro} />
       </div>
-      <SpuntaRiga checked={s.partecipo} onChange={(e) => cambia({ partecipo: e.target.checked })}>
-        Partecipi anche tu alla divisione?
-      </SpuntaRiga>
-      {s.partenza === "regalo" && (quota || intervallo) ? (
-        <div className="calcolo" aria-live="polite">
-          <span>{inVotazione(s) ? "Quota a testa, secondo il regalo che vince" : `Quota a testa, divisa fra ${persone}`}</span>
-          <span className="t-cifra">{intervallo ? `${formattaEuro(intervallo[0])} – ${formattaEuro(intervallo[1])}` : formattaEuro(quota ?? 0)}</span>
+      <div className="calcolo" aria-live="polite">
+        <span>Budget previsto, se aderite in {personeDivisione(s)}</span>
+        <span className="t-cifra">{budget ? formattaEuro(budget) : "–"}</span>
+      </div>
+    </>
+  );
+}
+
+function urlValido(testo: string): boolean {
+  try {
+    const u = new URL(testo.trim());
+    return u.protocol === "https:" || u.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+/** «Incolla un link»: link, nome e prezzo del regalo (il disegno del campo con l'anteprima non c'è ancora, §10.7). */
+function DaLink({ onAggiungi }: { onAggiungi: (p: ProdottoColletta) => void }) {
+  const [aperto, setAperto] = useState(false);
+  const [l, setL] = useState({ url: "", nome: "", prezzo: "" });
+  const prezzoCent = leggiEuro(l.prezzo);
+  const pronto = urlValido(l.url) && l.nome.trim().length > 0 && !!prezzoCent;
+  if (!aperto) {
+    return (
+      <button type="button" className="btn btn-quieto" onClick={() => setAperto(true)}>
+        <IconaTratto nome="link" />
+        Incolla un link
+      </button>
+    );
+  }
+  return (
+    <div className="da-link">
+      <CampoModulo id="link-url" etichetta="Link del regalo">
+        <Input id="link-url" type="url" inputMode="url" value={l.url} onChange={(e) => setL({ ...l, url: e.target.value })} autoCapitalize="none" autoCorrect="off" spellCheck={false} />
+      </CampoModulo>
+      <CampoModulo id="link-nome" etichetta="Nome del regalo">
+        <Input id="link-nome" larghezza="nome" value={l.nome} onChange={(e) => setL({ ...l, nome: e.target.value })} maxLength={120} />
+      </CampoModulo>
+      <CampoModulo id="link-prezzo" etichetta="Prezzo">
+        <InputImporto id="link-prezzo" value={l.prezzo} onChange={(e) => setL({ ...l, prezzo: e.target.value })} />
+      </CampoModulo>
+      <div>
+        <button
+          type="button"
+          className="btn btn-quieto"
+          disabled={!pronto}
+          onClick={() => {
+            if (!pronto || !prezzoCent) return;
+            onAggiungi({
+              prodottoId: null,
+              nome: l.nome.trim().slice(0, 120),
+              prezzoCent,
+              consegnaGiorni: 3,
+              urlEsterno: l.url.trim(),
+              immagine: { seme: l.nome.trim().toLowerCase(), icona: "esperienze" },
+            });
+            setL({ url: "", nome: "", prezzo: "" });
+            setAperto(false);
+          }}
+        >
+          <IconaTratto nome="piu" />
+          Aggiungi
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/** Passo 4, ho scelto il regalo: «Apri il catalogo» (il foglio si apre da solo la prima volta) o «Incolla un link». */
+export function PassoRegalo({ s, errori, onApriCatalogo, onDaLink }: PropsPasso & { onApriCatalogo: () => void; onDaLink: (p: ProdottoColletta) => void }) {
+  const regalo = s.regali[0];
+  if (regalo) {
+    return (
+      <div>
+        <RigaRegalo p={regalo}>
+          <button type="button" className="btn btn-quieto" onClick={onApriCatalogo}>
+            Cambia<span className="sr-only"> il regalo</span>
+          </button>
+        </RigaRegalo>
+      </div>
+    );
+  }
+  return (
+    <>
+      <div className="avanti">
+        <button type="button" className="btn btn-primario" onClick={onApriCatalogo}>
+          <IconaTratto nome="cerca" />
+          Apri il catalogo
+        </button>
+        <DaLink onAggiungi={onDaLink} />
+      </div>
+      <Errore id="regali-errore" testo={errori.regali} />
+    </>
+  );
+}
+
+/** Passo 4, votiamo il regalo: la lista (vuota con il testo di Cri), «Aggiungi un altro regalo», «Si vota fino al». */
+export function PassoVoto({ s, cambia, errori, adesso, onApriCatalogo, onDaLink }: PropsPasso & { onApriCatalogo: () => void; onDaLink: (p: ProdottoColletta) => void }) {
+  const fine = fineVoto(s, adesso);
+  if (s.regali.length === 0) {
+    return (
+      <>
+        <p className="vuoto-voto">Ancora nessuna: scegli almeno due prodotti dal catalogo e clicca su &quot;Aggiungi al regalo&quot;</p>
+        <div className="avanti">
+          <button type="button" className="btn btn-primario" onClick={onApriCatalogo}>
+            <IconaTratto nome="cerca" />
+            Apri il catalogo
+          </button>
+          <DaLink onAggiungi={onDaLink} />
         </div>
+      </>
+    );
+  }
+  return (
+    <>
+      <div>
+        {s.regali.map((p, i) => (
+          <RigaRegalo key={`${p.nome}-${i}`} p={p}>
+            <button type="button" className="btn btn-quieto" onClick={() => cambia({ regali: senzaRegalo(s, i).regali })}>
+              Togli<span className="sr-only"> {p.nome}</span>
+            </button>
+          </RigaRegalo>
+        ))}
+        <Errore id="regali-errore" testo={errori.regali} />
+      </div>
+      {s.regali.length < MAX_REGALI ? (
+        <button type="button" className="aggiungi-voto" onClick={onApriCatalogo}>
+          <IconaTratto nome="piu" />
+          Aggiungi un altro regalo
+        </button>
       ) : null}
       <div className="campo">
-        <span className="etichetta" id="l-lim">
-          Fino a quando si può aderire
+        <span className="etichetta" id="l-fine">
+          Si vota fino al
         </span>
-        <div className="riga" role="group" aria-labelledby="l-lim">
+        <div className="riga" role="group" aria-labelledby="l-fine">
           <Input
             type="date"
             larghezza="data"
-            aria-label="Data limite"
-            value={s.limiteData}
-            onChange={(e) => cambia({ limiteData: e.target.value, limiteToccato: true })}
-            errore={!!errori.limite}
-            aria-describedby={errori.limite ? "limite-errore" : undefined}
+            aria-label="Data di fine della votazione"
+            min={giornoInIso(giornoRoma(adesso))}
+            value={fine.data}
+            onChange={(e) => cambia({ fineVotoData: e.target.value, fineVotoOra: fine.ora })}
+            errore={!!errori.fineVoto}
+            aria-describedby={errori.fineVoto ? "fine-errore" : undefined}
           />
           <Input
             type="time"
             larghezza="ora"
-            aria-label="Ora limite"
-            value={s.limiteOra}
-            onChange={(e) => cambia({ limiteOra: e.target.value, limiteToccato: true })}
-            errore={!!errori.limite}
-            aria-describedby={errori.limite ? "limite-errore" : undefined}
+            aria-label="Ora di fine della votazione"
+            value={fine.ora}
+            onChange={(e) => cambia({ fineVotoData: fine.data, fineVotoOra: e.target.value })}
+            errore={!!errori.fineVoto}
+            aria-describedby={errori.fineVoto ? "fine-errore" : undefined}
           />
         </div>
-        <Errore id="limite-errore" testo={errori.limite} />
+        <Errore id="fine-errore" testo={errori.fineVoto} />
       </div>
     </>
   );
