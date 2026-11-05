@@ -221,7 +221,7 @@ Verificato in locale, desktop 1280 px e telefono 375 px, modalità memoria. Grav
 | UX-18 | P2 | `/accedi` | «Un attimo, con il tuo account Google» sopra un modulo email; «Sign in with Google» in inglese | §10 |
 | UX-19 | P3 | `/c/[slug]` | «5 persone su 12 hanno già partecipato, 43%»: 5 su 12 fa 42%; da verificare nel calcolo | §7.4 |
 | UX-20 | P2 | Biglietto | Linguaggio visivo proprio (rosa, emoji, nessun logo); su desktop l'anteprima è centrata in verticale e scende sotto la piega | §10 |
-| UX-21 | P2 | Biglietto | Due sistemi di biglietto: quello stampabile `/c/[slug]/biglietto` e il wizard `/biglietto` | P-06 |
+| UX-21 | P2 | Biglietto | Due sistemi di biglietto: quello stampabile `/c/[slug]/biglietto` e il wizard `/biglietto` | D-19 |
 | UX-22 | P1 | Reminder | «Ti avviseremo qualche settimana prima» (`components/reminder/PaginaReminder.tsx:83`, `:157`): le notifiche non esistono | §10 |
 | UX-23 | P3 | `/regalo` e home | «Tre domande, trenta secondi» contro «15 sec» | §10 |
 | UX-24 | P3 | Ovunque | Parole inglesi nell'interfaccia («Reminder», «Sign in with Google») | §10 |
@@ -249,7 +249,7 @@ Livello 3 (dati, regole, accesso): revisione dell'architettura prima di scrivere
 
 | Fase | Contenuto | Fatto quando |
 |---|---|---|
-| 0. Specifica | Questo documento; P-07 resta aperto fino alla fase 5; P-01…P-06 e P-08 decisi il 5 novembre e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
+| 0. Specifica | Questo documento, che Cri approva come lista unica; P-01…P-06 e P-08 decisi il 5 novembre, P-07 resta aperto fino alla fase 5 | Specifica sul main; nessuna PR senza ID |
 | 1. Struttura | §5: home unica con due porte, nuova navigazione, `/idee`, `/account`; ritiro delle varianti; UX-01, UX-02, UX-11 | Ogni pagina raggiungibile da un ingresso; nessuna variante attiva; test e build verdi |
 | 2. Stile e copy | §10: hero immersiva, racconto, schede, gerarchia, intestazione comune, copy rivisto; UX-03…UX-10, UX-12…UX-16, UX-18, UX-20, UX-22…UX-24 | Confronto con la tavola su desktop e a 390 px; design audit senza P1; find-ai-slop sul testo |
 | 3. Regalo di gruppo | §7 e C-01…C-07: partenze, wizard con accesso alla fine, adesione con account, attesi e aggiunti a mano, quote, consegna, biglietto del gruppo | Criteri §14 verificati su emulatore e su un progetto di prova; revisione indipendente |
