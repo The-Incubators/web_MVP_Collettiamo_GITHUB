@@ -5,9 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "./AppProvider";
 import { BottoneGoogle } from "./BottoneGoogle";
 import { Avviso, Bottone, Campo, Icona } from "./ui";
-import { leggiLocale, scriviLocale } from "@/lib/auth/tipi";
-
-const CHIAVE_DOPO = "colletta.dopoAccesso";
+import { CHIAVE_DOPO_ACCESSO as CHIAVE_DOPO, leggiLocale, scriviLocale } from "@/lib/auth/tipi";
 
 function destinazioneSicura(next: string | null): string {
   return next && next.startsWith("/") && !next.startsWith("//") ? next : "/crea";

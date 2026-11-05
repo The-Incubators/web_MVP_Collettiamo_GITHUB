@@ -14,16 +14,6 @@ export const CATEGORIE = [
 ] as const;
 export type Categoria = (typeof CATEGORIE)[number];
 
-export const OCCASIONI = [
-  "compleanno",
-  "laurea",
-  "pensione",
-  "nascita",
-  "matrimonio",
-  "saluto",
-] as const;
-export type Occasione = (typeof OCCASIONI)[number];
-
 export const METODI = ["paypal", "satispay", "bonifico", "contanti"] as const;
 export type Metodo = (typeof METODI)[number];
 

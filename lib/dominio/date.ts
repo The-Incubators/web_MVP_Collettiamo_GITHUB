@@ -97,6 +97,18 @@ export function dataConGiorno(ms: number): string {
   return conGiorno.format(new Date(ms));
 }
 
+/** Con l'articolo, eliso davanti a 8 e 11 (audit G-15): "il 12 dicembre", "l'11 dicembre". */
+export function ilGiorno(ms: number): string {
+  const g = dataBreve(ms);
+  return /^(8|11) /.test(g) ? `l'${g}` : `il ${g}`;
+}
+
+/** Con la preposizione articolata: "al 12 dicembre", "all'8 dicembre". */
+export function alGiorno(ms: number): string {
+  const g = dataBreve(ms);
+  return /^(8|11) /.test(g) ? `all'${g}` : `al ${g}`;
+}
+
 // ---- Fusi orari qualsiasi (biglietto: la consegna ha un fuso scelto da chi organizza) ----
 
 function partiNelFuso(ms: number, fuso: string) {

@@ -610,6 +610,73 @@
   @media (min-width: 768px) { .btn-largo-tel { width: auto; } }
 }
 
+/*
+ * Gifty UX v2, PR 3 (regalo di gruppo): il wizard /crea (prototipi/crea.html) con il biglietto che si scrive a destra,
+ * la pillola di stato e il pulsante di Google.
+ */
+@layer components {
+  .wizard { display: grid; gap: var(--s10); padding-bottom: var(--s12); }
+  @media (min-width: 900px) { .wizard { grid-template-columns: minmax(0, 560px) minmax(0, 400px); justify-content: space-between; } }
+  .wizard .attesa { padding: var(--s16) 0; }
+  .modulo h1 { margin: var(--s4) 0 var(--s6); outline: none; }
+  .modulo form { display: grid; gap: var(--s6); }
+  .modulo .avanti { margin-top: var(--s2); }
+  .modulo .riga { display: flex; flex-wrap: wrap; gap: var(--s4); }
+  .scelte { display: grid; gap: var(--s3); }
+  /* il biglietto dell'anteprima: solo da 900 px */
+  .anteprima { display: none; }
+  @media (min-width: 900px) { .anteprima { display: block; position: sticky; top: calc(var(--testa-h) + var(--s8)); align-self: start; margin-top: var(--s16); } }
+  .anteprima .carta { padding: var(--s8) var(--s8) var(--s6); transform: rotate(-1.5deg); display: grid; gap: var(--s3); min-height: 340px; }
+  .anteprima .mano { font-size: 40px; line-height: 1; overflow-wrap: anywhere; }
+  .anteprima dl { margin: var(--s2) 0 0; display: grid; gap: var(--s2); }
+  .anteprima dl > div { display: flex; gap: var(--s2); align-items: center; }
+  .anteprima dt { width: 22px; color: var(--muted); flex: none; }
+  .anteprima dt svg { width: 20px; height: 20px; display: block; }
+  .anteprima dd { margin: 0; font-weight: 600; }
+  .anteprima dd.vuota { color: var(--muted); font-weight: 400; }
+  .anteprima .miniature { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .anteprima .miniature > img, .anteprima .miniature > div { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; mix-blend-mode: multiply; }
+  .anteprima .firma-anteprima { margin-top: auto; }
+  /* il regalo scelto e quelli da votare */
+  .elenco-regali { display: grid; gap: var(--s3); }
+  .regalo-scelto { display: grid; grid-template-columns: 72px 1fr auto; gap: var(--s4); align-items: center; padding: var(--s3); border: 1px solid var(--line); border-radius: var(--r-surface); background: var(--surface); }
+  .regalo-scelto .lastra { width: 72px; border-radius: 12px; }
+  .regalo-scelto .n { font-weight: 700; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+  .regalo-scelto .t-cifra { color: var(--green); }
+  .regali-scelti { display: grid; gap: var(--s2); margin-top: var(--s3); }
+  .regalo-scelto.piccolo { grid-template-columns: 56px 1fr; }
+  .regalo-scelto.piccolo .lastra { width: 56px; }
+  .regalo-scelto.piccolo .t-cifra { color: var(--ink); }
+  .aggiungi-voto {
+    min-height: 72px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-surface); background: transparent; color: var(--green);
+    font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: var(--s2); cursor: pointer; width: 100%; text-decoration: none; padding: 0 var(--s4); text-align: center;
+  }
+  .aggiungi-voto:hover { border-color: var(--green); background: var(--green-field); }
+  .aggiungi-voto svg { width: 20px; height: 20px; flex: none; }
+  .da-link { display: grid; gap: var(--s4); padding: var(--s5); border: 1px solid var(--line); border-radius: var(--r-surface); background: var(--surface); }
+  .calcolo { display: flex; align-items: baseline; gap: var(--s2); flex-wrap: wrap; padding: var(--s4) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .calcolo .t-cifra { font-size: 24px; color: var(--green); }
+  .metodo { display: grid; gap: var(--s3); padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .metodo .input, .metodo .errore-testo { margin-left: 34px; width: calc(100% - 34px); max-width: 22rem; }
+  /* passo 6: accesso */
+  .accesso { display: grid; gap: var(--s4); max-width: 420px; }
+  .oppure { display: flex; align-items: center; gap: var(--s3); color: var(--muted); font-size: 14px; }
+  .oppure::before, .oppure::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .btn-google { background: #fff; color: var(--ink); border: 1.5px solid var(--line-strong); }
+  .btn-google:hover { border-color: var(--green); background: var(--green-field); }
+  /* passo 7: il messaggio per la chat */
+  .pronto { display: grid; gap: var(--s4); align-content: start; }
+  .pronto > .stato { justify-self: start; margin-top: var(--s6); }
+  .pronto h1 { margin: var(--s2) 0 var(--s2); }
+  .pronto .azioni { display: grid; gap: var(--s3); }
+  @media (min-width: 768px) { .pronto .azioni { display: flex; flex-wrap: wrap; } }
+  .pronto .chat { background: var(--wall); border-radius: var(--r-surface); padding: var(--s6) var(--s4); }
+  .fumetto-wa { background: #fff; border-radius: 14px 14px 14px 4px; padding: var(--s4); box-shadow: 0 1px 2px rgba(20, 43, 32, .14); max-width: 420px; overflow-wrap: anywhere; }
+  .fumetto-wa b { color: var(--green); }
+  /* pillola di stato (design.md §4) */
+  .stato { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 var(--s3); border-radius: var(--r-pill); background: var(--green-field); color: var(--green); font-size: 14px; font-weight: 700; }
+  .stato svg { width: 16px; height: 16px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

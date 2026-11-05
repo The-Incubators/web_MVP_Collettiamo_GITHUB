@@ -1,5 +1,5 @@
 import { formattaEuro } from "./importi";
-import { dataBreve } from "./date";
+import { dataBreve, ilGiorno } from "./date";
 
 export function linkColletta(baseUrl: string, slug: string): string {
   return `${baseUrl.replace(/\/+$/, "")}/c/${slug}`;
@@ -36,4 +36,17 @@ export function messaggioVotazione(input: { festeggiato: string; scade: number; 
 /** Dopo il voto: il messaggio per far tornare tutti a pagare. */
 export function messaggioDopoVoto(input: { festeggiato: string; regalo: string; quotaCent: number; scadenza: number; url: string }): string {
   return `Il regalo per ${input.festeggiato} è deciso: ${input.regalo}. ${formattaEuro(input.quotaCent)} a testa, entro ${dataBreve(input.scadenza)}. Partecipa qui: ${input.url}`;
+}
+
+/**
+ * Il messaggio per la chat del gruppo, al passo «Manda il link nella chat» del wizard (prototipi/crea.html, G-08).
+ * Con la sorpresa non nomina il festeggiato né la quota. `quotaCent` è null durante il voto: la quota non si sa ancora.
+ */
+export function messaggioChat(input: { festeggiato: string; quotaCent: number | null; scadenza: number; url: string; sorpresa: boolean }): string {
+  const entro = ilGiorno(input.scadenza);
+  if (input.sorpresa) return `Facciamo un regalo di gruppo? Se ci sei, aderisci entro ${entro}: ${input.url}`;
+  const domanda = `Facciamo un regalo di gruppo per ${input.festeggiato}?`;
+  return input.quotaCent
+    ? `${domanda} ${formattaEuro(input.quotaCent)} a testa, si aderisce entro ${entro}: ${input.url}`
+    : `${domanda} Si aderisce entro ${entro}: ${input.url}`;
 }

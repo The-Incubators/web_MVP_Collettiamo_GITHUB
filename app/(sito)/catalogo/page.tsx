@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FiltriCatalogo } from "@/components/FiltriCatalogo";
-import { SchedaProdotto } from "@/components/SchedaProdotto";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { datiServer } from "@/lib/dati";
 import { NOTA_PREZZI } from "@/lib/dominio/amazon";
@@ -22,8 +21,8 @@ const PER_PAGINA = 24;
  * Il catalogo di Idee regalo (Gifty UX v2, prototipi/catalogo.html): temi a chip, fasce di prezzo a segmenti, ordine
  * curato come predefinito (I-06), tessere, nota sui prezzi una volta (I-09). Filtri e pagina nell'indirizzo.
  *
- * `?modo=gruppo` è il catalogo aperto dalle pagine del regalo di gruppo (lib/ux.ts): lì restano le schede con la quota
- * a testa e la lista per la votazione, finché il wizard (PR 3) non porta la tessera con «Scegli questo regalo».
+ * `?modo=gruppo` è il catalogo aperto dal wizard del regalo di gruppo (lib/ux.ts): la stessa tessera, con «Scegli questo
+ * regalo» e «Aggiungi al voto» al posto delle azioni di Idee regalo (G-04).
  */
 export default async function Catalogo({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
@@ -51,7 +50,9 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
         </div>
       ) : (
         <div className="griglia-prodotti">
-          {visibili.map((p) => (gruppo ? <SchedaProdotto key={p.slug} prodotto={p} azione="colletta" /> : <TesseraProdotto key={p.slug} prodotto={p} />))}
+          {visibili.map((p) => (
+            <TesseraProdotto key={p.slug} prodotto={p} gruppo={gruppo} />
+          ))}
         </div>
       )}
       {resto > 0 ? (

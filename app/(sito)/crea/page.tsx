@@ -1,18 +1,25 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { SoloOrganizzatore } from "@/components/SoloOrganizzatore";
-import { Wizard } from "@/components/wizard/Wizard";
+import { Crea } from "@/components/wizard/Wizard";
 
-export const metadata: Metadata = { title: "Organizza un regalo", robots: { index: false } };
+export const metadata: Metadata = { title: "Organizza un regalo di gruppo", robots: { index: false } };
 
-export default function Crea() {
+/**
+ * Il wizard del regalo di gruppo (Gifty UX v2, prototipi/crea.html; spec prodotto §7.2). Senza piè di pagina né barra
+ * in basso (T-05; lib/navigazione.ts). L'accesso si chiede solo al passo 6: la pagina non è più protetta all'ingresso.
+ */
+export default function PaginaCrea() {
   return (
-    <div className="gutter pb-16 pt-6">
-      <Suspense fallback={<p className="py-10 text-center text-ink-soft">Un momento…</p>}>
-        <SoloOrganizzatore>
-          <Wizard />
-        </SoloOrganizzatore>
-      </Suspense>
-    </div>
+    <Suspense
+      fallback={
+        <div className="pagina wizard">
+          <p role="status" className="muted attesa">
+            Un momento…
+          </p>
+        </div>
+      }
+    >
+      <Crea />
+    </Suspense>
   );
 }

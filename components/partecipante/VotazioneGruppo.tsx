@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { etichettaOccasione } from "@/lib/regalo/dati";
 import { ScegliRegalo } from "@/components/ScegliRegalo";
 import { Avviso, Bottone, BottoneLink, Campo, Icona, ImmagineProdotto } from "@/components/ui";
 import { DICHIARAZIONE_AFFILIATO_AMAZON, REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
@@ -94,7 +95,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
           {c.organizzatoreNome} organizza
         </p>
         <p className="rounded-full bg-surface-2 px-3 py-1 text-xs font-semibold text-ink-soft">
-          {c.occasione.charAt(0).toUpperCase() + c.occasione.slice(1)} {c.festeggiato} · {dataBreve(c.dataRegalo)}
+          {etichettaOccasione(c.occasione)} {c.festeggiato} · {dataBreve(c.dataRegalo)}
         </p>
       </div>
 

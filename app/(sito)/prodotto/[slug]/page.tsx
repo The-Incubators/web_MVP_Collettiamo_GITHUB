@@ -42,7 +42,7 @@ export default async function PaginaProdotto({ params, searchParams }: Props) {
             </div>
             <div className="griglia-prodotti">
               {altre.map((x) => (
-                <TesseraProdotto key={x.slug} prodotto={x} />
+                <TesseraProdotto key={x.slug} prodotto={x} gruppo={gruppo} />
               ))}
             </div>
           </div>
