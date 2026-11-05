@@ -1,11 +1,12 @@
 import { Barra, Icona, ImmagineProdotto } from "@/components/ui";
+import { etichettaOccasione } from "@/lib/regalo/dati";
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
+import { nomeRegalo, regaloDaScegliere } from "@/lib/dominio/regali";
 import { avanzamento, inizialiDi } from "@/lib/dominio/partecipanti";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import type { Colletta, Partecipante } from "@/lib/tipi";
 
-const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
 export function testoPartecipazione(c: Colletta): string {
   const n = c.nConfermati;
@@ -80,7 +81,7 @@ export function Testata({ colletta: c, righe, scaduta }: { colletta: Colletta; r
         <div className="flex min-w-0 flex-col items-start gap-1">
           <p className="text-sm font-bold">{c.organizzatoreNome} organizza</p>
           <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold">
-            {maiuscola(c.occasione)} · {dataBreve(c.dataRegalo)}
+            {etichettaOccasione(c.occasione)} · {dataBreve(c.dataRegalo)}
           </span>
         </div>
       </div>
@@ -92,8 +93,8 @@ export function Testata({ colletta: c, righe, scaduta }: { colletta: Colletta; r
           <ImmagineProdotto prodotto={c.prodotto} className="aspect-square h-full" />
         </div>
         <div className="flex min-w-0 flex-col gap-1">
-          <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{c.prodotto.nome}</p>
-          <p className="cifre font-bold">{formattaEuro(c.prodotto.prezzoCent)}</p>
+          <p className="line-clamp-2 font-display text-lg font-semibold leading-snug">{nomeRegalo(c.prodotto)}</p>
+          {regaloDaScegliere(c.prodotto) ? null : <p className="cifre font-bold">{formattaEuro(c.prodotto.prezzoCent)}</p>}
         </div>
       </div>
 

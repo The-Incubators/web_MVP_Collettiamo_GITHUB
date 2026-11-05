@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trova il regalo · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .percorso-d { max-width: 720px; }
+  .percorso-d h1 { margin: var(--s4) 0 var(--s6); }
+  .tessere-scelta { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+  @media (min-width: 768px) { .tessere-scelta { grid-template-columns: repeat(3, 1fr); } }
+  .tessere-scelta button { min-height: 72px; display: flex; align-items: center; gap: var(--s3); padding: 0 var(--s4); border-radius: var(--r-surface); border: 1.5px solid var(--line-strong); background: var(--surface); font-weight: 700; font-size: 16px; color: var(--ink); cursor: pointer; text-align: left; }
+  .tessere-scelta button:hover { border-color: var(--green); background: var(--green-field); }
+  .tessere-scelta button[aria-checked="true"] { border: 2px solid var(--green); background: var(--green-field); color: var(--green); }
+  .tessere-scelta svg { width: 24px; height: 24px; color: var(--green); flex: none; }
+  .eta button > span { display: grid; gap: 2px; } .eta .n { font-family: var(--f-display); font-size: 20px; color: var(--green); } .eta .a { font-weight: 400; font-size: 14px; color: var(--muted); }
+  @media (min-width: 768px) { .tessere-scelta.eta { grid-template-columns: repeat(4, 1fr); } }
+  .gruppo-int { margin-top: var(--s6); }
+  .gruppo-int h2 { font-size: 16px; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin-bottom: var(--s3); }
+  .avanti { margin-top: var(--s8); display: flex; gap: var(--s3); align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body data-sezione="idee" data-piede="no" data-stati="Età=passo=2,Occasione=passo=3,Interessi=passo=4">
+<main>
+  <div class="pagina percorso-d" id="p"></div>
+</main>
+<script src="comuni.js"></script>
+<script>
+  const passo = [2, 3, 4].includes(+STATO.get("passo")) ? +STATO.get("passo") : 2;
+  const tacche = [1, 2, 3, 4].map((n) => `<i class="${n < passo ? "fatto" : n === passo ? "ora" : ""}"></i>`).join("");
+  const testa = `<nav class="passi" aria-label="Avanzamento"><a class="indietro" href="${passo === 2 ? "idee.html" : "domande.html?passo=" + (passo - 1)}" aria-label="Torna alla domanda precedente">${icona("sx")}</a><span class="conta">${passo} di 4</span><span class="tacche" aria-hidden="true">${tacche}</span></nav>`;
+  const OCC = ["Compleanno","Laurea","Pensione","Nascita","Matrimonio","Anniversario","San Valentino","Natale","Saluto","Altro"];
+  const INT = { "Casa e design": ["Lampade","Vasi e decorazioni","Orologi e arredi"], "Tecnologia": [], "Viaggi": [], "Libri, musica e creatività": ["Giradischi e vinili","Fotografia","Scrittura e diari"], "Cucina e buon gusto": [], "Stile e accessori": [], "Bellezza e benessere": [], "Giochi e passatempi": [] };
+  /* fasce dal catalogo (lib/dati/eta-prodotti.ts), al femminile dopo «Per lei» (Cri, 5 nov, riga 10) */
+  const ETA = [["Bambina", "0–12 anni"], ["Adolescente", "13–17 anni"], ["Ragazza", "18–29 anni"], ["Adulta", "30 anni e più"]];
+  document.getElementById("p").innerHTML = passo === 2
+    ? `${testa}<h1 class="t-pagina">Quanti anni ha?</h1>
+       <div class="tessere-scelta eta" role="radiogroup" aria-label="Età">${ETA.map(([n, a]) => `<button type="button" role="radio" aria-checked="false" data-vai="domande.html?passo=3"><span><span class="n">${n}</span><span class="a">${a}</span></span></button>`).join("")}</div>`
+    : passo === 3
+    ? `${testa}<h1 class="t-pagina">Qual è l'occasione?</h1>
+       <div class="tessere-scelta" role="radiogroup" aria-label="Occasione">${OCC.map((o) => `<button type="button" role="radio" aria-checked="false" data-vai="domande.html?passo=4">${icona(o === "Compleanno" ? "torta" : o === "Altro" ? "regalo" : "calendario")}${o}</button>`).join("")}</div>`
+    : `${testa}<h1 class="t-pagina">Che cosa le piace?</h1>
+       <div class="chips" data-multi role="group" aria-label="Interessi">${Object.keys(INT).map((k, i) => `<button type="button" class="chip" aria-pressed="${i === 0 ? "true" : "false"}">${icona("spunta", "spunta")}${k}</button>`).join("")}</div>
+       <div class="gruppo-int"><h2>Casa e design: che cosa in particolare?</h2><div class="chips" data-multi role="group" aria-label="Casa e design">${INT["Casa e design"].map((k, i) => `<button type="button" class="chip" aria-pressed="${i === 0 ? "true" : "false"}">${icona("spunta", "spunta")}${k}</button>`).join("")}</div></div>
+       <div class="avanti"><a class="btn btn-primario" href="risultati.html">Mostra le idee</a></div>`;
+</script>
+</body>
+</html>

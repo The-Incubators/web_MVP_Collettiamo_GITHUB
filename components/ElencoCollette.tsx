@@ -7,6 +7,7 @@ import { Avviso, Barra, Bottone, BottoneLink, Etichetta, Icona, ImmagineProdotto
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { avanzamento } from "@/lib/dominio/partecipanti";
+import { nomeRegalo } from "@/lib/dominio/regali";
 import type { Colletta } from "@/lib/tipi";
 import { CATALOGO_GRUPPO } from "@/lib/ux";
 
@@ -24,7 +25,7 @@ function Scheda({ c, onElimina }: { c: Colletta; onElimina: (slug: string) => Pr
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
           <h2 className="truncate text-lg font-semibold text-accent-2">{titolo}</h2>
-          <p className="truncate text-xs text-ink-soft">{c.prodotto.nome}</p>
+          <p className="truncate text-xs text-ink-soft">{nomeRegalo(c.prodotto)}</p>
         </div>
         <Etichetta stato={c.stato === "aperta" ? "daConfermare" : c.stato === "chiusa" ? "confermato" : "invitato"}>
           {c.stato === "aperta" ? (c.votazione && !c.votazione.chiusa ? "In votazione" : "Aperta") : c.stato === "chiusa" ? "Chiusa" : "Bozza"}

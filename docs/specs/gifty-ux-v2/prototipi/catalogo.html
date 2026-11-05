@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catalogo · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .testa-cat { padding: var(--s8) 0 var(--s6); display: grid; gap: var(--s4); }
+  .filtri { display: grid; gap: var(--s3); }
+  @media (min-width: 768px) { .filtri .chips-scorre { flex-wrap: wrap; overflow: visible; margin: 0; padding: 0; } }
+</style>
+</head>
+<body data-sezione="idee">
+<main>
+  <div class="pagina">
+    <div class="testa-cat">
+      <h1 class="t-pagina">Catalogo</h1>
+      <div class="filtri">
+        <div class="chips-scorre" role="radiogroup" aria-label="Tema">
+          <button class="chip" role="radio" aria-checked="true">Tutti</button><button class="chip" role="radio" aria-checked="false">Casa e design</button><button class="chip" role="radio" aria-checked="false">Tecnologia</button><button class="chip" role="radio" aria-checked="false">Viaggi</button><button class="chip" role="radio" aria-checked="false">Libri, musica e creatività</button><button class="chip" role="radio" aria-checked="false">Stile e accessori</button><button class="chip" role="radio" aria-checked="false">Cucina e buon gusto</button>
+        </div>
+        <div class="segmenti" role="radiogroup" aria-label="Prezzo" style="justify-self:start;max-width:100%;overflow-x:auto">
+          <button role="radio" aria-checked="true">Tutti i prezzi</button><button role="radio" aria-checked="false">Fino a 50 €</button><button role="radio" aria-checked="false">50–150 €</button><button role="radio" aria-checked="false">Oltre 150 €</button>
+        </div>
+      </div>
+    </div>
+    <div class="griglia-prodotti" id="g"></div>
+    <p class="nota-prezzi">Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.</p>
+  </div>
+</main>
+<script src="comuni.js"></script>
+<script>document.getElementById("g").innerHTML = ["PRD-017","PRD-014","PRD-058","PRD-044","PRD-004","PRD-054","PRD-094","PRD-015","PRD-083","PRD-003","PRD-062","PRD-038"].map((id, i) => tessera(id, { pieno: i === 2 })).join("");</script>
+</body>
+</html>

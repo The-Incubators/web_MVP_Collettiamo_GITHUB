@@ -27,6 +27,8 @@ export interface Autenticazione {
 export const CHIAVE_UID = "colletta.uid";
 export const CHIAVE_EMAIL_ACCESSO = "colletta.emailAccesso";
 export const CHIAVE_NOME_ACCESSO = "colletta.nomeAccesso";
+/** Dove tornare dopo l'accesso con il collegamento via email (che apre /accedi). */
+export const CHIAVE_DOPO_ACCESSO = "colletta.dopoAccesso";
 
 /** localStorage può mancare o lanciare (navigazione privata, dati bloccati): mai un errore visibile. */
 export function leggiLocale(chiave: string): string | null {
@@ -49,5 +51,5 @@ export function scriviLocale(chiave: string, valore: string | null): void {
 export function nomeDaEmail(email: string): string {
   const locale = email.split("@")[0] ?? "";
   const parola = locale.split(/[._+-]/)[0] ?? "";
-  return parola ? parola.charAt(0).toUpperCase() + parola.slice(1) : "Organizzatore";
+  return parola ? parola.charAt(0).toUpperCase() + parola.slice(1) : email;
 }

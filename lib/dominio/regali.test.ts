@@ -23,3 +23,16 @@ describe("testoIlGiorno", () => {
     expect(testoIlGiorno("2026-11-01")).toBe("il 1 novembre 2026");
   });
 });
+
+import { avanzamento } from "./partecipanti";
+import { nomeRegalo, REGALO_DA_SCEGLIERE } from "./regali";
+
+describe("gruppo partito dalle adesioni (F-01)", () => {
+  it("senza regalo il nome è «Regalo da scegliere» e l'obiettivo è il budget previsto", () => {
+    expect(nomeRegalo(REGALO_DA_SCEGLIERE)).toBe("Regalo da scegliere");
+    expect(nomeRegalo({ ...REGALO_DA_SCEGLIERE, nome: "Zaino", prezzoCent: 1000 })).toBe("Zaino");
+    const a = avanzamento({ prodotto: REGALO_DA_SCEGLIERE, totaleConfermatoCent: 2000, quotaCent: 1000, previsti: 10 });
+    expect(a).toEqual({ obiettivoCent: 10000, confermatoCent: 2000, percento: 20 });
+    expect(avanzamento({ prodotto: { ...REGALO_DA_SCEGLIERE, nome: "Zaino", prezzoCent: 4000 }, totaleConfermatoCent: 2000 }).percento).toBe(50);
+  });
+});

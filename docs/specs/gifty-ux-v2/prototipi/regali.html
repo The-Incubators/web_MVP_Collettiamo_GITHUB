@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I miei regali · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .su { padding: var(--s8) 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s4); }
+  .colonna { max-width: 760px; }
+  .gruppo-righe { padding-top: var(--s8); }
+  .gruppo-righe h2 { margin-bottom: var(--s2); }
+  .vuoto { padding: var(--s10) 0; display: grid; gap: var(--s5); justify-items: start; }
+  .vuoto .carta { width: 220px; padding: var(--s5); transform: rotate(-2deg); display: grid; gap: var(--s3); }
+  .vuoto .carta .mano { font-size: 28px; line-height: 1.05; }
+  @media (max-width: 767px) { .su .btn { width: 100%; } }
+</style>
+</head>
+<body data-sezione="account" data-pagina="regali" data-stati="Elenco=v=1,Vuoto=vuoto=1,Menu aperto=menu=1,Menu senza accesso=menu=1&ospite=1">
+<main>
+  <div class="pagina colonna" id="p"></div>
+</main>
+<script src="comuni.js"></script>
+<script>
+  const riga = (h, g, m, t, sub, stato, gruppo = true) => `<a class="riga" href="${h}"><span class="data"><b>${g}</b><span>${m}</span></span>
+    <span class="t">${t}</span><span class="sub">${sub}</span>
+    <span class="pillole">${gruppo ? `<span class="tag-gruppo">${icona("gruppo")}Di gruppo</span>` : ""}${stato ? `<span class="stato${stato[1] ? " " + stato[1] : ""}">${stato[0]}</span>` : ""}</span>
+    <span class="vai">${icona("dx")}</span></a>`;
+  const vuoto = STATO.get("vuoto") === "1";
+  document.getElementById("p").innerHTML = `<div class="su"><h1 class="t-pagina">I miei regali</h1>${vuoto ? "" : `<a class="btn btn-primario" href="crea.html?passo=1">Organizza un regalo di gruppo</a>`}</div>` + (vuoto
+    ? `<div class="vuoto"><div class="carta"><p class="mano">Il regalo di gruppo per…</p><div class="fila-iniziali"><span class="iniziali vuoto"></span><span class="iniziali vuoto"></span><span class="iniziali vuoto"></span></div></div>
+        <h2 class="t-sezione">Ancora nessun regalo</h2><a class="btn btn-primario" href="crea.html?passo=1">Organizza un regalo di gruppo</a></div>`
+    : `<section class="gruppo-righe" aria-labelledby="t-corso"><h2 id="t-corso" class="t-titolo">In corso</h2><div class="elenco-acc">
+        ${riga("gestisci.html?stato=aperto", 14, "dic", "Il regalo per Mauro", "Compleanno, organizzato da Cri", ["3 su 10 hanno aderito", ""])}
+        ${riga("invito.html?stato=voto", 20, "dic", "Il regalo per Elena", "Laurea, organizzato da Marco", ["Votazione aperta", ""])}
+        ${riga("invito.html?stato=dapagare", 23, "dic", "Il regalo per Anna", "Natale, organizzato da Sara", ["Quota da pagare", "caldo"])}
+      </div></section>
+      <section class="gruppo-righe" aria-labelledby="t-chiusi"><h2 id="t-chiusi" class="t-titolo">Consegnati</h2><div class="elenco-acc">
+        ${riga("gestisci.html?stato=consegnato", 2, "nov", "Il regalo per Giulia", "Saluto, organizzato da Cri", ["2 quote da ricevere", "caldo"])}
+        ${riga("invito.html?stato=chiuso", 18, "ott", "Il regalo per Paolo", "Compleanno, organizzato da Luca", ["Saldato", "neutro"])}
+      </div></section>`);
+</script>
+</body>
+</html>

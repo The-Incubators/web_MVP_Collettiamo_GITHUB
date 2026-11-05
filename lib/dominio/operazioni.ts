@@ -129,7 +129,10 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
   const { colletta: c, riga, uid, ora } = ctx;
   const siaOrganizzatore = uid === c.organizzatoreUid;
 
-  if (c.stato === "aperta" && c.votazione && !c.votazione.chiusa) {
+  // Durante il voto non si paga. Chi organizza però entra nella divisione appena crea il gruppo (D-16), anche con il voto
+  // aperto; le adesioni degli altri durante il voto arrivano con le nuove pagine del gruppo (spec §7.3).
+  const organizzatoreAderisce = op.tipo === "aderisci" && siaOrganizzatore && !op.rivendica;
+  if (c.stato === "aperta" && c.votazione && !c.votazione.chiusa && !organizzatoreAderisce) {
     throw new ErroreDominio("Prima si sceglie il regalo con il voto: i pagamenti si aprono quando la votazione si chiude.");
   }
 

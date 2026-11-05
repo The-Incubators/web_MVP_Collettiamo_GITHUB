@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { datiServer } from "@/lib/dati";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { avanzamento } from "@/lib/dominio/partecipanti";
+import { nomeRegalo } from "@/lib/dominio/regali";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import { votazioneInCorso } from "@/lib/dominio/votazione";
 import { slugValido } from "@/lib/dominio/slug";
@@ -24,7 +25,7 @@ export default async function Immagine({ params }: { params: Promise<{ slug: str
   const visibile = c && c.stato !== "bozza" ? c : null;
 
   const inVoto = !!visibile && votazioneInCorso(visibile);
-  const titolo = !visibile ? NOME_PROGETTO : inVoto ? "Scegliamo insieme il regalo" : visibile.sorpresa ? "Un regalo a sorpresa" : visibile.prodotto.nome;
+  const titolo = !visibile ? NOME_PROGETTO : inVoto ? "Scegliamo insieme il regalo" : visibile.sorpresa ? "Un regalo a sorpresa" : nomeRegalo(visibile.prodotto);
   const sottotitolo = !visibile ? "" : inVoto ? (visibile.sorpresa ? "Un regalo a sorpresa" : `Per ${visibile.festeggiato}`) : visibile.sorpresa ? "" : `Il regalo per ${visibile.festeggiato}`;
   const quota = visibile && !inVoto ? formattaEuro(quotaEffettiva(visibile)) : "";
   const a = visibile && !inVoto ? avanzamento(visibile) : null;

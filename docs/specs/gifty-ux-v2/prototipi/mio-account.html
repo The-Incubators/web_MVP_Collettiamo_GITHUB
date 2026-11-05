@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Il mio account · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .su { padding: var(--s8) 0 var(--s2); }
+  .disposizione { display: grid; gap: 0; }
+  @media (min-width: 900px) { .disposizione { grid-template-columns: 220px minmax(0, 1fr); gap: var(--s16); } }
+  .indice { display: none; }
+  @media (min-width: 900px) { .indice { display: grid; align-content: start; position: sticky; top: calc(var(--testa-h) + var(--s8)); gap: 2px; padding-top: var(--s8); } }
+  .indice a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s3); border-radius: var(--r-control); text-decoration: none; font-weight: 600; color: var(--ink); }
+  .indice a:hover { background: var(--green-field); color: var(--green); }
+  .indice a[aria-current="true"] { color: var(--green); font-weight: 700; box-shadow: inset 3px 0 0 var(--orange); }
+  .sez { padding: var(--s10) 0; display: grid; gap: var(--s4); scroll-margin-top: calc(var(--testa-h) + var(--s4)); max-width: 760px; }
+  .sez + .sez { border-top: 1px solid var(--line); }
+  .dati { display: grid; gap: var(--s5); max-width: 460px; }
+  .sola-lettura { min-height: 48px; display: flex; align-items: center; color: var(--ink); }
+  .pref { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s6) var(--s3); }
+  @media (min-width: 768px) { .pref { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s8) var(--s6); } }
+  .elenco-acc .data { grid-row: 1 / span 2; }
+  .elenco-acc a.riga { grid-template-columns: 52px minmax(0, 1fr) auto; }
+  .via p { max-width: 60ch; }
+  .via .btn { justify-self: start; }
+</style>
+</head>
+<body data-sezione="account" data-pagina="mio-account" data-stati="Pagina=v=1">
+<main>
+  <div class="pagina">
+    <div class="su"><h1 class="t-pagina">Il mio account</h1></div>
+    <div class="disposizione">
+      <nav class="indice" aria-label="Sezioni dell'account">
+        <a href="#dati" aria-current="true">Dati personali</a><a href="#ricorrenze">Ricorrenze</a><a href="#preferiti">Preferiti</a><a href="#cancella">Cancella l'account</a>
+      </nav>
+      <div>
+        <section class="sez" id="dati" style="padding-top:var(--s6)" aria-labelledby="t-dati">
+          <h2 id="t-dati" class="t-sezione">Dati personali</h2>
+          <form class="dati" onsubmit="return false">
+            <div class="campo"><label for="nm">Nome e cognome</label><input id="nm" class="input" value="Cri Ruggeri" autocomplete="name"></div>
+            <div class="campo"><span class="etichetta">Email</span><span class="sola-lettura">cri@esempio.it</span></div>
+            <div class="campo"><span class="etichetta">Accesso</span><span class="sola-lettura">Con Google</span></div>
+            <label class="spunta-riga"><input type="checkbox"> Voglio ricevere via email idee regalo e novità di Gifty</label>
+            <div><button class="btn btn-primario">Salva le modifiche</button></div>
+          </form>
+        </section>
+        <section class="sez" id="ricorrenze" aria-labelledby="t-ric">
+          <div class="testa-sezione" style="margin-bottom:0"><h2 id="t-ric" class="t-sezione">Ricorrenze</h2><button class="btn btn-contorno" data-icona="piu">Aggiungi una ricorrenza</button></div>
+          <div class="elenco-acc" id="ricorrenze-l"></div>
+        </section>
+        <section class="sez" id="preferiti" aria-labelledby="t-pref">
+          <h2 id="t-pref" class="t-sezione">Preferiti</h2>
+          <div class="pref" id="pref"></div>
+        </section>
+        <section class="sez via" id="cancella" aria-labelledby="t-via">
+          <h2 id="t-via" class="t-sezione">Cancella l'account</h2>
+          <p>Cancelliamo i tuoi dati, i regali che organizzi e i biglietti che hai creato. Prima ti mostriamo che cosa sparisce.</p>
+          <a class="btn btn-quieto pericolo" href="cancella-account.html" data-icona="cestino">Cancella l'account</a>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="comuni.js"></script>
+<script>
+  const riga = (g, m, t, sub) => `<a class="riga" href="#"><span class="data"><b>${g}</b><span>${m}</span></span><span class="t">${t}</span><span class="sub">${sub}</span><span class="vai">${icona("matita")}</span></a>`;
+  document.getElementById("ricorrenze-l").innerHTML = [riga(3, "gen", "Luca", "Compleanno"), riga(21, "gen", "Sara", "Compleanno"), riga(14, "feb", "Anna e Pietro", "Anniversario")].join("");
+  document.getElementById("pref").innerHTML = ["PRD-058", "PRD-044", "PRD-094"].map((id) => tessera(id, { pieno: true })).join("");
+</script>
+</body>
+</html>

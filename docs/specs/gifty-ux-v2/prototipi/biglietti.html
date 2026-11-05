@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I miei biglietti · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .su { padding: var(--s8) 0 var(--s2); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s4); }
+  .colonna { max-width: 760px; }
+  .gruppo-righe { padding-top: var(--s8); }
+  .gruppo-righe h2 { margin-bottom: var(--s2); }
+  .mini-b { grid-row: 1 / span 3; align-self: start; width: 52px; height: 56px; border-radius: var(--r-paper); display: grid; place-items: center; transform: rotate(-3deg); }
+  .mini-b .mano { font-size: 20px; line-height: 1; }
+  .vuoto { padding: var(--s10) 0; display: grid; gap: var(--s5); justify-items: start; }
+  @media (max-width: 767px) { .su .btn { width: 100%; } }
+</style>
+</head>
+<body data-sezione="account" data-pagina="biglietti" data-stati="Elenco=v=1,Vuoto=vuoto=1">
+<main>
+  <div class="pagina colonna" id="p"></div>
+</main>
+<script src="comuni.js"></script>
+<script>
+  const riga = (h, iniz, tema, t, sub, stato) => `<a class="riga" href="${h}"><span class="carta mini-b ${tema}" aria-hidden="true"><span class="mano">${iniz}</span></span>
+    <span class="t">${t}</span><span class="sub">${sub}</span>
+    <span class="pillole">${stato ? `<span class="stato${stato[1] ? " " + stato[1] : ""}">${stato[0]}</span>` : ""}</span>
+    <span class="vai">${icona("dx")}</span></a>`;
+  const vuoto = STATO.get("vuoto") === "1";
+  document.getElementById("p").innerHTML = `<div class="su"><h1 class="t-pagina">I miei biglietti</h1>${vuoto ? "" : `<a class="btn btn-primario" href="biglietto-editor.html?passo=1">Crea un biglietto</a>`}</div>` + (vuoto
+    ? `<div class="vuoto"><h2 class="t-sezione">Ancora nessun biglietto</h2><a class="btn btn-primario" href="biglietto-editor.html?passo=1">Crea un biglietto</a></div>`
+    : `<section class="gruppo-righe" aria-labelledby="t-creati"><h2 id="t-creati" class="t-titolo">Creati da te</h2><div class="elenco-acc">
+        ${riga("biglietto-gestisci.html", "M", "", "Il biglietto per Marta", "Compleanno il 28 novembre, 4 firme", ["Da mandare", ""])}
+        ${riga("biglietto-gestisci.html", "G", "tema-menta", "Il biglietto per Giulia", "Del regalo di gruppo, 7 firme", ["Mandato a Giulia", "neutro"])}
+      </div></section>
+      <section class="gruppo-righe" aria-labelledby="t-firmati"><h2 id="t-firmati" class="t-titolo">Firmati da te</h2><div class="elenco-acc">
+        ${riga("biglietto-apertura.html?stato=aperto", "E", "tema-pesca", "Il biglietto per Elena", "Laurea, creato da Marco", ["Non ancora mandato", "neutro"])}
+        ${riga("biglietto-apertura.html?stato=aperto", "P", "", "Il biglietto per Paolo", "Compleanno, creato da Luca", ["Mandato a Paolo", "neutro"])}
+      </div></section>`);
+</script>
+</body>
+</html>

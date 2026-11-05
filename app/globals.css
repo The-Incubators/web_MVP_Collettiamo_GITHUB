@@ -610,6 +610,129 @@
   @media (min-width: 768px) { .btn-largo-tel { width: auto; } }
 }
 
+/*
+ * Gifty UX v2, procedura del regalo di gruppo /crea (design.md §10.1, prototipi/crea.html e sistema.css): a tutta
+ * pagina con la sola barra (indietro, passo, chiudi), il biglietto che si scrive a destra, i fogli del catalogo e
+ * dell'uscita, il riepilogo con l'accesso, il messaggio per la chat.
+ */
+@layer components {
+  /* la barra della procedura, al posto dell'intestazione del sito */
+  .barra-proc { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top, 0px); }
+  .barra-proc-in { max-width: var(--page-max); margin: 0 auto; padding: var(--s2) var(--gutter); display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; gap: var(--s3); min-height: 64px; }
+  .barra-proc .dove { display: grid; gap: 6px; justify-items: center; }
+  .barra-proc .dove > span:first-child { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .barra-proc .avanzamento { width: 100%; max-width: 320px; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .barra-proc .avanzamento i { display: block; height: 100%; background: var(--green); border-radius: 2px; transition: width .25s ease; }
+  .barra-proc .icona-btn[hidden] { display: inline-grid !important; visibility: hidden; }
+  .icona-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: inline-grid; place-items: center; cursor: pointer; color: var(--green); flex: none; }
+  .icona-btn:hover { background: var(--green-field); }
+  .icona-btn svg { width: 22px; height: 22px; }
+
+  .wizard { display: grid; gap: var(--s10); padding-top: var(--s8); padding-bottom: var(--s16); }
+  @media (min-width: 900px) { .wizard { grid-template-columns: minmax(0, 560px) minmax(0, 400px); justify-content: space-between; padding-top: var(--s12); } }
+  .wizard .attesa { padding: var(--s16) 0; }
+  .modulo h1 { margin: 0 0 var(--s6); outline: none; }
+  .modulo h1 label { cursor: default; }
+  .modulo form, .modulo .riepilogo { display: grid; gap: var(--s6); }
+  .modulo .riepilogo { gap: var(--s8); }
+  .modulo .avanti { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; margin-top: var(--s2); }
+  .modulo .riga { display: flex; flex-wrap: wrap; gap: var(--s4); }
+  .scelte { display: grid; gap: var(--s3); }
+  .contatore input { width: 4.5rem; height: 46px; border: 0; text-align: center; font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--ink); background: transparent; }
+  .contatore input:focus-visible { outline: 3px solid var(--green); outline-offset: -3px; border-radius: 4px; }
+
+  /* il biglietto dell'anteprima: solo da 900 px */
+  .anteprima { display: none; }
+  @media (min-width: 900px) { .anteprima { display: block; position: sticky; top: calc(64px + var(--s8)); align-self: start; } }
+  .anteprima .carta { padding: var(--s8) var(--s8) var(--s6); transform: rotate(-1.5deg); display: grid; gap: var(--s3); min-height: 340px; }
+  .anteprima .mano { font-size: 40px; line-height: 1; overflow-wrap: anywhere; }
+  .anteprima dl { margin: var(--s2) 0 0; display: grid; gap: var(--s2); }
+  .anteprima dl > div { display: flex; gap: var(--s2); align-items: center; }
+  .anteprima dt { width: 22px; color: var(--muted); flex: none; }
+  .anteprima dt svg { width: 20px; height: 20px; display: block; }
+  .anteprima dd { margin: 0; font-weight: 600; }
+  .anteprima dd.vuota { color: var(--muted); font-weight: 400; }
+  .anteprima .miniature { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .anteprima .miniature > img, .anteprima .miniature > div, .anteprima .miniature > svg { width: 64px; height: 64px; object-fit: contain; background: #fff; border-radius: 8px; mix-blend-mode: multiply; }
+  .anteprima .firma-anteprima { margin-top: auto; }
+
+  /* il regalo scelto e quelli da votare */
+  .regalo-scelto { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .regalo-scelto:first-child { border-top: 1px solid var(--line); }
+  .regalo-scelto .lastra { width: 64px; border-radius: 12px; }
+  .regalo-scelto .n { font-weight: 700; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
+  .regalo-scelto .t-cifra { color: var(--green); }
+  .aggiungi-voto { min-height: 56px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-control); background: transparent; color: var(--green); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: var(--s2); cursor: pointer; width: 100%; font-size: 16px; }
+  .aggiungi-voto:hover { border-color: var(--green); background: var(--green-field); }
+  .aggiungi-voto svg { width: 20px; height: 20px; flex: none; }
+  .vuoto-voto { margin: 0; padding: var(--s5); border: 1.5px dashed var(--line-strong); border-radius: var(--r-control); color: var(--ink); }
+  .da-link { display: grid; gap: var(--s4); padding: var(--s5); border: 1px solid var(--line); border-radius: var(--r-surface); background: var(--surface); flex-basis: 100%; }
+  .calcolo { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2) var(--s4); flex-wrap: wrap; padding: var(--s4) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .calcolo .t-cifra { font-size: 24px; color: var(--green); }
+  .metodo { display: grid; gap: var(--s3); padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .metodo:first-child { border-top: 1px solid var(--line); }
+  .metodo .input, .metodo .errore-testo { margin-left: 34px; width: calc(100% - 34px); max-width: 22rem; }
+
+  /* passo 6: riepilogo e accesso */
+  .riep { display: grid; margin: 0; }
+  .riep > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px var(--s4); align-items: center; padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .riep > div:first-child { border-top: 1px solid var(--line); }
+  .riep dt { grid-column: 1; font-size: 14px; color: var(--muted); }
+  .riep dd { grid-column: 1; margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+  .riep .btn-quieto { grid-column: 2; grid-row: 1 / span 2; }
+  .riep .modifica { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; padding-top: var(--s2); }
+  .riep .modifica .errore-testo { flex-basis: 100%; }
+  .accesso { display: grid; gap: var(--s4); max-width: 420px; padding-top: var(--s4); }
+  .accesso > .stato { justify-self: start; }
+  .accesso h2 { margin-bottom: var(--s1); }
+  .accesso p { margin: 0; }
+  .modulo .accesso-email { display: grid; gap: var(--s4); }
+  .oppure { display: flex; align-items: center; gap: var(--s3); color: var(--muted); font-size: 14px; }
+  .oppure::before, .oppure::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .btn-google { background: #fff; color: var(--ink); border: 1.5px solid var(--line-strong); }
+  .btn-google:hover { border-color: var(--green); background: var(--green-field); }
+  .btn[aria-busy="true"] { cursor: progress; }
+  .btn[aria-busy="true"]::before { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: gira .8s linear infinite; }
+  @keyframes gira { to { transform: rotate(360deg); } }
+
+  /* Condividi: il messaggio per la chat */
+  .pronto { display: grid; gap: var(--s4); align-content: start; }
+  .pronto > .stato { justify-self: start; }
+  .pronto .azioni { display: grid; gap: var(--s3); justify-items: start; }
+  .pronto .azioni .btn-primario { justify-self: stretch; }
+  @media (min-width: 768px) { .pronto .azioni { display: flex; flex-wrap: wrap; align-items: center; } }
+  /* stretta come nel prototipo approvato: il fumetto sembra quello di un telefono */
+  .pronto .chat { background: var(--wall); border-radius: var(--r-surface); padding: var(--s6) var(--s4); width: 100%; max-width: 230px; }
+  .fumetto-wa { margin: 0; background: #fff; border-radius: 14px 14px 14px 4px; padding: var(--s4); box-shadow: 0 1px 2px rgba(20, 43, 32, .14); max-width: 420px; overflow-wrap: anywhere; }
+  .fumetto-wa b { color: var(--green); }
+  /* pillola di stato (design.md §4) */
+  .stato { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 var(--s3); border-radius: var(--r-pill); background: var(--green-field); color: var(--green); font-size: 14px; font-weight: 700; }
+  .stato svg { width: 16px; height: 16px; }
+
+  /* i fogli: dal basso sul telefono, al centro su desktop */
+  .velo { position: fixed; inset: 0; z-index: 50; background: rgba(20, 43, 32, .42); display: flex; align-items: flex-end; justify-content: center; }
+  .foglio { width: 100%; max-width: 480px; background: var(--surface); border-radius: var(--r-surface) var(--r-surface) 0 0; box-shadow: var(--ombra-carta); padding: var(--s6) var(--gutter) calc(var(--s6) + env(safe-area-inset-bottom, 0px)); }
+  @media (min-width: 768px) { .velo { align-items: center; } .foglio { border-radius: var(--r-surface); padding: var(--s8); } }
+  .foglio-testa { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); margin-bottom: var(--s3); }
+  .foglio h2, .foglio-grande h2 { outline: none; }
+  .esci-foglio p { margin: var(--s2) 0 var(--s6); color: var(--ink); }
+  .esci-foglio .avanti { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; }
+  .btn-quieto.pericolo { background: #fbe9e9; color: var(--error); }
+  .btn-quieto.pericolo:hover { background: #f6d6d6; }
+  /* il catalogo dentro la procedura: quasi a tutta altezza sul telefono, finestra larga su desktop */
+  .velo.alto { align-items: flex-end; }
+  .foglio-grande { width: 100%; max-width: 1040px; height: 92vh; height: 92dvh; background: var(--paper); border-radius: var(--r-surface) var(--r-surface) 0 0; box-shadow: var(--ombra-carta); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+  @media (min-width: 768px) { .velo.alto { align-items: center; padding: var(--s8); } .foglio-grande { height: min(860px, 100%); border-radius: var(--r-surface); } }
+  .foglio-grande .fg-testa { display: grid; gap: var(--s3); padding: var(--s4) var(--gutter) var(--s3); background: var(--surface); border-bottom: 1px solid var(--line); }
+  .foglio-grande .fg-riga { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); }
+  .foglio-grande .fg-corpo { overflow: auto; padding: var(--s5) var(--gutter) var(--s6); }
+  .foglio-grande .fg-piede { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s3) var(--gutter) calc(var(--s3) + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); }
+  .fg-piede b { font-family: var(--f-display); font-size: 20px; color: var(--green); }
+  .maniglia { width: 40px; height: 4px; border-radius: 2px; background: var(--line); justify-self: center; }
+  @media (min-width: 768px) { .foglio-grande .maniglia { display: none; } }
+  .tessera .quota-testa { font-size: 14px; color: var(--muted); white-space: nowrap; }
+  .btn-scelto { background: var(--green-field); color: var(--green); border-color: var(--green); }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

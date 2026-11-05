@@ -102,27 +102,31 @@ Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costant
 
 ### 7.1 Partenze
 
-Il wizard chiede subito «Per chi è il regalo?» (nome, occasione, data) e poi «Da dove vuoi iniziare?» con due scelte:
+Il wizard chiede «Per chi è il regalo?» (nome, occasione, data), poi quante persone ci sono nella chat, poi «Da dove vuoi iniziare?» con tre scelte (design UX v2 §10.1, approvato da Cri il 5 novembre 2026):
 
 | ID | Partenza | Che cosa succede |
 |---|---|---|
-| F-01 | **Facciamo il regalo?** Prima raccolgo le adesioni | Nessun prodotto. L'organizzatore propone una quota a testa (per esempio 10 €). Il budget previsto è quota × aderenti. Il regalo si sceglie dopo, nel budget, con un regalo solo o con una votazione |
+| F-01 | **Prima le adesioni** | Nessun prodotto. L'organizzatore propone una quota a testa (10 € proposti). Il budget previsto è quota × persone. Il regalo si sceglie dopo, nel budget, con un regalo solo o con una votazione |
 | F-02 | **Ho scelto il regalo** | L'organizzatore sceglie un regalo dal catalogo (o incolla un link) e Gifty stima la quota dividendo il prezzo per le persone attese |
-| F-03 | **Ho scelto alcuni regali: votiamo** | Variante di F-02: da 2 a 5 regali; chi ha aderito vota e può suggerirne altri se l'organizzatore lo consente. L'organizzatore chiude il voto e il regalo più votato diventa il regalo del gruppo; a pari voti decide l'organizzatore |
+| F-03 | **Votiamo il regalo** | Da 2 a 5 regali e una data e ora di fine della votazione; chi ha aderito vota e può suggerirne altri se l'organizzatore lo consente. Il regalo più votato diventa il regalo del gruppo; a pari voti decide l'organizzatore |
 
-F-02 e F-03 sono la stessa partenza con uno o più regali: nel wizard è una sola scelta, «Ho scelto il regalo», con «Aggiungi un altro regalo da votare».
+F-02 e F-03 sono due scelte separate: la votazione ha campi suoi (la lista dei regali e la fine del voto). Dalla tessera di un prodotto («Aggiungi a un regalo di gruppo») si parte con F-02 già scelta e il regalo già deciso.
 
 ### 7.2 Passi del wizard
 
+A tutta pagina: nessuna intestazione, piè di pagina o barra in basso; solo indietro, «Passo n di N» con la barra di avanzamento e la X, che chiede «Vuoi uscire?» e lascia la bozza sul dispositivo.
+
 | Passo | Che cosa si chiede | Regole |
 |---|---|---|
-| 1 | Nome del festeggiato, occasione, data | Data nel futuro |
-| 2 | Da dove vuoi iniziare | F-01 o F-02/F-03 |
-| 3 | Quota proposta (F-01) oppure regalo o regali (F-02/F-03) | Prezzo in centesimi interi |
-| 4 | Quante persone ci sono nella chat | Numero atteso (D-07); «Partecipi anche tu alla divisione?», già spuntato (D-16); data e ora limite per le adesioni (D-15) |
-| 5 | Come ti rimborsano | PayPal, Satispay, IBAN, contanti; almeno uno |
-| 6 | Accesso | Solo qui si chiede di accedere; la bozza resta e si riprende dopo l'accesso |
-| 7 | Condividi | Messaggio pronto per WhatsApp con il link; anteprima neutra se il regalo è a sorpresa |
+| 1 | Nome del festeggiato, occasione, data della festa | Data nel futuro |
+| 2 | Quante persone ci sono nella chat | Numero atteso (D-07); «Partecipo anch'io alla divisione», già spuntato (D-16). Dal prodotto mostra il regalo e la quota stimata |
+| 3 | Da dove vuoi iniziare | F-01, F-02 o F-03; un tocco sceglie e va avanti |
+| 4 | Quota (F-01), regalo dal catalogo (F-02) o regali da votare con la fine della votazione (F-03) | Prezzo in centesimi interi; da 2 a 5 regali; fine del voto proposta a quattro giorni alle 20:00, non dopo la data limite |
+| 5 | Come ti rimborsano | PayPal, Satispay, IBAN, contanti; almeno uno. Chi ha già un account ritrova quelli dell'ultima volta |
+| 6 | Riepilogo e accesso | Una riga per risposta con «Cambia». Data e ora limite per le adesioni proposte (il giorno prima della festa alle 20:00) e modificabili qui (D-15). Solo qui si chiede di accedere; con Google si accede e si crea, con il link via email il gruppo si crea appena si apre il link |
+| Dopo | Condividi | Messaggio pronto per WhatsApp con il link; senza il nome del festeggiato se il regalo è a sorpresa |
+
+Dal prodotto i passi sono quattro: 1, 2, 5, 6. Alla creazione l'organizzatore, se partecipa, entra fra chi ha aderito.
 
 ### 7.3 Adesione
 

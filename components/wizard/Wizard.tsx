@@ -1,369 +1,523 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { Avviso, Bottone, Dialogo, Icona } from "@/components/ui";
+import { leggiLocale, nomeDaEmail, scriviLocale, type Utente } from "@/lib/auth/tipi";
+import { dataBreve, giornoDaIso, istanteRoma } from "@/lib/dominio/date";
 import { ErroreDominio } from "@/lib/dominio/operazioni";
+import { contiene, daProdotto, stessoRegalo } from "@/lib/dominio/regali";
 import { generaSlugLibero } from "@/lib/dominio/slug";
-import { ORE, votazioneIniziale } from "@/lib/dominio/votazione";
 import { leggiLista, svuotaRegali } from "@/lib/listaRegali";
-import { OCCASIONI } from "@/lib/tipi";
-import { Passo1Regalo } from "./Passo1Regalo";
-import { Passo2PerChi } from "./Passo2PerChi";
-import { Passo3Quota } from "./Passo3Quota";
-import { Passo4Pagamenti } from "./Passo4Pagamenti";
-import { Passo5Partecipanti } from "./Passo5Partecipanti";
-import { Passo6Invita } from "./Passo6Invita";
+import { etichettaOccasione } from "@/lib/regalo/dati";
+import type { ProdottoColletta } from "@/lib/tipi";
 import {
-  CHIAVE_WIZARD,
+  aperturaDaStato,
+  bozzaDaRiprendere,
   campiDaStato,
-  candidatiChiave,
-  dataSuggerita,
+  CHIAVE_WIZARD,
+  conMetodi,
+  conRegaloAlVoto,
+  conRegaloScelto,
   erroriPasso,
-  nomiDaLista,
+  inVotazione,
+  leggiStato,
   nuovaColletta,
-  prodottoDaStato,
+  occasioneValida,
+  passoDopo,
+  passoPrima,
+  personeDivisione,
+  posizione,
+  primoPassoConErrori,
+  senzaMetodi,
+  sequenza,
   statoDaColletta,
   statoIniziale,
+  testoMetodi,
+  testoQuota,
   type Errori,
+  type Partenza,
   type Passo,
   type StatoWizard,
-} from "./stato";
-import { CATALOGO_GRUPPO } from "@/lib/ux";
+} from "@/lib/wizard/stato";
+import { Anteprima, type RigheAnteprima } from "./Anteprima";
+import { BarraProcedura } from "./BarraProcedura";
+import { FoglioCatalogo, FoglioEsci } from "./Fogli";
+import { PassoAccesso } from "./PassoAccesso";
+import { CHIAVE_CHAT_CREATO, PassoCondividi } from "./PassoCondividi";
+import { PassoPartenza, PassoPerChi, PassoPersone, PassoQuota, PassoRegalo, PassoRimborsi, PassoVoto } from "./PassiDati";
+import { PassoRiepilogo } from "./PassoRiepilogo";
+import { daVoce, type VoceCatalogo } from "./tipi";
 
-/**
- * I passi che si vedono sono cinque: «La quota» e «Come ti pagano» (passi 3 e 4 dello stato, che restano
- * distinti per la bozza e per la ripresa dalla sessione) stanno in una schermata sola, come nel disegno di UX_V4.
- */
-const VISIBILI = [
-  { passi: [1], nome: "Il regalo", domanda: "Chi sceglie il regalo?", sotto: "Puoi sceglierlo tu o far votare il gruppo." },
-  { passi: [2], nome: "Per chi e quando", domanda: "Per chi e quando?", sotto: "Chi festeggiate e quando date il regalo." },
-  { passi: [3, 4], nome: "Quota e pagamenti", domanda: "Come si divide il costo?", sotto: "La quota e dove ricevere i soldi." },
-  { passi: [5], nome: "Chi partecipa", domanda: "Chi partecipa?", sotto: "Lascia aggiungere tutti, o scrivi tu i nomi." },
-  { passi: [6], nome: "Invita", domanda: "Pronto! Invita il gruppo", sotto: "Manda il link nella chat per iniziare la raccolta." },
-] as const;
+/** Questa scheda sta lavorando alla bozza: ricaricando si resta al passo, invece di vedere «Riprendi». */
+const CHIAVE_ATTIVO = "gifty.wizard.attivo";
 
-const indiceVisibile = (p: Passo) => VISIBILI.findIndex((v) => (v.passi as readonly number[]).includes(p));
-/** Il passo successivo e quello precedente saltano il 4, che sta nella stessa schermata del 3. */
-const dopo = (p: Passo): Passo => (p === 3 || p === 4 ? 5 : ((p + 1) as Passo));
-const prima = (p: Passo): Passo => (p === 5 ? 3 : p === 4 ? 2 : ((p - 1) as Passo));
-
-function leggiSalvato(uid: string): StatoWizard | null {
+function sessione(chiave: string, valore: string | null) {
   try {
-    const grezzo = window.sessionStorage.getItem(CHIAVE_WIZARD);
-    if (!grezzo) return null;
-    const s = JSON.parse(grezzo) as StatoWizard;
-    // I campi aggiunti dopo il salvataggio prendono il valore di partenza.
-    return s.uid === uid ? { ...statoIniziale(uid, s.organizzatoreNome ?? ""), ...s } : null;
+    if (valore === null) window.sessionStorage.removeItem(chiave);
+    else window.sessionStorage.setItem(chiave, valore);
   } catch {
-    return null;
+    /* senza sessionStorage si vede «Riprendi» anche dopo un ricaricamento */
   }
 }
 
-function scriviSalvato(s: StatoWizard | null) {
+function inSessione(chiave: string): boolean {
   try {
-    if (s) window.sessionStorage.setItem(CHIAVE_WIZARD, JSON.stringify(s));
-    else window.sessionStorage.removeItem(CHIAVE_WIZARD);
+    return window.sessionStorage.getItem(chiave) === "1";
   } catch {
-    /* il lavoro resta in pagina: nessun errore visibile */
+    return false;
   }
 }
 
-export function Wizard() {
-  const { dati, utente } = useApp();
+/** Il nome di chi organizza, per la colletta e per la riga fra chi partecipa. */
+const nomeDi = (u: Utente) => u.nome.trim() || (u.email ? nomeDaEmail(u.email) : "");
+
+function titolo(s: StatoWizard): React.ReactNode {
+  switch (s.passo) {
+    case 1:
+      return "Per chi è il regalo?";
+    case 2:
+      return "Quante persone ci sono nella chat?";
+    case 3:
+      return "Da dove vuoi iniziare?";
+    case 4:
+      return s.partenza === "adesioni" ? <label htmlFor="quota">Quanto chiedi a testa?</label> : s.partenza === "voto" ? "I regali da votare" : "Quale regalo?";
+    case 5:
+      return "Come ti rimborsano?";
+    default:
+      return "Controlla e crea il regalo di gruppo";
+  }
+}
+
+/** Le righe del biglietto dell'anteprima: si scrivono passo dopo passo, come nel prototipo. */
+function righe(s: StatoWizard, organizzatore: string | null): RigheAnteprima {
+  const seq = sequenza(s);
+  const fatto = (p: Passo) => seq.indexOf(s.passo) > seq.indexOf(p);
+  const giorno = giornoDaIso(s.dataRegalo);
+  const occasione = etichettaOccasione(s.occasione);
+  const quota = testoQuota(s);
+  return {
+    festeggiato: s.festeggiato,
+    quando: giorno ? `${occasione}, ${dataBreve(istanteRoma(giorno, 12))}` : occasione,
+    persone: fatto(2) ? { testo: `${s.chat} persone nella chat` } : { testo: "Persone nella chat", vuota: true },
+    cosa:
+      s.partenza === "adesioni"
+        ? s.passo >= 4 && quota
+          ? { testo: quota }
+          : { testo: "Quota a testa", vuota: true }
+        : s.partenza === "voto"
+          ? s.regali.length
+            ? s.regali
+            : { testo: "Regali da votare", vuota: true }
+          : s.partenza === "regalo" && s.regali.length
+            ? s.regali
+            : { testo: "Regalo o quota", vuota: true },
+    rimborsi: fatto(5) && testoMetodi(s) ? { testo: `Rimborsi con ${testoMetodi(s)}` } : { testo: "Come ti rimborsano", vuota: true },
+    organizzatore,
+  };
+}
+
+/** /crea: la procedura, oppure (con `?creato=`) il passo per mandare il link nella chat. */
+export function Crea({ catalogo }: { catalogo: VoceCatalogo[] }) {
+  const creato = useSearchParams().get("creato");
+  return creato ? <PassoCondividi slug={creato} /> : <Wizard catalogo={catalogo} />;
+}
+
+function Wizard({ catalogo }: { catalogo: VoceCatalogo[] }) {
+  const { dati, utente: chi, pronto } = useApp();
+  // chi partecipa a una colletta ha un'identità anonima: per creare un gruppo serve un account
+  const utente = chi && !chi.anonimo ? chi : null;
   const router = useRouter();
   const params = useSearchParams();
   const [adesso] = useState(() => Date.now());
   const [s, setS] = useState<StatoWizard | null>(null);
+  const [ripresa, setRipresa] = useState(false);
+  const [catalogoAperto, setCatalogoAperto] = useState(false);
+  const [esci, setEsci] = useState(false);
   const [errori, setErrori] = useState<Errori>({});
   const [occupato, setOccupato] = useState(false);
   const [problema, setProblema] = useState<string | null>(null);
-  const [dialogo, setDialogo] = useState(false);
-  const titolo = useRef<HTMLHeadingElement>(null);
+  const refTitolo = useRef<HTMLHeadingElement>(null);
   const avviato = useRef(false);
+  const creando = useRef(false);
+  /** dopo l'uscita o la creazione la bozza non si riscrive più */
+  const fermo = useRef(false);
 
-  // Avvio: ripresa del lavoro salvato, di una bozza o di un prodotto scelto dal catalogo.
+  // Avvio: il lavoro salvato nel browser, più quello che arriva dall'indirizzo (un regalo da una tessera o dal catalogo
+  // del gruppo, la lista del vecchio catalogo, una bozza del vecchio wizard, l'occasione, le persone). Poi l'indirizzo
+  // torna /crea.
   useEffect(() => {
-    if (!utente || avviato.current) return;
+    if (!pronto || avviato.current) return;
     avviato.current = true;
-    const uid = utente.uid;
-    const salvato = leggiSalvato(uid);
+    const uid = utente?.uid ?? null;
+    const salvato = leggiStato(leggiLocale(CHIAVE_WIZARD), uid);
     const bozza = params.get("bozza");
-    const prodotto = params.get("prodotto");
-    const persone = Number(params.get("persone"));
-    const daLista = params.get("lista") === "1";
+    const prodotto = params.get("prodotto") ?? params.get("scegli");
+    const vota = params.get("vota");
+    const lista = params.get("lista") === "1";
+    const conParametri = [...params.keys()].length > 0;
+
+    const trova = async (slug: string): Promise<ProdottoColletta | null> => {
+      const v = catalogo.find((x) => x.slug === slug);
+      if (v) return daVoce(v);
+      try {
+        const p = await dati.prodotto(slug);
+        return p ? daProdotto(p) : null;
+      } catch {
+        return null;
+      }
+    };
+    /** Il primo passo da completare fra quelli prima di `finoA`, o `finoA`. */
+    const primoDa = (st: StatoWizard, finoA: Passo): Passo => {
+      for (const p of sequenza(st)) {
+        if (p >= finoA) break;
+        if (Object.keys(erroriPasso(st, p, adesso)).length) return p;
+      }
+      return finoA;
+    };
 
     (async () => {
+      let st = salvato ?? statoIniziale(uid);
       try {
         if (bozza) {
+          // Le bozze del wizard di prima: si riaprono solo con l'account di chi le ha create.
+          if (!utente) {
+            router.replace(`/accedi?next=${encodeURIComponent(`/crea?bozza=${bozza}`)}`);
+            return;
+          }
           const c = await dati.colletta(bozza);
-          if (c && c.organizzatoreUid === uid && c.stato === "bozza") {
+          if (c && c.organizzatoreUid === utente.uid && c.stato === "bozza") {
             const candidati = c.votazione
-              ? (await dati.proposte(bozza)).filter((p) => p.daOrganizzatore).sort((x, y) => x.creatoIl - y.creatoIl).map((p) => p.prodotto)
+              ? (await dati.proposte(bozza))
+                  .filter((p) => p.daOrganizzatore)
+                  .sort((x, y) => x.creatoIl - y.creatoIl)
+                  .map((p) => p.prodotto)
               : [];
-            setS(statoDaColletta(c, uid, candidati));
-            return;
+            st = { ...statoDaColletta(c, utente.uid, candidati), passo: 6 };
           }
-        }
-        if (daLista) {
-          // La lista dei regali messa insieme col «+» nel catalogo: diventa la lista da far votare.
-          const lista = leggiLista();
-          if (lista.length) {
-            const base = statoIniziale(uid, utente.nome);
-            const consegna = lista.reduce((m, x) => Math.max(m, x.consegnaGiorni), 1);
-            setS({ ...base, votazioneAttiva: true, candidati: lista, dataRegalo: dataSuggerita(consegna, adesso) });
+        } else if (lista) {
+          const l = leggiLista();
+          if (l.length) {
+            st = l.reduce(conRegaloAlVoto, { ...st, partenza: "voto" as Partenza, regali: [], daProdotto: false });
             svuotaRegali();
-            return;
+            st = { ...st, passo: primoDa(st, 4) };
+          }
+        } else if (prodotto || vota) {
+          const regalo = await trova((prodotto ?? vota) as string);
+          if (regalo && prodotto) {
+            // Dal prodotto si saltano «da dove vuoi iniziare» e la scelta del regalo (design.md §10.1, decisione 9).
+            st = { ...conRegaloScelto(st, regalo), daProdotto: true, daRiepilogo: false };
+            st = { ...st, passo: primoDa(st, 2) };
+          } else if (regalo) {
+            st = { ...conRegaloAlVoto({ ...st, daProdotto: false }, regalo), daRiepilogo: false };
+            st = { ...st, passo: primoDa(st, 4) };
           }
         }
-        if (prodotto) {
-          const p = await dati.prodotto(prodotto);
-          if (p && salvato?.prodotto?.prodottoId === p.slug) {
-            setS(salvato);
-            return;
-          }
-          if (p) {
-            const base = statoIniziale(uid, utente.nome);
-            setS({
-              ...base,
-              prodotto: {
-                prodottoId: p.slug,
-                nome: p.nome,
-                prezzoCent: p.prezzoCent,
-                consegnaGiorni: p.consegnaGiorni,
-                urlEsterno: p.urlEsterno,
-                immagine: p.immagine,
-              },
-              dataRegalo: dataSuggerita(p.consegnaGiorni, adesso),
-              previsti: Number.isFinite(persone) && persone >= 2 ? Math.min(200, Math.round(persone)) : base.previsti,
-            });
-            return;
-          }
+        // Chi ha già fatto l'accesso ritrova i metodi di rimborso dell'ultima volta (decisione 11).
+        if (utente && senzaMetodi(st)) {
+          const ultima = (await dati.elencaCollette(utente.uid)).filter((c) => c.stato !== "bozza").sort((a, b) => b.creatoIl - a.creatoIl)[0];
+          if (ultima) st = conMetodi(st, ultima.metodi);
         }
       } catch {
         /* si riparte dal lavoro salvato o da zero */
       }
-      // L'occasione arriva dal biglietto («Fare un regalo insieme e firmare il biglietto»), le persone dal
-      // catalogo. Un valore che non si riconosce viene ignorato.
-      const occasione = OCCASIONI.find((o) => o === params.get("occasione"));
-      const base = statoIniziale(uid, utente.nome);
-      setS(
-        salvato ?? {
-          ...base,
-          ...(occasione ? { occasione } : {}),
-          ...(Number.isFinite(persone) && persone >= 2 ? { previsti: Math.min(200, Math.round(persone)) } : {}),
-        },
-      );
+      if (!salvato) {
+        const occasione = occasioneValida(params.get("occasione"));
+        const persone = Math.round(Number(params.get("persone")));
+        if (occasione) st = { ...st, occasione };
+        if (Number.isFinite(persone) && persone >= 2) st = { ...st, chat: Math.min(200, persone) };
+      }
+      // Rientrando con una bozza si sceglie se riprenderla; chi ricarica la pagina o torna dall'accesso resta al passo.
+      setRipresa(!conParametri && bozzaDaRiprendere(salvato) && !inSessione(CHIAVE_ATTIVO) && !salvato.creaDopoAccesso);
+      setS(st);
+      if (conParametri) router.replace("/crea", { scroll: false });
     })();
-  }, [utente, params, dati, adesso]);
+  }, [pronto, utente, params, dati, adesso, router, catalogo]);
 
   useEffect(() => {
-    if (s) scriviSalvato(s);
+    if (s && !fermo.current) scriviLocale(CHIAVE_WIZARD, JSON.stringify(s));
   }, [s]);
 
-  // A ogni cambio di passo la nuova intestazione prende il focus: tastiera e screen reader sanno dove sono.
-  const passo = s?.passo;
   useEffect(() => {
-    if (passo) titolo.current?.focus();
-  }, [passo]);
+    if (s && !ripresa && !fermo.current) sessione(CHIAVE_ATTIVO, "1");
+  }, [s, ripresa]);
 
-  const cambia = useCallback((patch: Partial<StatoWizard>) => {
-    setS((prev) => (prev ? { ...prev, ...patch } : prev));
-  }, []);
+  // Chi accede a metà strada diventa il proprietario del lavoro salvato.
+  useEffect(() => {
+    if (utente && s && s.uid !== utente.uid) setS({ ...s, uid: utente.uid });
+  }, [utente, s]);
 
-  if (!s) {
-    return <p className="py-10 text-center text-ink-soft">Preparo il wizard…</p>;
-  }
-
-  async function salvaBozza(corrente: StatoWizard): Promise<string> {
-    if (!corrente.slug) {
-      const slug = await generaSlugLibero(async (x) => !(await dati.slugLibero(x)));
-      await dati.creaColletta(nuovaColletta(corrente, slug, adesso));
-      return slug;
-    }
-    await dati.aggiornaColletta(corrente.slug, campiDaStato(corrente, adesso));
-    return corrente.slug;
-  }
-
-  async function sincronizzaInvitati(slug: string, corrente: StatoWizard): Promise<string[]> {
-    const nomi = corrente.listaAperta ? [] : nomiDaLista(corrente.nomiLista);
-    if (JSON.stringify(nomi) === JSON.stringify(corrente.nomiCreati)) return corrente.nomiCreati;
-    // Siamo ancora in bozza: nessuno ha aderito, si possono rifare le righe degli invitati.
-    const esistenti = await dati.partecipanti(slug);
-    for (const r of esistenti.filter((x) => x.stato === "invitato")) await dati.esegui(slug, r.id, { tipo: "rimuovi" });
-    if (nomi.length) await dati.aggiungiInvitati(slug, nomi);
-    return nomi;
-  }
-
-  /** I regali candidati diventano proposte della bozza; si rifanno solo se la lista cambia. */
-  async function sincronizzaProposte(slug: string, corrente: StatoWizard): Promise<string> {
-    const chiave = corrente.votazioneAttiva ? candidatiChiave(corrente.candidati) : "";
-    if (chiave === corrente.candidatiSalvati) return chiave;
-    await dati.impostaProposteIniziali(slug, corrente.votazioneAttiva ? corrente.candidati : []);
-    return chiave;
-  }
-
-  async function avanti() {
-    if (!s) return;
-    const e = s.passo === 3 || s.passo === 4 ? { ...erroriPasso(s, 3, adesso), ...erroriPasso(s, 4, adesso) } : erroriPasso(s, s.passo, adesso);
-    setErrori(e);
-    if (Object.keys(e).length) {
-      setDialogo(true);
+  // A ogni cambio di passo il titolo prende il focus: tastiera e lettori di schermo sanno dove sono.
+  const passo = s?.passo;
+  const primo = useRef(true);
+  useEffect(() => {
+    if (!passo) return;
+    if (primo.current) {
+      primo.current = false;
       return;
     }
-    setOccupato(true);
-    setProblema(null);
-    try {
-      let corrente = s;
-      if (s.passo >= 2) {
-        const slug = await salvaBozza(s);
-        corrente = { ...corrente, slug };
+    refTitolo.current?.focus();
+    window.scrollTo({ top: 0 });
+  }, [passo, ripresa]);
+
+  const crea = useCallback(
+    async (corrente: StatoWizard) => {
+      if (!utente) return;
+      const istante = Date.now();
+      const daCorreggere = primoPassoConErrori(corrente, istante);
+      if (daCorreggere) {
+        setErrori(erroriPasso(corrente, daCorreggere, istante));
+        setS({ ...corrente, passo: daCorreggere, daRiepilogo: daCorreggere !== 6, creaDopoAccesso: false });
+        creando.current = false;
+        return;
       }
-      if (s.passo >= 2 && corrente.slug) {
-        corrente = { ...corrente, candidatiSalvati: await sincronizzaProposte(corrente.slug, corrente) };
+      setOccupato(true);
+      setProblema(null);
+      try {
+        const nome = nomeDi(utente);
+        let slug = corrente.slug;
+        if (slug) {
+          await dati.aggiornaColletta(slug, campiDaStato(corrente, nome, istante));
+        } else {
+          slug = await generaSlugLibero(async (x) => !(await dati.slugLibero(x)));
+          await dati.creaColletta(nuovaColletta(corrente, { slug, uid: utente.uid, organizzatoreNome: nome, adesso: istante }));
+        }
+        if (inVotazione(corrente) || corrente.slug) await dati.impostaProposteIniziali(slug, inVotazione(corrente) ? corrente.regali : []);
+        await dati.aggiornaColletta(slug, aperturaDaStato(corrente, istante));
+        // Chi organizza fa parte della divisione, se non si è tolto (D-16): entra fra chi partecipa.
+        if (corrente.partecipo) {
+          try {
+            await dati.esegui(slug, utente.uid, { tipo: "aderisci", nome });
+          } catch {
+            /* il gruppo è creato: la riga di chi organizza si può aggiungere dalla pagina del gruppo */
+          }
+        }
+        fermo.current = true;
+        scriviLocale(CHIAVE_WIZARD, null);
+        sessione(CHIAVE_ATTIVO, null);
+        try {
+          window.sessionStorage.setItem(CHIAVE_CHAT_CREATO, JSON.stringify({ slug, chat: corrente.chat }));
+        } catch {
+          /* il numero della chat è solo per il biglietto dell'anteprima */
+        }
+        router.replace(`/crea?creato=${slug}`);
+      } catch (err) {
+        setProblema(err instanceof ErroreDominio ? err.message : "Le modifiche non sono state salvate");
+        setOccupato(false);
+        creando.current = false;
       }
-      if (s.passo === 5 && corrente.slug) {
-        const nomiCreati = await sincronizzaInvitati(corrente.slug, corrente);
-        corrente = { ...corrente, nomiCreati };
-      }
-      setS({ ...corrente, passo: dopo(s.passo) });
-    } catch (err) {
-      setProblema(err instanceof ErroreDominio ? err.message : "Non sono riuscito a salvare. Controlla la connessione e riprova.");
-    } finally {
-      setOccupato(false);
+    },
+    [utente, dati, router],
+  );
+
+  // Dopo «Accedi con Google» o il collegamento via email, appena c'è l'account il gruppo si crea da solo.
+  useEffect(() => {
+    if (s?.passo === 6 && s.creaDopoAccesso && utente && !ripresa && !creando.current && !problema) {
+      creando.current = true;
+      void crea(s);
     }
+  }, [s, utente, crea, problema, ripresa]);
+
+  if (!s) {
+    return (
+      <main className="pagina wizard">
+        <p role="status" className="muted attesa">
+          Un momento…
+        </p>
+      </main>
+    );
   }
 
-  /** Chiusa la finestra, si porta in vista il primo campo da correggere (già evidenziato in rosso). */
-  function chiudiDialogo() {
-    setDialogo(false);
-    requestAnimationFrame(() => {
-      const el = document.querySelector<HTMLElement>('[aria-invalid="true"], [data-errore="true"]');
-      el?.scrollIntoView({ block: "center", behavior: "smooth" });
-      if (el && /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)) el.focus({ preventScroll: true });
-    });
+  const stato = s;
+  const pos = posizione(stato);
+
+  function cambia(patch: Partial<StatoWizard>) {
+    setS((prev) => (prev ? { ...prev, ...patch } : prev));
+  }
+
+  function vaiA(p: Passo, patch: Partial<StatoWizard> = {}) {
+    setErrori({});
+    setProblema(null);
+    setS((prev) => (prev ? { ...prev, ...patch, passo: p } : prev));
+  }
+
+  function avanti() {
+    const e = erroriPasso(stato, stato.passo, adesso);
+    setErrori(e);
+    setProblema(null);
+    if (Object.keys(e).length) {
+      requestAnimationFrame(() => document.querySelector<HTMLElement>('.modulo [aria-invalid="true"]')?.focus());
+      return;
+    }
+    // Dopo «Cambia» si torna al riepilogo (GOV.UK, «Check answers»).
+    if (stato.daRiepilogo) vaiA(6, { daRiepilogo: false });
+    else vaiA(passoDopo(stato));
   }
 
   function indietro() {
-    if (!s || s.passo === 1) return;
-    setErrori({});
-    setProblema(null);
-    setS({ ...s, passo: prima(s.passo) });
+    const p = passoPrima(stato);
+    creando.current = false;
+    if (p) vaiA(p, { daRiepilogo: false });
   }
 
-  async function apri() {
-    if (!s?.slug) return;
-    setOccupato(true);
-    setProblema(null);
-    try {
-      const ora = Date.now();
-      await dati.aggiornaColletta(s.slug, {
-        ...campiDaStato(s, adesso),
-        stato: "aperta",
-        // la votazione parte quando si apre la raccolta
-        ...(s.votazioneAttiva
-          ? { votazione: { ...votazioneIniziale(s.votazioneOre, s.consentiProposte), apertaIl: ora, scade: ora + s.votazioneOre * ORE } }
-          : {}),
-      });
-      scriviSalvato(null);
-      router.push(`/gestisci/${s.slug}`);
-    } catch {
-      setProblema("Non sono riuscito ad aprire la raccolta. Riprova.");
-      setOccupato(false);
+  function scegliPartenza(p: Partenza) {
+    const stessa = p === stato.partenza;
+    vaiA(4, stessa ? { partenza: p } : { partenza: p, regali: [] });
+    // Con «Ho scelto il regalo» il catalogo si apre da solo (decisione 5).
+    if (p === "regalo" && (!stessa || stato.regali.length === 0)) setCatalogoAperto(true);
+  }
+
+  function scegliRegalo(p: ProdottoColletta) {
+    setCatalogoAperto(false);
+    if (stato.passo === 2) {
+      cambia({ regali: [p] });
+      return;
     }
+    // «Scegli questo regalo» sceglie e passa ai rimborsi, o torna al riepilogo.
+    vaiA(stato.daRiepilogo ? 6 : passoDopo(stato), { partenza: "regalo", regali: [p], daRiepilogo: false });
   }
 
-  const propsPasso = { s, cambia, errori, adesso };
-  const i = indiceVisibile(s.passo);
-  const visibile = VISIBILI[i];
-  const prossimo = VISIBILI[i + 1];
-  return (
-    <div className="mx-auto flex w-full max-w-xl flex-col gap-5">
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          {s.passo === 1 ? (
-            <Link href={CATALOGO_GRUPPO} aria-label="Torna al catalogo" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-              <Icona nome="close" />
-            </Link>
-          ) : (
-            <button type="button" onClick={indietro} disabled={occupato} aria-label="Indietro" className="-ml-2 flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-2">
-              <Icona nome="arrow_back" />
+  function alternaVoto(p: ProdottoColletta) {
+    setS((prev) => {
+      if (!prev) return prev;
+      if (contiene(prev.regali, p)) return { ...prev, regali: prev.regali.filter((x) => !stessoRegalo(x, p)) };
+      return conRegaloAlVoto(prev, p);
+    });
+  }
+
+  function lascia(cancella: boolean) {
+    fermo.current = true;
+    if (cancella) scriviLocale(CHIAVE_WIZARD, null);
+    sessione(CHIAVE_ATTIVO, null);
+    router.push("/regalo-di-gruppo");
+  }
+
+  function chiudi() {
+    // Al passo 1 senza un nome non c'è niente da salvare: si esce senza chiedere.
+    if (ripresa || (stato.passo === 1 && !stato.festeggiato.trim())) lascia(false);
+    else setEsci(true);
+  }
+
+  const props = { s: stato, cambia, errori, adesso };
+  const idTitolo = "t-passo";
+  const continua = (
+    <div className="avanti">
+      <button type="submit" className="btn btn-primario">
+        Continua
+      </button>
+    </div>
+  );
+  const conForm = (contenuto: React.ReactNode, conContinua = true) => (
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        avanti();
+      }}
+    >
+      {contenuto}
+      {conContinua ? continua : null}
+    </form>
+  );
+
+  let corpo: React.ReactNode;
+  if (ripresa) {
+    corpo = (
+      <form onSubmit={(e) => e.preventDefault()}>
+        <p>
+          La bozza è ferma al passo {pos.n} di {pos.totale}.
+        </p>
+        <div className="avanti">
+          <button
+            type="button"
+            className="btn btn-primario"
+            onClick={() => {
+              sessione(CHIAVE_ATTIVO, "1");
+              setRipresa(false);
+            }}
+          >
+            Riprendi
+          </button>
+          <button
+            type="button"
+            className="btn btn-quieto"
+            onClick={() => {
+              setErrori({});
+              setS(statoIniziale(utente?.uid ?? null));
+              setRipresa(false);
+            }}
+          >
+            Ricomincia da capo
+          </button>
+        </div>
+      </form>
+    );
+  } else if (stato.passo === 1) corpo = conForm(<PassoPerChi {...props} />);
+  else if (stato.passo === 2) corpo = conForm(<PassoPersone {...props} idTitolo={idTitolo} onCambiaRegalo={() => setCatalogoAperto(true)} />);
+  else if (stato.passo === 3) corpo = conForm(<PassoPartenza s={stato} idTitolo={idTitolo} onPartenza={scegliPartenza} />, false);
+  else if (stato.passo === 4 && stato.partenza === "adesioni") corpo = conForm(<PassoQuota {...props} />);
+  else if (stato.passo === 4 && stato.partenza === "voto")
+    corpo = conForm(
+      <PassoVoto {...props} onApriCatalogo={() => setCatalogoAperto(true)} onDaLink={(p) => setS((prev) => (prev ? conRegaloAlVoto(prev, p) : prev))} />,
+      stato.regali.length > 0,
+    );
+  else if (stato.passo === 4)
+    corpo = conForm(<PassoRegalo {...props} onApriCatalogo={() => setCatalogoAperto(true)} onDaLink={(p) => cambia({ partenza: "regalo", regali: [p] })} />, stato.regali.length > 0);
+  else if (stato.passo === 5) corpo = conForm(<PassoRimborsi {...props} />);
+  else
+    corpo = (
+      <div className="riepilogo">
+        <PassoRiepilogo {...props} onCambia={(p) => vaiA(p, { daRiepilogo: true })} />
+        {utente ? (
+          <div className="avanti">
+            <button
+              type="button"
+              className="btn btn-primario"
+              disabled={occupato}
+              aria-busy={occupato || undefined}
+              onClick={() => {
+                creando.current = true;
+                void crea(stato);
+              }}
+            >
+              Crea il regalo di gruppo
             </button>
-          )}
-          <p className="flex min-w-0 items-center gap-2 text-xs font-bold">
-            <span className="cifre flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">{i + 1}</span>
-            <span className="truncate">
-              Passo {i + 1} di {VISIBILI.length} · {visibile.nome}
-            </span>
-          </p>
-          <div aria-hidden="true" className="ml-auto flex shrink-0 gap-1">
-            {VISIBILI.map((v, j) => (
-              <span key={v.nome} className={`h-1.5 rounded-full ${j === i ? "w-7 bg-cta" : j < i ? "w-3 bg-accent" : "w-3 bg-line"}`} />
-            ))}
           </div>
-        </div>
-        <div className="flex flex-col gap-1">
-          <h1 ref={titolo} tabIndex={-1} className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2 outline-none">
-            {visibile.domanda}
-          </h1>
-          <p className="text-ink-soft">{visibile.sotto}</p>
-        </div>
-        {s.passo >= 2 && s.passo <= 5 && prodottoDaStato(s) ? (
-          <p className="flex items-center justify-between gap-2 rounded-2xl bg-surface-2 px-4 py-2 text-sm">
-            <span className="flex min-w-0 items-center gap-2">
-              <Icona nome="redeem" dimensione={20} className="text-accent" />
-              <span className="truncate">{s.votazioneAttiva ? `Lo sceglie il gruppo (${s.candidati.length} idee)` : s.prodotto?.nome}</span>
-            </span>
-            <button type="button" className="min-h-tocco shrink-0 font-bold text-cta-2" onClick={() => cambia({ passo: 1 })}>
-              Cambia
-            </button>
+        ) : (
+          <PassoAccesso prima={() => cambia({ creaDopoAccesso: true })} />
+        )}
+        {problema ? (
+          <p className="errore-testo" role="alert">
+            {problema}
           </p>
         ) : null}
       </div>
+    );
 
-      {s.passo === 1 ? <Passo1Regalo {...propsPasso} /> : null}
-      {s.passo === 2 ? <Passo2PerChi {...propsPasso} /> : null}
-      {s.passo === 3 || s.passo === 4 ? (
-        <>
-          <Passo3Quota {...propsPasso} />
-          <Passo4Pagamenti {...propsPasso} />
-        </>
-      ) : null}
-      {s.passo === 5 ? <Passo5Partecipanti {...propsPasso} /> : null}
-      {s.passo === 6 ? <Passo6Invita {...propsPasso} onApri={apri} apro={occupato} /> : null}
-
-      <Dialogo aperto={dialogo} onChiudi={chiudiDialogo}>
-        <p>Compila tutti i dati prima di proseguire.</p>
-      </Dialogo>
-
-      {problema ? (
-        <Avviso tono="attenzione" live>
-          <p>{problema}</p>
-        </Avviso>
-      ) : null}
-
-      {/* Una sola azione in fondo allo schermo, sempre a portata di pollice. */}
-      {prossimo ? (
-        <div className="sticky bottom-0 z-30 -mx-4 flex items-center gap-2 bg-field/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur">
-          {s.passo > 1 ? (
-            <button
-              type="button"
-              onClick={indietro}
-              disabled={occupato}
-              aria-label="Indietro"
-              className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-surface shadow-carta"
-            >
-              <Icona nome="arrow_back" />
-            </button>
-          ) : null}
-          <Bottone pieno onClick={avanti} disabled={occupato}>
-            {occupato ? "Salvo…" : `Avanti: ${prossimo.nome}`}
-            {!occupato ? <Icona nome="arrow_forward" dimensione={20} /> : null}
-          </Bottone>
+  return (
+    <>
+      <BarraProcedura passo={ripresa ? { n: 1, totale: pos.totale } : pos} onIndietro={!ripresa && passoPrima(stato) ? indietro : null} onEsci={chiudi} />
+      <main className="pagina wizard">
+        <div className="modulo">
+          <h1 ref={refTitolo} id={idTitolo} tabIndex={-1} className="t-pagina">
+            {ripresa ? `Riprendi il regalo per ${stato.festeggiato.trim()}` : titolo(stato)}
+          </h1>
+          {corpo}
         </div>
+        <Anteprima r={righe(stato, utente ? nomeDi(utente) || null : null)} />
+      </main>
+      {catalogoAperto ? (
+        <FoglioCatalogo
+          modo={stato.partenza === "voto" ? "voto" : "scelta"}
+          catalogo={catalogo}
+          persone={personeDivisione(stato)}
+          scelti={stato.regali}
+          onScegli={scegliRegalo}
+          onAlterna={alternaVoto}
+          onChiudi={() => setCatalogoAperto(false)}
+        />
       ) : null}
-    </div>
+      {esci ? <FoglioEsci festeggiato={stato.festeggiato} onResta={() => setEsci(false)} onEsci={() => lascia(false)} onCancella={() => lascia(true)} /> : null}
+    </>
   );
 }

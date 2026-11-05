@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Biglietto · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  /* ---------- scena: parete e tavolo, il biglietto aperto è l'oggetto principale (Cri, 5 nov, riga 18) ---------- */
+  .scena-b { position: relative; overflow: hidden; background: linear-gradient(to bottom, var(--wall) 0, var(--wall) 58%, var(--table) 58%, var(--table) 100%); }
+  .scena-b::after { content: ""; position: absolute; left: 0; right: 0; top: 58%; height: 24px; background: linear-gradient(to bottom, rgba(20,43,32,.08), transparent); pointer-events: none; }
+  .scena-in { position: relative; display: grid; gap: var(--s8); padding-top: var(--s8); padding-bottom: var(--s12); }
+  .testo-b { display: grid; gap: var(--s4); justify-items: start; position: relative; z-index: 2; }
+  .testo-b .riga-b { font-size: 20px; line-height: 1.3; font-weight: 600; color: var(--ink); max-width: 26ch; }
+  .oggetti { position: relative; min-height: 440px; padding-bottom: var(--s8); }
+  .nastro-b { position: absolute; left: -30%; width: 160%; bottom: 40px; height: 160px; color: var(--orange); pointer-events: none; z-index: 0; }
+  .busta-b { position: absolute; z-index: 1; right: -12px; top: 6px; width: 200px; aspect-ratio: 3 / 2; transform: rotate(8deg); display: grid; place-items: center; overflow: hidden; }
+  .busta-b::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56%; background: linear-gradient(to bottom right, transparent 49.5%, rgba(20,43,32,.08) 50%) left / 50% 100% no-repeat, linear-gradient(to bottom left, transparent 49.5%, rgba(20,43,32,.08) 50%) right / 50% 100% no-repeat; }
+  .busta-b .mano { position: relative; font-size: 28px; margin-top: 28px; }
+  .aperto { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr; width: min(100%, 360px); margin: 64px auto 0; transform: rotate(-2deg); }
+  .anta { padding: var(--s5); display: grid; gap: var(--s3); align-content: start; }
+  .anta-sx { display: none; }
+  .aperto .titolo-b { font-family: var(--f-hand); font-weight: 700; font-size: 36px; line-height: 1; color: var(--green); }
+  .aperto .dedica { color: var(--muted); font-size: 16px; }
+  .aperto .foglietti { gap: var(--s3); }
+  .aperto .foglietto-firma { font-size: 14px; }
+  .polaroid { background: #fff; padding: 8px 8px 28px; box-shadow: 0 1px 2px rgba(20,43,32,.14), 0 8px 18px -10px rgba(20,43,32,.35); transform: rotate(3deg); width: 70%; justify-self: center; position: relative; }
+  .polaroid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .polaroid .mano { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; font-size: 20px; line-height: 1; }
+  .esempio-b { position: absolute; z-index: 3; left: 0; bottom: 8px; font-size: 14px; color: var(--muted); }
+  @media (min-width: 900px) {
+    .scena-b { background: linear-gradient(to bottom, var(--wall) 0, var(--wall) 64%, var(--table) 64%, var(--table) 100%); }
+    .scena-b::after { top: 64%; }
+    .scena-in { grid-template-columns: 4fr 7fr; align-items: center; gap: var(--s10); padding-top: var(--s16); padding-bottom: var(--s16); min-height: 640px; }
+    .testo-b { align-self: start; padding-top: var(--s10); }
+    .oggetti { min-height: 520px; }
+    .aperto { grid-template-columns: 1fr 1fr; width: 640px; margin: 40px 0 0 auto; }
+    .anta-sx { display: grid; background-image: linear-gradient(to left, rgba(20,43,32,.07), transparent 18px); }
+    .anta-dx { background-image: linear-gradient(to right, rgba(20,43,32,.06), transparent 14px); }
+    .anta-dx .titolo-b { display: none; }
+    .aperto .titolo-b { font-size: 40px; }
+    .busta-b { right: auto; left: 0; top: auto; bottom: 24px; width: 240px; transform: rotate(-9deg); z-index: 1; }
+    .nastro-b { bottom: 30px; height: 200px; }
+    .esempio-b { left: auto; right: 0; bottom: 0; }
+  }
+
+  /* ---------- come lo apre Marta: il telefono mostra il modo scelto ---------- */
+  .apre-in { display: grid; gap: var(--s8); align-items: center; }
+  @media (min-width: 900px) { .apre-in { grid-template-columns: 5fr 6fr; gap: var(--s16); } .apre-testo { order: 2; } }
+  .apre-testo { display: grid; gap: var(--s4); justify-items: start; align-content: start; }
+  .apre-testo .segmenti button { padding: 0 var(--s3); }
+  .apre-testo .desc { min-height: 2.9em; max-width: 40ch; }
+  .vetrina { background: var(--wall); border-radius: var(--r-surface); padding: var(--s8) var(--s4); display: grid; place-items: center; }
+  .telefono { width: 272px; height: 544px; padding: 12px; border-radius: 28px; background: var(--ink); box-shadow: var(--ombra-carta); }
+  .schermo { position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden; background: var(--peach); }
+  .schermo .titolo-s { font-family: var(--f-hand); font-weight: 700; font-size: 28px; line-height: 1; color: var(--green); text-align: center; padding: var(--s6) var(--s3) var(--s3); }
+  .schermo .fg { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); padding: 0 var(--s3); }
+  .schermo .foglietto-firma { font-size: 12px; line-height: 1.3; padding: var(--s2); gap: 4px; }
+  .schermo .foglietto-firma img { aspect-ratio: 4 / 3; }
+  .storia { display: grid; grid-template-rows: auto 1fr auto; height: 100%; padding: var(--s3); gap: var(--s3); }
+  .storia .tacche-s { display: flex; gap: 4px; } .storia .tacche-s i { flex: 1; height: 3px; border-radius: 2px; background: rgba(20,43,32,.18); } .storia .tacche-s i.ok { background: var(--green); }
+  .storia .grande { align-self: center; padding: var(--s4); font-size: 16px; line-height: 1.4; gap: var(--s3); transform: rotate(-1deg); }
+  .storia .grande img { aspect-ratio: 1; }
+  .storia .chi-s { text-align: center; font-size: 12px; color: var(--muted); }
+  .film { background: var(--green); height: 100%; display: grid; align-content: center; justify-items: center; gap: var(--s4); padding: var(--s6) var(--s4); color: #fff; text-align: center; }
+  .film .mano { color: #fff; font-size: 56px; line-height: 1; }
+  .film p { font-size: 14px; line-height: 1.6; color: var(--card-paper); }
+  .film .barra-f { position: absolute; left: var(--s4); right: var(--s4); bottom: var(--s5); height: 3px; border-radius: 2px; background: rgba(255,255,255,.25); }
+  .film .barra-f i { display: block; width: 62%; height: 100%; background: #fff; border-radius: 2px; }
+  .scorre { height: 100%; display: grid; gap: var(--s3); align-content: start; padding: 0 var(--s4); -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent); mask-image: linear-gradient(to bottom, #000 70%, transparent); }
+  .scorre .foglietto-firma:nth-child(odd) { margin-right: var(--s6); } .scorre .foglietto-firma:nth-child(even) { margin-left: var(--s6); }
+</style>
+</head>
+<body data-sezione="biglietto" data-stati="Griglia=modo=griglia,Storia=modo=storia,Film=modo=film,Scorrimento=modo=scorrimento,Pillola con video=video=1">
+<main>
+  <section class="scena-b" aria-labelledby="t-big">
+    <div class="pagina scena-in">
+      <div class="testo-b">
+        <div class="titolo-con-pillola"><h1 id="t-big" class="t-pagina">Biglietto</h1><a class="pillola" href="#" id="pillola">Guarda come si fa</a></div>
+        <p class="riga-b">Lo firmano tutti dal link e lo mandi tu, su WhatsApp.</p>
+        <a class="btn btn-primario" href="biglietto-editor.html?passo=1">Crea un biglietto</a>
+      </div>
+      <div class="oggetti" aria-label="Esempio: un biglietto aperto per Marta, firmato da Chiara, Paolo, Elena e Marco">
+        <svg class="nastro-b" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C 180 40, 360 190, 560 110 S 860 30, 1000 90" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"/></svg>
+        <div class="carta busta-b" aria-hidden="true"><span class="mano">Per Marta</span></div>
+        <div class="carta aperto" aria-hidden="true">
+          <div class="anta anta-sx">
+            <p class="titolo-b">Buon compleanno, Marta!</p>
+            <p class="dedica">Dall'ufficio, con affetto</p>
+            <div class="polaroid"><img src="../../../../public/biglietto-esempio/sara.jpg" alt=""><span class="mano">Sara</span></div>
+          </div>
+          <div class="anta anta-dx">
+            <p class="titolo-b">Buon compleanno, Marta!</p>
+            <div class="foglietti">
+              <div class="foglietto-firma c3"><img src="../../../../public/biglietto-esempio/chiara.jpg" alt="">Ti pensiamo tutti, oggi più che mai.<span class="chi">Chiara</span></div>
+              <div class="foglietto-firma c8">Un abbraccio grande da tutto l'ufficio!<span class="chi">Paolo</span></div>
+              <div class="foglietto-firma c4">Sei una persona speciale. Grazie di esserci.<span class="chi">Elena</span></div>
+              <div class="foglietto-firma c2"><img src="../../../../public/biglietto-esempio/marco.jpg" alt="">La torta la porto io.<span class="chi">Marco</span></div>
+            </div>
+          </div>
+        </div>
+        <span class="esempio-b">Esempio</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="sezione" aria-labelledby="t-apre">
+    <div class="pagina apre-in">
+      <div class="apre-testo">
+        <h2 id="t-apre" class="t-sezione">Come lo apre Marta</h2>
+        <div class="segmenti" role="radiogroup" aria-label="Come si apre il biglietto" id="modi"></div>
+        <p class="desc" id="desc" aria-live="polite"></p>
+        <a class="btn btn-quieto" href="biglietto-apertura.html">Apri il biglietto di esempio</a>
+      </div>
+      <div class="vetrina"><div class="telefono"><div class="schermo" id="schermo" aria-hidden="true"></div></div></div>
+    </div>
+  </section>
+</main>
+<script src="comuni.js"></script>
+<script>
+  if (STATO.get("video")) document.getElementById("pillola").insertAdjacentHTML("afterbegin", `<span class="play">${icona("play")}</span>`);
+  const B = "../../../../public/biglietto-esempio/";
+  const F = [["c3", "chiara.jpg", "Ti pensiamo tutti, oggi più che mai.", "Chiara"], ["c8", "", "Un abbraccio grande da tutto l'ufficio!", "Paolo"], ["c4", "", "Sei una persona speciale. Grazie di esserci.", "Elena"], ["c2", "marco.jpg", "La torta la porto io.", "Marco"], ["c1", "", "Cento di questi giorni, e di queste pause caffè.", "Luca"], ["c7", "sara.jpg", "Stasera si festeggia!", "Sara"]];
+  const fogl = (arr) => arr.map(([c, f, t, n]) => `<div class="foglietto-firma ${c}">${f ? `<img src="${B}${f}" alt="">` : ""}${t}<span class="chi">${n}</span></div>`).join("");
+  const MODI = {
+    griglia: ["Griglia", "Tutti i messaggi insieme, come una parete di bigliettini.", () => `<p class="titolo-s">Buon compleanno, Marta!</p><div class="fg">${fogl(F)}</div>`],
+    storia: ["Storia", "Un messaggio alla volta: Marta va avanti con un tocco.", () => `<div class="storia"><span class="tacche-s"><i class="ok"></i><i class="ok"></i><i></i><i></i><i></i><i></i></span>${`<div class="foglietto-firma c2 grande"><img src="${B}marco.jpg" alt="">La torta la porto io. E anche le candeline, stavolta.<span class="chi">Marco</span></div>`}<span class="chi-s">2 di 6</span></div>`],
+    film: ["Film", "Parte da solo e finisce con i nomi di tutti.", () => `<div class="film"><span class="mano">Marta</span><p>Chiara, Paolo, Elena,<br>Marco, Luca e Sara</p><span class="barra-f"><i></i></span></div>`],
+    scorrimento: ["Scorrimento", "I messaggi compaiono mentre Marta scorre.", () => `<p class="titolo-s">Buon compleanno, Marta!</p><div class="scorre">${fogl(F.slice(0, 4))}</div>`],
+  };
+  let modo = MODI[STATO.get("modo")] ? STATO.get("modo") : "griglia";
+  const disegna = () => {
+    document.getElementById("modi").innerHTML = Object.entries(MODI).map(([k, [n]]) => `<button type="button" role="radio" aria-checked="${k === modo}" data-modo="${k}">${n}</button>`).join("");
+    document.getElementById("desc").textContent = MODI[modo][1];
+    document.getElementById("schermo").innerHTML = MODI[modo][2]();
+  };
+  disegna();
+  document.getElementById("modi").addEventListener("click", (e) => { const b = e.target.closest("[data-modo]"); if (b) { modo = b.dataset.modo; disegna(); } });
+</script>
+</body>
+</html>
