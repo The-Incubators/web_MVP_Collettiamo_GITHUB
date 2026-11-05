@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useApp } from "@/components/AppProvider";
+import { MenuProfilo } from "@/components/MenuProfilo";
 import { usePreferiti } from "@/components/PreferitiProvider";
 import { BottoneLink, Icona, type NomeIcona } from "@/components/ui";
 
@@ -11,6 +11,8 @@ import { BottoneLink, Icona, type NomeIcona } from "@/components/ui";
  * e il profilo. Fase 1: è il punto d'ingresso, e porta alle pagine che esistono già (/le-mie-collette, /reminder,
  * /preferiti). L'elenco dei biglietti avviati arriva con la fase 4; il metodo di accesso e la newsletter con la fase 3.
  * Preferiti e ricorrenze funzionano anche senza account (stanno nel browser), quindi la pagina non obbliga ad accedere.
+ * «Esci» sta solo nel menu utente (revisione di Cri, 5 novembre 2026): sul telefono l'intestazione non ha il tondo
+ * dell'account, quindi lo stesso menu sta qui accanto al titolo.
  */
 
 type Voce = { href: string; titolo: string; testo: string; icona: NomeIcona; tinta: string; serveAccount?: boolean };
@@ -68,9 +70,8 @@ const VOCI: Voce[] = [
 ];
 
 export function PaginaAccount() {
-  const { utente, pronto, auth } = useApp();
+  const { utente, pronto } = useApp();
   const { preferiti } = usePreferiti();
-  const router = useRouter();
   // chi partecipa a una colletta ha un'identità anonima: non è un account (come in MenuProfilo)
   const conAccount = pronto && utente && !utente.anonimo ? utente : null;
   const voci = VOCI.filter((v) => !v.serveAccount || conAccount);
@@ -78,7 +79,12 @@ export function PaginaAccount() {
   return (
     <div className="mx-auto flex max-w-lg flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Il tuo account</h1>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Il mio account</h1>
+          <div className="md:hidden">
+            <MenuProfilo />
+          </div>
+        </div>
         {conAccount ? (
           <p className="text-ink-soft">
             {conAccount.nome ? <strong className="text-ink">{conAccount.nome}</strong> : null}
@@ -102,19 +108,6 @@ export function PaginaAccount() {
         ))}
       </ul>
 
-      {conAccount ? (
-        <button
-          type="button"
-          onClick={async () => {
-            await auth.esci();
-            router.push("/");
-          }}
-          className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-line px-4 text-sm font-bold text-ink-soft transition-colors hover:bg-surface-2"
-        >
-          <Icona nome="logout" dimensione={20} />
-          Esci
-        </button>
-      ) : null}
     </div>
   );
 }

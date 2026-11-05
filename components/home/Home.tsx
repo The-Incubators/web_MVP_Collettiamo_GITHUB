@@ -10,7 +10,7 @@ import { ScenaHero } from "./ScenaHero";
 
 /**
  * L'unica home del sito (Gifty-spec-prodotto.md S-01; Gifty UX v2, docs/specs/gifty-ux-v2/prototipi/home.html):
- * la scena con il biglietto scritto e le tre porte sul bordo del tavolo, «Idee scelte da noi» dal catalogo vero, poi
+ * la scena con il biglietto scritto e le tre porte sul bordo del tavolo, «Le nostre scelte» dal catalogo vero, poi
  * «Come funziona il regalo di gruppo» con i cinque passi e un'azione sotto.
  */
 
@@ -43,7 +43,7 @@ function Porte() {
             <img src="/foto-prodotti/PRD-058.webp" alt="" />
           </div>
           <h2>Idee regalo</h2>
-          <p>Rispondi a tre domande o sfoglia il catalogo che curiamo noi.</p>
+          <p>Rispondi a quattro domande o sfoglia il catalogo che curiamo noi.</p>
           <Link className="btn btn-contorno" href="/idee">
             Trova un&apos;idea regalo
           </Link>
@@ -86,7 +86,7 @@ export async function PaginaHome() {
           <div className="pagina">
             <div className="testa-sezione">
               <h2 id="titolo-idee" className="t-sezione">
-                Idee scelte da noi
+                Le nostre scelte
               </h2>
               <Link className="btn btn-contorno" href="/catalogo">
                 Vedi il catalogo
@@ -104,7 +104,7 @@ export async function PaginaHome() {
 
       <section className="sezione" aria-labelledby="titolo-come">
         <div className="pagina racconto">
-          <div className="testa-sezione">
+          <div className="testa-sezione titolo-con-pillola">
             <h2 id="titolo-come" className="t-sezione">
               Come funziona il regalo di gruppo
             </h2>

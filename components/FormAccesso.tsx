@@ -119,9 +119,6 @@ export function FormAccesso() {
       ) : (
         // Senza Firebase (solo prove in locale) l'accesso è finto e immediato, con un indirizzo qualsiasi.
         <form onSubmit={invia} className="flex flex-col gap-4" noValidate>
-          <Avviso>
-            <p>Senza Firebase l’accesso è immediato e finto: nessuna email viene inviata.</p>
-          </Avviso>
           <Campo etichetta="La tua email" type="email" inputMode="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} errore={errore} />
           {campoNome}
           <Bottone type="submit" pieno disabled={occupato}>

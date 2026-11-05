@@ -44,3 +44,14 @@ export function piePaginaVisibile(percorso: string): boolean {
   if (p === "/regalo" || ["/crea", "/accedi", "/biglietto/nuovo"].some((x) => p.startsWith(x))) return false;
   return !/^\/biglietto\/[^/]+\/(dettagli|design|anteprima)/.test(p);
 }
+
+/**
+ * Le voci dell'account, uguali nel menu utente e nel piè di pagina (revisione di Cri, 5 novembre 2026). Finché l'area
+ * dell'account non è rifatta portano alle pagine che esistono: i regali di gruppo organizzati sono in /le-mie-collette;
+ * un elenco dei biglietti non c'è ancora, quindi «I miei biglietti» apre l'account.
+ */
+export const VOCI_ACCOUNT: { href: string; testo: string }[] = [
+  { href: "/le-mie-collette", testo: "I miei regali" },
+  { href: "/account", testo: "I miei biglietti" },
+  { href: "/account", testo: "Il mio account" },
+];

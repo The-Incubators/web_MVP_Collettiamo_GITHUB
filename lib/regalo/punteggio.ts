@@ -4,8 +4,10 @@
 // si ricavano dalle parole delle micro trovate nei suoi testi.
 //
 // Il tema vale 1: i nostri temi sono tre e larghissimi (l'arredamento da solo è il 42% del catalogo), quindi serve
-// solo a separare i pari merito. Nessun prodotto viene escluso dal punteggio: il filtro di prezzo resta una scelta esplicita.
+// solo a separare i pari merito. Nessun prodotto viene escluso dal punteggio: lo escludono solo la fascia d'età della
+// seconda domanda (un filtro, perché un regalo per un bambino non può essere un vino) e il filtro di prezzo.
 
+import { fasceEta, type FasciaEta } from "../dati/eta-prodotti";
 import { microDiCatalogo } from "../dati/microcategorie-prodotti";
 import { INTERESSI } from "./dati";
 import type { StatoRicerca } from "./stato";
@@ -75,13 +77,27 @@ export function punteggio(p: Prodotto, s: StatoRicerca, testo?: string): number 
   return n;
 }
 
+/**
+ * Il prodotto va bene per la fascia d'età scelta? Senza fascia scelta vanno bene tutti; un prodotto senza età (per
+ * esempio un regalo da link, fuori dal catalogo) non si esclude, perché non sappiamo per chi è.
+ */
+export function adattoAllEta(p: Pick<Prodotto, "id">, eta: string | null): boolean {
+  if (!eta) return true;
+  const sue = fasceEta(p);
+  return sue.length === 0 || sue.includes(eta as FasciaEta);
+}
+
+/** Solo i prodotti adatti alla fascia d'età scelta (vedi `adattoAllEta`). */
+export const perEta = <T extends Pick<Prodotto, "id">>(prodotti: T[], eta: string | null): T[] =>
+  prodotti.filter((p) => adattoAllEta(p, eta));
+
 /** L'ordine deciso da chi gestisce il sito (1 = in cima); senza posizione si va in coda. */
 const posizione = (p: Prodotto) => p.posizione ?? Number.MAX_SAFE_INTEGER;
 
 export function ordinaProdotti(prodotti: Prodotto[], s: StatoRicerca, filtri: FiltriRisultati = filtriIniziali()): Prodotto[] {
   // «tutte» (e qualunque id sconosciuto) non filtra nulla.
   const fascia = filtri.fascia === FASCIA_TUTTE ? undefined : FASCE_PREZZO.find((f) => f.id === filtri.fascia);
-  const righe = prodotti
+  const righe = perEta(prodotti, s.eta)
     .filter((p) => !fascia || (p.prezzoCent > fascia.minCent && p.prezzoCent <= fascia.maxCent))
     .map((p) => ({ p, n: punteggio(p, s) }));
   // A pari merito vince l'ordine del sito: così due prodotti equivalenti escono sempre nello stesso ordine.

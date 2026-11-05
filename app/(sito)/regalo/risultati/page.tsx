@@ -6,7 +6,7 @@ import { ChipLink } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { OCCASIONI_REGALO } from "@/lib/regalo/dati";
-import { etichettaPer, hrefDomande, hrefRisultati, risposteComplete, statoDaParametri, testiInteressi, titoloRisultati } from "@/lib/regalo/indirizzo";
+import { etichettaEta, etichettaPer, hrefDomande, hrefRisultati, risposteComplete, statoDaParametri, testiInteressi, titoloRisultati } from "@/lib/regalo/indirizzo";
 import { ordinaProdotti } from "@/lib/regalo/punteggio";
 
 export const dynamic = "force-dynamic";
@@ -28,11 +28,12 @@ export default async function Risultati({ searchParams }: Props) {
   const sp = await searchParams;
   const stato = statoDaParametri(sp);
   if (!stato.genere) redirect("/idee");
-  if (!risposteComplete(stato)) redirect(hrefDomande(stato, stato.tappa === 2 ? 2 : 3));
+  if (!risposteComplete(stato)) redirect(hrefDomande(stato, stato.tappa === 2 ? 2 : stato.tappa === 3 ? 3 : 4));
   const mostra = Math.max(PER_PAGINA, Math.floor(Number(typeof sp.mostra === "string" ? sp.mostra : "")) || PER_PAGINA);
   const risultati = ordinaProdotti(await datiServer().elencaProdotti(), stato);
   const occasione = OCCASIONI_REGALO.find((o) => o.id === stato.occasione)?.etichetta ?? "";
   const per = etichettaPer(stato.genere);
+  const eta = etichettaEta(stato.eta);
   const resto = risultati.length - mostra;
 
   return (
@@ -43,11 +44,14 @@ export default async function Risultati({ searchParams }: Props) {
           <ChipLink href="/idee" etichetta={`Cambia: ${per}`}>
             {per}
           </ChipLink>
-          <ChipLink href={hrefDomande(stato, 2)} etichetta={`Cambia: ${occasione}`}>
+          <ChipLink href={hrefDomande(stato, 2)} etichetta={`Cambia: ${eta}`}>
+            {eta}
+          </ChipLink>
+          <ChipLink href={hrefDomande(stato, 3)} etichetta={`Cambia: ${occasione}`}>
             {occasione}
           </ChipLink>
           {testiInteressi(stato).map((t) => (
-            <ChipLink key={t} href={hrefDomande(stato, 3)} etichetta={`Cambia: ${t}`}>
+            <ChipLink key={t} href={hrefDomande(stato, 4)} etichetta={`Cambia: ${t}`}>
               {t}
             </ChipLink>
           ))}

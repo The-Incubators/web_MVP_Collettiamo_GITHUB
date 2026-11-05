@@ -8,6 +8,7 @@ import {
   puoAndareA,
   puoAvanzare,
   ripulisci,
+  scegliEta,
   scegliGenere,
   scegliOccasione,
   statoIniziale,
@@ -19,8 +20,9 @@ import {
 /** Un percorso compilato fino alla tappa indicata. */
 function compilato(fino: number) {
   let s = scegliGenere(statoIniziale(), "donna");
-  if (fino >= 2) s = scegliOccasione(s, "compleanno");
-  if (fino >= 3) s = cambiaInteresse(cambiaMacro(s, "tecnologia"), "tech-audio");
+  if (fino >= 2) s = scegliEta(s, "adulto");
+  if (fino >= 3) s = scegliOccasione(s, "compleanno");
+  if (fino >= 4) s = cambiaInteresse(cambiaMacro(s, "tecnologia"), "tech-audio");
   return s;
 }
 
@@ -33,10 +35,17 @@ describe("tappe del percorso", () => {
     expect(puoAvanzare(s)).toBe(true);
   });
 
-  it("la terza tappa vuole almeno una passione; le micro sono facoltative", () => {
-    const s = compilato(2);
-    expect(tappaCompleta(s, 3)).toBe(false);
-    expect(tappaCompleta(cambiaMacro(s, "giochi"), 3)).toBe(true);
+  it("la seconda tappa vuole la fascia d'età, solo fra quelle previste", () => {
+    const s = compilato(1);
+    expect(tappaCompleta(s, 2)).toBe(false);
+    expect(scegliEta(s, "anziano")).toBe(s);
+    expect(tappaCompleta(scegliEta(s, "bambino"), 2)).toBe(true);
+  });
+
+  it("la quarta tappa vuole almeno una passione; le micro sono facoltative", () => {
+    const s = compilato(3);
+    expect(tappaCompleta(s, 4)).toBe(false);
+    expect(tappaCompleta(cambiaMacro(s, "giochi"), 4)).toBe(true);
     expect(MIN_MACRO).toBe(1);
   });
 
@@ -45,7 +54,7 @@ describe("tappe del percorso", () => {
     expect(puoAndareA(s, 1)).toBe(true);
     expect(puoAndareA(s, 2)).toBe(true);
     expect(puoAndareA(s, 3)).toBe(false);
-    expect(puoAndareA(s, 5)).toBe(false);
+    expect(puoAndareA(s, 6)).toBe(false);
     expect(vaiAllaTappa(s, 4).tappa).toBe(2);
     expect(vaiAllaTappa(s, 1).tappa).toBe(1);
   });
@@ -55,10 +64,11 @@ describe("tappe del percorso", () => {
     expect(avanza(compilato(1)).tappa).toBe(2);
   });
 
-  it("primaTappaIncompleta vale 4 quando il questionario è pieno", () => {
+  it("primaTappaIncompleta vale 5 quando il questionario è pieno", () => {
     expect(primaTappaIncompleta(statoIniziale())).toBe(1);
     expect(primaTappaIncompleta(compilato(1))).toBe(2);
-    expect(primaTappaIncompleta(compilato(3))).toBe(4);
+    expect(primaTappaIncompleta(compilato(2))).toBe(3);
+    expect(primaTappaIncompleta(compilato(4))).toBe(5);
   });
 });
 
@@ -76,7 +86,7 @@ describe("scelte", () => {
   });
 
   it("le passioni si aggiungono, si tolgono e si fermano al massimo", () => {
-    let s = compilato(2);
+    let s = compilato(3);
     for (const id of ["giochi", "bellezza"]) s = cambiaMacro(s, id);
     expect(s.macro).toHaveLength(MAX_MACRO);
     expect(cambiaMacro(s, "viaggi").macro).toEqual(["giochi", "bellezza"]);
@@ -85,7 +95,7 @@ describe("scelte", () => {
   });
 
   it("una micro si sceglie solo se la sua passione è scelta, fino al massimo", () => {
-    let s = cambiaMacro(compilato(2), "tecnologia");
+    let s = cambiaMacro(compilato(3), "tecnologia");
     expect(cambiaInteresse(s, "giochi-lego")).toBe(s);
     for (const id of ["tech-audio", "tech-foto", "tech-smartphone"]) s = cambiaInteresse(s, id);
     expect(s.interessi).toHaveLength(MAX_MICRO);
@@ -94,7 +104,7 @@ describe("scelte", () => {
   });
 
   it("togliendo una passione se ne vanno le sue micro; «va bene tutto» le toglie e lascia la passione", () => {
-    let s = cambiaMacro(cambiaMacro(compilato(2), "tecnologia"), "viaggi");
+    let s = cambiaMacro(cambiaMacro(compilato(3), "tecnologia"), "viaggi");
     s = cambiaInteresse(cambiaInteresse(s, "tech-audio"), "viaggi-valigie");
     expect(cambiaMacro(s, "tecnologia").interessi).toEqual(["viaggi-valigie"]);
     const tutto = tuttaLaMacro(s, "viaggi");
@@ -105,29 +115,34 @@ describe("scelte", () => {
 
 describe("ripresa dalla sessione", () => {
   it("rilegge un percorso valido", () => {
-    const s = { ...compilato(3), tappa: 4 };
+    const s = { ...compilato(4), tappa: 5 };
     expect(ripulisci(JSON.parse(JSON.stringify(s)))).toEqual(s);
   });
 
   it("butta via quello che non riconosce e riporta a una tappa raggiungibile", () => {
     expect(ripulisci(null)).toEqual(statoIniziale());
     expect(ripulisci("niente")).toEqual(statoIniziale());
-    const sporco = ripulisci({ genere: "alieno", occasione: "ferragosto", macro: ["giochi", "nope"], interessi: ["giochi-lego", "tech-audio"], tappa: 4 });
+    const sporco = ripulisci({ genere: "alieno", eta: "anziano", occasione: "ferragosto", macro: ["giochi", "nope"], interessi: ["giochi-lego", "tech-audio"], tappa: 4 });
     expect(sporco.genere).toBe(null);
+    expect(sporco.eta).toBe(null);
     expect(sporco.occasione).toBe(null);
     expect(sporco.macro).toEqual(["giochi"]);
     expect(sporco.interessi).toEqual(["giochi-lego"]);
     expect(sporco.tappa).toBe(1);
   });
 
-  it("un percorso salvato con i vecchi interessi torna alla terza tappa", () => {
-    const vecchio = { genere: "donna", occasione: "natale", interessi: ["musica", "viaggi", "caffe"], tappa: 4 };
+  it("un percorso salvato con i vecchi interessi torna alla domanda sugli interessi", () => {
+    const vecchio = { genere: "donna", eta: "adulto", occasione: "natale", interessi: ["musica", "viaggi", "caffe"], tappa: 5 };
     const s = ripulisci(vecchio);
     expect(s.interessi).toEqual([]);
-    expect(s.tappa).toBe(3);
+    expect(s.tappa).toBe(4);
+  });
+
+  it("un percorso salvato prima della domanda sull'età torna a quella", () => {
+    expect(ripulisci({ genere: "donna", occasione: "natale", macro: ["casa"], tappa: 4 }).tappa).toBe(2);
   });
 
   it("una tappa troppo avanti torna alla prima incompleta", () => {
-    expect(ripulisci({ ...compilato(1), tappa: 4 }).tappa).toBe(2);
+    expect(ripulisci({ ...compilato(1), tappa: 5 }).tappa).toBe(2);
   });
 });
