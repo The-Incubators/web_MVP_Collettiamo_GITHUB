@@ -15,3 +15,6 @@ export * from "./Dialogo";
 export * from "./Carta";
 export * from "./IconaTratto";
 export * from "./Iniziali";
+export * from "./Chip";
+export * from "./IndicatorePassi";
+export * from "./Moduli";

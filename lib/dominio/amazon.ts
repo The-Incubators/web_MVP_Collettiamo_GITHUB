@@ -99,3 +99,6 @@ export function linkSchedaAmazon(asin: string | null | undefined, urlEsterno: st
  * Va tenuta nel piè di pagina di ogni pagina con link ai prodotti.
  */
 export const DICHIARAZIONE_AFFILIATO_AMAZON = "In qualità di Affiliato Amazon io ricevo un guadagno dagli acquisti idonei.";
+
+/** La nota sui prezzi delle griglie, una volta per pagina (Gifty UX v2, I-09). */
+export const NOTA_PREZZI = "Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.";

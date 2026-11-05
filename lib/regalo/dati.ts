@@ -32,13 +32,21 @@ export type Genere = (typeof GENERI)[number]["id"];
 // La domanda sulla relazione (Fidanzata, Mamma, Sorella…) è stata tolta dalla prima tappa: vedi DECISIONI.md,
 // sezione 21. Non pesava sui risultati, quindi toglierla non cambia la graduatoria, solo il numero di domande.
 
+/**
+ * L'elenco unico delle occasioni (Gifty UX v2, design.md §6 T-06 e decisione 3): lo stesso in domande, wizard ed editor.
+ * `icona` è il nome di IconaTratto. Gli id valgono anche per `occasioni` dei prodotti (punteggio).
+ */
 export const OCCASIONI_REGALO = [
-  { id: "anniversario", etichetta: "Anniversario", icona: "rings" },
-  { id: "san-valentino", etichetta: "San Valentino", icona: "heart" },
-  { id: "natale", etichetta: "Natale", icona: "tree" },
-  { id: "laurea", etichetta: "Laurea", icona: "cap" },
-  { id: "compleanno", etichetta: "Compleanno", icona: "cake" },
-  { id: "altro", etichetta: "Altro", icona: "gift" }, // "sparkles" ha il disegno in un riquadro 24×24 e non si vede
+  { id: "compleanno", etichetta: "Compleanno", icona: "torta" },
+  { id: "laurea", etichetta: "Laurea", icona: "calendario" },
+  { id: "pensione", etichetta: "Pensione", icona: "calendario" },
+  { id: "nascita", etichetta: "Nascita", icona: "calendario" },
+  { id: "matrimonio", etichetta: "Matrimonio", icona: "calendario" },
+  { id: "anniversario", etichetta: "Anniversario", icona: "calendario" },
+  { id: "san-valentino", etichetta: "San Valentino", icona: "calendario" },
+  { id: "natale", etichetta: "Natale", icona: "calendario" },
+  { id: "saluto", etichetta: "Saluto", icona: "calendario" },
+  { id: "altro", etichetta: "Altro", icona: "regalo" },
 ] as const;
 
 // L'ordine viene dalla priorità del file catalogo (domanda × adatta alla colletta × affiliabile).
@@ -52,6 +60,9 @@ export const CATEGORIE_INTERESSI = [
   { id: "viaggi", etichetta: "Viaggi", icona: "plane" },
   { id: "cultura", etichetta: "Libri, musica e creatività", icona: "book" },
 ] as const;
+
+/** L'ordine in cui le passioni si mostrano nella domanda (prototipi/domande.html). */
+export const ORDINE_PASSIONI = ["casa", "tecnologia", "viaggi", "cultura", "gusto", "stile", "bellezza", "giochi"] as const;
 
 /** Una micro-categoria; `categoria` è l'id della sua macro. */
 export interface Interesse {

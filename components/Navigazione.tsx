@@ -43,10 +43,10 @@ function attiva(percorso: string, sezione: Sezione): boolean {
 }
 
 /**
- * L'intestazione. `logo`, `passi` (il posto dei passi di «Trova il regalo») e `account` arrivano dal layout, così
+ * L'intestazione. `logo` e `account` arrivano dal layout, così
  * restano componenti del server dove possono. `data-cornice`: le viste a tutto schermo la rendono inerte.
  */
-export function Intestazione({ logo, passi, account }: { logo: ReactNode; passi: ReactNode; account: ReactNode }) {
+export function Intestazione({ logo, account }: { logo: ReactNode; account: ReactNode }) {
   const percorso = usePathname();
   const suScena = percorso === "/";
   return (
@@ -62,7 +62,6 @@ export function Intestazione({ logo, passi, account }: { logo: ReactNode; passi:
             </Link>
           ))}
         </nav>
-        {passi}
         <div className="testa-azioni">
           <CuorePreferiti />
           <div className="account-testa">{account}</div>

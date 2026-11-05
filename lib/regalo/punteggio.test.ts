@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CATALOGO } from "../dati/catalogo-dati";
 import type { Prodotto } from "../tipi";
-import { FASCIA_TUTTE, filtriIniziali, microDelProdotto, normalizza, ordinaProdotti, punteggio, testoProdotto } from "./punteggio";
+import { contaPassioni, FASCIA_TUTTE, filtriIniziali, microDelProdotto, normalizza, ordinaProdotti, punteggio, testoProdotto } from "./punteggio";
 import { cambiaInteresse, cambiaMacro, scegliGenere, scegliOccasione, statoIniziale } from "./stato";
 
 function prodotto(p: Partial<Prodotto> & { slug: string }): Prodotto {
@@ -133,5 +133,14 @@ describe("sul catalogo vero", () => {
     const giochi = ordinaProdotti(CATALOGO, conScelte(["giochi"], ["giochi-lego"]), filtriIniziali());
     expect(viaggio).toHaveLength(CATALOGO.length);
     expect(viaggio[0].slug).not.toBe(giochi[0].slug);
+  });
+});
+
+describe("contaPassioni", () => {
+  it("conta i prodotti per micro e per passione, una volta per prodotto", () => {
+    const c = contaPassioni([prodotto({ slug: "a", nome: "Lampada" }), prodotto({ slug: "b", nome: "Lampada e vaso" }), prodotto({ slug: "c", nome: "Cuffie" })]);
+    expect(c.micro["casa-luci"]).toBe(2);
+    expect(c.macro.casa).toBe(2);
+    expect(c.macro.tecnologia).toBe(1);
   });
 });
