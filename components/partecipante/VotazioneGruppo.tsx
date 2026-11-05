@@ -221,7 +221,7 @@ export function VotazioneGruppo({ p }: { p: Partecipazione }) {
             ) : (
               <>
                 <Campo etichetta="Il tuo nome" value={nome} onChange={(e) => setNome(e.target.value)} autoComplete="given-name" maxLength={40} />
-                <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} avvisoLink={false} />
+                <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} />
                 <div className="flex flex-col gap-2">
                   <Bottone pieno variante="testuale" onClick={() => setApriForm(false)}>
                     Annulla

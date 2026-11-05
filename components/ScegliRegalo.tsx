@@ -29,13 +29,11 @@ function urlValido(testo: string): boolean {
 export function ScegliRegalo({
   valore,
   onScelta,
-  avvisoLink = true,
   onAggiungi,
   giaInLista = [],
 }: {
   valore: ProdottoColletta | null;
   onScelta: (p: ProdottoColletta | null) => void;
-  avvisoLink?: boolean;
   /** se c'è, ogni prodotto del catalogo ha un «+» che lo aggiunge direttamente alla lista dei regali */
   onAggiungi?: (p: ProdottoColletta) => void;
   giaInLista?: ProdottoColletta[];
@@ -194,7 +192,6 @@ export function ScegliRegalo({
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {avvisoLink ? <Avviso>Nella versione definitiva questi dati li leggiamo noi dalla pagina.</Avviso> : null}
           <Campo etichetta="Link del regalo" type="url" inputMode="url" value={link.url} onChange={(e) => aggiornaLink({ url: e.target.value })} placeholder="https://…" />
           <Campo etichetta="Nome del regalo" value={link.nome} onChange={(e) => aggiornaLink({ nome: e.target.value })} maxLength={120} />
           <div className="grid gap-4 sm:grid-cols-2">

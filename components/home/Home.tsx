@@ -58,7 +58,7 @@ function AperturaNuova() {
           </BottoneLink>
           <Link href={`/c/${SLUG_DEMO}`} className={CLASSI_SECONDARIO}>
             <Icona nome="visibility" dimensione={18} />
-            Guarda cosa vedranno i partecipanti
+            Guarda un esempio
           </Link>
           <Link href="/regalo-di-gruppo" className={CLASSI_SECONDARIO}>
             Come funziona il regalo di gruppo

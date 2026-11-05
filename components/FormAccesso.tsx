@@ -83,7 +83,7 @@ export function FormAccesso() {
       autoComplete="given-name"
       value={nome}
       onChange={(e) => setNome(e.target.value)}
-      suggerimento="Lo vedranno i partecipanti."
+      suggerimento="Lo leggerà chi apre i tuoi link."
     />
   );
 
@@ -93,7 +93,7 @@ export function FormAccesso() {
         <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ok-field text-accent">
           <Icona nome="redeem" dimensione={32} />
         </span>
-        <h1 className="text-[28px] font-bold leading-tight text-accent-2">Accedi per organizzare</h1>
+        <h1 className="text-[28px] font-bold leading-tight text-accent-2">Accedi</h1>
         <p className="text-sm text-ink-soft">Un attimo, con il tuo account Google.</p>
       </div>
 
