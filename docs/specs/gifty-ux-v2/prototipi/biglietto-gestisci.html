@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Il biglietto per Marta · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .su { padding: var(--s4) 0 var(--s6); display: grid; gap: var(--s3); justify-items: start; }
+  .corpo { display: grid; gap: var(--s10); }
+  @media (min-width: 900px) { .corpo { grid-template-columns: 420px minmax(0, 1fr); gap: var(--s16); align-items: start; } .corpo .carta { position: sticky; top: calc(var(--testa-h) + var(--s8)); } }
+  .blocco { display: grid; gap: var(--s4); align-content: start; }
+  .blocco + .blocco { padding-top: var(--s8); border-top: 1px solid var(--line); margin-top: var(--s8); }
+  .azioni { display: flex; flex-wrap: wrap; gap: var(--s3); }
+  .righe div { display: flex; align-items: center; gap: var(--s3); min-height: 56px; border-bottom: 1px solid var(--line); }
+  .righe span.k { color: var(--muted); width: 9rem; flex: none; font-size: 14px; }
+  .righe b { flex: 1; }
+  .firme { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .firme span { display: inline-flex; align-items: center; gap: var(--s2); padding: 4px 12px 4px 4px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line); font-weight: 600; }
+</style>
+</head>
+<body data-sezione="account">
+<main>
+  <div class="pagina">
+    <div class="su">
+      <a class="btn btn-quieto" href="biglietti.html" style="margin-left:-12px"><span data-icona="sx"></span>I miei biglietti</a>
+      <h1 class="t-pagina">Il biglietto per Marta</h1>
+    </div>
+    <div class="corpo">
+      <div class="carta biglietto tema-menta" aria-label="Anteprima del biglietto">
+        <p class="titolo-b">Buon compleanno, Marta!</p>
+        <div class="foglietti">
+          <div class="foglietto-firma c3"><img src="../../../../public/biglietto-esempio/chiara.jpg" alt="">Ti pensiamo tutti, oggi più che mai.<span class="chi">Chiara</span></div>
+          <div class="foglietto-firma c8">Un abbraccio grande da tutto l'ufficio!<span class="chi">Paolo</span></div>
+          <div class="foglietto-firma c4">Sei una persona speciale. Grazie di esserci.<span class="chi">Elena</span></div>
+          <div class="foglietto-firma c1">Buon compleanno da chi ti ruba sempre la penna.<span class="chi">Cri</span></div>
+        </div>
+      </div>
+      <div>
+        <section class="blocco">
+          <h2 class="t-sezione">Firme</h2>
+          <div class="firme"><span><i class="iniziali c3">CH</i>Chiara</span><span><i class="iniziali c8">PA</i>Paolo</span><span><i class="iniziali c4">EL</i>Elena</span><span><i class="iniziali c1">CR</i>Cri</span></div>
+          <div class="azioni"><a class="btn btn-primario" href="#"><span data-icona="whatsapp"></span>Manda il link a chi firma</a><button class="btn btn-contorno"><span data-icona="copia"></span>Copia il link</button></div>
+        </section>
+        <section class="blocco">
+          <h2 class="t-sezione">Consegna a Marta</h2>
+          <div class="azioni"><a class="btn btn-contorno" href="biglietto-apertura.html"><span data-icona="regalo"></span>Manda il biglietto a Marta</a></div>
+        </section>
+        <section class="blocco">
+          <h2 class="t-sezione">Le tue scelte</h2>
+          <div class="righe">
+            <div><span class="k">Occasione</span><b>Compleanno</b><a class="icona-btn" href="biglietto-editor.html?passo=1" aria-label="Modifica l'occasione"><span data-icona="matita"></span></a></div>
+            <div><span class="k">Stile</span><b>Menta</b><a class="icona-btn" href="biglietto-editor.html?passo=3" aria-label="Modifica lo stile"><span data-icona="matita"></span></a></div>
+            <div><span class="k">Come lo scopre</span><b>Griglia</b><a class="icona-btn" href="biglietto-editor.html?passo=4" aria-label="Modifica come lo scopre"><span data-icona="matita"></span></a></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="comuni.js"></script>
+<script>document.querySelectorAll("span[data-icona]").forEach((s) => s.replaceWith(s.firstElementChild));</script>
+</body>
+</html>

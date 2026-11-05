@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un biglietto per Marta</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  body { background: var(--peach); min-height: 100vh; }
+  main { padding: 0 !important; min-height: 100vh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; position: relative; }
+  .nastro-a { position: absolute; left: -5%; right: -5%; top: 120px; width: 110%; height: 200px; color: var(--orange); pointer-events: none; }
+  .busta-scena { display: grid; place-items: center; align-content: center; gap: var(--s8); padding: var(--s12) var(--s5); position: relative; z-index: 1; text-align: center; }
+  .busta { width: min(320px, 80vw); aspect-ratio: 3/2; background: var(--card-paper); border-radius: var(--r-paper); box-shadow: var(--ombra-carta); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .busta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 55%; background: linear-gradient(to bottom right, transparent 49.5%, rgba(20,43,32,.08) 50%) left / 50% 100% no-repeat, linear-gradient(to bottom left, transparent 49.5%, rgba(20,43,32,.08) 50%) right / 50% 100% no-repeat; }
+  .busta .mano { font-size: 40px; position: relative; }
+  .muro { padding: var(--s12) var(--s5) var(--s8); max-width: 1000px; margin: 0 auto; position: relative; z-index: 1; display: grid; gap: var(--s8); }
+  .muro h1 { font-family: var(--f-hand); font-weight: 700; font-size: 56px; line-height: 1; text-align: center; color: var(--green); letter-spacing: 0; }
+  .muro .da { text-align: center; color: var(--ink); }
+  .muro .foglietti { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s4); }
+  @media (min-width: 768px) { .muro h1 { font-size: 64px; } .muro .foglietti { grid-template-columns: repeat(4, 1fr); gap: var(--s6); } .muro .foglietto-firma { font-size: 16px; padding: var(--s4); } }
+  .dono { display: grid; grid-template-columns: 96px 1fr; gap: var(--s4); align-items: center; background: var(--surface); border-radius: var(--r-surface); padding: var(--s4); max-width: 420px; justify-self: center; width: 100%; }
+  .dono .lastra { width: 96px; border-radius: 14px; }
+  .firma-g { text-align: center; padding: var(--s6) 0 var(--s8); font-size: 14px; color: var(--muted); display: flex; justify-content: center; align-items: center; gap: 6px; position: relative; z-index: 1; }
+  .firma-g img { height: 16px; }
+</style>
+</head>
+<body data-chrome="no" data-stati="Busta=stato=busta,Aperto=stato=aperto,Aperto con regalo=stato=aperto&regalo=1">
+<main id="m"></main>
+<script src="comuni.js"></script>
+<script>
+  const st = STATO.get("stato") || "busta";
+  const nastro = `<svg class="nastro-a" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 150 C 200 40, 320 190, 520 100 S 820 10, 1000 80" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round"/></svg>`;
+  const firma = `<p class="firma-g"><img src="../../../../public/logo/gifty-nastro.svg" alt="">Fatto con Gifty</p>`;
+  const N = [["c3", "chiara.jpg", "Ti pensiamo tutti, oggi più che mai.", "Chiara"], ["c8", "", "Un abbraccio grande da tutto l'ufficio!", "Paolo"], ["c4", "", "Sei una persona speciale. Grazie di esserci.", "Elena"], ["c1", "", "Buon compleanno da chi ti ruba sempre la penna.", "Cri"], ["c2", "marco.jpg", "La torta la porto io.", "Marco"], ["c7", "", "Cento di questi giorni, e di queste pause caffè.", "Luca"]];
+  document.getElementById("m").innerHTML = st === "busta"
+    ? `${nastro}<div class="busta-scena"><div class="busta"><span class="mano">Per Marta</span></div><a class="btn btn-primario" href="?stato=aperto">Apri il biglietto</a></div>${firma}`
+    : `<div class="muro"><h1>Buon compleanno, Marta!</h1><p class="da">Da Chiara, Paolo, Elena, Cri, Marco e Luca</p>
+        ${STATO.get("regalo") ? `<div class="dono"><span class="lastra"><img src="${foto("PRD-044")}" alt=""></span><div><p class="t-piccolo muted">Il vostro regalo</p><p style="font-weight:700">${PRODOTTI["PRD-044"].nome}</p></div></div>` : ""}
+        <div class="foglietti">${N.map(([c, f, t, n]) => `<div class="foglietto-firma ${c}">${f ? `<img src="../../../../public/biglietto-esempio/${f}" alt="">` : ""}${t}<span class="chi">${n}</span></div>`).join("")}</div></div>${firma}`;
+</script>
+</body>
+</html>

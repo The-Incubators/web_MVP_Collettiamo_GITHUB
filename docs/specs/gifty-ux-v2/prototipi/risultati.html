@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Idee per lei · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .testa-risultati { padding: var(--s8) 0 var(--s6); display: grid; gap: var(--s4); }
+  .chip .mat { width: 16px; height: 16px; color: var(--muted); }
+</style>
+</head>
+<body data-sezione="idee">
+<main>
+  <div class="pagina">
+    <div class="testa-risultati">
+      <h1 class="t-pagina">Idee per lei</h1>
+      <div class="chips" aria-label="Le tue risposte">
+        <a class="chip" href="idee.html">Per lei <span data-icona="matita" class="vh">cambia</span></a>
+        <a class="chip" href="domande.html?passo=2">Compleanno</a>
+        <a class="chip" href="domande.html?passo=3">Casa e design: lampade</a>
+      </div>
+    </div>
+    <div class="griglia-prodotti" id="g"></div>
+    <p class="nota-prezzi">Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.</p>
+  </div>
+</main>
+<script src="comuni.js"></script>
+<script>
+  document.querySelectorAll(".testa-risultati .chip").forEach((c) => { c.querySelector(".vh")?.remove(); c.insertAdjacentHTML("beforeend", icona("matita", "mat")); c.setAttribute("aria-label", "Cambia: " + c.textContent.trim()); });
+  document.getElementById("g").innerHTML = ["PRD-014","PRD-058","PRD-083","PRD-062","PRD-015","PRD-016","PRD-094","PRD-090"].map((id) => tessera(id)).join("");
+</script>
+</body>
+</html>

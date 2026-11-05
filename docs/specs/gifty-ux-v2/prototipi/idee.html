@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Idee regalo · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .apertura { background: var(--wall); padding: var(--s8) 0 var(--s10); }
+  .apertura h1 { margin-bottom: var(--s6); }
+  .due { display: grid; gap: var(--s4); }
+  @media (min-width: 768px) { .due { grid-template-columns: 7fr 5fr; gap: var(--s6); } .apertura { padding: var(--s12) 0 var(--s16); } }
+  .blocco-domanda, .blocco-catalogo { background: var(--surface); border-radius: var(--r-surface); padding: var(--s6); box-shadow: var(--ombra-carta); display: grid; gap: var(--s4); align-content: start; }
+  .genere { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); }
+  .genere button { min-height: 96px; border-radius: var(--r-surface); border: 1.5px solid var(--line-strong); background: var(--paper); font-family: var(--f-display); font-weight: 700; font-size: 24px; color: var(--green); cursor: pointer; }
+  .genere button:hover { border-color: var(--green); background: var(--green-field); }
+  .genere button:active { background: #cfe7d6; }
+  .collage { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s2); }
+  .collage span { aspect-ratio: 1; border-radius: 14px; background: var(--wall); display: grid; place-items: center; }
+  .collage img { width: 78%; height: 78%; object-fit: contain; mix-blend-mode: multiply; }
+  .blocco-catalogo .btn { justify-self: start; }
+</style>
+</head>
+<body data-sezione="idee">
+<main>
+  <section class="apertura">
+    <div class="pagina">
+      <h1 class="t-pagina">Idee regalo</h1>
+      <div class="due">
+        <div class="blocco-domanda">
+          <div class="passi" style="padding:0"><span class="conta">1 di 4</span><span class="tacche"><i class="ora"></i><i></i><i></i><i></i></span></div>
+          <h2 class="t-sezione">Per chi cerchi un regalo?</h2>
+          <div class="genere">
+            <button type="button" onclick="location.href='domande.html?passo=2'">Per lei</button>
+            <button type="button" onclick="location.href='domande.html?passo=2'">Per lui</button>
+          </div>
+        </div>
+        <div class="blocco-catalogo">
+          <div class="collage" aria-hidden="true"><span><img src="../../../../public/foto-prodotti/PRD-094.webp" alt=""></span><span><img src="../../../../public/foto-prodotti/PRD-054.webp" alt=""></span><span><img src="../../../../public/foto-prodotti/PRD-004.webp" alt=""></span></div>
+          <h2 class="t-titolo">Sfoglia il catalogo</h2>
+          <a class="btn btn-contorno" href="catalogo.html">Apri il catalogo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="sezione">
+    <div class="pagina">
+      <div class="testa-sezione"><h2 class="t-sezione">Le nostre scelte</h2></div>
+      <div class="griglia-prodotti" id="g"></div>
+      <p class="nota-prezzi">Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.</p>
+    </div>
+  </section>
+</main>
+<script src="comuni.js"></script>
+<script>document.getElementById("g").innerHTML = ["PRD-017","PRD-014","PRD-058","PRD-044","PRD-004","PRD-094","PRD-015","PRD-083"].map((id, i) => tessera(id, { pieno: i === 2 })).join("");</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crea un biglietto · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  /* editor a schermo intero: il resto del sito è inerte mentre è aperto (T-03) */
+  body { background: var(--wall); }
+  .editor { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto; background: var(--wall); }
+  .barra-ed { display: flex; align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); background: var(--surface); border-bottom: 1px solid var(--line); min-height: 64px; }
+  .barra-ed .info { display: grid; gap: 6px; flex: 1; min-width: 0; max-width: 420px; }
+  .barra-ed .info b { font-family: var(--f-display); font-size: 16px; color: var(--green); }
+  .barra-ed .tacche { display: flex; gap: 4px; } .barra-ed .tacche i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .barra-ed .tacche i.fatto { background: var(--green); } .barra-ed .tacche i.ora { background: var(--orange); }
+  .barra-ed .marchio { margin-left: auto; }
+  .tela { overflow: auto; display: grid; place-items: start center; padding: var(--s6) var(--s4) 0; }
+  .tela .carta { width: min(100%, 420px); }
+  .pannello-ed { background: var(--surface); border-radius: var(--r-surface) var(--r-surface) 0 0; box-shadow: 0 -8px 24px -12px rgba(20,43,32,.3); padding: var(--s5) var(--s5) 0; display: grid; gap: var(--s4); max-height: 52vh; overflow: auto; }
+  .pannello-ed .maniglia { width: 40px; height: 4px; border-radius: 2px; background: var(--line); justify-self: center; margin-top: calc(-1 * var(--s2)); }
+  .comandi { position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s3) 0 calc(var(--s3) + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); margin: 0 calc(-1 * var(--s5)); padding-left: var(--s5); padding-right: var(--s5); }
+  @media (min-width: 900px) {
+    .editor { grid-template-columns: 1fr 440px; grid-template-rows: auto 1fr; }
+    .barra-ed { grid-column: 1 / -1; padding: 0 var(--s8); min-height: 72px; }
+    .tela { place-items: center; padding: var(--s8); }
+    .tela .carta { width: 480px; }
+    .pannello-ed { border-radius: 0; box-shadow: none; border-left: 1px solid var(--line); max-height: none; padding: var(--s8) var(--s8) 0; align-content: start; grid-template-rows: auto auto 1fr auto; }
+    .pannello-ed .maniglia { display: none; }
+    .comandi { margin: 0 calc(-1 * var(--s8)); padding-left: var(--s8); padding-right: var(--s8); align-self: end; }
+  }
+  .temi { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s3); }
+  .temi button { display: grid; gap: 6px; justify-items: center; border: 0; background: none; cursor: pointer; font-size: 14px; font-weight: 600; padding: 0; }
+  .temi i { width: 100%; aspect-ratio: 3/4; border-radius: var(--r-paper); border: 2px solid var(--line); display: block; }
+  .temi button[aria-checked="true"] i { border: 3px solid var(--green); }
+  .riep { display: grid; }
+  .riep div { display: flex; align-items: center; gap: var(--s3); min-height: 56px; border-bottom: 1px solid var(--line); }
+  .riep span { color: var(--muted); width: 8.5rem; flex: none; font-size: 14px; }
+  .riep b { flex: 1; }
+</style>
+</head>
+<body data-chrome="no" data-stati="1 Occasione=passo=1,2 Dedica=passo=2,3 Stile=passo=3,4 Come lo scopre=passo=4,6 Ci siamo=passo=6">
+<main class="editor" role="dialog" aria-modal="true" aria-labelledby="t-passo">
+  <div class="barra-ed" id="barra"></div>
+  <div class="tela"><div class="carta biglietto" id="anteprima" aria-label="Anteprima del biglietto"></div></div>
+  <section class="pannello-ed" id="pannello" aria-labelledby="t-passo"></section>
+</main>
+<script src="comuni.js"></script>
+<script>
+  const passo = Math.min(6, Math.max(1, +STATO.get("passo") || 1));
+  const PASSI = ["Che cosa si festeggia?", "A chi è dedicato?", "Stile", "Come lo scoprirà", "Ritocchi finali", "Ci siamo"];
+  document.getElementById("barra").innerHTML = `<a class="icona-btn" href="biglietto.html" aria-label="Chiudi l'editor">${icona("chiudi")}</a>
+    <div class="info"><span class="t-piccolo muted">${passo} di 6 <b>${PASSI[passo - 1]}</b></span><span class="tacche" aria-hidden="true">${PASSI.map((_, i) => `<i class="${i + 1 < passo ? "fatto" : i + 1 === passo ? "ora" : ""}"></i>`).join("")}</span></div>`;
+  const nome = passo >= 2 ? "Marta" : "";
+  const tema = passo >= 3 ? "tema-menta" : "";
+  const prev = document.getElementById("anteprima");
+  prev.classList.add(...(tema ? [tema] : []));
+  prev.innerHTML = `<p class="titolo-b">${nome ? "Buon compleanno, " + nome + "!" : "Buon compleanno!"}</p>
+    ${passo >= 5 ? '<p class="righe-b">Dall\'ufficio, con affetto</p>' : ""}
+    <div class="foglietti"><div class="foglietto-firma c3">Il primo messaggio sarà il tuo.<span class="chi">Tu</span></div><div class="foglietto-firma" style="border:1.5px dashed var(--line-strong);box-shadow:none;background:transparent;color:var(--muted)">Qui firmano gli altri</div></div>`;
+  const OCC = ["Compleanno", "Laurea", "Pensione", "Nascita", "Matrimonio", "Anniversario", "San Valentino", "Natale", "Saluto", "Altro"];
+  const C = {
+    1: `<div class="chips" role="radiogroup" aria-labelledby="t-passo">${OCC.map((o, i) => `<button class="chip" role="radio" aria-checked="${i === 0}">${o}</button>`).join("")}</div>`,
+    2: `<div class="campo"><label for="per">Nome di chi festeggiamo</label><input id="per" class="input" value="Marta" autofocus></div>`,
+    3: `<div class="temi" role="radiogroup" aria-labelledby="t-passo">${[["Avorio", "var(--card-paper)"], ["Menta", "var(--wall)"], ["Pesca", "var(--peach)"], ["Verde", "var(--green)"]].map(([n, c], i) => `<button role="radio" aria-checked="${i === 1}"><i style="background:${c}"></i>${n}</button>`).join("")}</div>`,
+    4: `<div role="radiogroup" aria-labelledby="t-passo" style="display:grid;gap:12px">${[["Griglia", "Tutti i messaggi insieme"], ["Storia", "Un messaggio alla volta"], ["Film", "Parte da solo e finisce con i nomi"], ["Scorrimento", "I messaggi appaiono mentre scorre"]].map(([n, d], i) => `<button class="scelta" role="radio" aria-checked="${i === 0}"><span class="radio"></span><span><span class="nome">${n}</span><br><span class="muted">${d}</span></span></button>`).join("")}</div>`,
+    5: `<div class="campo"><label for="tt">Titolo</label><input id="tt" class="input" value="Buon compleanno, Marta!"></div><div class="campo"><label for="rr">Due righe sotto il titolo</label><input id="rr" class="input" value="Dall'ufficio, con affetto"></div>`,
+    6: `<div class="riep">${[["Occasione", "Compleanno", 1], ["Per", "Marta", 2], ["Stile", "Menta", 3], ["Come lo scopre", "Griglia", 4]].map(([k, v, p]) => `<div><span>${k}</span><b>${v}</b><a class="icona-btn" href="?passo=${p}" aria-label="Modifica: ${k}">${icona("matita")}</a></div>`).join("")}</div>`,
+  };
+  document.getElementById("pannello").innerHTML = `<span class="maniglia" aria-hidden="true"></span><h1 id="t-passo" class="t-sezione">${PASSI[passo - 1]}</h1>${C[passo]}
+    <div class="comandi"><a class="btn btn-quieto" href="?passo=${Math.max(1, passo - 1)}" ${passo === 1 ? 'aria-disabled="true" style="visibility:hidden"' : ""}>${icona("sx")}Indietro</a>
+    <a class="btn btn-primario" href="${passo === 6 ? "biglietto-gestisci.html" : "?passo=" + (passo + 1)}">${passo === 6 ? "Crea il biglietto" : "Avanti"}</a></div>`;
+</script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Organizza un regalo di gruppo · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  /* procedura a tutta pagina (Cri, 5 nov, righe 13–17): niente intestazione, piè di pagina né barra in basso */
+  .wizard { display: grid; gap: var(--s10); padding-top: var(--s8); }
+  @media (min-width: 900px) { .wizard { grid-template-columns: minmax(0, 560px) minmax(0, 400px); justify-content: space-between; padding-top: var(--s12); } }
+  .modulo h1 { margin: 0 0 var(--s6); }
+  .modulo form { display: grid; gap: var(--s6); }
+  .avanti { display: flex; gap: var(--s3); flex-wrap: wrap; align-items: center; margin-top: var(--s2); }
+  .riga { display: flex; flex-wrap: wrap; gap: var(--s4); }
+  .anteprima { display: none; }
+  @media (min-width: 900px) { .anteprima { display: block; position: sticky; top: calc(64px + var(--s8)); align-self: start; } }
+  .anteprima .carta { padding: var(--s8) var(--s8) var(--s6); transform: rotate(-1.5deg); display: grid; gap: var(--s3); min-height: 340px; }
+  .anteprima .mano { font-size: 40px; line-height: 1; }
+  .anteprima dl { margin: var(--s2) 0 0; display: grid; gap: var(--s2); }
+  .anteprima dl div { display: flex; gap: var(--s2); align-items: center; }
+  .anteprima dt { width: 22px; color: var(--muted); }
+  .anteprima dt svg { width: 20px; height: 20px; }
+  .anteprima dd { margin: 0; font-weight: 600; }
+  .anteprima .vuota { color: var(--muted); font-weight: 400; }
+  .anteprima .miniature { display: flex; gap: var(--s2); }
+  .anteprima .miniature img { width: 64px; height: 64px; object-fit: contain; background: #fff; border-radius: 8px; mix-blend-mode: multiply; }
+  .regalo-scelto { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .regalo-scelto:first-child { border-top: 1px solid var(--line); }
+  .regalo-scelto .lastra { width: 64px; border-radius: 12px; }
+  .regalo-scelto .n { font-weight: 700; line-height: 1.3; }
+  .regalo-scelto .t-cifra { color: var(--green); }
+  .aggiungi-voto { min-height: 56px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-control); background: transparent; color: var(--green); font-weight: 700; display: flex; align-items: center; justify-content: center; gap: var(--s2); cursor: pointer; width: 100%; font-size: 16px; }
+  .aggiungi-voto:hover { border-color: var(--green); background: var(--green-field); }
+  .aggiungi-voto svg { width: 20px; height: 20px; }
+  .vuoto-voto { padding: var(--s5); border: 1.5px dashed var(--line-strong); border-radius: var(--r-control); color: var(--ink); }
+  .calcolo { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2) var(--s4); flex-wrap: wrap; padding: var(--s4) 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .calcolo .t-cifra { font-size: 24px; color: var(--green); }
+  .contatore input { width: 4.5rem; height: 46px; border: 0; text-align: center; font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--ink); background: transparent; }
+  .contatore input:focus-visible { outline: 3px solid var(--green); outline-offset: -3px; border-radius: 4px; }
+  .metodo { display: grid; gap: var(--s3); padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .metodo:first-child { border-top: 1px solid var(--line); }
+  .metodo .input { margin-left: 34px; width: calc(100% - 34px); max-width: 22rem; }
+  .riep { display: grid; margin: 0; }
+  .riep > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px var(--s4); align-items: center; padding: var(--s3) 0; border-bottom: 1px solid var(--line); }
+  .riep > div:first-child { border-top: 1px solid var(--line); }
+  .riep dt { grid-column: 1; font-size: 14px; color: var(--muted); }
+  .riep dd { grid-column: 1; margin: 0; font-weight: 600; }
+  .riep .btn-quieto { grid-column: 2; grid-row: 1 / span 2; }
+  .riep .modifica { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--s3); align-items: center; padding-top: var(--s2); }
+  .accesso { display: grid; gap: var(--s4); max-width: 420px; padding-top: var(--s4); }
+  .accesso h2 { margin-bottom: var(--s1); }
+  .oppure { display: flex; align-items: center; gap: var(--s3); color: var(--muted); font-size: 14px; }
+  .oppure::before, .oppure::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .fumetto-wa { background: #fff; border-radius: 14px 14px 14px 4px; padding: var(--s4); box-shadow: 0 1px 2px rgba(20,43,32,.14); max-width: 420px; }
+  .fumetto-wa b { color: var(--green); }
+  .chat { background: var(--wall); border-radius: var(--r-surface); padding: var(--s6) var(--s4); }
+  .pronto { display: grid; gap: var(--s4); }
+  .pronto .azioni { display: grid; gap: var(--s3); justify-items: start; }
+  .pronto .azioni .btn-primario { justify-self: stretch; }
+  @media (min-width: 768px) { .pronto .azioni { display: flex; flex-wrap: wrap; align-items: center; } }
+  /* tessere nel foglio del catalogo: un solo gesto (G-04) */
+  .fg-corpo .tessera .azioni .btn { font-size: 16px; }
+  .fg-piede b { font-family: var(--f-display); font-size: 20px; color: var(--green); }
+  .fg-testa .chips-scorre { margin: 0 calc(-1 * var(--gutter)); }
+  .esci-foglio p { margin: var(--s2) 0 var(--s6); color: var(--ink); }
+  .esci-foglio .avanti { margin: 0; }
+</style>
+</head>
+<body class="procedura" data-chrome="no" data-stati="Bozza da riprendere=passo=1&bozza=1,1 Per chi=passo=1,1 Errore=passo=1&errore=1,2 Persone=passo=2,2 Persone dal prodotto=passo=2&da=PRD-044,3 Partenza=passo=3,4A Quota=passo=4&partenza=a,4B Catalogo=passo=4&partenza=b&catalogo=1,4V Voto vuoto=passo=4&partenza=v,4V Catalogo voto=passo=4&partenza=v&n=2&catalogo=1,4V Voto pronto=passo=4&partenza=v&n=2,5 Rimborsi=passo=5&partenza=a,6 Riepilogo A=passo=6&partenza=a,6 Riepilogo voto=passo=6&partenza=v&n=2,6 Scadenza=passo=6&partenza=a&modifica=1,6 Link mandato=passo=6&partenza=a&accesso=email,6 Già dentro=passo=6&partenza=b&da=PRD-044&utente=1,Esci=passo=3&esci=1,7 Condividi=passo=7&partenza=a,7 Sorpresa=passo=7&partenza=a&sorpresa=1">
+<header class="barra-proc" id="barra"></header>
+<main>
+  <div class="pagina wizard">
+    <div class="modulo" id="modulo"></div>
+    <aside class="anteprima" aria-label="Anteprima del regalo di gruppo"><div class="carta" id="carta"></div></aside>
+  </div>
+</main>
+<div id="fogli"></div>
+<script src="comuni.js"></script>
+<script>
+  const passo = Math.min(7, Math.max(1, +STATO.get("passo") || 1));
+  const da = STATO.get("da");
+  const partenza = da ? "b" : STATO.get("partenza");
+  const nVoto = +(STATO.get("n") || 0);
+  const errore = STATO.get("errore") === "1";
+  const dentro = STATO.get("utente") === "1";
+  const PERSONE = 10;
+  const VOTO = ["PRD-044", "PRD-054"].slice(0, nVoto);
+  const regalo = da || (partenza === "b" ? "PRD-044" : null);
+
+  /* sequenza dei passi: dal prodotto si salta «da dove inizi» e la scelta del regalo */
+  const SEQ = da ? [1, 2, 5, 6] : [1, 2, 3, 4, 5, 6];
+  const TOT = SEQ.length;
+  const pos = SEQ.indexOf(passo) + 1;
+  const extra = () => `${partenza ? "&partenza=" + partenza : ""}${da ? "&da=" + da : ""}${nVoto ? "&n=" + nVoto : ""}`;
+  const q = (p, piu = "") => `crea.html?passo=${p}${extra()}${piu}`;
+  const dopo = (p) => SEQ[SEQ.indexOf(p) + 1] || 7;
+  const prima = (p) => SEQ[SEQ.indexOf(p) - 1];
+
+  /* barra: indietro, passo e avanzamento, esci */
+  const barra = document.getElementById("barra");
+  barra.innerHTML = passo <= 6
+    ? `<div class="barra-proc-in">
+        <a class="icona-btn" href="${passo > 1 ? q(prima(passo)) : "#"}" aria-label="Torna al passo precedente" ${passo === 1 ? "hidden" : ""}>${icona("sx")}</a>
+        <div class="dove"><span>Passo ${pos} di ${TOT}</span><span class="avanzamento" role="progressbar" aria-label="Avanzamento" aria-valuemin="0" aria-valuemax="${TOT}" aria-valuenow="${pos}"><i style="width:${(pos / TOT) * 100}%"></i></span></div>
+        <button type="button" class="icona-btn" id="esci" aria-label="Esci, la bozza resta">${icona("chiudi")}</button></div>`
+    : `<div class="barra-proc-in"><span></span><div class="dove"><span>Regalo di gruppo creato</span></div><a class="icona-btn" href="gestisci.html?stato=aperto" aria-label="Chiudi e vai al regalo di gruppo">${icona("chiudi")}</a></div>`;
+
+  const continua = (attivo = true) => `<div class="avanti"><a class="btn btn-primario${attivo ? "" : ""}" href="${q(dopo(passo))}" ${attivo ? "" : 'aria-disabled="true" tabindex="-1"'}>Continua</a></div>`;
+  const OCC = ["Compleanno","Laurea","Pensione","Nascita","Matrimonio","Anniversario","San Valentino","Natale","Saluto","Altro"];
+  const riga = (id, azione) => `<div class="regalo-scelto"><span class="lastra"><img src="${foto(id)}" alt=""></span><span class="n">${PRODOTTI[id].nome}<br><span class="t-cifra">${euro(PRODOTTI[id].prezzo)}</span></span>${azione}</div>`;
+  const quotaDi = (id) => PRODOTTI[id].prezzo / PERSONE;
+  const scelta = (val, nome, sub) => `<button type="button" class="scelta" role="radio" aria-checked="${partenza === val}" data-vai="crea.html?passo=4&partenza=${val}${val === "b" ? "&catalogo=1" : ""}"><span class="radio"></span><span><span class="nome">${nome}</span><br><span class="muted">${sub}</span></span></button>`;
+  const google = `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#4285F4" d="M22 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.6a4.8 4.8 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3.1-4.4 3.1-7.5Z"/><path fill="#34A853" d="M12 22c2.8 0 5.1-.9 6.8-2.5l-3.3-2.6c-.9.6-2.1 1-3.5 1-2.7 0-5-1.8-5.8-4.3H2.8v2.7A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.2 13.6a6 6 0 0 1 0-3.8V7.1H2.8a10 10 0 0 0 0 9.2l3.4-2.7Z"/><path fill="#EA4335" d="M12 6c1.5 0 2.9.5 4 1.5l3-3A10 10 0 0 0 2.8 7.1l3.4 2.7C7 7.8 9.3 6 12 6Z"/></svg>`;
+
+  const riepilogo = () => {
+    const r = (dt, dd, p, nome) => `<div><dt>${dt}</dt><dd>${dd}</dd><a class="btn btn-quieto" href="${q(p)}">Cambia<span class="vh"> ${nome}</span></a></div>`;
+    const mod = STATO.get("modifica") === "1";
+    const centro = partenza === "a" || !partenza
+      ? r("Quota a testa", "10 €, budget previsto 100 €", 4, "la quota")
+      : partenza === "v"
+        ? r("Regali da votare", VOTO.map((id) => PRODOTTI[id].nome).join(", "), 4, "i regali da votare") + r("Si vota fino al", "9 novembre, 20:00", 4, "la fine della votazione")
+        : r("Regalo", `${PRODOTTI[regalo].nome}, ${euro(quotaDi(regalo))} a testa`, da ? 2 : 4, "il regalo");
+    return `<dl class="riep">
+      ${r("Per chi", "Mauro, compleanno il 14 dicembre", 1, "per chi")}
+      ${r("Persone nella chat", "10, partecipi anche tu", 2, "le persone")}
+      ${centro}
+      <div><dt>Si aderisce fino al</dt><dd>${mod ? "" : "13 dicembre, 20:00"}</dd>${mod ? `<div class="modifica"><input type="date" class="input w-data" value="2026-12-13" aria-label="Data in cui si chiudono le adesioni"><input type="time" class="input w-ora" value="20:00" aria-label="Ora in cui si chiudono le adesioni"></div>` : `<a class="btn btn-quieto" href="${q(6, "&modifica=1")}">Cambia<span class="vh"> la data limite per aderire</span></a>`}</div>
+      ${r("Come ti rimborsano", "PayPal", 5, "i rimborsi")}
+    </dl>`;
+  };
+  const accesso = () => dentro
+    ? `<div class="avanti"><a class="btn btn-primario" href="${q(7)}">Crea il regalo di gruppo</a></div>`
+    : STATO.get("accesso") === "email"
+      ? `<section class="accesso" aria-labelledby="t-acc"><span class="stato" style="justify-self:start">${icona("email")}Link mandato</span><h2 id="t-acc" class="t-titolo">Apri il link che hai ricevuto a cri@esempio.it</h2><p>Aprilo da questo dispositivo: il regalo di gruppo si crea appena accedi.</p><div><button type="button" class="btn btn-quieto">Mandamelo di nuovo</button></div></section>`
+      : `<section class="accesso" aria-labelledby="t-acc"><h2 id="t-acc" class="t-titolo">Accedi per creare il regalo di gruppo</h2>
+          <a class="btn btn-google" href="${q(7)}">${google}Accedi con Google</a>
+          <p class="oppure">oppure</p>
+          <div class="campo"><label for="email">La tua email</label><input id="email" type="email" class="input" autocomplete="email" placeholder="nome@esempio.it"></div>
+          <a class="btn btn-contorno" href="${q(6, "&accesso=email")}">Mandami il link per accedere</a></section>`;
+
+  const chiave = passo === 4 ? "4" + (partenza || "a") : String(passo);
+  const V = {
+    1: STATO.get("bozza") === "1"
+      ? `<h1 class="t-pagina">Riprendi il regalo per Mauro</h1><form onsubmit="return false"><p>La bozza è ferma al passo 4 di 6.</p>
+          <div class="avanti"><a class="btn btn-primario" href="crea.html?passo=4&partenza=a">Riprendi</a><a class="btn btn-quieto" href="crea.html?passo=1">Ricomincia da capo</a></div></form>`
+      : `<h1 class="t-pagina">Per chi è il regalo?</h1><form onsubmit="return false">
+        <div class="campo"><label for="nome">Nome</label><input id="nome" class="input w-nome${errore ? " errore" : ""}" value="${errore ? "" : "Mauro"}" autocomplete="off" ${errore ? 'aria-invalid="true" aria-describedby="e-nome"' : ""}>${errore ? `<p class="errore-testo" id="e-nome">Scrivi il nome di chi festeggiate</p>` : ""}</div>
+        <div class="campo"><span class="etichetta" id="l-occ">Occasione</span><div class="chips" role="radiogroup" aria-labelledby="l-occ">${OCC.map((o) => `<button type="button" class="chip" role="radio" aria-checked="${o === "Compleanno"}">${o}</button>`).join("")}</div></div>
+        <div class="campo"><label for="data">Quando festeggiate</label><input id="data" type="date" class="input w-data" value="2026-12-14"></div>
+        ${continua()}</form>`,
+    2: `<h1 class="t-pagina" id="t-pers">Quante persone ci sono nella chat?</h1><form onsubmit="return false">
+        ${da ? `<div>${riga(da, `<a class="btn btn-quieto" href="crea.html?passo=4&partenza=b&catalogo=1">Cambia<span class="vh"> il regalo</span></a>`)}</div>` : ""}
+        <span class="contatore" role="group" aria-labelledby="t-pers" style="justify-self:start"><button type="button" aria-label="Una persona in meno">${icona("meno")}</button><input inputmode="numeric" value="${PERSONE}" aria-label="Persone nella chat"><button type="button" aria-label="Una persona in più">${icona("piu")}</button></span>
+        <label class="spunta-riga"><input type="checkbox" checked> Partecipo anch'io alla divisione</label>
+        ${da ? `<div class="calcolo"><span>Quota a testa, se aderite in ${PERSONE}</span><span class="t-cifra">${euro(quotaDi(da))}</span></div>` : ""}
+        ${continua()}</form>`,
+    3: `<h1 class="t-pagina" id="t-part">Da dove vuoi iniziare?</h1><form onsubmit="return false"><div role="radiogroup" aria-labelledby="t-part" style="display:grid;gap:12px">
+        ${scelta("a", "Prima le adesioni", "Proponi una quota a testa. Il regalo lo scegliete dopo.")}
+        ${scelta("b", "Ho scelto il regalo", "Dal catalogo o da un link.")}
+        ${scelta("v", "Votiamo il regalo", "Da due a cinque regali: votano tutti quelli che aderiscono.")}
+        </div></form>`,
+    "4a": `<h1 class="t-pagina"><label for="quota">Quanto chiedi a testa?</label></h1><form onsubmit="return false">
+        <span class="con-unita" style="justify-self:start"><input id="quota" class="input w-importo" inputmode="decimal" value="10"><span>€</span></span>
+        <div class="calcolo"><span>Budget previsto, se aderite in ${PERSONE}</span><span class="t-cifra">100 €</span></div>
+        ${continua()}</form>`,
+    "4b": `<h1 class="t-pagina">Quale regalo?</h1><form onsubmit="return false">
+        <div class="avanti"><button type="button" class="btn btn-primario" data-apri-catalogo>${icona("cerca")}Apri il catalogo</button><button type="button" class="btn btn-quieto">${icona("link")}Incolla un link</button></div></form>`,
+    "4v": `<h1 class="t-pagina">I regali da votare</h1><form onsubmit="return false">
+        ${nVoto === 0
+          ? `<p class="vuoto-voto">Ancora nessuna: scegli almeno due prodotti dal catalogo e clicca su "Aggiungi al regalo"</p>
+             <div class="avanti"><button type="button" class="btn btn-primario" data-apri-catalogo>${icona("cerca")}Apri il catalogo</button><button type="button" class="btn btn-quieto">${icona("link")}Incolla un link</button></div>`
+          : `<div>${VOTO.map((id) => riga(id, `<button type="button" class="btn btn-quieto">Togli<span class="vh"> ${PRODOTTI[id].nome}</span></button>`)).join("")}</div>
+             <button type="button" class="aggiungi-voto" data-apri-catalogo>${icona("piu")}Aggiungi un altro regalo</button>
+             <div class="campo"><span class="etichetta" id="l-fine">Si vota fino al</span><div class="riga" role="group" aria-labelledby="l-fine"><input type="date" class="input w-data" value="2026-11-09" aria-label="Data di fine della votazione"><input type="time" class="input w-ora" value="20:00" aria-label="Ora di fine della votazione"></div></div>
+             ${continua()}`}
+        </form>`,
+    5: `<h1 class="t-pagina">Come ti rimborsano?</h1><form onsubmit="return false"><div>
+        <div class="metodo"><label class="spunta-riga"><input type="checkbox" checked> PayPal</label><input class="input" aria-label="Il tuo link PayPal" value="paypal.me/cri"></div>
+        <div class="metodo"><label class="spunta-riga"><input type="checkbox"> Satispay</label></div>
+        <div class="metodo"><label class="spunta-riga"><input type="checkbox"> Bonifico</label></div>
+        <div class="metodo"><label class="spunta-riga"><input type="checkbox"> Contanti</label></div></div>
+        ${continua()}</form>`,
+    6: `<h1 class="t-pagina">Controlla e crea il regalo di gruppo</h1><div style="display:grid;gap:var(--s8)">${riepilogo()}${accesso()}</div>`,
+    7: `<div class="pronto"><span class="stato" style="justify-self:start">${icona("spunta")}Regalo di gruppo creato</span><h1 class="t-pagina">Manda il link nella chat</h1>
+        <label class="spunta-riga"><input type="checkbox" id="sorpresa" ${STATO.get("sorpresa") ? "checked" : ""}> È una sorpresa: il messaggio non fa il nome di Mauro</label>
+        <div class="chat"><div class="fumetto-wa" id="msg"></div></div>
+        <div class="azioni"><a class="btn btn-primario" href="#">${icona("whatsapp")}Condividi su WhatsApp</a><button type="button" class="btn btn-quieto">${icona("copia")}Copia il link</button><a class="btn btn-quieto" href="gestisci.html?stato=aperto">Vai al regalo di gruppo</a></div></div>`,
+  };
+  document.getElementById("modulo").innerHTML = V[chiave];
+
+  /* foglio del catalogo dentro la procedura (mancava nel primo giro) */
+  const CAT = ["PRD-044", "PRD-054", "PRD-058", "PRD-038", "PRD-083", "PRD-094", "PRD-015", "PRD-017"];
+  const TEMI = ["Tutti", "Casa e design", "Tecnologia", "Viaggi", "Libri, musica e creatività", "Cucina e buon gusto", "Stile e accessori"];
+  const voto = partenza === "v";
+  const tesseraW = (id) => {
+    const p = PRODOTTI[id];
+    const dentroVoto = VOTO.includes(id);
+    const az = voto
+      ? (dentroVoto
+          ? `<button type="button" class="btn btn-scelto" aria-pressed="true">${icona("spunta")}Aggiunto</button>`
+          : `<button type="button" class="btn btn-contorno" aria-pressed="false">${icona("piu")}Aggiungi al regalo</button>`)
+      : `<a class="btn btn-primario" href="crea.html?passo=5&partenza=b">Scegli questo regalo</a>`;
+    return `<article class="tessera"><span class="lastra"><img src="${foto(id)}" alt="" loading="lazy"></span>
+      <span class="nome">${p.nome}</span>
+      <div class="riga-prezzo"><span class="prezzo">${euro(p.prezzo)}</span><span class="quota-testa">${euro(p.prezzo / PERSONE)} a testa</span></div>
+      <div class="azioni">${az}</div></article>`;
+  };
+  const foglioCatalogo = `<div class="velo alto" id="catalogo" ${STATO.get("catalogo") === "1" ? "" : "hidden"}><div class="foglio-grande" role="dialog" aria-modal="true" aria-labelledby="t-cat">
+      <div class="fg-testa"><span class="maniglia" aria-hidden="true"></span><div class="fg-riga"><h2 id="t-cat" class="t-sezione">${voto ? "Aggiungi i regali da votare" : "Scegli il regalo"}</h2><button type="button" class="icona-btn" data-chiudi-catalogo aria-label="Chiudi il catalogo">${icona("chiudi")}</button></div>
+        <div class="chips-scorre" role="radiogroup" aria-label="Temi">${TEMI.map((t, i) => `<button type="button" class="chip" role="radio" aria-checked="${i === 0}">${t}</button>`).join("")}</div></div>
+      <div class="fg-corpo"><div class="griglia-prodotti">${CAT.map(tesseraW).join("")}</div><p class="nota-prezzi">Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.</p></div>
+      ${voto ? `<div class="fg-piede"><span><b>${nVoto}</b> ${nVoto === 1 ? "regalo" : "regali"} da votare</span><a class="btn btn-primario" href="${q(4).replace(/&n=\d+/, "") + "&n=" + Math.max(nVoto, 2)}">Fatto</a></div>` : ""}
+    </div></div>`;
+  const foglioEsci = `<div class="velo" id="foglio-esci" ${STATO.get("esci") === "1" ? "" : "hidden"}><div class="foglio esci-foglio" role="dialog" aria-modal="true" aria-labelledby="t-esci">
+      <div class="foglio-testa"><h2 id="t-esci" class="t-sezione">Vuoi uscire?</h2><button type="button" class="icona-btn" data-chiudi-esci aria-label="Resta qui">${icona("chiudi")}</button></div>
+      <p>La bozza del regalo per Mauro resta su questo dispositivo.</p>
+      <div class="avanti"><a class="btn btn-primario" href="regalo-di-gruppo.html">Esci</a><a class="btn btn-quieto pericolo" href="regalo-di-gruppo.html">${icona("cestino")}Cancella la bozza</a></div></div></div>`;
+  document.getElementById("fogli").innerHTML = (passo === 4 && partenza !== "a") || (passo === 2 && da) ? foglioCatalogo + foglioEsci : foglioEsci;
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-apri-catalogo]")) document.getElementById("catalogo").hidden = false;
+    if (e.target.closest("[data-chiudi-catalogo]")) document.getElementById("catalogo").hidden = true;
+    if (e.target.closest("#esci")) { if (passo === 1 && !STATO.get("bozza")) location.href = "regalo-di-gruppo.html"; else document.getElementById("foglio-esci").hidden = false; }
+    if (e.target.closest("[data-chiudi-esci]")) document.getElementById("foglio-esci").hidden = true;
+    const t = e.target.closest(".fg-corpo button[aria-pressed]");
+    if (t) {
+      const on = t.getAttribute("aria-pressed") !== "true";
+      t.setAttribute("aria-pressed", String(on));
+      t.className = "btn " + (on ? "btn-scelto" : "btn-contorno");
+      t.innerHTML = on ? `${icona("spunta")}Aggiunto` : `${icona("piu")}Aggiungi al regalo`;
+      const n = document.querySelectorAll('.fg-corpo button[aria-pressed="true"]').length;
+      document.querySelector(".fg-piede").firstElementChild.innerHTML = `<b>${n}</b> ${n === 1 ? "regalo" : "regali"} da votare`;
+    }
+  });
+
+  const msg = document.getElementById("msg");
+  const scrivi = () => {
+    const s = document.getElementById("sorpresa").checked;
+    msg.innerHTML = s
+      ? `Facciamo un regalo di gruppo? Se ci sei, aderisci entro il 13 dicembre: <b>gifty.it/c/k7m2</b>`
+      : `Facciamo un regalo di gruppo per Mauro? 10 € a testa, si aderisce entro il 13 dicembre: <b>gifty.it/c/k7m2</b>`;
+  };
+  if (msg) { scrivi(); document.getElementById("sorpresa").addEventListener("change", scrivi); }
+
+  /* anteprima: il biglietto si scrive mentre rispondi */
+  const r = (ic, testo, vuota) => `<div><dt>${icona(ic)}</dt><dd class="${vuota ? "vuota" : ""}">${testo}</dd></div>`;
+  const fatto = (p) => SEQ.indexOf(passo) > SEQ.indexOf(p) || passo === 7;
+  const cosa = !partenza ? r("regalo", "Regalo o quota", true)
+    : partenza === "a" ? r("regalo", passo >= 4 || passo === 7 ? "10 € a testa" : "Quota a testa", passo < 4)
+    : partenza === "v" ? (nVoto ? `<div><dt>${icona("regalo")}</dt><dd class="miniature">${VOTO.map((id) => `<img src="${foto(id)}" alt="">`).join("")}</dd></div>` : r("regalo", "Regali da votare", true))
+    : `<div><dt>${icona("regalo")}</dt><dd class="miniature"><img src="${foto(regalo)}" alt=""></dd></div>`;
+  document.getElementById("carta").innerHTML = `<p class="mano">Il regalo di gruppo per ${errore ? "…" : "Mauro"}</p><dl>
+    ${r("calendario", "Compleanno, 14 dicembre")}
+    ${fatto(2) ? r("gruppo", "10 persone nella chat") : r("gruppo", "Persone nella chat", true)}
+    ${cosa}
+    ${fatto(5) ? r("spunta", "Rimborsi con PayPal") : r("spunta", "Come ti rimborsano", true)}
+    </dl><span class="esempio-etichetta" style="margin-top:auto">organizzato da Cri</span>`;
+</script>
+</body>
+</html>

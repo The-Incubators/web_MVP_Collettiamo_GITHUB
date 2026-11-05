@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Speaker Bluetooth retrò verde · Gifty</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  .scheda { display: grid; gap: var(--s6); padding: var(--s4) 0 var(--s12); }
+  @media (min-width: 768px) { .scheda { grid-template-columns: 6fr 5fr; gap: var(--s12); align-items: start; padding-top: var(--s8); } }
+  .scheda .foto-g { position: relative; }
+  .scheda .info { display: grid; gap: var(--s4); align-content: start; }
+  .scheda .prezzo-g { font-size: 32px; color: var(--green); }
+  .scheda .azioni { display: grid; gap: var(--s3); margin-top: var(--s2); }
+  @media (min-width: 768px) { .scheda .azioni { justify-items: start; } }
+  .scheda .perche { padding-left: var(--s4); border-left: 3px solid var(--orange); }
+</style>
+</head>
+<body data-sezione="idee">
+<main>
+  <div class="pagina">
+    <div class="scheda">
+      <div class="foto-g">
+        <div class="lastra"><img id="f" alt="Speaker Bluetooth retrò verde"></div>
+        <button class="cuore" type="button" aria-pressed="false" aria-label="Salva nei preferiti: Speaker Bluetooth retrò verde" style="top:12px;right:12px"></button>
+      </div>
+      <div class="info">
+        <p class="muted">Generico</p>
+        <h1 class="t-pagina">Speaker Bluetooth retrò verde</h1>
+        <p class="t-cifra prezzo-g">19,99 €</p>
+        <p>Mini altoparlante portatile dall'estetica radio vintage.</p>
+        <p class="perche">Tecnologia moderna con una silhouette nostalgica.</p>
+        <div class="azioni">
+          <a class="btn btn-primario btn-largo btn-largo-tel" href="#">Guarda su Amazon <span data-icona="esterno"></span></a>
+          <a class="btn btn-contorno btn-largo btn-largo-tel" href="crea.html?passo=1&partenza=b&da=PRD-017"><span data-icona="gruppo"></span>Aggiungi a un regalo di gruppo</a>
+        </div>
+        <p class="t-piccolo muted">Prezzo rilevato su Amazon il 14 ottobre 2026: quello finale lo vedi su Amazon.</p>
+      </div>
+    </div>
+  </div>
+  <section class="sezione">
+    <div class="pagina">
+      <div class="testa-sezione"><h2 class="t-sezione">Altre idee</h2></div>
+      <div class="griglia-prodotti" id="g"></div>
+    </div>
+  </section>
+</main>
+<script src="comuni.js"></script>
+<script>
+  document.getElementById("f").src = foto("PRD-017");
+  document.querySelector(".foto-g .cuore").innerHTML = icona("cuore", "vuoto-i") + icona("cuore-pieno", "pieno-i");
+  document.querySelectorAll("[data-icona] svg").forEach((s) => s.parentElement.replaceWith(s));
+  document.getElementById("g").innerHTML = ["PRD-011","PRD-054","PRD-057","PRD-044"].map((id) => tessera(id)).join("");
+</script>
+</body>
+</html>
