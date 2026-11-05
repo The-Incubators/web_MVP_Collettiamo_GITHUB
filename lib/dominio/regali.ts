@@ -33,6 +33,12 @@ export function testoGiornoRilevazione(iso: string): string {
   return formatoGiorno.format(new Date(`${iso}T12:00:00Z`));
 }
 
+/** Con l'articolo, eliso dove serve (audit G-15): "il 14 ottobre 2026", "l'8 ottobre 2026", "l'11 novembre 2026". */
+export function testoIlGiorno(iso: string): string {
+  const giorno = testoGiornoRilevazione(iso);
+  return /^(8|11) /.test(giorno) ? `l'${giorno}` : `il ${giorno}`;
+}
+
 /** I giorni di rilevazione dei prezzi del catalogo: "14 ottobre 2026", "14 e 15 ottobre 2026" oppure "14, 15 e 16 ottobre 2026". */
 export function testoRilevazioneCatalogo(prodotti: { rilevatoIl?: string }[]): string {
   const giorni = [...new Set(prodotti.map((p) => p.rilevatoIl).filter((x): x is string => !!x))].sort();

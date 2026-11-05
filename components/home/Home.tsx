@@ -4,6 +4,7 @@ import { ComeFunziona } from "@/components/regalo-di-gruppo/ComeFunziona";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { Carta } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
+import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { ScenaHero } from "./ScenaHero";
 
@@ -16,8 +17,6 @@ import { ScenaHero } from "./ScenaHero";
 /** Quante idee mostra la home: una fila da quattro su desktop, a scorrimento sul telefono. */
 const IDEE_IN_HOME = 4;
 
-/** La nota sui prezzi, una volta per pagina (I-09). */
-export const NOTA_PREZZI = "Prezzi rilevati su Amazon. Quello finale lo vedi su Amazon prima di comprare.";
 
 function Porte() {
   return (

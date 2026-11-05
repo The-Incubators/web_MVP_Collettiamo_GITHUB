@@ -95,3 +95,22 @@ export function ordinaProdotti(prodotti: Prodotto[], s: StatoRicerca, filtri: Fi
   };
   return righe.sort(confronti[filtri.ordine] ?? rilevanza).map((r) => r.p);
 }
+
+/** Quanti prodotti ha ogni micro e ogni passione nel catalogo: nelle domande quelle sotto la soglia non si mostrano. */
+export interface ConteggiPassioni {
+  micro: Record<string, number>;
+  macro: Record<string, number>;
+}
+
+/** I conteggi, calcolati sul server: al browser non serve l'intero catalogo. */
+export function contaPassioni(prodotti: Prodotto[]): ConteggiPassioni {
+  const categoriaDi = new Map(INTERESSI.map((x) => [x.id, x.categoria]));
+  const micro: Record<string, number> = {};
+  const macro: Record<string, number> = {};
+  for (const p of prodotti) {
+    const sue = microDelProdotto(p);
+    for (const id of sue) micro[id] = (micro[id] ?? 0) + 1;
+    for (const c of new Set(sue.map((id) => categoriaDi.get(id)))) if (c) macro[c] = (macro[c] ?? 0) + 1;
+  }
+  return { micro, macro };
+}

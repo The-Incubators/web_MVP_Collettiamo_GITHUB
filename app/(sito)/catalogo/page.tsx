@@ -1,287 +1,67 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { FiltriCatalogo } from "@/components/FiltriCatalogo";
-import { PERSONE_PREDEFINITE, SchedaProdotto } from "@/components/SchedaProdotto";
-import { SchedaProdottoGifty } from "@/components/SchedaProdottoGifty";
-import { Icona } from "@/components/ui";
+import { SchedaProdotto } from "@/components/SchedaProdotto";
+import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { datiServer } from "@/lib/dati";
-import { FASCE_ETA, fasceEta } from "@/lib/dati/eta-prodotti";
-import { PRODOTTI_GIFTY, prodottoGiftyNeiFiltri } from "@/lib/dati/prodotti-gifty";
-import { testoRilevazioneCatalogo } from "@/lib/dominio/regali";
-import { DESTINATARI, FASCE_PREZZO, TEMI, type Prodotto } from "@/lib/tipi";
-import { MODO_CATALOGO_PREDEFINITO, modoCatalogo } from "@/lib/ux";
+import { NOTA_PREZZI } from "@/lib/dominio/amazon";
+import { filtraCatalogo, hrefCatalogo, leggiFiltriCatalogo } from "@/lib/dominio/catalogoIdee";
+import { modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Catalogo",
-  description: "Idee regalo da dividere in gruppo: scegli, imposta la quota e manda il link.",
+  description: "Le idee regalo scelte da noi, per tema e per prezzo.",
 };
 
-/** Quanti prodotti si mostrano all'inizio e a ogni «Mostra altre idee»: 180 schede in una volta pesano troppo. */
+/** Quante idee si mostrano all'inizio e a ogni «Mostra altre idee». */
 const PER_PAGINA = 24;
 
 /**
- * Tutto lo stato della pagina vive nell'indirizzo, così la pagina filtrata si può condividere:
- * filtri, ricerca (`q`), persone della simulazione, quanti prodotti si vedono (`mostra`) e la variante (`modo`:
- * «gruppo» o «singolo», vedi lib/ux.ts; si scrive solo se non è quella predefinita).
+ * Il catalogo di Idee regalo (Gifty UX v2, prototipi/catalogo.html): temi a chip, fasce di prezzo a segmenti, ordine
+ * curato come predefinito (I-06), tessere, nota sui prezzi una volta (I-09). Filtri e pagina nell'indirizzo.
+ *
+ * `?modo=gruppo` è il catalogo aperto dalle pagine del regalo di gruppo (lib/ux.ts): lì restano le schede con la quota
+ * a testa e la lista per la votazione, finché il wizard (PR 3) non porta la tessera con «Scegli questo regalo».
  */
-type Stato = { modo?: string; per?: string; eta?: string; tema?: string; fascia?: string; q?: string; persone?: string; mostra?: string };
-
-/**
- * Le categorie del filtro: i tre temi del catalogo più «Design», che non è un tema nei dati ma sono i pezzi
- * del pacchetto «arredamento e design», cioè i prodotti con un tipo (lampade, vasi, specchi…). Il vecchio
- * filtro per tipo (`tipo=` nell'indirizzo) non c'è più: un link che lo porta ancora si apre e lo ignora.
- */
-const DESIGN = "design";
-const CATEGORIE: { valore: string; etichetta: string }[] = [
-  { valore: "tecnologia", etichetta: "Tecnologia" },
-  { valore: "arredamento", etichetta: "Arredamento" },
-  { valore: DESIGN, etichetta: "Design" },
-  { valore: "viaggio", etichetta: "Viaggio" },
-];
-
-const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
-const normalizza = (t: string) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-function href(attuale: Stato, cambia: Partial<Stato>): string {
-  // cambiando filtri o ricerca si riparte dalla prima pagina di risultati
-  const unito: Stato = { ...attuale, ...("mostra" in cambia ? {} : { mostra: undefined }), ...cambia };
-  const q = new URLSearchParams();
-  for (const [k, v] of Object.entries(unito)) if (v) q.set(k, v);
-  const s = q.toString();
-  return s ? `/catalogo?${s}` : "/catalogo";
-}
-
-/** Un gruppo di pillole a scelta singola. `tutti` aggiunge in fondo la voce che toglie il filtro («Nessun filtro»). */
-function GruppoFiltro({
-  titolo,
-  chiave,
-  opzioni,
-  stato,
-  tutti,
-}: {
-  titolo: string;
-  chiave: keyof Stato;
-  opzioni: { valore: string; etichetta: string }[];
-  stato: Stato;
-  tutti?: string;
-}) {
-  return (
-    <div role="group" aria-label={titolo} className="flex flex-col gap-2">
-      <h3 className="font-sans text-xs font-bold uppercase tracking-widest text-ink-soft">{titolo}</h3>
-      <ul className="flex flex-wrap gap-2">
-        {[...opzioni, ...(tutti ? [{ valore: "", etichetta: tutti }] : [])].map((o) => {
-          const attivo = o.valore ? stato[chiave] === o.valore : !stato[chiave];
-          return (
-            <li key={o.valore}>
-              <Link
-                href={href(stato, { [chiave]: attivo || !o.valore ? undefined : o.valore })}
-                scroll={false}
-                aria-current={attivo ? "true" : undefined}
-                className={`inline-flex min-h-tocco items-center gap-1 rounded-full px-4 text-sm font-semibold transition-colors ${
-                  attivo ? "bg-accent text-on-accent" : "bg-surface-2 hover:bg-line"
-                }`}
-              >
-                {attivo ? <Icona nome="check" dimensione={16} /> : null}
-                {o.etichetta}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-function cercaNelTesto(p: Prodotto, testo: string): boolean {
-  return normalizza(`${p.nome} ${p.marca} ${p.descrizione} ${p.sottocategoria ?? ""}`).includes(testo);
-}
-
 export default async function Catalogo({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   const prendi = (k: string) => (typeof sp[k] === "string" ? (sp[k] as string) : undefined);
-  const dati = datiServer();
-  const tutti = await dati.elencaProdotti();
-  // «il 14 ottobre 2026», ma con date di mesi diversi «dal 14 ottobre 2026 al 2 novembre 2026» (senza «il»)
-  const rilevazione = testoRilevazioneCatalogo(tutti) || "14 ottobre 2026";
-  // Si offrono solo le fasce di prezzo, e d'età, in cui c'è qualcosa.
-  const fasce = FASCE_PREZZO.filter((f) => tutti.some((p) => p.prezzoCent > f.minCent && p.prezzoCent <= f.maxCent));
-  const fasceEtaPresenti = FASCE_ETA.filter((f) => tutti.some((p) => fasceEta(p).includes(f.id)));
-
-  const design = prendi("tema") === DESIGN;
-  const eta = fasceEtaPresenti.find((f) => f.id === prendi("eta"))?.id;
-  const filtri = {
-    per: DESTINATARI.find((o) => o === prendi("per")),
-    tema: TEMI.find((c) => c === prendi("tema")),
-    fascia: FASCE_PREZZO.find((f) => f.id === prendi("fascia"))?.id,
-  };
-  const modo = modoCatalogo(prendi("modo"));
-  const gruppo = modo === "gruppo";
-  const cerca = (prendi("q") ?? "").trim().slice(0, 60);
-  const persone = Math.max(2, Math.min(50, Math.floor(Number(prendi("persone"))) || PERSONE_PREDEFINITE));
+  const filtri = leggiFiltriCatalogo(prendi("tema"), prendi("fascia"));
+  const gruppo = modoCatalogo(prendi("modo")) === "gruppo";
+  const modo = gruppo ? "gruppo" : undefined;
   const mostra = Math.max(PER_PAGINA, Math.floor(Number(prendi("mostra"))) || PER_PAGINA);
-  const stato: Stato = {
-    modo: modo !== MODO_CATALOGO_PREDEFINITO ? modo : undefined,
-    ...filtri,
-    eta,
-    tema: filtri.tema ?? (design ? DESIGN : undefined),
-    q: cerca || undefined,
-    persone: persone !== PERSONE_PREDEFINITE ? String(persone) : undefined,
-    mostra: mostra !== PER_PAGINA ? String(mostra) : undefined,
-  };
-
-  const filtrati = (await dati.elencaProdotti(filtri)).filter((p) => (!design || !!p.sottocategoria) && (!eta || fasceEta(p).includes(eta)));
-  const prodotti = cerca ? filtrati.filter((p) => cercaNelTesto(p, normalizza(cerca))) : filtrati;
+  const prodotti = filtraCatalogo(await datiServer().elencaProdotti(), filtri);
   const visibili = prodotti.slice(0, mostra);
-  // i prodotti fatti da Gifty vengono per primi, se passano i filtri (per l'età non sono classificati: con quel filtro no)
-  const gifty = PRODOTTI_GIFTY.filter((p) =>
-    prodottoGiftyNeiFiltri(p, {
-      per: filtri.per,
-      tema: filtri.tema,
-      prezzo: FASCE_PREZZO.find((f) => f.id === filtri.fascia),
-      testo: cerca ? normalizza(cerca) : undefined,
-      altriFiltri: !!eta || design,
-    }),
-  );
-  const nFiltri = [stato.per, stato.eta, stato.tema, stato.fascia].filter(Boolean).length;
-  const trovati = gifty.length + prodotti.length;
-  const conteggio = trovati === 1 ? "1 idea" : `${trovati} idee`;
-
-  // le etichette dei filtri attivi, ognuna con il suo collegamento per toglierla
-  const etichette: { testo: string; via: string }[] = [
-    ...(filtri.per ? [{ testo: `Per ${filtri.per}`, via: href(stato, { per: undefined }) }] : []),
-    ...(eta ? [{ testo: FASCE_ETA.find((f) => f.id === eta)?.etichetta ?? eta, via: href(stato, { eta: undefined }) }] : []),
-    ...(stato.tema ? [{ testo: CATEGORIE.find((c) => c.valore === stato.tema)?.etichetta ?? maiuscola(stato.tema), via: href(stato, { tema: undefined }) }] : []),
-    ...(filtri.fascia ? [{ testo: FASCE_PREZZO.find((f) => f.id === filtri.fascia)?.etichetta ?? "", via: href(stato, { fascia: undefined }) }] : []),
-    ...(cerca ? [{ testo: `«${cerca}»`, via: href(stato, { q: undefined }) }] : []),
-  ];
+  const resto = prodotti.length - visibili.length;
 
   return (
-    <div className="gutter pb-10 pt-4">
-      <div className="mx-auto flex max-w-catalogo flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Catalogo regali</h1>
-            <span className="cifre rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">{tutti.length + PRODOTTI_GIFTY.length} idee</span>
-          </div>
-          {gruppo ? <p className="text-sm text-ink-soft">Idee da dividere tra amici: scegli, e la quota la calcoliamo noi.</p> : null}
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* un modulo GET: la ricerca finisce nell'indirizzo come i filtri, e funziona anche senza JavaScript */}
-          <form action="/catalogo" role="search" className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-full bg-surface px-4 shadow-carta focus-within:ring-2 focus-within:ring-accent">
-            {Object.entries({ modo: stato.modo, per: stato.per, eta: stato.eta, tema: stato.tema, fascia: stato.fascia, persone: stato.persone }).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null))}
-            <Icona nome="search" dimensione={22} className="text-ink-soft" />
-            <label htmlFor="cerca-catalogo" className="sr-only">
-              Cerca nel catalogo
-            </label>
-            <input
-              id="cerca-catalogo"
-              name="q"
-              type="search"
-              defaultValue={cerca}
-              placeholder="Cerca un regalo…"
-              enterKeyHint="search"
-              className="min-w-0 flex-1 bg-transparent text-base placeholder:text-ink-soft focus:outline-none"
-            />
-          </form>
-          <FiltriCatalogo attivi={nFiltri} conteggio={conteggio}>
-            <GruppoFiltro titolo="Prezzo" chiave="fascia" stato={stato} opzioni={fasce.map((f) => ({ valore: f.id, etichetta: f.etichetta }))} tutti="Nessun filtro" />
-            {/* per tornare a tutti si tocca di nuovo la voce scelta, come negli altri gruppi */}
-            <GruppoFiltro titolo="Per chi" chiave="per" stato={stato} opzioni={DESTINATARI.map((o) => ({ valore: o, etichetta: maiuscola(o) }))} />
-            {fasceEtaPresenti.length > 0 ? (
-              <GruppoFiltro titolo="Età" chiave="eta" stato={stato} opzioni={fasceEtaPresenti.map((f) => ({ valore: f.id, etichetta: f.etichetta }))} />
-            ) : null}
-            <GruppoFiltro titolo="Categoria regalo" chiave="tema" stato={stato} opzioni={CATEGORIE} />
-            {nFiltri > 0 ? (
-              <Link href={href(stato, { per: undefined, eta: undefined, tema: undefined, fascia: undefined })} scroll={false} className="self-start text-sm font-bold text-cta-2 underline underline-offset-4">
-                Azzera i filtri
-              </Link>
-            ) : null}
-          </FiltriCatalogo>
-        </div>
-
-        {etichette.length > 0 ? (
-          <ul aria-label="Filtri attivi" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-            {etichette.map((e) => (
-              <li key={e.testo} className="shrink-0">
-                <Link href={e.via} scroll={false} className="inline-flex min-h-10 items-center gap-1 rounded-full bg-surface-2 pl-4 pr-3 text-sm font-semibold">
-                  {e.testo}
-                  <Icona nome="close" dimensione={16} />
-                  <span className="sr-only">: togli il filtro</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : null}
-
-        {gruppo ? (
-          <div className="flex items-center justify-between gap-3 rounded-2xl bg-surface-2 py-1.5 pl-4 pr-1.5" role="group" aria-label="Simula la quota a testa">
-            <p className="flex items-center gap-2 text-sm font-bold">
-              <Icona nome="groups" dimensione={20} className="text-cta-2" />
-              Simula per <span className="cifre">{persone}</span> invitati
-            </p>
-            <div className="flex items-center gap-1">
-              <Link
-                href={href(stato, { persone: String(Math.max(2, persone - 1)), mostra: stato.mostra })}
-                scroll={false}
-                aria-label="Una persona in meno"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
-              >
-                <Icona nome="remove" dimensione={20} />
-              </Link>
-              <Link
-                href={href(stato, { persone: String(Math.min(50, persone + 1)), mostra: stato.mostra })}
-                scroll={false}
-                aria-label="Una persona in più"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-surface shadow-carta"
-              >
-                <Icona nome="add" dimensione={20} />
-              </Link>
-            </div>
-          </div>
-        ) : null}
-
-        <section aria-label="Prodotti" className="flex flex-col gap-4">
-          {trovati === 0 ? (
-            <div className="flex flex-col items-center gap-3 rounded-3xl bg-surface p-8 text-center shadow-carta">
-              <Icona nome="search" dimensione={32} className="text-ink-soft" />
-              <p className="font-semibold">Nessun regalo con questi filtri.</p>
-              <Link href={href({ modo: stato.modo }, {})} className="text-sm font-bold text-cta-2 underline underline-offset-4">
-                Azzera tutto
-              </Link>
-            </div>
-          ) : (
-            <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-              {gifty.map((p) => (
-                <li key={p.slug}>
-                  <SchedaProdottoGifty prodotto={p} compatta />
-                </li>
-              ))}
-              {visibili.map((p) => (
-                <li key={p.slug}>
-                  <SchedaProdotto prodotto={p} persone={persone} azione={gruppo ? "colletta" : "singolo"} />
-                </li>
-              ))}
-            </ul>
-          )}
-          {prodotti.length > visibili.length ? (
-            <Link
-              href={href(stato, { mostra: String(mostra + PER_PAGINA) })}
-              scroll={false}
-              className="inline-flex min-h-12 items-center gap-1 self-center rounded-full bg-surface-2 px-6 text-sm font-bold hover:bg-line"
-            >
-              <Icona nome="expand_more" dimensione={20} />
-              Mostra altre {Math.min(PER_PAGINA, prodotti.length - visibili.length)} idee
-            </Link>
-          ) : null}
-        </section>
-
-        <p className="text-center text-xs font-semibold text-ink-soft">
-          Prezzi rilevati su Amazon.it {rilevazione.startsWith("dal ") ? rilevazione : `il ${rilevazione}`}: possono essere cambiati.
-        </p>
+    <div className="pagina fondo">
+      <div className="testa-elenco">
+        <h1 className="t-pagina">Catalogo</h1>
+        <FiltriCatalogo attivi={filtri} modo={modo} />
       </div>
+      {prodotti.length === 0 ? (
+        <div className="vuoto-griglia">
+          <p>Nessun regalo con questi filtri.</p>
+          <Link className="btn btn-quieto" href={hrefCatalogo({ modo })} scroll={false}>
+            Azzera i filtri
+          </Link>
+        </div>
+      ) : (
+        <div className="griglia-prodotti">
+          {visibili.map((p) => (gruppo ? <SchedaProdotto key={p.slug} prodotto={p} azione="colletta" /> : <TesseraProdotto key={p.slug} prodotto={p} />))}
+        </div>
+      )}
+      {resto > 0 ? (
+        <div className="altre-idee">
+          <Link className="btn btn-quieto" href={hrefCatalogo({ ...filtri, modo, mostra: mostra + PER_PAGINA })} scroll={false}>
+            Mostra altre {Math.min(PER_PAGINA, resto)} idee
+          </Link>
+        </div>
+      ) : null}
+      <p className="nota-prezzi">{NOTA_PREZZI}</p>
     </div>
   );
 }

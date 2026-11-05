@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
-import { Icona } from "@/components/ui";
+import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { datiServer } from "@/lib/dati";
-import { conModo, modoCatalogo } from "@/lib/ux";
+import { altreIdee } from "@/lib/dominio/catalogoIdee";
+import { modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
@@ -17,30 +17,37 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 /**
- * La pagina intera del prodotto: si vede aprendo il link diretto, ricaricando, o arrivando da fuori.
- * Dal catalogo invece lo stesso contenuto compare in un popup, senza lasciare la pagina
- * (vedi app/(sito)/@modale/(.)prodotto/[slug]/page.tsx). `?modo=` sceglie la variante, come nel catalogo.
+ * La scheda prodotto (Gifty UX v2, prototipi/prodotto.html), sempre a pagina intera: la scheda, poi «Altre idee».
+ * La nota sul prezzo sta nella scheda, una volta: sotto le altre idee non si ripete.
  */
-export default async function SchedaProdottoPagina({ params, searchParams }: Props) {
+export default async function PaginaProdotto({ params, searchParams }: Props) {
   const { slug } = await params;
   const v = (await searchParams).modo;
-  const modo = modoCatalogo(typeof v === "string" ? v : undefined);
-  const p = await datiServer().prodotto(slug);
+  const gruppo = modoCatalogo(typeof v === "string" ? v : undefined) === "gruppo";
+  const dati = datiServer();
+  const p = await dati.prodotto(slug);
   if (!p || !p.attivo) notFound();
+  const altre = altreIdee(p, await dati.elencaProdotti());
 
   return (
-    <div className="gutter pb-10 pt-2">
-      <div className="mx-auto flex max-w-catalogo flex-col gap-6">
-        <DettaglioProdotto
-          p={p}
-          modo={modo}
-          indietro={
-            <Link href={conModo("/catalogo", modo)} className="inline-flex min-h-10 items-center gap-1 rounded-full bg-surface-2 pl-3 pr-4 text-sm font-bold">
-              <Icona nome="arrow_back" dimensione={18} /> Catalogo
-            </Link>
-          }
-        />
+    <div className="fondo">
+      <div className="pagina">
+        <DettaglioProdotto p={p} gruppo={gruppo} />
       </div>
+      {altre.length ? (
+        <section className="sezione">
+          <div className="pagina">
+            <div className="testa-sezione">
+              <h2 className="t-sezione">Altre idee</h2>
+            </div>
+            <div className="griglia-prodotti">
+              {altre.map((x) => (
+                <TesseraProdotto key={x.slug} prodotto={x} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }

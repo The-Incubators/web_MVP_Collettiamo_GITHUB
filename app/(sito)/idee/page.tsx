@@ -1,58 +1,79 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Icona, type NomeIcona } from "@/components/ui";
+import { TesseraProdotto } from "@/components/TesseraProdotto";
+import { IndicatorePassi } from "@/components/ui";
+import { datiServer } from "@/lib/dati";
+import { NOTA_PREZZI } from "@/lib/dominio/amazon";
+import { GENERI } from "@/lib/regalo/dati";
+import { etichettaPer } from "@/lib/regalo/indirizzo";
 
 /**
- * Idee regalo (Gifty-spec-prodotto.md S-02, D-02): trovare idee per qualcuno, con le domande di «Trova il regalo»
- * o sfogliando il catalogo. Il biglietto ha la sua voce di menu (Gifty-architettura-e-flussi.md §2).
+ * Idee regalo (Gifty UX v2, prototipi/idee.html; spec S-02): la prima domanda di «Trova il regalo» è già qui
+ * (decisione 4, I-01), accanto «Sfoglia il catalogo», sotto «Idee scelte da noi» dal catalogo vero, nell'ordine curato.
  */
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Idee regalo",
-  description: "Trova un'idea regalo per qualcuno: rispondi a poche domande o sfoglia il catalogo.",
+  description: "Trova un'idea regalo per qualcuno: rispondi a tre domande o sfoglia il catalogo.",
 };
 
-const STRADE: { href: string; titolo: string; testo: string; icona: NomeIcona; tinta: string }[] = [
-  {
-    href: "/regalo",
-    titolo: "Trova un regalo originale",
-    testo: "Rispondi a poche domande su chi lo riceve: ti mostriamo le idee più adatte",
-    icona: "auto_awesome",
-    tinta: "bg-cta-field text-cta-2",
-  },
-  {
-    href: "/catalogo",
-    titolo: "Sfoglia il catalogo",
-    testo: "Tutte le idee, con i filtri per età, tema e prezzo",
-    icona: "grid_view",
-    tinta: "bg-ok-field text-accent",
-  },
-];
+/** Due file da quattro su desktop. */
+const IDEE = 8;
+/** Le tre foto del riquadro del catalogo (prototipo). */
+const COLLAGE = ["/foto-prodotti/PRD-094.webp", "/foto-prodotti/PRD-054.webp", "/foto-prodotti/PRD-004.webp"];
 
-export default function PaginaIdee() {
+export default async function PaginaIdee() {
+  const idee = (await datiServer().elencaProdotti()).slice(0, IDEE);
   return (
-    <div className="gutter pb-10 pt-4 sm:pt-10">
-      <div className="mx-auto flex max-w-lg flex-col gap-6">
-        <header className="flex flex-col gap-1">
-          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Idee regalo</h1>
-          <p className="text-ink-soft">Per trovare il regalo giusto per qualcuno.</p>
-        </header>
-        <ul className="flex flex-col gap-3">
-          {STRADE.map((s) => (
-            <li key={s.href}>
-              <Link href={s.href} className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-carta transition-colors hover:bg-surface-2">
-                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${s.tinta}`}>
-                  <Icona nome={s.icona} />
-                </span>
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="font-bold text-accent-2">{s.titolo}</span>
-                  <span className="text-sm text-ink-soft">{s.testo}</span>
-                </span>
-                <Icona nome="chevron_right" className="text-ink-soft" />
+    <div className="fondo">
+      <section className="apertura-idee">
+        <div className="pagina">
+          <h1 className="t-pagina">Idee regalo</h1>
+          <div className="due">
+            <div className="blocco-domanda">
+              <IndicatorePassi passo={1} totale={3} />
+              <h2 className="t-sezione" id="domanda-per-chi">
+                Per chi cerchi un regalo?
+              </h2>
+              <div className="genere" role="group" aria-labelledby="domanda-per-chi">
+                {GENERI.map((g) => (
+                  <Link key={g.id} href={`/regalo?per=${g.id}`}>
+                    {etichettaPer(g.id)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="blocco-catalogo">
+              <div className="collage" aria-hidden="true">
+                {COLLAGE.map((src) => (
+                  <span key={src}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={src} alt="" />
+                  </span>
+                ))}
+              </div>
+              <h2 className="t-titolo">Sfoglia il catalogo</h2>
+              <Link className="btn btn-contorno" href="/catalogo">
+                Apri il catalogo
               </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="sezione">
+        <div className="pagina">
+          <div className="testa-sezione">
+            <h2 className="t-sezione">Idee scelte da noi</h2>
+          </div>
+          <div className="griglia-prodotti">
+            {idee.map((p) => (
+              <TesseraProdotto key={p.slug} prodotto={p} />
+            ))}
+          </div>
+          <p className="nota-prezzi">{NOTA_PREZZI}</p>
+        </div>
+      </section>
     </div>
   );
 }

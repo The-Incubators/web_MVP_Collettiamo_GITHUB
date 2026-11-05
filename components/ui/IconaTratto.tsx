@@ -40,6 +40,44 @@ const PERCORSI = {
     </>
   ),
   play: <path fill="currentColor" stroke="none" d="M6 4l14 8-14 8z" />,
+  sx: <path d="M15 5l-7 7 7 7" />,
+  piu: <path d="M12 5v14M5 12h14" />,
+  meno: <path d="M5 12h14" />,
+  spunta: <path d="M5 12.5l4.5 4.5L19 7" />,
+  matita: (
+    <>
+      <path d="M4 20h4L19 9l-4-4L4 16z" />
+      <path d="M13 7l4 4" />
+    </>
+  ),
+  esterno: (
+    <>
+      <path d="M14 4h6v6" />
+      <path d="M20 4 11 13" />
+      <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+    </>
+  ),
+  regalo: (
+    <>
+      <rect x="4" y="9" width="16" height="11" rx="1" />
+      <path d="M3 9h18M12 9v11" />
+      <path d="M12 9S10 4 7.5 5.5 9 9 12 9Zm0 0s2-5 4.5-3.5S15 9 12 9Z" />
+    </>
+  ),
+  calendario: (
+    <>
+      <rect x="4" y="5" width="16" height="15" rx="2" />
+      <path d="M4 10h16M9 3v4M15 3v4" />
+    </>
+  ),
+  torta: (
+    <>
+      <path d="M4 20h16v-8H4z" />
+      <path d="M4 15c2 1.5 4 1.5 5.3 0 1.4 1.5 4 1.5 5.4 0 1.3 1.5 3.3 1.5 5.3 0" />
+      <path d="M12 12V8" />
+      <path d="M12 5.5c.8-.8.8-1.7 0-2.5-.8.8-.8 1.7 0 2.5Z" />
+    </>
+  ),
 } as const;
 
 export type NomeIconaTratto = keyof typeof PERCORSI;
