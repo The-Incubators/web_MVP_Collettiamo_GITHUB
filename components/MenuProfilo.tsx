@@ -43,6 +43,7 @@ export function MenuProfilo() {
     { href: "/crea", testo: "Organizza una colletta" },
     { href: "/biglietto/nuovo", testo: "Biglietto di auguri" },
     ...(conAccount ? [{ href: "/le-mie-collette", testo: "Le mie collette" }] : []),
+    { href: "/reminder", testo: "Ricorrenze" },
     ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : []),
     { href: "/privacy", testo: "Come trattiamo i dati" },
   ];

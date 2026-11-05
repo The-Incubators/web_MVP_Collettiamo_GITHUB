@@ -2,19 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { sezioneDi, type Sezione } from "@/lib/navigazione";
 import { usePreferiti } from "./PreferitiProvider";
 import { Icona, type NomeIcona } from "./ui/Icona";
 
 /**
- * Le cinque voci principali: barra in basso sul telefono, collegamenti nell'intestazione da tablet in su.
- * «Reminder» ha preso il posto di «Collette» (4 novembre 2026): le collette restano nel menu del profilo.
+ * Le voci principali (Gifty-spec-prodotto.md §5): barra in basso sul telefono, collegamenti nell'intestazione da
+ * tablet in su. Le ricorrenze e le collette stanno nel menu del profilo finché non arriva /account (S-11).
  */
-const VOCI: { href: string; testo: string; icona: NomeIcona }[] = [
-  { href: "/", testo: "Home", icona: "home" },
-  { href: "/catalogo", testo: "Catalogo", icona: "grid_view" },
-  { href: "/regalo", testo: "Trova regalo", icona: "auto_awesome" },
-  { href: "/preferiti", testo: "Preferiti", icona: "favorite" },
-  { href: "/reminder", testo: "Reminder", icona: "notifications" },
+const VOCI: { href: string; testo: string; icona: NomeIcona; sezione: Sezione }[] = [
+  { href: "/", testo: "Home", icona: "home", sezione: "home" },
+  { href: "/idee", testo: "Idee regalo", icona: "auto_awesome", sezione: "idee" },
+  { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo" },
+  { href: "/preferiti", testo: "Preferiti", icona: "favorite", sezione: "preferiti" },
 ];
 
 /**
@@ -25,8 +25,9 @@ export function barraNavigazioneVisibile(percorso: string): boolean {
   return !["/crea", "/gestisci", "/accedi"].some((p) => percorso.startsWith(p));
 }
 
-function attiva(percorso: string, href: string): boolean {
-  return href === "/" ? percorso === "/" : percorso.startsWith(href);
+/** La voce è accesa sul segmento esatto dell'indirizzo, non sul prefisso (UX-11, lib/navigazione.ts). */
+function attiva(percorso: string, sezione: Sezione): boolean {
+  return sezioneDi(percorso) === sezione;
 }
 
 function ContatorePreferiti({ n }: { n: number }) {
@@ -53,7 +54,7 @@ export function BarraNavigazione() {
       >
         <ul className="mx-auto flex max-w-lg">
           {VOCI.map((v) => {
-            const corrente = attiva(percorso, v.href);
+            const corrente = attiva(percorso, v.sezione);
             return (
               <li key={v.href} className="flex-1">
                 <Link
@@ -85,7 +86,7 @@ export function NavigazioneOrizzontale() {
     <nav aria-label="Principale" className="hidden md:block">
       <ul className="flex items-center gap-1">
         {VOCI.map((v) => {
-          const corrente = attiva(percorso, v.href);
+          const corrente = attiva(percorso, v.sezione);
           return (
             <li key={v.href}>
               <Link
