@@ -1,0 +1,34 @@
+/**
+ * Le sezioni della navigazione principale (Gifty-spec-prodotto.md §5): a quale voce appartiene una pagina.
+ *
+ * Si guarda il primo segmento esatto dell'indirizzo, non il prefisso: così /regalo-di-gruppo non accende più
+ * «Trova regalo» come faceva il confronto con `startsWith("/regalo")` (UX-11).
+ */
+
+export type Sezione = "home" | "idee" | "gruppo" | "preferiti" | "account";
+
+const SEZIONI: Record<string, Sezione> = {
+  // Idee regalo raccoglie le domande e il catalogo (S-02…S-05)
+  idee: "idee",
+  regalo: "idee",
+  catalogo: "idee",
+  prodotto: "idee",
+  // il regalo di gruppo, dalla spiegazione alle pagine del gruppo (S-06…S-09)
+  "regalo-di-gruppo": "gruppo",
+  crea: "gruppo",
+  gestisci: "gruppo",
+  c: "gruppo",
+  preferiti: "preferiti",
+  // le pagine che finiranno nell'account (S-11, S-12)
+  account: "account",
+  "le-mie-collette": "account",
+  reminder: "account",
+  accedi: "account",
+};
+
+/** La sezione di un indirizzo; `null` per le pagine fuori dalla navigazione (biglietto, privacy, backoffice…). */
+export function sezioneDi(percorso: string): Sezione | null {
+  const primo = percorso.split(/[?#]/)[0].split("/").filter(Boolean)[0];
+  if (primo === undefined) return "home";
+  return SEZIONI[primo] ?? null;
+}
