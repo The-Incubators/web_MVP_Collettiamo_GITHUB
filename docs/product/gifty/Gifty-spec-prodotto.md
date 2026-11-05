@@ -33,6 +33,7 @@ Regola fondante: i soldi non passano mai da Gifty. Chi partecipa rimborsa l'orga
 | D-12 | Reminder serve all'organizzatore per farsi rimborsare: dopo la consegna sollecita chi ha aderito e non ha ancora pagato. Il promemoria arriva a ciascuno singolarmente, come notifica sul suo account Gifty, non via WhatsApp; nessuno vede chi altro non ha pagato. Via WhatsApp passa solo l'invito ad aderire: un link che l'organizzatore copia e incolla nel gruppo che ha già, quindi non serve un consenso per WhatsApp. Chi aderisce accetta l'informativa quando si iscrive | Cri, 5 novembre 2026 |
 | D-17 | Restano anche le ricorrenze: il calendario di compleanni e occasioni speciali degli amici, già fatto da Stefano su `/reminder`. Sta nell'account e prende un nome diverso da «Reminder» | Cri, 5 novembre 2026 (era P-08) |
 | D-18 | La notifica del Reminder arriva nell'account Gifty e per email all'indirizzo dell'account. È un messaggio di servizio, non marketing. Serve un servizio di invio email, da scegliere prima della fase del regalo di gruppo | Cri, 5 novembre 2026 (era P-01) |
+| D-19 | Un solo biglietto: il wizard `/biglietto/nuovo` con link `/b/[slug]`, che distingue già biglietto singolo e biglietto con colletta. Il vecchio biglietto stampabile `/c/[slug]/biglietto` si ritira | Cri, 5 novembre 2026 (era P-06) |
 | D-13 | Accesso con Google o con un collegamento via email; nessuna password | Cri, 5 novembre 2026 (era P-02) |
 | D-14 | Chi apre il link prima di iscriversi vede il festeggiato, l'organizzatore e il regalo o lo scopo. Non vede quota né iscritti. L'accesso si chiede solo quando tocca «Partecipo» | Cri, 5 novembre 2026 (era P-03) |
 | D-15 | Nel wizard l'organizzatore fissa una data e ora limite per le adesioni. Le adesioni si chiudono a quella scadenza o quando l'organizzatore consegna il regalo (invio del biglietto o «Regalo consegnato»), se avviene prima | Cri, 5 novembre 2026 (era P-04) |
@@ -54,7 +55,6 @@ Non sono decisioni. Il lavoro può partire con l'assunzione indicata; se Cri dec
 
 | ID | Punto | Assunzione per lavorare | Cosa cambia altrimenti |
 |---|---|---|---|
-| P-06 | Biglietto da solo e biglietto del gruppo | Un solo modello (`Biglietto` con `tipo` «solo-biglietto» o «con-colletta», già in `lib/tipi.ts:388`); il vecchio biglietto stampabile `/c/[slug]/biglietto` si ritira | Se restano due sistemi, due stili e due codici da tenere |
 | P-07 | Titolare per l'informativa privacy | Il titolare della partita IVA. Il GDPR (art. 13) chiede di indicarlo nell'informativa: una riga nella pagina Privacy, nient'altro di visibile | Senza, l'informativa non si può pubblicare |
 
 ## 4. Persone
@@ -82,7 +82,7 @@ Una sola home. Tutto il resto si raggiunge da tre ingressi: Idee regalo, Regalo 
 | S-07 | Wizard del regalo di gruppo | `/crea` | Prima i dati, poi l'accesso (§7) |
 | S-08 | Pagina del gruppo per l'organizzatore | `/gestisci/[slug]` | Persone, regalo o votazione, quote, biglietto, acquisto |
 | S-09 | Pagina del gruppo per chi partecipa | `/c/[slug]` | Anteprima, iscrizione, adesione, voto, quota |
-| S-10 | Biglietto | `/biglietto/nuovo`, `/b/[slug]` | Lo stesso per il gruppo e da solo (P-06) |
+| S-10 | Biglietto | `/biglietto/nuovo`, `/b/[slug]` | Lo stesso per il gruppo e da solo (D-19) |
 | S-11 | Account | `/account` (nuovo; raccoglie `/le-mie-collette`, `/reminder`, `/preferiti`) | Regali di gruppo, biglietti, ricorrenze (D-17), preferiti, profilo, Esci |
 | S-12 | Accesso | `/accedi` | Ritorna sempre alla pagina da cui si è partiti |
 | S-13 | Privacy e dati | `/privacy` | Titolare (P-07), fornitori, conservazione, diritti |
@@ -239,7 +239,7 @@ Cause comuni: ogni richiesta ha aggiunto una variante invece di trovare il suo p
 | C-05 | `previsti` e liste chiuse con nomi (`lib/tipi.ts:161`, `:165`) | Attesi dalla chat, righe aggiunte a mano dall'organizzatore, collegamento a un account solo da parte sua | 3 |
 | C-06 | Lo slug fa leggere IBAN, Satispay e PayPal dell'organizzatore e gli importi altrui (DECISIONI §1) | Dati di pagamento e importi dietro una funzione server con permessi | 3 |
 | C-07 | Nessun confine «consegnato» sul server | «Regalo consegnato» chiude tutte le vie di aggiunta, verificato quando il server salva | 3 |
-| C-08 | Biglietto stampabile e wizard separati | Un solo modello di biglietto (P-06) | 2 |
+| C-08 | Biglietto stampabile e wizard separati | Un solo modello di biglietto (D-19) | 2 |
 | C-09 | Varianti UX, due home, `?modo=` | Una home, catalogo secondo il contesto | 2 |
 | C-10 | Regole Firestore dei reminder non pubblicate (DECISIONI §41) | Pubblicarle con il sito | 3 |
 
@@ -249,7 +249,7 @@ Livello 3 (dati, regole, accesso): revisione dell'architettura prima di scrivere
 
 | Fase | Contenuto | Fatto quando |
 |---|---|---|
-| 0. Specifica | Questo documento; Cri risponde a P-06 e P-07 (P-01…P-05 e P-08 decise il 5 novembre) e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
+| 0. Specifica | Questo documento; P-07 resta aperto fino alla fase 5; P-01…P-06 e P-08 decisi il 5 novembre e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
 | 1. Struttura | §5: home unica con due porte, nuova navigazione, `/idee`, `/account`; ritiro delle varianti; UX-01, UX-02, UX-11 | Ogni pagina raggiungibile da un ingresso; nessuna variante attiva; test e build verdi |
 | 2. Stile e copy | §10: hero immersiva, racconto, schede, gerarchia, intestazione comune, copy rivisto; UX-03…UX-10, UX-12…UX-16, UX-18, UX-20, UX-22…UX-24 | Confronto con la tavola su desktop e a 390 px; design audit senza P1; find-ai-slop sul testo |
 | 3. Regalo di gruppo | §7 e C-01…C-07: partenze, wizard con accesso alla fine, adesione con account, attesi e aggiunti a mano, quote, consegna, biglietto del gruppo | Criteri §14 verificati su emulatore e su un progetto di prova; revisione indipendente |
