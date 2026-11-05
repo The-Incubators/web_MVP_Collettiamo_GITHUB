@@ -84,6 +84,13 @@ const conGiorno = new Intl.DateTimeFormat("it-IT", {
   month: "long",
 });
 
+const ora24 = new Intl.DateTimeFormat("it-IT", { timeZone: FUSO, hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
+
+/** "20:00", a Roma */
+export function oraBreve(ms: number): string {
+  return ora24.format(new Date(ms));
+}
+
 /** "20 novembre 2026" */
 export function dataLunga(ms: number): string {
   return lungo.format(new Date(ms));

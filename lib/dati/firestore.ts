@@ -4,6 +4,7 @@
 import {
   addDoc,
   collection,
+  collectionGroup,
   deleteDoc,
   doc,
   getDoc,
@@ -26,6 +27,7 @@ import { creaInvitati, eseguiOperazione, ErroreDominio } from "../dominio/operaz
 import { MAX_PROPOSTE_PER_PERSONA } from "../dominio/votazione";
 import { oggiLocale, ripulisciElenco, validaReminder } from "../dominio/reminder";
 import type { Colletta } from "../tipi";
+import type { RegaloDellAccount } from "./tipi";
 import { collettaDaDoc, docDaColletta, docDaPartecipante, docDaProposta, eventoDaDoc, partecipanteDaDoc, prodottoDaDoc, propostaDaDoc, votoDaDoc } from "./mappa";
 import { idVoto } from "../dominio/votazione";
 import { filtraProdotti, type Dati } from "./tipi";
@@ -135,6 +137,53 @@ export function creaDatiFirestore(): Dati {
       await setDoc(doc(refVoti(slug), idVoto(uid, propostaId)), { propostaId, uid, stelle, ts: serverTimestamp() });
     },
 
+    async scegliVoto(slug, propostaId) {
+      const uid = identita();
+      // le regole permettono a ciascuno di togliere i propri voti finché si vota (firestore.rules, /voti)
+      const miei = await getDocs(query(refVoti(slug), where("uid", "==", uid)));
+      const batch = writeBatch(db);
+      miei.docs.filter((d) => d.data().propostaId !== propostaId).forEach((d) => batch.delete(d.ref));
+      batch.set(doc(refVoti(slug), idVoto(uid, propostaId)), { propostaId, uid, stelle: 5, ts: serverTimestamp() });
+      await batch.commit();
+    },
+    async mieiRegali(utente) {
+      if (utente !== identita()) throw new ErroreDominio("Non puoi elencare i regali di altri.");
+      const out: RegaloDellAccount[] = [];
+      const organizzati = await getDocs(query(collection(db, "collette"), where("organizzatoreUid", "==", utente), orderBy("creatoIl", "desc"), limit(50)));
+      for (const d of organizzati.docs) {
+        const c = collettaDaDoc(d.data());
+        if (c.stato === "bozza") continue;
+        const r = await getDocs(righe(c.slug));
+        out.push({ colletta: c, righe: r.docs.map((x) => partecipanteDaDoc(x.id, x.data())), organizzo: true });
+      }
+      // le proprie righe nei regali di altri: query sul gruppo di raccolte (indice in firestore.indexes.json, regola su
+      // /{path=**}/partecipanti in firestore.rules)
+      const mie = await getDocs(query(collectionGroup(db, "partecipanti"), where("uidAnonimo", "==", utente), limit(100)));
+      for (const d of mie.docs) {
+        const slug = d.ref.parent.parent?.id;
+        if (!slug || out.some((x) => x.colletta.slug === slug)) continue;
+        const riga = partecipanteDaDoc(d.id, d.data());
+        if (riga.stato === "rinunciato") continue;
+        const cs = await getDoc(refColletta(slug));
+        if (!cs.exists()) continue;
+        const c = collettaDaDoc(cs.data());
+        if (c.stato === "bozza" || c.organizzatoreUid === utente) continue;
+        out.push({ colletta: c, righe: [riga], organizzo: false });
+      }
+      return out.sort((x, y) => x.colletta.dataRegalo - y.colletta.dataRegalo);
+    },
+    async profilo(utente) {
+      const d = await getDoc(doc(db, "utenti", utente));
+      if (!d.exists()) return null;
+      const v = d.data();
+      return { nome: String(v.nome ?? ""), newsletter: v.newsletter === true };
+    },
+    async aggiornaProfilo(utente, patch) {
+      const out: Record<string, unknown> = {};
+      if (typeof patch.nome === "string") out.nome = patch.nome.replace(/\s+/g, " ").trim().slice(0, 60);
+      if (typeof patch.newsletter === "boolean") out.newsletter = patch.newsletter;
+      await setDoc(doc(db, "utenti", utente), out, { merge: true });
+    },
     async preferiti(utente) {
       const snap = await getDocs(collection(db, "utenti", utente, "preferiti"));
       return snap.docs.map((d) => d.id);

@@ -41,17 +41,17 @@ export function sezioneDi(percorso: string): Sezione | null {
  */
 export function piePaginaVisibile(percorso: string): boolean {
   const p = percorso.split(/[?#]/)[0];
-  if (p === "/regalo" || ["/crea", "/accedi", "/biglietto/nuovo"].some((x) => p.startsWith(x))) return false;
+  // la cancellazione dell'account ha una sola via d'uscita, «Annulla» (prototipi/cancella-account.html, data-piede="no")
+  if (p === "/regalo" || ["/crea", "/accedi", "/biglietto/nuovo", "/account/cancella"].some((x) => p.startsWith(x))) return false;
   return !/^\/biglietto\/[^/]+\/(dettagli|design|anteprima)/.test(p);
 }
 
 /**
- * Le voci dell'account, uguali nel menu utente e nel piè di pagina (revisione di Cri, 5 novembre 2026). Finché l'area
- * dell'account non è rifatta portano alle pagine che esistono: i regali di gruppo organizzati sono in /le-mie-collette;
- * un elenco dei biglietti non c'è ancora, quindi «I miei biglietti» apre l'account.
+ * Le voci dell'account, uguali nel menu utente (tendina su desktop, foglio della barra in basso sul telefono) e nel piè
+ * di pagina (design.md §10.2; revisione di Cri, 5 novembre 2026). `icona` è il nome di IconaTratto.
  */
-export const VOCI_ACCOUNT: { href: string; testo: string }[] = [
-  { href: "/le-mie-collette", testo: "I miei regali" },
-  { href: "/account", testo: "I miei biglietti" },
-  { href: "/account", testo: "Il mio account" },
+export const VOCI_ACCOUNT: { href: string; testo: string; icona: "regalo" | "biglietto" | "account" }[] = [
+  { href: "/account/regali", testo: "I miei regali", icona: "regalo" },
+  { href: "/account/biglietti", testo: "I miei biglietti", icona: "biglietto" },
+  { href: "/account", testo: "Il mio account", icona: "account" },
 ];

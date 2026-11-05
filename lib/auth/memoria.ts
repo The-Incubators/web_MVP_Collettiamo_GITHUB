@@ -65,7 +65,7 @@ export function creaAutenticazioneMemoria(): Autenticazione {
       // L'uid dipende dall'indirizzo: la stessa email ritrova le proprie collette durante la prova.
       let hash = 0;
       for (const ch of pulita) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
-      const utente: Utente = { uid: `org-${hash.toString(36)}`, nome: nome.trim() || nomeDaEmail(pulita), email: pulita, anonimo: false };
+      const utente: Utente = { uid: `org-${hash.toString(36)}`, nome: nome.trim() || nomeDaEmail(pulita), email: pulita, anonimo: false, accesso: "email" };
       scriviLocale(CHIAVE_ORG, JSON.stringify(utente));
       scriviLocale(CHIAVE_NOME_ACCESSO, null);
       notifica();
@@ -75,7 +75,7 @@ export function creaAutenticazioneMemoria(): Autenticazione {
       return null;
     },
     async accediConGoogle(nome) {
-      const utente: Utente = { uid: "org-google-prova", nome: nome?.trim() || "Giulia", email: "prova@example.com", anonimo: false };
+      const utente: Utente = { uid: "org-google-prova", nome: nome?.trim() || "Giulia", email: "prova@example.com", anonimo: false, accesso: "google" };
       scriviLocale(CHIAVE_ORG, JSON.stringify(utente));
       notifica();
     },
@@ -85,6 +85,19 @@ export function creaAutenticazioneMemoria(): Autenticazione {
     },
     async token() {
       return null;
+    },
+    async cambiaNome(nome) {
+      const u = organizzatoreSalvato();
+      if (!u) return;
+      scriviLocale(CHIAVE_ORG, JSON.stringify({ ...u, nome: nome.trim() || u.nome }));
+      notifica();
+    },
+    // senza Firebase non c'è un vero accesso da rifare: la conferma riesce subito
+    async riaccedi() {
+      return "fatto";
+    },
+    async completaRiaccesso() {
+      return false;
     },
   };
 }

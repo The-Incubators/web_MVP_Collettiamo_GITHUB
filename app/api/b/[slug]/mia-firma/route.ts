@@ -18,6 +18,6 @@ export async function GET(richiesta: Request, { params }: Ctx) {
   const f = await archivio.firma(b.id, idFirma(chiave, b.id));
   if (!f) return risposta({ ok: true, firma: null });
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { tokenModifica, ...firma } = f;
+  const { tokenModifica, accountUid, ...firma } = f;
   return risposta({ ok: true, firma });
 }

@@ -15,6 +15,6 @@ export async function GET(_r: Request, { params }: Ctx) {
   const firme = (await archivio.firme(b.id))
     .filter((f) => !f.nascosta)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .map(({ tokenModifica, ...f }) => firmaPubblica(f));
+    .map(({ tokenModifica, accountUid, ...f }) => firmaPubblica(f));
   return risposta({ ok: true, biglietto: vistaPubblica(b), firme });
 }

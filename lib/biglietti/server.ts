@@ -11,6 +11,6 @@ export async function bigliettoPubblico(slug: string): Promise<{ b: BigliettoPub
   const firme = (await archivio.firme(b.id))
     .filter((f) => !f.nascosta)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .map(({ tokenModifica, ...f }) => firmaPubblica(f));
+    .map(({ tokenModifica, accountUid, ...f }) => firmaPubblica(f));
   return { b: vistaPubblica(b), firme };
 }

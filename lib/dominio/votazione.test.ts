@@ -98,11 +98,16 @@ describe("chiusura della votazione", () => {
 });
 
 describe("durante il voto non si paga", () => {
-  it("le adesioni e i pagamenti sono sospesi finché la votazione è aperta", () => {
+  it("ci si unisce anche mentre si vota (AC-06), ma i pagamenti sono sospesi finché la votazione è aperta", () => {
     const ctx = { colletta: inVoto(), pid: "u1", riga: null, causaliAltre: [], uid: "u1", ora: ORA };
-    expect(() => eseguiOperazione({ tipo: "aderisci", nome: "Anna" }, ctx)).toThrow(ErroreDominio);
-    const chiusa = { ...ctx, colletta: { ...ctx.colletta, votazione: { ...ctx.colletta.votazione!, chiusa: true } } };
-    expect(() => eseguiOperazione({ tipo: "aderisci", nome: "Anna" }, chiusa)).not.toThrow();
+    const r = eseguiOperazione({ tipo: "aderisci", nome: "Anna" }, ctx);
+    expect(r.righe[0].valore).toMatchObject({ stato: "aderito", uidAnonimo: "u1" });
+    const riga = r.righe[0].valore;
+    expect(() => eseguiOperazione({ tipo: "sceglieMetodo", metodo: "paypal" }, { ...ctx, riga })).toThrow(ErroreDominio);
+    expect(() => eseguiOperazione({ tipo: "dichiara", metodo: "paypal" }, { ...ctx, riga })).toThrow(ErroreDominio);
+    expect(() => eseguiOperazione({ tipo: "rinuncia" }, { ...ctx, riga })).not.toThrow();
+    const chiusa = { ...ctx, riga, colletta: { ...ctx.colletta, votazione: { ...ctx.colletta.votazione!, chiusa: true } } };
+    expect(() => eseguiOperazione({ tipo: "sceglieMetodo", metodo: "paypal" }, chiusa)).not.toThrow();
   });
   it("chi organizza entra nella divisione anche con il voto aperto (D-16), ma non paga", () => {
     const c = inVoto();

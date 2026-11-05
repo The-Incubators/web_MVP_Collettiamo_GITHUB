@@ -11,6 +11,11 @@ export interface BigliettoServer extends Biglietto {
 export interface FirmaServer extends Firma {
   /** per il link di modifica via email (fase successiva) */
   tokenModifica: string;
+  /**
+   * L'account di chi ha firmato, se aveva fatto l'accesso: serve a «I miei biglietti» (Firmati da te) e alla
+   * cancellazione dell'account. Mai fuori dal server. Manca nelle firme fatte senza accesso o prima di questo campo.
+   */
+  accountUid?: string | null;
 }
 
 export interface ImmagineSalvata {
@@ -46,6 +51,12 @@ export interface ArchivioBiglietti {
   leggiAudio(id: string, nome: string): Promise<Uint8Array | null>;
   eliminaAudio(id: string, nome: string): Promise<void>;
   perOrganizzatore(uid: string): Promise<BigliettoServer[]>;
+  /** Il biglietto di un regalo di gruppo (tipo "con-colletta"), se c'è. */
+  perColletta(slug: string): Promise<BigliettoServer | null>;
+  /** Le firme fatte da un account, con il loro biglietto. */
+  firmeDiAccount(uid: string): Promise<{ biglietto: BigliettoServer; firma: FirmaServer }[]>;
+  /** Elimina il biglietto con firme, immagini, musica e il suo slug: il link non si apre più. */
+  eliminaBiglietto(id: string): Promise<void>;
 }
 
 export const MAX_FIRME_PER_BIGLIETTO = 500;

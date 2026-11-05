@@ -25,6 +25,7 @@ export function collettaDaDoc(d: Dati): Colletta {
   c.nAderenti = typeof d.nAderenti === "number" ? d.nAderenti : 0;
   c.acquisto = (d.acquisto as Colletta["acquisto"]) ?? null;
   c.votazione = votazioneDaDoc(d.votazione);
+  c.consegnatoIl = aMsOpz(d.consegnatoIl);
   return c;
 }
 
@@ -100,6 +101,7 @@ export function docDaColletta(c: Partial<Colletta>, ts: (ms: number) => unknown)
   const out: Dati = { ...c };
   for (const k of CAMPI_ISTANTE_COLLETTA) if (typeof out[k] === "number") out[k] = ts(out[k] as number);
   if (c.votazione) out.votazione = votazioneInDoc(c.votazione, ts);
+  if (typeof c.consegnatoIl === "number") out.consegnatoIl = ts(c.consegnatoIl);
   return senzaUndefined(out);
 }
 
