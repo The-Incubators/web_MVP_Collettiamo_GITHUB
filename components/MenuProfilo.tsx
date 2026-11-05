@@ -44,7 +44,6 @@ export function MenuProfilo() {
     { href: "/biglietto/nuovo", testo: "Biglietto di auguri" },
     ...(conAccount ? [{ href: "/le-mie-collette", testo: "Le mie collette" }] : []),
     ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : []),
-    { href: "/scegli-ux", testo: "Scegli UX" },
     { href: "/privacy", testo: "Come trattiamo i dati" },
   ];
   const classe = "flex min-h-12 w-full items-center gap-3 rounded-controllo px-4 text-base font-semibold hover:bg-surface-2";
