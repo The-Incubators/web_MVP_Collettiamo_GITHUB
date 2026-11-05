@@ -59,50 +59,52 @@ function AperturaClassica() {
   );
 }
 
-/** Un separatore fra le tre strade della home nuova. */
+/** Un separatore fra le tre strade della home nuova; da tablet in su le strade stanno in colonna e non serve. */
 function Separatore() {
-  return <hr className="mx-6 border-t-2 border-line-forte" />;
+  return <hr className="mx-6 border-t-2 border-line-forte md:hidden" />;
 }
 
 function AperturaNuova() {
   return (
-    <section className="flex flex-col gap-4 text-center">
-      <h1 className="font-sans text-xl font-medium italic leading-snug text-ink">
+    <section className="flex flex-col gap-6 text-center md:gap-8 md:text-left">
+      {/* direzione A: titolo grande in Urbanist verde, allineato a sinistra da tablet in su */}
+      <h1 className="text-[34px] font-extrabold leading-[1.08] tracking-[-0.035em] text-accent md:text-[56px]">
         Regalare qualcosa di originale,
-        <br />
-        non è mai stato così facile…
+        <br className="hidden md:inline" /> non è mai stato così facile…
       </h1>
-      <div className="flex flex-col gap-2">
-        <BottoneLink href="/regalo" variante="azione" pieno className="px-4">
-          Trova un regalo originale
-        </BottoneLink>
-        {/* la riga sotto dice quanto ci vuole; si può toccare anche lei, ma per tastiera e lettori di schermo il link è uno solo */}
-        <Link href="/regalo" tabIndex={-1} aria-hidden="true" className={`${CLASSI_SECONDARIO} py-2 leading-tight`}>
-          fatti aiutare dal nostro motore di ricerca (15 sec)
-        </Link>
-      </div>
-      <Separatore />
-      <div className="flex flex-col gap-2">
-        <BottoneLink href="/biglietto/nuovo" variante="azione" pieno className="px-4">
-          Invia un biglietto di Auguri
-        </BottoneLink>
-        <Link href="/biglietto/esempio" className={CLASSI_SECONDARIO}>
-          <Icona nome="visibility" dimensione={18} />
-          Guarda un esempio
-        </Link>
-      </div>
-      <Separatore />
-      <div className="flex flex-col gap-2">
-        <BottoneLink href="/regalo-di-gruppo" variante="azione" pieno className="px-4">
-          Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
-        </BottoneLink>
-        <Link href={`/c/${SLUG_DEMO}`} className={CLASSI_SECONDARIO}>
-          <Icona nome="visibility" dimensione={18} />
-          Guarda cosa vedranno i partecipanti
-        </Link>
-        <Link href="/regalo-di-gruppo" className={CLASSI_SECONDARIO}>
-          Come funziona il regalo di gruppo
-        </Link>
+      <div className="flex flex-col gap-4 md:grid md:grid-cols-3 md:items-start md:gap-6">
+        <div className="flex flex-col gap-2">
+          <BottoneLink href="/regalo" variante="azione" pieno className="px-4">
+            Trova un regalo originale
+          </BottoneLink>
+          {/* la riga sotto dice quanto ci vuole; si può toccare anche lei, ma per tastiera e lettori di schermo il link è uno solo */}
+          <Link href="/regalo" tabIndex={-1} aria-hidden="true" className={`${CLASSI_SECONDARIO} py-2 leading-tight`}>
+            fatti aiutare dal nostro motore di ricerca (15 sec)
+          </Link>
+        </div>
+        <Separatore />
+        <div className="flex flex-col gap-2">
+          <BottoneLink href="/biglietto/nuovo" variante="azione" pieno className="px-4">
+            Invia un biglietto di Auguri
+          </BottoneLink>
+          <Link href="/biglietto/esempio" className={CLASSI_SECONDARIO}>
+            <Icona nome="visibility" dimensione={18} />
+            Guarda un esempio
+          </Link>
+        </div>
+        <Separatore />
+        <div className="flex flex-col gap-2">
+          <BottoneLink href="/regalo-di-gruppo" variante="azione" pieno className="px-4">
+            Organizza un regalo di gruppo <Icona nome="arrow_forward" dimensione={22} />
+          </BottoneLink>
+          <Link href={`/c/${SLUG_DEMO}`} className={CLASSI_SECONDARIO}>
+            <Icona nome="visibility" dimensione={18} />
+            Guarda cosa vedranno i partecipanti
+          </Link>
+          <Link href="/regalo-di-gruppo" className={CLASSI_SECONDARIO}>
+            Come funziona il regalo di gruppo
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -288,6 +290,27 @@ function RegaliPiuAmati({
   );
 }
 
+/**
+ * La scena fotografica della direzione A, a tutta larghezza: due biglietti uniti dal nastro arancio.
+ * Due foto approvate, una per il telefono e una per lo schermo largo. È decorativa: il testo alternativo è vuoto.
+ */
+function ScenaHome() {
+  return (
+    <picture className="block w-full">
+      <source media="(min-width: 768px)" srcSet="/home/scena-desktop.jpg" width={1774} height={887} />
+      <img
+        src="/home/scena-mobile.jpg"
+        alt=""
+        width={1374}
+        height={1145}
+        fetchPriority="high"
+        decoding="async"
+        className="block h-auto w-full"
+      />
+    </picture>
+  );
+}
+
 /** La home intera; le idee in evidenza vengono dal catalogo vero, nell'ordine deciso nell'area riservata. */
 export async function PaginaHome({ versione }: { versione: VersioneHome }) {
   const dati = datiServer();
@@ -295,29 +318,43 @@ export async function PaginaHome({ versione }: { versione: VersioneHome }) {
   const inEvidenza = prodotti.slice(0, PRIMI_REGALI);
 
   return (
-    <div className="gutter pb-10 pt-4 sm:pt-10">
-      <div className="mx-auto flex max-w-lg flex-col gap-8">
-        {versione === "nuova" ? (
-          // la nuova va dai pulsanti dritta ai regali
-          <>
-            <AperturaNuova />
-            <RegaliPiuAmati
-              inEvidenza={inEvidenza}
-              stelle={impostazioni?.stelle ?? {}}
-              conLikes={conLikesDimostrativi()}
-              ciSonoAltri={prodotti.length > PRIMI_REGALI}
-            />
-          </>
-        ) : (
-          <>
-            <AperturaClassica />
-            <ComeFunziona />
-            <SchedaBiglietto />
-            <Garanzie />
-            <IdeeInEvidenza inEvidenza={inEvidenza} />
-          </>
-        )}
+    <>
+      {versione === "nuova" ? (
+        // direzione A: titolo e tre strade, poi la scena fotografica a tutta larghezza
+        <>
+          <div className="gutter pt-4 sm:pt-10">
+            <div className="mx-auto max-w-lg md:max-w-catalogo">
+              <AperturaNuova />
+            </div>
+          </div>
+          <div className="mt-8">
+            <ScenaHome />
+          </div>
+        </>
+      ) : null}
+      <div className="gutter pb-10 pt-4 sm:pt-10">
+        <div className="mx-auto flex max-w-lg flex-col gap-8">
+          {versione === "nuova" ? (
+            // la nuova va dai pulsanti dritta ai regali
+            <>
+              <RegaliPiuAmati
+                inEvidenza={inEvidenza}
+                stelle={impostazioni?.stelle ?? {}}
+                conLikes={conLikesDimostrativi()}
+                ciSonoAltri={prodotti.length > PRIMI_REGALI}
+              />
+            </>
+          ) : (
+            <>
+              <AperturaClassica />
+              <ComeFunziona />
+              <SchedaBiglietto />
+              <Garanzie />
+              <IdeeInEvidenza inEvidenza={inEvidenza} />
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

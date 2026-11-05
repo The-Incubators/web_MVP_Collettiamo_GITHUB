@@ -45,7 +45,7 @@ export function BarraListaRegali() {
         {pronta ? (
           <Link
             href="/crea?lista=1"
-            className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full bg-cta px-4 text-[19px] font-bold text-on-cta hover:bg-cta-2"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-controllo bg-accent px-4 text-[19px] font-bold text-on-accent hover:bg-accent-2"
           >
             Fai votare
             <Icona nome="arrow_forward" dimensione={18} />

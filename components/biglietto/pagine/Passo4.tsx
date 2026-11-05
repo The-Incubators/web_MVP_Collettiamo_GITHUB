@@ -131,7 +131,7 @@ export function Passo4({ id, librerie }: { id: string; librerie: Librerie }) {
             <button type="button" onClick={() => setDettagli(true)} className="min-h-tocco text-sm font-semibold underline underline-offset-4">
               Modifica i dettagli
             </button>
-            <button type="button" onClick={() => void pubblica()} disabled={invio} className="inline-flex min-h-12 items-center rounded-full bg-cta px-5 text-[19px] font-bold text-on-cta shadow-sollevata hover:bg-cta-2 disabled:opacity-60">
+            <button type="button" onClick={() => void pubblica()} disabled={invio} className="inline-flex min-h-12 items-center rounded-controllo bg-accent px-5 text-[19px] font-bold text-on-accent shadow-sollevata hover:bg-accent-2 disabled:opacity-60">
               {invio ? "Un momento…" : b.stato === "bozza" ? "Pubblica e condividi" : "Condividi"}
             </button>
           </div>

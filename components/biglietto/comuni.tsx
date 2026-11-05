@@ -95,12 +95,12 @@ export function IntestazioneWizard({
   );
 }
 
-/** Pulsante principale a pillola arancio, a tutta larghezza (~56 px). Disabilitato: grigio chiaro. */
+/** Pulsante principale verde (direzione A), a tutta larghezza (~56 px). Disabilitato: grigio chiaro. */
 export function BottonePillola({ className = "", pieno = true, children, ...resto }: ButtonHTMLAttributes<HTMLButtonElement> & { pieno?: boolean }) {
   return (
     <button
       type="button"
-      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-full px-8 text-[19px] font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-cta enabled:text-on-cta enabled:shadow-sollevata enabled:hover:bg-cta-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
+      className={`inline-flex min-h-14 items-center justify-center gap-2 rounded-controllo px-8 text-[19px] font-bold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent enabled:bg-accent enabled:text-on-accent enabled:shadow-sollevata enabled:hover:bg-accent-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft ${pieno ? "w-full" : ""} ${className}`}
       {...resto}
     >
       {children}

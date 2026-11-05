@@ -8,17 +8,18 @@
  * i valori. Come il design system, V4 non ha un tema scuro: i colori restano chiari anche col sistema in scuro.
  *
  * - `accent` è il verde del marchio (#033922): bottoni principali, selezioni, barre.
- * - `cta` è l'arancio del marchio (#FD5D17), riservato alle azioni di conversione (Partecipo, Firma…).
+ * - `cta` è l'arancio del marchio (#FD5D17): nastro, puntini, stelle e dettagli. Dal 5 novembre 2026 (direzione A)
+ *   le azioni di conversione sono verdi come le altre principali; l'arancio non fa più da sfondo ai bottoni.
  *   Il bianco sull'arancio arriva a 3,1:1: basta per il testo grande (da 14 pt, 18,7 px, in grassetto), che è
  *   come lo usa la variante «azione» di Bottone (19 px), non per il testo piccolo.
  */
 :root {
-  --field: #f6fbf4;
+  --field: #f5faf6;
   --surface: #ffffff;
   --surface-2: #f0f5ee;
-  --ink: #181d19;
-  --ink-soft: #414943;
-  --line: #dfe4dd;
+  --ink: #142b20;
+  --ink-soft: #52665b;
+  --line: #d9e4dc;
   --line-forte: #c0c9c1;
   --accent: #033922;
   --accent-2: #002212;

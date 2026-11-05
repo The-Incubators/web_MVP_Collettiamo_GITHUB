@@ -592,7 +592,7 @@ export function CreaBiglietto() {
             type="button"
             onClick={avanti}
             disabled={!puoAvanzare || invio}
-            className="inline-flex min-h-12 items-center gap-2 rounded-full bg-cta px-6 text-[17px] font-bold text-on-cta shadow-sollevata hover:bg-cta-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft disabled:shadow-none"
+            className="inline-flex min-h-12 items-center gap-2 rounded-controllo bg-accent px-6 text-[17px] font-bold text-on-accent shadow-sollevata hover:bg-accent-2 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-soft disabled:shadow-none"
           >
             {ultimo ? (invio ? "Un momento…" : "✨ Crea il biglietto") : "Avanti"}
             {ultimo ? null : <span aria-hidden="true">→</span>}

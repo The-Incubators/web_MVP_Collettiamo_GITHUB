@@ -30,9 +30,9 @@ const config: Config = {
         "error-field": "var(--error-field)",
       },
       borderRadius: {
-        // UX_V4: card e fogli molto morbidi, controlli arrotondati; i bottoni sono pillole (rounded-full).
-        contenitore: "24px",
-        controllo: "16px",
+        // Direzione A: superfici 20 px, controlli e bottoni 10 px.
+        contenitore: "20px",
+        controllo: "10px",
       },
       boxShadow: {
         // Ombre calde e diffuse del design system V4: livello 1 per le card, livello 2 per ciò che galleggia.

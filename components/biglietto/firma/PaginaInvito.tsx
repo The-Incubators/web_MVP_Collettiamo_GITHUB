@@ -33,7 +33,7 @@ export function PaginaInvito({ b, hrefFirma, onFirma }: { b: BigliettoPubblico; 
       .catch(() => {});
   }, [anteprima, chiuso, api, b.slug]);
 
-  const bottone = "inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-cta px-8 text-[19px] font-bold text-on-cta shadow-sollevata hover:bg-cta-2";
+  const bottone = "inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-controllo bg-accent px-8 text-[19px] font-bold text-on-accent shadow-sollevata hover:bg-accent-2";
   return (
     <div className="flex flex-col items-center gap-5 text-center">
       <div ref={rif} className="h-0 w-full" />
