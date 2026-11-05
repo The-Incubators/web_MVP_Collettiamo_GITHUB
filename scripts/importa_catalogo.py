@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Importa il catalogo nell'app da una o più cartelle sorgente (ciascuna con un file Excel e una cartella immagini/).
-Per aggiungere altri prodotti: mettere la nuova cartella accanto alle altre e aggiungerla a SORGENTI (o a SORGENTI_PLAYLIST, per i file nel formato «playlist»).
+Per aggiungere altri prodotti: mettere la nuova cartella in scripts/dati/, accanto alle altre, e aggiungerla a SORGENTI (o a SORGENTI_PLAYLIST, per i file nel formato «playlist»).
 
   python3 scripts/importa_catalogo.py
 
@@ -271,7 +271,7 @@ def main():
 
     pacchetti = [(c, f, None, None) for c, f in SORGENTI] + SORGENTI_PLAYLIST
     for cartella, nome_file, rilevato, scelte in pacchetti:
-        sorgente = RADICE / cartella
+        sorgente = RADICE / "scripts" / "dati" / cartella
         if rilevato:
             # già nella forma interna (chiavi = valori di COLONNE)
             righe = righe_playlist(sorgente, nome_file, rilevato, scelte)
