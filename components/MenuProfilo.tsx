@@ -6,21 +6,66 @@ import { useEffect, useRef, useState } from "react";
 import { inizialiDi } from "@/lib/dominio/partecipanti";
 import { VOCI_ACCOUNT } from "@/lib/navigazione";
 import { useApp } from "./AppProvider";
-import { Icona } from "./ui/Icona";
+import { IconaTratto } from "./ui/IconaTratto";
 
 /**
- * Il tondo dell'account: iniziali di chi ha accesso, altrimenti l'omino. Apre I miei regali, I miei biglietti, Il mio
- * account, poi Accedi o Esci (revisione di Cri, 5 novembre 2026): «Esci» sta solo qui. Da tablet in su è
- * nell'intestazione; sul telefono, dove l'intestazione non lo mostra, lo stesso menu è nella pagina dell'account.
+ * Le voci del menu utente (design.md §10.2; prototipi/comuni.js `menuUtente`): nome ed email, I miei regali, I miei
+ * biglietti, Il mio account, poi Esci. Senza accesso solo «Accedi». Accedi ed Esci stanno solo qui (righe 5–9). Le usano
+ * la tendina dell'intestazione (desktop) e il foglio della barra in basso (telefono).
  */
-export function MenuProfilo() {
+export function VociMenuUtente({ onScelta }: { onScelta?: () => void }) {
   const { utente, pronto, auth } = useApp();
   const router = useRouter();
+  const percorso = usePathname();
+  // chi partecipa senza account ha un'identità anonima: per il menu è come non averla
+  const conAccount = pronto && utente && !utente.anonimo ? utente : null;
+
+  if (!conAccount) {
+    const ritorno = percorso && percorso !== "/" ? `?next=${encodeURIComponent(percorso)}` : "";
+    return (
+      <div className="menu-utente">
+        <Link className="btn btn-primario" href={`/accedi${ritorno}`} onClick={onScelta}>
+          Accedi
+        </Link>
+      </div>
+    );
+  }
+  return (
+    <div className="menu-utente">
+      <div className="chi">
+        <b>{conAccount.nome || conAccount.email}</b>
+        {conAccount.email && conAccount.nome ? <span>{conAccount.email}</span> : null}
+      </div>
+      {VOCI_ACCOUNT.map((v) => (
+        <Link key={v.href} href={v.href} aria-current={percorso === v.href ? "page" : undefined} onClick={onScelta}>
+          <IconaTratto nome={v.icona} />
+          {v.testo}
+        </Link>
+      ))}
+      <span className="sep" aria-hidden="true" />
+      <button
+        type="button"
+        className="voce"
+        onClick={async () => {
+          onScelta?.();
+          await auth.esci();
+          router.push("/");
+        }}
+      >
+        <IconaTratto nome="esci" />
+        Esci
+      </button>
+    </div>
+  );
+}
+
+/** Il tondo dell'account nell'intestazione (da 768 px): iniziali di chi ha accesso, altrimenti l'omino; apre la tendina. */
+export function MenuProfilo() {
+  const { utente, pronto } = useApp();
   const percorso = usePathname();
   const [aperto, setAperto] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const bottone = useRef<HTMLButtonElement>(null);
-  // chi partecipa a una colletta ha un'identità anonima: non è un account, e per il menu è come non averlo
   const conAccount = pronto && utente && !utente.anonimo ? utente : null;
 
   useEffect(() => setAperto(false), [percorso]);
@@ -41,72 +86,26 @@ export function MenuProfilo() {
     };
   }, [aperto]);
 
-  const voci = [...VOCI_ACCOUNT, ...(pronto && !conAccount ? [{ href: "/accedi", testo: "Accedi" }] : [])];
-  // finché «I miei biglietti» porta all'account, su /account è accesa solo «Il mio account»
-  const corrente = [...voci].reverse().find((v) => v.href === percorso)?.testo;
-  const classe = "flex min-h-12 w-full items-center gap-3 rounded-controllo px-4 text-base font-semibold hover:bg-surface-2";
-
+  const sezioneAccount = VOCI_ACCOUNT.some((v) => v.href === percorso) || percorso.startsWith("/account");
   return (
     <div ref={box} className="relative">
       <button
         ref={bottone}
         type="button"
-        aria-label={aperto ? "Chiudi il menu" : conAccount ? `Menu di ${conAccount.nome}` : "Apri il menu"}
+        aria-haspopup="true"
         aria-expanded={aperto}
-        aria-controls="menu-profilo"
+        aria-controls="tendina-account"
+        aria-label={conAccount ? `Il tuo account, ${conAccount.nome || conAccount.email}` : "Account"}
+        aria-current={sezioneAccount ? "page" : undefined}
         onClick={() => setAperto((a) => !a)}
-        className="tondo-account transition-transform active:scale-95"
+        className={`tondo-account${conAccount ? "" : " ospite"}`}
       >
-        {aperto ? (
-          <Icona nome="close" dimensione={22} />
-        ) : conAccount ? (
-          <span aria-hidden="true">
-            {inizialiDi(conAccount.nome || conAccount.email || "?")}
-          </span>
-        ) : (
-          <Icona nome="person" dimensione={22} />
-        )}
+        {conAccount ? <span aria-hidden="true">{inizialiDi(conAccount.nome || conAccount.email || "?").slice(0, 1)}</span> : <IconaTratto nome="account" />}
       </button>
       {aperto ? (
-        <nav
-          id="menu-profilo"
-          aria-label="Altre pagine"
-          className="absolute right-0 top-full z-50 mt-2 w-72 max-w-[calc(100vw-32px)] rounded-contenitore border border-line bg-surface p-2 shadow-sollevata"
-        >
-          {conAccount ? (
-            <p className="truncate px-4 pb-2 pt-3 text-sm text-ink-soft">
-              Ciao, <strong className="text-ink">{conAccount.nome || conAccount.email}</strong>
-            </p>
-          ) : null}
-          <ul className="flex flex-col">
-            {voci.map((v) => (
-              <li key={v.testo}>
-                <Link
-                  href={v.href}
-                  aria-current={v.testo === corrente ? "page" : undefined}
-                  className={`${classe} ${v.testo === corrente ? "bg-accent-field text-accent" : ""}`}
-                >
-                  {v.testo}
-                </Link>
-              </li>
-            ))}
-            {conAccount ? (
-              <li className="mt-1 border-t border-line pt-1">
-                <button
-                  type="button"
-                  className={classe}
-                  onClick={async () => {
-                    await auth.esci();
-                    router.push("/");
-                  }}
-                >
-                  <Icona nome="logout" dimensione={20} className="text-ink-soft" />
-                  Esci
-                </button>
-              </li>
-            ) : null}
-          </ul>
-        </nav>
+        <div className="tendina" id="tendina-account">
+          <VociMenuUtente onScelta={() => setAperto(false)} />
+        </div>
       ) : null}
     </div>
   );

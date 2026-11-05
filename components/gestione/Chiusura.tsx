@@ -164,10 +164,7 @@ export function Chiusura({ slug }: { slug: string }) {
           {ch && ch.avanzoCent < 0 ? <p>La differenza di {formattaEuro(-ch.avanzoCent)} l’hai messa tu.</p> : null}
         </section>
         <div className="flex flex-col gap-2">
-          <BottoneLink href={`/c/${slug}/biglietto`} pieno>
-            <Icona nome="mail" dimensione={20} />
-            Biglietto da stampare
-          </BottoneLink>
+          {/* il biglietto stampabile non c'è più (D-19): il biglietto del gruppo si prepara dalla pagina del gruppo */}
           <BottoneLink href={`/c/${slug}`} variante="secondario" pieno>
             Rendiconto pubblico
           </BottoneLink>

@@ -1,12 +1,6 @@
-import type { Metadata } from "next";
-import { ElencoCollette } from "@/components/ElencoCollette";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = { title: "Le mie collette", robots: { index: false } };
-
+/** Il vecchio indirizzo dei regali organizzati: ora sono in «I miei regali». */
 export default function LeMieCollette() {
-  return (
-    <div className="gutter pb-16 pt-8">
-      <ElencoCollette />
-    </div>
-  );
+  redirect("/account/regali");
 }

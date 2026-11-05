@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { sezioneDi, type Sezione } from "@/lib/navigazione";
 import { usePreferiti } from "./PreferitiProvider";
+import { VociMenuUtente } from "./MenuProfilo";
 import { IconaTratto, type NomeIconaTratto } from "./ui/IconaTratto";
+import { Velo } from "./ui/Velo";
 
 /**
  * La cornice del sito di Gifty UX v2 (design.md §4, prototipi/comuni.js; Gifty-architettura-e-flussi.md §2).
@@ -24,7 +26,6 @@ const BARRA: { href: string; testo: string; icona: NomeIconaTratto; sezione: Sez
   { href: "/idee", testo: "Idee regalo", icona: "idee", sezione: "idee" },
   { href: "/regalo-di-gruppo", testo: "Gruppo", icona: "gruppo", sezione: "gruppo", nomeIntero: "Regalo di gruppo" },
   { href: "/biglietto", testo: "Biglietto", icona: "biglietto", sezione: "biglietto" },
-  { href: "/account", testo: "Account", icona: "account", sezione: "account" },
 ];
 
 /**
@@ -32,7 +33,8 @@ const BARRA: { href: string; testo: string; icona: NomeIconaTratto; sezione: Sez
  * stanno i pulsanti del passo, e una seconda barra li coprirebbe.
  */
 export function barraNavigazioneVisibile(percorso: string): boolean {
-  if (["/crea", "/gestisci", "/accedi", "/biglietto/nuovo"].some((p) => percorso.startsWith(p))) return false;
+  // la pagina del gruppo (/gestisci) ha la cornice del sito, barra compresa (prototipi/gestisci.html)
+  if (["/crea", "/accedi", "/biglietto/nuovo"].some((p) => percorso.startsWith(p))) return false;
   // i passi del biglietto (/biglietto/<id>/dettagli, design, anteprima); la gestione invece ha la barra
   return !/^\/biglietto\/[^/]+\/(dettagli|design|anteprima)/.test(percorso);
 }
@@ -89,9 +91,14 @@ function CuorePreferiti() {
   );
 }
 
-/** Barra fissa in basso, solo sul telefono. Il segnaposto prima della barra evita che copra il fondo della pagina. */
+/**
+ * Barra fissa in basso, solo sul telefono. Il segnaposto prima della barra evita che copra il fondo della pagina. «Account»
+ * apre il foglio del menu utente (design.md §10.2), con le stesse voci della tendina.
+ */
 export function BarraNavigazione() {
   const percorso = usePathname();
+  const [foglio, setFoglio] = useState(false);
+  useEffect(() => setFoglio(false), [percorso]);
   if (!barraNavigazioneVisibile(percorso)) return null;
   return (
     <>
@@ -110,8 +117,33 @@ export function BarraNavigazione() {
               </Link>
             </li>
           ))}
+          <li>
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              aria-expanded={foglio}
+              aria-current={attiva(percorso, "account") ? "page" : undefined}
+              onClick={() => setFoglio(true)}
+            >
+              <IconaTratto nome="account" />
+              <span>Account</span>
+            </button>
+          </li>
         </ul>
       </nav>
+      {foglio ? (
+        <Velo onChiudi={() => setFoglio(false)} etichetta="t-account">
+          <div className="foglio-testa">
+            <h2 id="t-account" className="t-titolo" tabIndex={-1}>
+              Account
+            </h2>
+            <button type="button" className="icona-btn" onClick={() => setFoglio(false)} aria-label="Chiudi">
+              <IconaTratto nome="chiudi" />
+            </button>
+          </div>
+          <VociMenuUtente onScelta={() => setFoglio(false)} />
+        </Velo>
+      ) : null}
     </>
   );
 }

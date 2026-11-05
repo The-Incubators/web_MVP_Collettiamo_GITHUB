@@ -18,3 +18,5 @@ export * from "./Iniziali";
 export * from "./Chip";
 export * from "./IndicatorePassi";
 export * from "./Moduli";
+export * from "./Velo";
+export * from "./FotoLastra";
