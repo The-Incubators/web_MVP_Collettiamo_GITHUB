@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { AppProvider } from "@/components/AppProvider";
 import { PreferitiProvider } from "@/components/PreferitiProvider";
-import { Avviso, URL_FONT_ICONE } from "@/components/ui";
+import { URL_FONT_ICONE } from "@/components/ui";
 import { baseUrl, modalitaDati } from "@/lib/config";
 import "./globals.css";
 
@@ -52,15 +52,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href={URL_FONT_ICONE} />
       </head>
       <body>
-        {modalita === "memoria" ? (
-          <div className="no-stampa gutter pt-2">
-            <div className="mx-auto max-w-catalogo">
-              <Avviso tono="attenzione">
-                <p>Firebase non è configurato: i dati sono finti e non vengono salvati</p>
-              </Avviso>
-            </div>
-          </div>
-        ) : null}
         <AppProvider modalita={modalita}>
           <PreferitiProvider>{children}</PreferitiProvider>
         </AppProvider>

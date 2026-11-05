@@ -82,7 +82,7 @@ Copia negli appunti: `navigator.clipboard.writeText` nel gestore del click, con 
 - Contrasto: il colore `--gold` su sfondo chiaro non raggiunge 4,5:1 (3,7–4,2) e `--ok` su `--ok-field` arriva a 4,34. Non sono usati per testo piccolo: gli errori sono in `--ink` con un simbolo ⚠ in oro, le etichette di stato in `--ink`. Tutte le altre coppie di token superano AA in entrambi i temi (calcolato).
 - Il focus passa all'intestazione a ogni cambio di passo (wizard e flusso del partecipante); ogni controllo ha etichetta; le immagini hanno testo alternativo; l'area toccabile minima è 44 px.
 - `/c/[slug]/biglietto` è pubblica (come il rendiconto): chiunque abbia il link la vede. Si stampa in A5 e nasconde tutti gli elementi dell'interfaccia.
-- Il banner «Firebase non è configurato» compare in alto su tutte le pagine, anche sulla pagina del partecipante, finché si è in modalità memoria.
+- Nessun banner in modalità memoria (Cri, 5 novembre 2026: «can we remove the banner?»): la modalità memoria serve solo allo sviluppo in locale e usa il catalogo vero del repository; i dati inseriti non vengono salvati.
 
 ## 9. Limiti noti e fuori perimetro
 
