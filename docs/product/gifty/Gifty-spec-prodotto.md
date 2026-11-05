@@ -87,7 +87,7 @@ Una sola home. Tutto il resto si raggiunge da tre ingressi: Idee regalo, Regalo 
 
 Navigazione: Home, Idee regalo, Regalo di gruppo, Preferiti (cuore con contatore), account. Sul telefono la barra in basso ha le stesse voci. La voce attiva si calcola sul segmento esatto dell'indirizzo, non sul prefisso.
 
-Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costante `HOME_ATTIVA` e la home classica in `components/home/Home.tsx`, il parametro `?modo=` come scelta di default, le cartelle `Pagine_UX_V2`, `Pagine_UX_V3`, `Pagine_UX_V4` e `backup/`. Le cartelle `catalogo_amazon_*` si spostano in `scripts/dati/` se servono ancora agli import, altrimenti si eliminano. Prima di eliminare, Stefano conferma che non servono.
+Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costante `HOME_ATTIVA` e la home classica in `components/home/Home.tsx`, il parametro `?modo=` come scelta di default, le cartelle `Pagine_UX_V2`, `Pagine_UX_V3`, `Pagine_UX_V4` e `backup/`. Le cartelle `catalogo_amazon_*` si spostano in `scripts/dati/` se servono ancora agli import, altrimenti si eliminano. Prima di eliminare si verifica che nessuno script o import li usi.
 
 ## 6. Account
 
@@ -240,13 +240,13 @@ Cause comuni: ogni richiesta ha aggiunto una variante invece di trovare il suo p
 | C-09 | Varianti UX, due home, `?modo=` | Una home, catalogo secondo il contesto | 2 |
 | C-10 | Regole Firestore dei reminder non pubblicate (DECISIONI §41) | Pubblicarle con il sito | 3 |
 
-Livello 3 (dati, regole, accesso): revisione dell'architettura prima di scrivere codice, test delle regole sull'emulatore (oggi manca Java su entrambi i Mac), revisione indipendente, merge solo con l'approvazione di Stefano.
+Livello 3 (dati, regole, accesso): revisione dell'architettura prima di scrivere codice, test delle regole sull'emulatore (oggi manca Java su entrambi i Mac), revisione indipendente, merge con l'approvazione di Cri.
 
 ## 13. Fasi di lavoro
 
 | Fase | Contenuto | Fatto quando |
 |---|---|---|
-| 0. Specifica | Questo documento; Cri risponde a P-01…P-07; Stefano lo legge e lo accetta come lista unica | Specifica sul main; nessuna PR senza ID |
+| 0. Specifica | Questo documento; Cri risponde a P-01…P-07 e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
 | 1. Struttura | §5: home unica con due porte, nuova navigazione, `/idee`, `/account`; ritiro delle varianti; UX-01, UX-02, UX-11 | Ogni pagina raggiungibile da un ingresso; nessuna variante attiva; test e build verdi |
 | 2. Stile e copy | §10: hero immersiva, racconto, schede, gerarchia, intestazione comune, copy rivisto; UX-03…UX-10, UX-12…UX-16, UX-18, UX-20, UX-22…UX-24 | Confronto con la tavola su desktop e a 390 px; design audit senza P1; find-ai-slop sul testo |
 | 3. Regalo di gruppo | §7 e C-01…C-07: partenze, wizard con accesso alla fine, adesione con account, attesi e aggiunti a mano, quote, consegna, biglietto del gruppo | Criteri §14 verificati su emulatore e su un progetto di prova; revisione indipendente |
