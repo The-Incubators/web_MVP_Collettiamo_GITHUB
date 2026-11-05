@@ -30,7 +30,7 @@ Regola fondante: i soldi non passano mai da Gifty. Chi partecipa rimborsa l'orga
 | D-09 | Il biglietto si crea in Gifty e si manda via WhatsApp con il suo link | Cri, 28 ottobre 2026 |
 | D-10 | Gifty opera con una partita IVA, solo per fisco e amministrazione; non con Tempura. Nessuno Stripe | Cri, 28 ottobre e 5 novembre 2026 |
 | D-11 | Più avanti: un catalogo talmente curato che le persone comprano anche per sé. Non in questa versione | Cri, 28 ottobre 2026 |
-| D-12 | Reminder serve all'organizzatore per farsi rimborsare: dopo la consegna sollecita chi ha aderito e non ha ancora pagato. Gifty non manda messaggi: prepara un testo con link che l'organizzatore copia e incolla nel gruppo WhatsApp che ha già. Non serve un consenso per WhatsApp, perché il messaggio lo manda l'organizzatore; chi aderisce accetta l'informativa quando si iscrive | Cri, 5 novembre 2026 (era P-01) |
+| D-12 | Reminder serve all'organizzatore per farsi rimborsare: dopo la consegna sollecita chi ha aderito e non ha ancora pagato. Il promemoria arriva a ciascuno singolarmente, come notifica sul suo account Gifty, non via WhatsApp; nessuno vede chi altro non ha pagato. Via WhatsApp passa solo l'invito ad aderire: un link che l'organizzatore copia e incolla nel gruppo che ha già, quindi non serve un consenso per WhatsApp. Chi aderisce accetta l'informativa quando si iscrive | Cri, 5 novembre 2026 |
 | D-17 | Restano anche le ricorrenze: il calendario di compleanni e occasioni speciali degli amici, già fatto da Stefano su `/reminder`. Sta nell'account e prende un nome diverso da «Reminder» | Cri, 5 novembre 2026 (era P-08) |
 | D-13 | Accesso con Google o con un collegamento via email; nessuna password | Cri, 5 novembre 2026 (era P-02) |
 | D-14 | Chi apre il link prima di iscriversi vede il festeggiato, l'organizzatore e il regalo o lo scopo. Non vede quota né iscritti. L'accesso si chiede solo quando tocca «Partecipo» | Cri, 5 novembre 2026 (era P-03) |
@@ -53,6 +53,7 @@ Non sono decisioni. Il lavoro può partire con l'assunzione indicata; se Cri dec
 
 | ID | Punto | Assunzione per lavorare | Cosa cambia altrimenti |
 |---|---|---|---|
+| P-01 | Dove arriva la notifica del Reminder | Nell'account Gifty e per email all'indirizzo dell'account (messaggio di servizio, non marketing) | Solo nell'account: la vede solo chi riapre il sito. Notifica sul telefono: permesso del browser e service worker; su iPhone solo se il sito è sulla schermata Home |
 | P-06 | Biglietto da solo e biglietto del gruppo | Un solo modello (`Biglietto` con `tipo` «solo-biglietto» o «con-colletta», già in `lib/tipi.ts:388`); il vecchio biglietto stampabile `/c/[slug]/biglietto` si ritira | Se restano due sistemi, due stili e due codici da tenere |
 | P-07 | Titolare per l'informativa privacy | Il titolare della partita IVA. Il GDPR (art. 13) chiede di indicarlo nell'informativa: una riga nella pagina Privacy, nient'altro di visibile | Senza, l'informativa non si può pubblicare |
 
@@ -150,7 +151,7 @@ F-02 e F-03 sono la stessa partenza con uno o più regali: nel wizard è una sol
 
 - Il budget previsto non è mai mostrato come denaro ricevuto.
 - Se la quota cambia, il ricevuto resta; cambia il saldo. Per esempio: ricevuto 15 €, la quota sale a 18,75 €, il saldo diventa 3,75 €.
-- Reminder (D-12): l'organizzatore tocca «Copia il promemoria» e incolla il testo nel gruppo WhatsApp. Il testo dice quanti devono ancora pagare e porta il link al regalo; chi lo apre vede la propria quota, il saldo e come pagare. Il testo non fa nomi (assunzione: nominare chi non ha pagato davanti al gruppo può mettere in imbarazzo). Le persone aggiunte a mano l'organizzatore le segue lui.
+- Reminder (D-12): l'organizzatore tocca «Manda un promemoria» per tutti quelli con saldo da versare, o per una persona sola. Ognuno riceve la propria notifica (P-01) con quota, saldo, come pagare e il link al regalo. Le persone aggiunte a mano non hanno un account: l'organizzatore le segue lui.
 - Nessuna divisione per zero: senza aderenti non c'è una quota divisa.
 - Il gruppo discute in chat; l'organizzatore riporta l'accordo in Gifty senza riconferme individuali.
 
@@ -248,7 +249,7 @@ Livello 3 (dati, regole, accesso): revisione dell'architettura prima di scrivere
 
 | Fase | Contenuto | Fatto quando |
 |---|---|---|
-| 0. Specifica | Questo documento; Cri risponde a P-06 e P-07 (P-01…P-05 e P-08 decise il 5 novembre) e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
+| 0. Specifica | Questo documento; Cri risponde a P-01 (canale), P-06 e P-07 (P-02…P-05 e P-08 decise il 5 novembre) e approva la specifica come lista unica | Specifica sul main; nessuna PR senza ID |
 | 1. Struttura | §5: home unica con due porte, nuova navigazione, `/idee`, `/account`; ritiro delle varianti; UX-01, UX-02, UX-11 | Ogni pagina raggiungibile da un ingresso; nessuna variante attiva; test e build verdi |
 | 2. Stile e copy | §10: hero immersiva, racconto, schede, gerarchia, intestazione comune, copy rivisto; UX-03…UX-10, UX-12…UX-16, UX-18, UX-20, UX-22…UX-24 | Confronto con la tavola su desktop e a 390 px; design audit senza P1; find-ai-slop sul testo |
 | 3. Regalo di gruppo | §7 e C-01…C-07: partenze, wizard con accesso alla fine, adesione con account, attesi e aggiunti a mano, quote, consegna, biglietto del gruppo | Criteri §14 verificati su emulatore e su un progetto di prova; revisione indipendente |
