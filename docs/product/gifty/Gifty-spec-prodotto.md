@@ -89,7 +89,7 @@ Una sola home. Tutto il resto si raggiunge da tre ingressi: Idee regalo, Regalo 
 
 Navigazione: Home, Idee regalo, Regalo di gruppo, Preferiti (cuore con contatore), account. Sul telefono la barra in basso ha le stesse voci. La voce attiva si calcola sul segmento esatto dell'indirizzo, non sul prefisso.
 
-Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costante `HOME_ATTIVA` e la home classica in `components/home/Home.tsx`, il parametro `?modo=` come scelta di default, le cartelle `Pagine_UX_V2`, `Pagine_UX_V3`, `Pagine_UX_V4` e `backup/`. Le cartelle `catalogo_amazon_*` si spostano in `scripts/dati/` se servono ancora agli import, altrimenti si eliminano. Prima di eliminare si verifica che nessuno script o import li usi.
+Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costante `HOME_ATTIVA` e la home classica in `components/home/Home.tsx`, il parametro `?modo=` come scelta di default, le cartelle `Pagine_UX_V2`, `Pagine_UX_V3`, `Pagine_UX_V4`. Fatto il 5 novembre 2026: varianti e home classica tolte; `Pagine_UX_V2…V4` spostate in `docs/archivio/` (materiale di progetto citato da `app/globals.css` e da DECISIONI); `catalogo_amazon_*` spostate in `scripts/dati/`, perché le legge `scripts/importa_catalogo.py`. `backup/` resta dov'è: ci scrive `scripts/migra-link-affiliati.ts`.
 
 ## 6. Account
 
