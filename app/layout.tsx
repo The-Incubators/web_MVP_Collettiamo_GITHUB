@@ -1,23 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Source_Sans_3, Urbanist } from "next/font/google";
+import localFont from "next/font/local";
 import { AppProvider } from "@/components/AppProvider";
 import { PreferitiProvider } from "@/components/PreferitiProvider";
 import { Avviso, URL_FONT_ICONE } from "@/components/ui";
 import { baseUrl, modalitaDati } from "@/lib/config";
 import "./globals.css";
 
-// Direzione A (docs/product/gifty/Gifty-UX-design-guidelines.md): Urbanist per i titoli, Source Sans 3 per il testo.
-const display = Urbanist({
-  subsets: ["latin"],
-  weight: ["500", "700", "800"],
+// Gifty UX v2 (docs/specs/gifty-ux-v2/design.md §3.2): tre famiglie con licenza OFL, servite dal sito (app/fonts, con
+// le licenze accanto). Urbanist per titoli e cifre, Source Sans 3 per testo e controlli, Caveat solo dentro i biglietti.
+const display = localFont({
+  src: "./fonts/Urbanist.ttf",
+  weight: "100 900",
   variable: "--font-display",
   display: "swap",
 });
 
-const testo = Source_Sans_3({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+const testo = localFont({
+  src: "./fonts/SourceSans3.ttf",
+  weight: "200 900",
   variable: "--font-testo",
+  display: "swap",
+});
+
+const mano = localFont({
+  src: "./fonts/Caveat.ttf",
+  weight: "400 700",
+  variable: "--font-mano",
   display: "swap",
 });
 
@@ -38,7 +46,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const modalita = modalitaDati();
   return (
-    <html lang="it" className={`${display.variable} ${testo.variable}`}>
+    <html lang="it" className={`${display.variable} ${testo.variable} ${mano.variable}`}>
       <head>
         {/* font delle icone, ridotto all'elenco di components/ui/Icona.tsx */}
         <link rel="stylesheet" href={URL_FONT_ICONE} />

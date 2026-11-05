@@ -2,31 +2,29 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 import { sezioneDi, type Sezione } from "@/lib/navigazione";
 import { usePreferiti } from "./PreferitiProvider";
-import { Icona, type NomeIcona } from "./ui/Icona";
+import { IconaTratto, type NomeIconaTratto } from "./ui/IconaTratto";
 
 /**
- * Le voci principali (Gifty-architettura-e-flussi.md §2): barra in basso sul telefono (al massimo cinque),
- * collegamenti nell'intestazione da tablet in su. «Account» è solo nella barra: nell'intestazione l'account è il tondo
- * del profilo. «Preferiti» è solo nell'intestazione: sul telefono c'è il cuore accanto al profilo (`CuorePreferiti`).
+ * La cornice del sito di Gifty UX v2 (design.md §4, prototipi/comuni.js; Gifty-architettura-e-flussi.md §2).
+ * Intestazione: logo · Idee regalo · Regalo di gruppo · Biglietto · cuore con il numero dei preferiti · tondo
+ * dell'account; sul telefono logo e cuore. Barra in basso, solo sul telefono: Home · Idee regalo · Gruppo · Biglietto ·
+ * Account. In home l'intestazione è trasparente sulla parete della scena.
  */
-const VOCI: {
-  href: string;
-  testo: string;
-  icona: NomeIcona;
-  sezione: Sezione;
-  soloBarra?: true;
-  soloIntestazione?: true;
-  testoBarra?: string;
-}[] = [
-  // nell'intestazione la home è il logo, come di consueto; la voce c'è solo nella barra del telefono
-  { href: "/", testo: "Home", icona: "home", sezione: "home", soloBarra: true },
-  { href: "/idee", testo: "Idee regalo", icona: "auto_awesome", sezione: "idee" },
-  { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo", testoBarra: "Gruppo" },
-  { href: "/biglietto", testo: "Biglietto", icona: "draw", sezione: "biglietto" },
-  { href: "/preferiti", testo: "Preferiti", icona: "favorite", sezione: "preferiti", soloIntestazione: true },
-  { href: "/account", testo: "Account", icona: "account_circle", sezione: "account", soloBarra: true },
+const MENU: { href: string; testo: string; sezione: Sezione }[] = [
+  { href: "/idee", testo: "Idee regalo", sezione: "idee" },
+  { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", sezione: "gruppo" },
+  { href: "/biglietto", testo: "Biglietto", sezione: "biglietto" },
+];
+
+const BARRA: { href: string; testo: string; icona: NomeIconaTratto; sezione: Sezione; nomeIntero?: string }[] = [
+  { href: "/", testo: "Home", icona: "casa", sezione: "home" },
+  { href: "/idee", testo: "Idee regalo", icona: "idee", sezione: "idee" },
+  { href: "/regalo-di-gruppo", testo: "Gruppo", icona: "gruppo", sezione: "gruppo", nomeIntero: "Regalo di gruppo" },
+  { href: "/biglietto", testo: "Biglietto", icona: "biglietto", sezione: "biglietto" },
+  { href: "/account", testo: "Account", icona: "account", sezione: "account" },
 ];
 
 /**
@@ -44,103 +42,77 @@ function attiva(percorso: string, sezione: Sezione): boolean {
   return sezioneDi(percorso) === sezione;
 }
 
-function ContatorePreferiti({ n }: { n: number }) {
-  if (n === 0) return null;
+/**
+ * L'intestazione. `logo`, `passi` (il posto dei passi di «Trova il regalo») e `account` arrivano dal layout, così
+ * restano componenti del server dove possono. `data-cornice`: le viste a tutto schermo la rendono inerte.
+ */
+export function Intestazione({ logo, passi, account }: { logo: ReactNode; passi: ReactNode; account: ReactNode }) {
+  const percorso = usePathname();
+  const suScena = percorso === "/";
   return (
-    <span className="cifre absolute -right-2 -top-1 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-cta px-1 text-[11px] font-bold text-accent-2">
-      <span className="sr-only">: </span>
-      {n}
-    </span>
+    <header data-cornice className={`testa no-stampa ${suScena ? "su-scena" : ""}`}>
+      <div className="testa-in">
+        <Link href="/" className="marchio" aria-label="Gifty, vai alla home">
+          {logo}
+        </Link>
+        <nav className="menu" aria-label="Servizi">
+          {MENU.map((v) => (
+            <Link key={v.href} href={v.href} aria-current={attiva(percorso, v.sezione) ? "page" : undefined}>
+              {v.testo}
+            </Link>
+          ))}
+        </nav>
+        {passi}
+        <div className="testa-azioni">
+          <CuorePreferiti />
+          <div className="account-testa">{account}</div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/** Il cuore dei preferiti con il loro numero, su ogni schermo. */
+function CuorePreferiti() {
+  const percorso = usePathname();
+  const { preferiti } = usePreferiti();
+  const n = preferiti.size;
+  return (
+    <Link
+      href="/preferiti"
+      className="cuore-testa"
+      aria-label={n ? `Preferiti, ${n === 1 ? "1 regalo" : `${n} regali`}` : "Preferiti"}
+      aria-current={attiva(percorso, "preferiti") ? "page" : undefined}
+    >
+      <IconaTratto nome="cuore-pieno" />
+      {n ? <span aria-hidden="true">{n}</span> : null}
+    </Link>
   );
 }
 
 /** Barra fissa in basso, solo sul telefono. Il segnaposto prima della barra evita che copra il fondo della pagina. */
 export function BarraNavigazione() {
   const percorso = usePathname();
-  const { preferiti } = usePreferiti();
   if (!barraNavigazioneVisibile(percorso)) return null;
   return (
     <>
-      <div aria-hidden="true" className="h-20 md:hidden" />
-      <nav
-        aria-label="Principale"
-        className="no-stampa fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-safe backdrop-blur-xl md:hidden"
-      >
-        <ul className="mx-auto flex max-w-lg">
-          {VOCI.filter((v) => !v.soloIntestazione).map((v) => {
-            const corrente = attiva(percorso, v.sezione);
-            return (
-              <li key={v.href} className="flex-1">
-                <Link
-                  href={v.href}
-                  aria-current={corrente ? "page" : undefined}
-                  aria-label={v.testoBarra ? v.testo : undefined}
-                  className={`flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-bold leading-none ${corrente ? "text-accent" : "text-ink-soft"}`}
-                >
-                  {/* flex, non in riga: un'icona in riga si porta sotto lo spazio della linea di base (8 px in più) */}
-                  <span className="relative flex">
-                    <Icona nome={v.icona} piena={corrente} />
-                    {v.href === "/preferiti" ? <ContatorePreferiti n={preferiti.size} /> : null}
-                  </span>
-                  {v.testoBarra ?? v.testo}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </>
-  );
-}
-
-/** Le stesse voci, in riga nell'intestazione, da tablet in su. */
-export function NavigazioneOrizzontale() {
-  const percorso = usePathname();
-  const { preferiti } = usePreferiti();
-  return (
-    <nav aria-label="Principale" className="hidden md:block">
-      <ul className="flex items-center gap-1">
-        {VOCI.filter((v) => !v.soloBarra).map((v) => {
-          const corrente = attiva(percorso, v.sezione);
-          return (
+      <div aria-hidden="true" className="barra-spazio" />
+      <nav aria-label="Menu" className="barra-basso no-stampa">
+        <ul>
+          {BARRA.map((v) => (
             <li key={v.href}>
               <Link
                 href={v.href}
-                aria-current={corrente ? "page" : undefined}
-                className={`relative inline-flex min-h-tocco items-center rounded-full px-4 text-sm font-bold ${
-                  corrente ? "bg-accent-field text-accent" : "text-ink-soft hover:bg-surface-2 hover:text-ink"
-                }`}
+                aria-current={attiva(percorso, v.sezione) ? "page" : undefined}
+                aria-label={v.nomeIntero}
               >
-                {v.testo}
-                {v.href === "/preferiti" && preferiti.size > 0 ? (
-                  <span className="cifre ml-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-cta px-1 text-xs font-bold text-accent-2">
-                    <span className="sr-only">: </span>
-                    {preferiti.size}
-                  </span>
-                ) : null}
+                <IconaTratto nome={v.icona} />
+                <span>{v.testo}</span>
               </Link>
             </li>
-          );
-        })}
-      </ul>
-    </nav>
-  );
-}
-
-/** Il cuore dei Preferiti nell'intestazione, solo sul telefono: nella barra in basso i Preferiti non ci sono. */
-export function CuorePreferiti() {
-  const percorso = usePathname();
-  const { preferiti } = usePreferiti();
-  const corrente = attiva(percorso, "preferiti");
-  return (
-    <Link
-      href="/preferiti"
-      aria-label={preferiti.size ? `Preferiti: ${preferiti.size}` : "Preferiti"}
-      aria-current={corrente ? "page" : undefined}
-      className={`relative flex h-11 w-11 items-center justify-center rounded-full md:hidden ${corrente ? "bg-accent-field text-accent" : "text-ink-soft"}`}
-    >
-      <Icona nome="favorite" piena={corrente} />
-      <ContatorePreferiti n={preferiti.size} />
-    </Link>
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 }
