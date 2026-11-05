@@ -49,6 +49,14 @@ export const OCCASIONI_REGALO = [
   { id: "altro", etichetta: "Altro", icona: "regalo" },
 ] as const;
 
+/** Il nome dell'occasione da mostrare; gli id di prima (o sconosciuti) con l'iniziale maiuscola. */
+export function etichettaOccasione(id: string): string {
+  const o = OCCASIONI_REGALO.find((x) => x.id === id);
+  if (o) return o.etichetta;
+  const t = id.replace(/-/g, " ");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
 // L'ordine viene dalla priorità del file catalogo (domanda × adatta alla colletta × affiliabile).
 export const CATEGORIE_INTERESSI = [
   { id: "giochi", etichetta: "Giochi e passatempi", icona: "dice" },

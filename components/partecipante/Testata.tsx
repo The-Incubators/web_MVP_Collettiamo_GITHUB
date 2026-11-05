@@ -1,11 +1,11 @@
 import { Barra, Icona, ImmagineProdotto } from "@/components/ui";
+import { etichettaOccasione } from "@/lib/regalo/dati";
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { avanzamento, inizialiDi } from "@/lib/dominio/partecipanti";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import type { Colletta, Partecipante } from "@/lib/tipi";
 
-const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
 export function testoPartecipazione(c: Colletta): string {
   const n = c.nConfermati;
@@ -80,7 +80,7 @@ export function Testata({ colletta: c, righe, scaduta }: { colletta: Colletta; r
         <div className="flex min-w-0 flex-col items-start gap-1">
           <p className="text-sm font-bold">{c.organizzatoreNome} organizza</p>
           <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold">
-            {maiuscola(c.occasione)} · {dataBreve(c.dataRegalo)}
+            {etichettaOccasione(c.occasione)} · {dataBreve(c.dataRegalo)}
           </span>
         </div>
       </div>

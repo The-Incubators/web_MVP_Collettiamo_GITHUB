@@ -11,6 +11,24 @@ export function daProdotto(p: Prodotto): ProdottoColletta {
   };
 }
 
+/**
+ * Il regalo di un gruppo partito con «Prima raccolgo le adesioni» (spec §7.1, F-01): nessun prodotto, prezzo zero.
+ * Il regalo si sceglie dopo, nel budget, dalla pagina del gruppo.
+ */
+export const REGALO_DA_SCEGLIERE: ProdottoColletta = {
+  prodottoId: null,
+  nome: "",
+  prezzoCent: 0,
+  consegnaGiorni: 1,
+  urlEsterno: "",
+  immagine: { seme: "adesioni", icona: "esperienze" },
+};
+
+/** Il gruppo non ha ancora un regalo: è partito dalle adesioni. */
+export function regaloDaScegliere(p: ProdottoColletta): boolean {
+  return p.prodottoId === null && p.prezzoCent === 0 && p.nome === "";
+}
+
 /** Lo stesso regalo: stesso prodotto del catalogo, oppure stesso nome, prezzo e link. */
 export function stessoRegalo(a: ProdottoColletta, b: ProdottoColletta): boolean {
   if (a.prodottoId && b.prodottoId) return a.prodottoId === b.prodottoId;

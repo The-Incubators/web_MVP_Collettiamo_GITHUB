@@ -1,4 +1,4 @@
-import type { Errori, StatoWizard } from "./stato";
+import type { Errori, StatoWizard } from "@/lib/wizard/stato";
 
 export interface PropsPasso {
   s: StatoWizard;

@@ -67,8 +67,11 @@ export function Contatore({
   onCambia,
   etichettaMeno,
   etichettaPiu,
+  etichettaId,
 }: {
   id?: string;
+  /** l'id dell'etichetta visibile: il contatore diventa un gruppo con quel nome */
+  etichettaId?: string;
   valore: number;
   min: number;
   max: number;
@@ -77,7 +80,7 @@ export function Contatore({
   etichettaPiu: string;
 }) {
   return (
-    <span className="contatore">
+    <span className="contatore" role={etichettaId ? "group" : undefined} aria-labelledby={etichettaId}>
       <button type="button" aria-label={etichettaMeno} disabled={valore <= min} onClick={() => onCambia(Math.max(min, valore - 1))}>
         <IconaTratto nome="meno" />
       </button>
@@ -107,11 +110,14 @@ export function SceltaGrande({
   nome,
   children,
   onScegli,
+  extra,
   className = "",
 }: {
   scelto: boolean;
   nome: ReactNode;
   children?: ReactNode;
+  /** sotto la riga di supporto (il regalo già scelto, nel wizard) */
+  extra?: ReactNode;
   onScegli: () => void;
   className?: string;
 }) {
@@ -121,6 +127,7 @@ export function SceltaGrande({
       <span className="grid gap-1">
         <span className="nome">{nome}</span>
         {children ? <span className="muted">{children}</span> : null}
+        {extra}
       </span>
     </button>
   );

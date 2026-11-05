@@ -1,11 +1,11 @@
 import { BottoneLink, Icona, ImmagineProdotto } from "@/components/ui";
+import { etichettaOccasione } from "@/lib/regalo/dati";
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { calcolaChiusura } from "@/lib/dominio/quota";
 import type { Colletta, Partecipante } from "@/lib/tipi";
 import { CATALOGO_GRUPPO } from "@/lib/ux";
 
-const maiuscola = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
 /** Lo stato finale della colletta: pagina pubblica in sola lettura. Mostra solo chi ha pagato, mai chi manca. */
 export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: Partecipante[] }) {
@@ -20,7 +20,7 @@ export function Rendiconto({ colletta: c, righe }: { colletta: Colletta; righe: 
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="min-w-0 truncate text-xs font-semibold text-ink-soft">
-          {c.organizzatoreNome} per {c.festeggiato} · {maiuscola(c.occasione)} {dataBreve(c.dataRegalo)}
+          {c.organizzatoreNome} per {c.festeggiato} · {etichettaOccasione(c.occasione)} {dataBreve(c.dataRegalo)}
         </p>
         <p className="inline-flex shrink-0 items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-bold text-on-accent">
           <Icona nome="check_circle" dimensione={16} />

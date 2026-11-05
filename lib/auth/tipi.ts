@@ -27,6 +27,8 @@ export interface Autenticazione {
 export const CHIAVE_UID = "colletta.uid";
 export const CHIAVE_EMAIL_ACCESSO = "colletta.emailAccesso";
 export const CHIAVE_NOME_ACCESSO = "colletta.nomeAccesso";
+/** Dove tornare dopo l'accesso con il collegamento via email (che apre /accedi). */
+export const CHIAVE_DOPO_ACCESSO = "colletta.dopoAccesso";
 
 /** localStorage può mancare o lanciare (navigazione privata, dati bloccati): mai un errore visibile. */
 export function leggiLocale(chiave: string): string | null {
