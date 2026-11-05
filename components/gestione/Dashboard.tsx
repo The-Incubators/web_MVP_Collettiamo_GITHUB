@@ -446,7 +446,7 @@ export function Dashboard({ slug }: { slug: string }) {
         <div className="flex items-start justify-between gap-2">
           <div>
             <h2 id="tutti" className="text-xl font-semibold text-accent-2">
-              Partecipanti
+              Persone
             </h2>
             <p className="text-xs text-ink-soft">{Math.max(c.previsti, c.nAttesi)} previsti</p>
           </div>

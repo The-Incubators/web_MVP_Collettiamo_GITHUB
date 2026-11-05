@@ -196,7 +196,7 @@ export function SezioneVotazione({
         <h2 id="aggiungi-org" className="text-xl font-semibold text-accent-2">
           Aggiungi un regalo
         </h2>
-        <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} avvisoLink={false} />
+        <ScegliRegalo key={chiave} valore={nuovo} onScelta={setNuovo} />
         <Bottone onClick={() => void aggiungi()} disabled={!nuovo} className="self-start">
           <IconaPiu width={18} height={18} /> Aggiungi alla lista
         </Bottone>

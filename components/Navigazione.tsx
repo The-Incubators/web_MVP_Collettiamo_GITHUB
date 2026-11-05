@@ -20,7 +20,8 @@ const VOCI: {
   soloIntestazione?: true;
   testoBarra?: string;
 }[] = [
-  { href: "/", testo: "Home", icona: "home", sezione: "home" },
+  // nell'intestazione la home è il logo, come di consueto; la voce c'è solo nella barra del telefono
+  { href: "/", testo: "Home", icona: "home", sezione: "home", soloBarra: true },
   { href: "/idee", testo: "Idee regalo", icona: "auto_awesome", sezione: "idee" },
   { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo", testoBarra: "Gruppo" },
   { href: "/biglietto", testo: "Biglietto", icona: "draw", sezione: "biglietto" },

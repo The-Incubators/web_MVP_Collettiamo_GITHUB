@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ScegliRegalo } from "@/components/ScegliRegalo";
-import { Bottone, Campo, Icona, IconaPiu, Interruttore, SchedaScelta } from "@/components/ui";
+import { Bottone, Campo, IconaPiu, Interruttore, SchedaScelta } from "@/components/ui";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { conRegalo } from "@/lib/dominio/regali";
 import { MAX_ORE, MIN_ORE } from "@/lib/dominio/votazione";
@@ -66,10 +66,6 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
           onSeleziona={attivaVotazione}
         />
       </div>
-      <p className="flex items-start gap-2 rounded-2xl bg-surface-2 p-3 text-sm text-ink-soft">
-        <Icona nome="info" dimensione={20} />
-        Se scegli la votazione, nessuno paga finché non vince un regalo.
-      </p>
 
       {!s.votazioneAttiva ? (
         <div
@@ -118,7 +114,7 @@ export function Passo1Regalo({ s, cambia, errori, adesso }: PropsPasso) {
             <h2 id="aggiungi" className="text-xl font-semibold text-accent-2">
               Aggiungi un regalo
             </h2>
-            <ScegliRegalo key={chiave} valore={bozza} onScelta={setBozza} avvisoLink={false} onAggiungi={aggiungiDaCatalogo} giaInLista={s.candidati} />
+            <ScegliRegalo key={chiave} valore={bozza} onScelta={setBozza} onAggiungi={aggiungiDaCatalogo} giaInLista={s.candidati} />
             <Bottone onClick={aggiungi} disabled={!bozza} className="self-start">
               <IconaPiu width={18} height={18} /> Aggiungi alla lista
             </Bottone>

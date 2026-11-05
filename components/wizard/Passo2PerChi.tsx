@@ -62,7 +62,7 @@ export function Passo2PerChi({ s, cambia, errori, adesso }: PropsPasso) {
 
       <Campo
         etichetta="Il tuo nome"
-        suggerimento="Lo vedranno i partecipanti: «Marco organizza»."
+        suggerimento="Chi apre il link leggerà «Marco organizza»."
         value={s.organizzatoreNome}
         onChange={(e) => cambia({ organizzatoreNome: e.target.value })}
         errore={errori.organizzatoreNome}

@@ -42,7 +42,7 @@ function AperturaClassica() {
           className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
         >
           <Icona nome="visibility" dimensione={18} />
-          Guarda cosa vedranno i partecipanti
+          Guarda un esempio
         </Link>
       </div>
     </section>
@@ -129,11 +129,6 @@ function Garanzie() {
       </span>
       <div className="flex min-w-0 flex-col gap-1.5">
         <h2 className="flex items-center gap-1.5 font-sans text-xs font-bold text-accent-2">
-          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
-          Nessuna registrazione
-        </h2>
-        <p className="text-sm leading-snug text-ink-soft">Chi partecipa scrive solo il suo nome: niente account né password.</p>
-        <h2 className="flex items-center gap-1.5 pt-1 font-sans text-xs font-bold text-accent-2">
           <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-cta" />I soldi vanno a te
         </h2>
         <p className="text-sm leading-snug text-ink-soft">Con PayPal, Satispay, bonifico o contanti. Noi non li tocchiamo.</p>

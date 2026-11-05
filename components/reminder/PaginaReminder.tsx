@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { Avviso, Bottone, Icona, type NomeIcona } from "@/components/ui";
+import { Bottone, Icona, type NomeIcona } from "@/components/ui";
 import {
   caselleDelMese,
   etichettaTipo,
@@ -79,8 +79,8 @@ export function PaginaReminder() {
   return (
     <div className="mx-auto flex max-w-lg flex-col gap-6">
       <div ref={inCima} className="flex scroll-mt-24 flex-col gap-2">
-        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Reminder</h1>
-        <p className="text-ink-soft">I compleanni e le ricorrenze che non vuoi dimenticare. Ti avviseremo qualche settimana prima, così hai tempo per il regalo.</p>
+        <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Ricorrenze</h1>
+        <p className="text-ink-soft">I compleanni e le occasioni speciali dei tuoi amici.</p>
         {autenticazionePronta && !conAccount ? (
           <p className="text-sm text-ink-soft">
             Sono salvati su questo dispositivo.{" "}
@@ -153,9 +153,6 @@ export function PaginaReminder() {
             onGiorno={setGiornoScelto}
             onApri={apri}
           />
-          <Avviso titolo="Le notifiche arriveranno presto">
-            Ti avviseremo con una notifica, con l&apos;anticipo che scegli per ogni ricorrenza. Intanto le trovi tutte qui.
-          </Avviso>
         </>
       )}
     </div>

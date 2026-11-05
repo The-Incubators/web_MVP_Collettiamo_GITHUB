@@ -192,10 +192,6 @@ export function PaginaPartecipante({
                 <p>Hai detto che non partecipi. Se hai cambiato idea, tocca «Partecipo».</p>
               </Avviso>
             ) : null}
-            <p className="flex items-center gap-2 rounded-2xl bg-surface-2 px-4 py-3 text-sm">
-              <Icona nome="bolt" dimensione={20} className="text-cta-2" />
-              Nessuna registrazione: basta il tuo nome.
-            </p>
             {problema ? (
               <Avviso tono="attenzione" live>
                 <p>{problema}</p>
