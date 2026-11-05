@@ -22,7 +22,7 @@ const GRUPPI: { titolo: string; voci: { href: string; testo: string }[] }[] = [
     voci: [
       { href: "/regalo-di-gruppo", testo: "Organizza un regalo" },
       { href: "/le-mie-collette", testo: "Le mie collette" },
-      { href: "/biglietto/nuovo", testo: "Biglietto" },
+      { href: "/biglietto", testo: "Biglietto" },
     ],
   },
 ];

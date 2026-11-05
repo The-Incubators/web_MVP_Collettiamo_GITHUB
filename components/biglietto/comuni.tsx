@@ -4,10 +4,8 @@
 // aiuto «?», fumetto «i» con «Ho capito», coachmark.
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { useApp } from "@/components/AppProvider";
-import { Logo } from "@/components/ui";
 import { giaVisto, segnaVisto } from "@/lib/biglietti/client";
 
 /**
@@ -41,7 +39,6 @@ export function IntestazioneWizard({
   percento,
   titolo,
   larghezza = "max-w-[600px]",
-  accedi = true,
 }: {
   /** dove porta la freccia; null = nessuna freccia; "storia" = indietro del browser */
   indietro: string | "storia" | null;
@@ -49,18 +46,16 @@ export function IntestazioneWizard({
   percento?: number;
   titolo?: string;
   larghezza?: string;
-  accedi?: boolean;
 }) {
   const router = useRouter();
-  const percorso = usePathname();
-  const { utente, pronto } = useApp();
   const freccia = (
     <svg viewBox="0 0 24 24" width={24} height={24} fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M15 5 8 12l7 7" />
     </svg>
   );
   return (
-    <header className="no-stampa sticky top-0 z-30 bg-field/90 pt-safe backdrop-blur-xl">
+    // dentro il sito: sta sotto l'intestazione del sito (alta 64 px più la zona sicura), che ha già logo e accesso
+    <header className="no-stampa sticky top-[calc(4rem+env(safe-area-inset-top))] z-30 bg-field/90 backdrop-blur-xl">
       <div className={`gutter mx-auto ${larghezza} pb-3`}>
         <div className="grid grid-cols-[44px_1fr_auto] items-center py-1">
           {indietro === null ? (
@@ -77,16 +72,10 @@ export function IntestazioneWizard({
           {titolo ? (
             <h1 className="text-center font-display text-xl font-bold text-accent-2">{titolo}</h1>
           ) : (
-            <Link href="/" className="mx-auto inline-flex min-h-tocco items-center" aria-label="Gifty, vai alla home">
-              <Logo className="h-9" />
-            </Link>
+            <span />
           )}
           <span className="flex min-w-11 justify-end">
-            {accedi && pronto && !utente ? (
-              <Link href={`/accedi?next=${encodeURIComponent(percorso)}`} className="inline-flex min-h-tocco items-center text-sm font-bold text-accent underline underline-offset-4">
-                Accedi
-              </Link>
-            ) : null}
+
           </span>
         </div>
         {segmenti && percento !== undefined ? <BarraSegmentata segmenti={segmenti} percento={percento} /> : null}

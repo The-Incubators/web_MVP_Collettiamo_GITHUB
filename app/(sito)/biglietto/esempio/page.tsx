@@ -6,8 +6,9 @@ export const metadata: Metadata = { title: "Esempio di biglietto", robots: { ind
 
 export default function PaginaEsempio() {
   return (
-    <main className="flex flex-1 flex-col">
+    // è la vista del festeggiato: a tutto schermo sopra intestazione e barra del sito (Gifty-architettura-e-flussi.md §1.4)
+    <div className="fixed inset-0 z-50 flex flex-col overflow-y-auto bg-field">
       <EsempioBiglietto />
-    </main>
+    </div>
   );
 }

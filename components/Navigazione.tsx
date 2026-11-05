@@ -7,14 +7,24 @@ import { usePreferiti } from "./PreferitiProvider";
 import { Icona, type NomeIcona } from "./ui/Icona";
 
 /**
- * Le voci principali (Gifty-spec-prodotto.md §5): barra in basso sul telefono, collegamenti nell'intestazione da
- * tablet in su. «Account» è solo nella barra: nell'intestazione l'account è il tondo del profilo (MenuProfilo).
+ * Le voci principali (Gifty-architettura-e-flussi.md §2): barra in basso sul telefono (al massimo cinque),
+ * collegamenti nell'intestazione da tablet in su. «Account» è solo nella barra: nell'intestazione l'account è il tondo
+ * del profilo. «Preferiti» è solo nell'intestazione: sul telefono c'è il cuore accanto al profilo (`CuorePreferiti`).
  */
-const VOCI: { href: string; testo: string; icona: NomeIcona; sezione: Sezione; soloBarra?: true; testoBarra?: string }[] = [
+const VOCI: {
+  href: string;
+  testo: string;
+  icona: NomeIcona;
+  sezione: Sezione;
+  soloBarra?: true;
+  soloIntestazione?: true;
+  testoBarra?: string;
+}[] = [
   { href: "/", testo: "Home", icona: "home", sezione: "home" },
   { href: "/idee", testo: "Idee regalo", icona: "auto_awesome", sezione: "idee" },
   { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", icona: "groups", sezione: "gruppo", testoBarra: "Gruppo" },
-  { href: "/preferiti", testo: "Preferiti", icona: "favorite", sezione: "preferiti" },
+  { href: "/biglietto", testo: "Biglietto", icona: "draw", sezione: "biglietto" },
+  { href: "/preferiti", testo: "Preferiti", icona: "favorite", sezione: "preferiti", soloIntestazione: true },
   { href: "/account", testo: "Account", icona: "account_circle", sezione: "account", soloBarra: true },
 ];
 
@@ -23,7 +33,9 @@ const VOCI: { href: string; testo: string; icona: NomeIcona; sezione: Sezione; s
  * stanno i pulsanti del passo, e una seconda barra li coprirebbe.
  */
 export function barraNavigazioneVisibile(percorso: string): boolean {
-  return !["/crea", "/gestisci", "/accedi"].some((p) => percorso.startsWith(p));
+  if (["/crea", "/gestisci", "/accedi", "/biglietto/nuovo"].some((p) => percorso.startsWith(p))) return false;
+  // i passi del biglietto (/biglietto/<id>/dettagli, design, anteprima); la gestione invece ha la barra
+  return !/^\/biglietto\/[^/]+\/(dettagli|design|anteprima)/.test(percorso);
 }
 
 /** La voce è accesa sul segmento esatto dell'indirizzo, non sul prefisso (UX-11, lib/navigazione.ts). */
@@ -54,7 +66,7 @@ export function BarraNavigazione() {
         className="no-stampa fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-safe backdrop-blur-xl md:hidden"
       >
         <ul className="mx-auto flex max-w-lg">
-          {VOCI.map((v) => {
+          {VOCI.filter((v) => !v.soloIntestazione).map((v) => {
             const corrente = attiva(percorso, v.sezione);
             return (
               <li key={v.href} className="flex-1">
@@ -111,5 +123,23 @@ export function NavigazioneOrizzontale() {
         })}
       </ul>
     </nav>
+  );
+}
+
+/** Il cuore dei Preferiti nell'intestazione, solo sul telefono: nella barra in basso i Preferiti non ci sono. */
+export function CuorePreferiti() {
+  const percorso = usePathname();
+  const { preferiti } = usePreferiti();
+  const corrente = attiva(percorso, "preferiti");
+  return (
+    <Link
+      href="/preferiti"
+      aria-label={preferiti.size ? `Preferiti: ${preferiti.size}` : "Preferiti"}
+      aria-current={corrente ? "page" : undefined}
+      className={`relative flex h-11 w-11 items-center justify-center rounded-full md:hidden ${corrente ? "bg-accent-field text-accent" : "text-ink-soft"}`}
+    >
+      <Icona nome="favorite" piena={corrente} />
+      <ContatorePreferiti n={preferiti.size} />
+    </Link>
   );
 }

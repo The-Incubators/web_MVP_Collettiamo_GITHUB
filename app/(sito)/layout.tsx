@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BarraListaRegali } from "@/components/BarraListaRegali";
 import { MenuProfilo } from "@/components/MenuProfilo";
-import { BarraNavigazione, NavigazioneOrizzontale } from "@/components/Navigazione";
+import { BarraNavigazione, CuorePreferiti, NavigazioneOrizzontale } from "@/components/Navigazione";
 import { Logo } from "@/components/ui";
 import { PiePagina } from "@/components/PiePagina";
 
@@ -18,6 +18,7 @@ export default function LayoutSito({ children, modale }: { children: React.React
           <div id="intestazione-passi" className="flex min-w-0 flex-1 justify-center" />
           <div className="flex items-center gap-3">
             <NavigazioneOrizzontale />
+            <CuorePreferiti />
             <MenuProfilo />
           </div>
         </div>

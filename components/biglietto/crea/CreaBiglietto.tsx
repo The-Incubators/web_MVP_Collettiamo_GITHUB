@@ -512,7 +512,8 @@ export function CreaBiglietto() {
   ];
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-field">
+    // editor a tutto schermo sopra l'intestazione del sito: è un compito che si fa da soli, si chiude con la ×
+    <div className="fixed inset-0 z-50 flex flex-col bg-field">
       {/* intestazione: chiudi, passo e barra di avanzamento */}
       <header className="border-b border-line bg-surface">
         <div className="mx-auto flex w-full max-w-[640px] items-center gap-3 px-4 py-3 lg:max-w-[1200px] lg:px-8">
