@@ -1,5 +1,5 @@
 import { archivioBiglietti } from "@/lib/biglietti";
-import { idFirma } from "@/lib/biglietti/accesso";
+import { idFirma, utenteDa } from "@/lib/biglietti/accesso";
 import { nomeDaUrl } from "@/lib/biglietti/immagini";
 import { chiaveFirmatario, salvaFirmaDaCorpo } from "@/lib/biglietti/firmatario";
 import { corpoJson, errore, risposta } from "@/lib/biglietti/rotte";
@@ -17,7 +17,8 @@ export async function POST(richiesta: Request, { params }: Ctx) {
   if (!b || b.stato === "bozza") return errore("Biglietto non trovato.", 404);
   const c = await corpoJson(richiesta);
   if (!c) return errore("Richiesta non valida.");
-  const esito = await salvaFirmaDaCorpo(b, chiave, c);
+  const utente = await utenteDa(richiesta);
+  const esito = await salvaFirmaDaCorpo(b, chiave, c, utente?.uid ?? null);
   if (!esito.ok) return errore(esito.errore, esito.status);
   return risposta({ ok: true, firmaId: esito.firma.id, nuova: esito.nuova });
 }

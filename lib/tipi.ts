@@ -162,6 +162,11 @@ export interface Colletta {
   nAderenti: number;
 
   acquisto: Acquisto | null;
+  /**
+   * «Regalo consegnato» (spec §7.6, D-15): da qui nessuno si aggiunge più; quote e rimborsi restano aperti finché non
+   * sono saldati. Manca nei gruppi creati prima.
+   */
+  consegnatoIl?: number | null;
   /** estensione: null = il regalo l'ha scelto chi organizza */
   votazione: Votazione | null;
 

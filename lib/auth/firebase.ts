@@ -1,7 +1,11 @@
 // Autenticazione Firebase: collegamento via email e Google per chi organizza, anonima per chi partecipa.
 
 import {
+  EmailAuthProvider,
   GoogleAuthProvider,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
+  updateProfile,
   isSignInWithEmailLink,
   onAuthStateChanged,
   sendSignInLinkToEmail,
@@ -32,14 +36,53 @@ function daUtente(u: User): Utente {
     nome: u.isAnonymous ? "" : (nomeSalvato ?? u.displayName ?? nomeDaEmail(u.email ?? "")),
     email: u.email,
     anonimo: u.isAnonymous,
+    accesso: u.providerData.some((p) => p.providerId === "google.com") ? "google" : "email",
   };
 }
 
+const CHIAVE_RITORNO_RIACCESSO = "colletta.riaccesso";
+
 export function creaAutenticazioneFirebase(): Autenticazione {
   const auth = authFirebase();
+  // chi osserva riceve anche il nome cambiato da «Il mio account» (Firebase non avvisa dei cambi di profilo)
+  const ascoltatori = new Set<(u: Utente | null) => void>();
   return {
     osserva(cb) {
-      return onAuthStateChanged(auth, (u) => cb(u && !u.isAnonymous ? daUtente(u) : null));
+      ascoltatori.add(cb);
+      const annulla = onAuthStateChanged(auth, (u) => cb(u && !u.isAnonymous ? daUtente(u) : null));
+      return () => {
+        ascoltatori.delete(cb);
+        annulla();
+      };
+    },
+    async cambiaNome(nome) {
+      const u = auth.currentUser;
+      if (!u || u.isAnonymous || !nome.trim()) return;
+      await updateProfile(u, { displayName: nome.trim() });
+      scriviLocale(CHIAVE_NOME_ACCESSO, nome.trim());
+      for (const cb of ascoltatori) cb(daUtente(u));
+    },
+    async riaccedi(ritorno) {
+      await auth.authStateReady();
+      const u = auth.currentUser;
+      if (!u || u.isAnonymous) throw new Error("Nessun account");
+      if (u.providerData.some((p) => p.providerId === "google.com")) {
+        await reauthenticateWithPopup(u, new GoogleAuthProvider());
+        return "fatto";
+      }
+      const url = `${window.location.origin}${ritorno}`;
+      await sendSignInLinkToEmail(auth, u.email ?? "", { url, handleCodeInApp: true });
+      scriviLocale(CHIAVE_RITORNO_RIACCESSO, u.email ?? "");
+      return "link";
+    },
+    async completaRiaccesso(url) {
+      await auth.authStateReady();
+      const u = auth.currentUser;
+      const email = leggiLocale(CHIAVE_RITORNO_RIACCESSO) ?? u?.email;
+      if (!u || !email || !isSignInWithEmailLink(auth, url)) return false;
+      await reauthenticateWithCredential(u, EmailAuthProvider.credentialWithLink(email, url));
+      scriviLocale(CHIAVE_RITORNO_RIACCESSO, null);
+      return true;
     },
     async assicuraIdentita() {
       await auth.authStateReady();
@@ -82,9 +125,10 @@ export function creaAutenticazioneFirebase(): Autenticazione {
     async esci() {
       await signOut(auth);
     },
-    async token() {
+    async token(forza = false) {
       await auth.authStateReady();
-      return (await auth.currentUser?.getIdToken()) ?? null;
+      // dopo un nuovo accesso serve un token nuovo: porta l'ora dell'accesso (auth_time) che il server controlla
+      return (await auth.currentUser?.getIdToken(forza)) ?? null;
     },
   };
 }

@@ -14,7 +14,9 @@ export const UID_VISITATORE_DEMO = "visitatore-demo";
  * le operazioni girano solo in locale e non scrivono nulla.
  */
 export function usePartecipazione(iniziale: Colletta, righeIniziali: Partecipante[] | null, simulato: boolean) {
-  const { dati, auth } = useApp();
+  const { dati, auth, utente } = useApp();
+  // dopo l'accesso con «Partecipo» l'identità diventa quella dell'account (D-06): si ricalcola
+  const uidAccount = utente?.uid ?? null;
   const slug = iniziale.slug;
   const [colletta, setColletta] = useState(iniziale);
   const [righe, setRighe] = useState<Partecipante[] | null>(simulato ? (righeIniziali ?? []) : null);
@@ -41,7 +43,7 @@ export function usePartecipazione(iniziale: Colletta, righeIniziali: Partecipant
     return () => {
       attivo = false;
     };
-  }, [auth, simulato]);
+  }, [auth, simulato, uidAccount]);
 
   // Tempo reale, appena l'identità è nota.
   useEffect(() => {
@@ -182,6 +184,23 @@ export function usePartecipazione(iniziale: Colletta, righeIniziali: Partecipant
     },
     [dati, slug, uid, simulato],
   );
+  /** Il voto a scelta unica («Quale regalo?»): pieno al regalo scelto, via dagli altri. */
+  const scegli = useCallback(
+    async (propostaId: string) => {
+      if (simulato) return;
+      const prima = votiLocali;
+      setVotiLocali(Object.fromEntries(proposte.map((x) => [x.id, x.id === propostaId ? 5 : 0])));
+      try {
+        if (identita.current) await identita.current;
+        await dati.scegliVoto(slug, propostaId);
+        void dati.registraEvento(slug, { tipo: "voto", uidAnonimo: uid, partecipanteId: null, meta: { stelle: 5 } }).catch(() => {});
+      } catch (e) {
+        setVotiLocali(prima);
+        throw e;
+      }
+    },
+    [dati, slug, uid, simulato, proposte, votiLocali],
+  );
   const aspettaIdentitaInterna = async () => {
     if (identita.current) await identita.current;
   };
@@ -221,7 +240,7 @@ export function usePartecipazione(iniziale: Colletta, righeIniziali: Partecipant
     return identita.current;
   }, [simulato, uid]);
 
-  return { colletta, righe, uid, miaRiga, offline, esegui, registra, aspettaIdentita, proposte, voti, vota, proponi, rimuoviProposta, mioVoto, votazioneScadutaOra: () => votazioneScaduta(colletta, Date.now()) };
+  return { colletta, righe, uid, miaRiga, offline, esegui, registra, aspettaIdentita, proposte, voti, vota, scegli, proponi, rimuoviProposta, mioVoto, votazioneScadutaOra: () => votazioneScaduta(colletta, Date.now()) };
 }
 
 export type Partecipazione = ReturnType<typeof usePartecipazione>;

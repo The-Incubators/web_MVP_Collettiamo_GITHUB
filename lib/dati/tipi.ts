@@ -1,3 +1,4 @@
+import type { DatiAccount, PianoCancellazione } from "../dominio/cancellazione";
 import type { Operazione } from "../dominio/operazioni";
 import type { ImpostazioniCatalogo } from "../dominio/ordineCatalogo";
 import type { Reminder } from "../dominio/reminder";
@@ -66,6 +67,37 @@ export interface Dati extends DatiLettura {
   eliminaReminder(uid: string, id: string): Promise<void>;
   /** Registra che un promemoria è stato inoltrato: incrementa `solleciti` sulle righe e scrive l'evento. */
   registraSolleciti(slug: string, pid: string[], momento: string): Promise<void>;
+  /**
+   * Il voto a scelta unica della pagina dell'invito (prototipi/invito.html, «Quale regalo?»): un voto pieno al regalo
+   * scelto, e via i voti della stessa persona agli altri. Con tutti i voti a cinque stelle la classifica (media, poi
+   * numero di voti) premia il regalo scelto da più persone.
+   */
+  scegliVoto(slug: string, propostaId: string): Promise<void>;
+  /** «I miei regali»: i regali organizzati (con tutte le righe) e quelli a cui si partecipa (con la propria riga). */
+  mieiRegali(uid: string): Promise<RegaloDellAccount[]>;
+  /** Il profilo dell'account (/utenti/{uid}): nome e scelta della newsletter. */
+  profilo(uid: string): Promise<Profilo | null>;
+  aggiornaProfilo(uid: string, patch: Partial<Profilo>): Promise<void>;
+}
+
+/** Dove la cancellazione dell'account legge e scrive i regali di gruppo (memoria o Firestore con l'Admin SDK). */
+export interface ArchivioAccount {
+  raccogli(uid: string): Promise<Pick<DatiAccount, "preferiti" | "ricorrenze" | "organizzati" | "altrui">>;
+  /** Applica la parte del piano che tocca regali, preferiti, ricorrenze e profilo. Si può ripetere senza danni. */
+  applica(piano: PianoCancellazione, uid: string): Promise<void>;
+}
+
+export interface Profilo {
+  nome: string;
+  /** consenso alla newsletter, separato e mai preselezionato (spec §6) */
+  newsletter: boolean;
+}
+
+export interface RegaloDellAccount {
+  colletta: Colletta;
+  /** chi organizza: tutte le righe; chi partecipa: solo la propria */
+  righe: Partecipante[];
+  organizzo: boolean;
 }
 
 /**

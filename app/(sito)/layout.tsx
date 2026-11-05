@@ -1,29 +1,6 @@
-import { BarraListaRegali } from "@/components/BarraListaRegali";
-import { MenuProfilo } from "@/components/MenuProfilo";
-import { BarraNavigazione, Intestazione } from "@/components/Navigazione";
-import { Logo } from "@/components/ui";
-import { PiePagina } from "@/components/PiePagina";
-import { PiePaginaSeVisibile } from "@/components/CorniceSito";
+import { CorniceCompleta } from "@/components/CorniceCompleta";
 
-/**
- * La cornice del sito (Gifty UX v2, design.md §4): intestazione, contenuto, piè di pagina e barra in basso sul telefono.
- */
+/** La cornice del sito (Gifty UX v2, design.md §4). */
 export default function LayoutSito({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative flex min-h-dvh flex-col">
-      <Intestazione
-        logo={<Logo priorita className="h-7" />}
-        account={<MenuProfilo />}
-      />
-      <main className="flex-1">{children}</main>
-      {/* data-cornice: le viste a tutto schermo la rendono inerte (components/CorniceSito.tsx) */}
-      <div data-cornice>
-        <PiePaginaSeVisibile>
-          <PiePagina />
-        </PiePaginaSeVisibile>
-        <BarraListaRegali />
-        <BarraNavigazione />
-      </div>
-    </div>
-  );
+  return <CorniceCompleta>{children}</CorniceCompleta>;
 }

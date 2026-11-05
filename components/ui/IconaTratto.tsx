@@ -41,6 +41,14 @@ const PERCORSI = {
   ),
   play: <path fill="currentColor" stroke="none" d="M6 4l14 8-14 8z" />,
   sx: <path d="M15 5l-7 7 7 7" />,
+  dx: <path d="M9 5l7 7-7 7" />,
+  voto: <path d="M5 12l4 4 10-10" />,
+  esci: (
+    <>
+      <path d="M10 4H5v16h5" />
+      <path d="M15 8l4 4-4 4M19 12H9" />
+    </>
+  ),
   piu: <path d="M12 5v14M5 12h14" />,
   meno: <path d="M5 12h14" />,
   spunta: <path d="M5 12.5l4.5 4.5L19 7" />,

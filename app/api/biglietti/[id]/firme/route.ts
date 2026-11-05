@@ -12,7 +12,7 @@ export async function GET(richiesta: Request, { params }: Ctx) {
   if (!b) return esito;
   const firme = (await archivioBiglietti().firme(id))
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    .map(({ tokenModifica, ...f }) => f)
+    .map(({ tokenModifica, accountUid, ...f }) => f)
     .sort((x, y) => x.creatoIl - y.creatoIl);
   return risposta({ ok: true, firme });
 }

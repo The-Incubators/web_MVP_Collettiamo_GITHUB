@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { PaginaAccount } from "@/components/account/PaginaAccount";
+import { MioAccount } from "@/components/account/MioAccount";
+import { SoloOrganizzatore } from "@/components/SoloOrganizzatore";
+import { datiServer } from "@/lib/dati";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Il mio account", robots: { index: false } };
 
-/** L'account (Gifty-spec-prodotto.md S-11). */
-export default function Account() {
+/** Il mio account (design.md §10.2): il catalogo si legge sul server, quali prodotti sono preferiti lo sa l'account. */
+export default async function Account() {
+  const prodotti = await datiServer()
+    .elencaProdotti()
+    .catch(() => []);
   return (
-    <div className="gutter pb-10 pt-4 sm:pt-10">
-      <PaginaAccount />
-    </div>
+    <SoloOrganizzatore>
+      <MioAccount prodotti={prodotti} />
+    </SoloOrganizzatore>
   );
 }

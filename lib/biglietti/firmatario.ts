@@ -18,7 +18,7 @@ const misura = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v
 
 export type EsitoFirma = { ok: true; firma: FirmaServer; nuova: boolean } | { ok: false; errore: string; status: number };
 
-export async function salvaFirmaDaCorpo(b: BigliettoServer, chiave: string, c: Record<string, unknown>): Promise<EsitoFirma> {
+export async function salvaFirmaDaCorpo(b: BigliettoServer, chiave: string, c: Record<string, unknown>, accountUid: string | null = null): Promise<EsitoFirma> {
   if (b.stato !== "aperto") return { ok: false, errore: "Questo biglietto è già stato consegnato.", status: 409 };
   const archivio = archivioBiglietti();
   const id = idFirma(chiave, b.id);
@@ -75,6 +75,8 @@ export async function salvaFirmaDaCorpo(b: BigliettoServer, chiave: string, c: R
     creatoIl: prima?.creatoIl ?? adesso,
     aggiornatoIl: adesso,
     tokenModifica: prima?.tokenModifica ?? nuovaChiave(),
+    // chi firma con l'accesso fatto ritrova il biglietto in «I miei biglietti»; senza accesso resta com'era
+    accountUid: accountUid ?? prima?.accountUid ?? null,
   };
   const esito = await archivio.salvaFirma(b.id, firma);
   if ("errore" in esito) {

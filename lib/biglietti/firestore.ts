@@ -142,5 +142,33 @@ export function archivioBigliettiFirestore(): ArchivioBiglietti {
       const snap = await col.where("organizzatoreUid", "==", uid).get();
       return snap.docs.map((d) => daDoc(d.id, d.data()) as BigliettoServer).sort((a, b) => b.creatoIl - a.creatoIl);
     },
+    async perColletta(slug) {
+      const snap = await col.where("collettaSlug", "==", slug).get();
+      return snap.docs.map((d) => daDoc(d.id, d.data()) as BigliettoServer).sort((a, b) => b.creatoIl - a.creatoIl)[0] ?? null;
+    },
+    async firmeDiAccount(uid) {
+      // query sul gruppo di raccolte «firme»: indice in firestore.indexes.json (fieldOverrides, accountUid)
+      const snap = await db.collectionGroup("firme").where("accountUid", "==", uid).get();
+      const out: { biglietto: BigliettoServer; firma: FirmaServer }[] = [];
+      for (const d of snap.docs) {
+        const rb = d.ref.parent.parent;
+        if (!rb || rb.parent.id !== "biglietti") continue;
+        const b = await rb.get();
+        if (b.exists) out.push({ biglietto: daDoc(b.id, b.data()) as BigliettoServer, firma: { ...(d.data() as FirmaServer), id: d.id } });
+      }
+      return out;
+    },
+    async eliminaBiglietto(id) {
+      const b = await col.doc(id).get();
+      const slug = b.exists ? (b.get("slug") as string) : "";
+      if (slug) {
+        await db.runTransaction(async (tx) => {
+          const r = await tx.get(slugCol.doc(slug));
+          if (r.exists && r.get("bigliettoId") === id) tx.delete(slugCol.doc(slug));
+        });
+      }
+      // il biglietto con firme, immagini e pezzi della musica
+      await db.recursiveDelete(col.doc(id));
+    },
   };
 }

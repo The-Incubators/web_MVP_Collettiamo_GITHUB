@@ -12,11 +12,11 @@ import {
 } from "../dominio/operazioni";
 import type { ImpostazioniCatalogo } from "../dominio/ordineCatalogo";
 import { MAX_REMINDER, oggiLocale, validaReminder, type Reminder } from "../dominio/reminder";
-import { chiusuraVotazione, idVoto, MAX_PROPOSTE_PER_PERSONA, proposteDi, votazioneScaduta } from "../dominio/votazione";
+import { chiusuraVotazione, idVoto, MAX_PROPOSTE_PER_PERSONA, proposteDi, votazioneInCorso, votazioneScaduta } from "../dominio/votazione";
 import type { Colletta, Evento, FiltriProdotti, NuovaProposta, NuovoEvento, Partecipante, Prodotto, ProdottoColletta, Proposta, Voto } from "../tipi";
 import { CATALOGO } from "./catalogo-dati";
 import { costruisciDemo, SLUG_DEMO } from "./demo";
-import { confrontaProdotti, filtraProdotti, type Annulla, type Dati, type DatiServer } from "./tipi";
+import { confrontaProdotti, filtraProdotti, type Annulla, type ArchivioAccount, type Dati, type DatiServer, type RegaloDellAccount } from "./tipi";
 
 interface Archivio {
   prodotti: Map<string, Prodotto>;
@@ -27,6 +27,8 @@ interface Archivio {
   voti: Map<string, Map<string, Voto>>;
   preferiti: Map<string, Set<string>>;
   reminder: Map<string, Map<string, Reminder>>;
+  /** /utenti/{uid}: il profilo dell'account */
+  utenti: Map<string, { nome: string; email: string | null; newsletter: boolean }>;
   impostazioniCatalogo: ImpostazioniCatalogo | null;
   ascoltatori: Set<() => void>;
 }
@@ -44,6 +46,7 @@ function archivio(): Archivio {
       voti: new Map(),
       preferiti: new Map(),
       reminder: new Map(),
+      utenti: new Map(),
       impostazioniCatalogo: null,
       ascoltatori: new Set(),
     };
@@ -53,6 +56,8 @@ function archivio(): Archivio {
     a.eventi.set(SLUG_DEMO, demo.eventi);
     globale.__colletta_archivio = a;
   }
+  // un server di prova partito prima che esistessero i profili
+  globale.__colletta_archivio.utenti ??= new Map();
   return globale.__colletta_archivio;
 }
 
@@ -202,8 +207,38 @@ export function creaDatiMemoria(uid: string): Dati {
       a.reminder.get(uid)?.delete(id);
     },
 
-    async salvaUtente() {
-      /* nel prototipo in memoria non serve conservare gli utenti */
+    async salvaUtente(u) {
+      if (u.uid !== uid || a.utenti.has(uid)) return;
+      a.utenti.set(uid, { nome: u.nome, email: u.email, newsletter: false });
+    },
+    async profilo(utente) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi leggere il profilo di altri.");
+      const p = a.utenti.get(uid);
+      return p ? { nome: p.nome, newsletter: p.newsletter } : null;
+    },
+    async aggiornaProfilo(utente, patch) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi modificare il profilo di altri.");
+      const p = a.utenti.get(uid) ?? { nome: "", email: null, newsletter: false };
+      a.utenti.set(uid, {
+        ...p,
+        ...(typeof patch.nome === "string" ? { nome: patch.nome.replace(/\s+/g, " ").trim().slice(0, 60) } : {}),
+        ...(typeof patch.newsletter === "boolean" ? { newsletter: patch.newsletter } : {}),
+      });
+    },
+    async mieiRegali(utente) {
+      if (utente !== uid) throw new ErroreDominio("Non puoi elencare i regali di altri.");
+      const out: RegaloDellAccount[] = [];
+      for (const c of a.collette.values()) {
+        if (c.stato === "bozza" || c.slug === SLUG_DEMO) continue;
+        const righe = elenco(c.slug);
+        if (c.organizzatoreUid === uid) {
+          out.push({ colletta: copia(c), righe, organizzo: true });
+          continue;
+        }
+        const mia = righe.find((r) => r.uidAnonimo === uid && r.stato !== "rinunciato");
+        if (mia) out.push({ colletta: copia(c), righe: [mia], organizzo: false });
+      }
+      return out.sort((x, y) => x.colletta.dataRegalo - y.colletta.dataRegalo);
     },
     async slugLibero(slug) {
       return !a.collette.has(slug);
@@ -255,7 +290,8 @@ export function creaDatiMemoria(uid: string): Dati {
     async impostaProposteIniziali(slug, prodotti: ProdottoColletta[]) {
       const c = colletta(a, slug);
       soloOrganizzatore(c, uid);
-      if (c.stato !== "bozza") throw new ErroreDominio("Le proposte iniziali si impostano in bozza.");
+      // in bozza dal wizard; dalla pagina del gruppo («Metti ai voti più regali») finché non si vota già
+      if (c.stato !== "bozza" && (c.stato !== "aperta" || votazioneInCorso(c))) throw new ErroreDominio("Le proposte iniziali si impostano prima del voto.");
       const mappa = a.proposte.get(slug) ?? new Map<string, Proposta>();
       for (const [id, p] of mappa) if (p.daOrganizzatore) mappa.delete(id);
       const base = Date.now();
@@ -313,6 +349,19 @@ export function creaDatiMemoria(uid: string): Dati {
       a.voti.set(slug, mappa);
       notifica(a);
     },
+    async scegliVoto(slug, propostaId) {
+      sololeggibile(slug);
+      const c = colletta(a, slug);
+      const v = c.votazione;
+      if (c.stato !== "aperta" || !v || v.chiusa || votazioneScaduta(c, Date.now())) throw new ErroreDominio("La votazione è chiusa.");
+      if (!a.proposte.get(slug)?.has(propostaId)) throw new ErroreDominio("Questa proposta non c'è più.");
+      const mappa = a.voti.get(slug) ?? new Map<string, Voto>();
+      for (const [k, x] of mappa) if (x.uid === uid && x.propostaId !== propostaId) mappa.delete(k);
+      const id = idVoto(uid, propostaId);
+      mappa.set(id, { id, propostaId, uid, stelle: 5, ts: Date.now() });
+      a.voti.set(slug, mappa);
+      notifica(a);
+    },
     async eventi(slug) {
       soloOrganizzatore(colletta(a, slug), uid);
       return (a.eventi.get(slug) ?? []).map(copia);
@@ -355,6 +404,69 @@ export function creaDatiMemoria(uid: string): Dati {
       const lista = a.eventi.get(slug) ?? [];
       lista.push({ id: nuovoId(), tipo: "sollecito_preparato", uidAnonimo: null, partecipanteId: null, meta: { momento, destinatari: pid.length }, ts: Date.now() });
       a.eventi.set(slug, lista);
+      notifica(a);
+    },
+  };
+}
+
+/**
+ * La cancellazione dell'account nell'archivio in memoria (design.md §10.3): raccoglie i dati legati all'account e applica
+ * il piano di lib/dominio/cancellazione.ts. Stesso contratto dell'adattatore Firestore (lib/dati/account-admin.ts).
+ */
+export function archivioAccountMemoria(): ArchivioAccount {
+  const a = archivio();
+  const gruppo = (slug: string) => ({
+    colletta: copia(a.collette.get(slug)!),
+    righe: [...(a.partecipanti.get(slug)?.values() ?? [])].map(copia),
+    voti: [...(a.voti.get(slug)?.values() ?? [])].map(copia),
+    proposte: [...(a.proposte.get(slug)?.values() ?? [])].map(copia),
+  });
+  return {
+    async raccogli(uid) {
+      const organizzati = [];
+      const altrui = [];
+      for (const c of a.collette.values()) {
+        if (c.slug === SLUG_DEMO) continue;
+        if (c.organizzatoreUid === uid) {
+          organizzati.push(gruppo(c.slug));
+          continue;
+        }
+        const g = gruppo(c.slug);
+        if (g.righe.some((r) => r.uidAnonimo === uid) || g.voti.some((v) => v.uid === uid) || g.proposte.some((p) => p.autoreUid === uid)) altrui.push(g);
+      }
+      return { preferiti: a.preferiti.get(uid)?.size ?? 0, ricorrenze: a.reminder.get(uid)?.size ?? 0, organizzati, altrui };
+    },
+    async applica(piano, uid) {
+      for (const slug of piano.eliminaBozze) {
+        a.collette.delete(slug);
+        a.partecipanti.delete(slug);
+        a.eventi.delete(slug);
+        a.proposte.delete(slug);
+        a.voti.delete(slug);
+      }
+      for (const { slug, pid } of piano.eliminaRighe) a.partecipanti.get(slug)?.delete(pid);
+      for (const { slug, vecchioId, riga } of piano.scollegaRighe) {
+        const righe = a.partecipanti.get(slug);
+        if (!righe?.has(vecchioId)) continue;
+        righe.delete(vecchioId);
+        righe.set(riga.id, copia(riga));
+      }
+      for (const { slug, patch } of piano.chiudi) {
+        const c = a.collette.get(slug);
+        if (c) a.collette.set(slug, { ...c, ...copia(patch) });
+      }
+      for (const { slug, votoId } of piano.eliminaVoti) a.voti.get(slug)?.delete(votoId);
+      for (const { slug, propostaId } of piano.anonimizzaProposte) {
+        const p = a.proposte.get(slug)?.get(propostaId);
+        if (p) a.proposte.get(slug)!.set(propostaId, { ...p, autoreUid: "", autoreNome: "" });
+      }
+      for (const { slug, tutti } of piano.eliminaEventi) {
+        const lista = a.eventi.get(slug);
+        if (lista) a.eventi.set(slug, tutti ? [] : lista.filter((e) => e.uidAnonimo !== uid));
+      }
+      a.preferiti.delete(uid);
+      a.reminder.delete(uid);
+      a.utenti.delete(uid);
       notifica(a);
     },
   };

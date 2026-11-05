@@ -105,5 +105,27 @@ export function archivioBigliettiMemoria(): ArchivioBiglietti {
     async perOrganizzatore(uid) {
       return [...s.biglietti.values()].filter((b) => b.organizzatoreUid === uid).sort((a, b) => b.creatoIl - a.creatoIl).map(copia);
     },
+    async perColletta(slug) {
+      const b = [...s.biglietti.values()].filter((x) => x.collettaSlug === slug).sort((a, b) => b.creatoIl - a.creatoIl)[0];
+      return b ? copia(b) : null;
+    },
+    async firmeDiAccount(uid) {
+      const out: { biglietto: BigliettoServer; firma: FirmaServer }[] = [];
+      for (const [id, mappa] of s.firme) {
+        const b = s.biglietti.get(id);
+        if (!b) continue;
+        for (const f of mappa.values()) if (f.accountUid === uid) out.push({ biglietto: copia(b), firma: copia(f) });
+      }
+      return out;
+    },
+    async eliminaBiglietto(id) {
+      const b = s.biglietti.get(id);
+      if (b?.slug && s.slug.get(b.slug) === id) s.slug.delete(b.slug);
+      for (const [chiave, v] of s.slug) if (v === id) s.slug.delete(chiave);
+      s.biglietti.delete(id);
+      s.firme.delete(id);
+      for (const k of [...s.immagini.keys()]) if (k.startsWith(`${id}/`)) s.immagini.delete(k);
+      for (const k of [...s.audio.keys()]) if (k.startsWith(`${id}/`)) s.audio.delete(k);
+    },
   };
 }

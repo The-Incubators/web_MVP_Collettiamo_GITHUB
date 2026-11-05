@@ -85,11 +85,25 @@ const TINTA_STILE: Record<string, string> = {
  * Tutto resta nel browser fino a «Crea il biglietto»: solo allora nasce la bozza sul server, che si pubblica subito
  * dopo l'accesso.
  */
-export function CreaBiglietto() {
+/** Il regalo di gruppo da cui nasce il biglietto («Prepara il biglietto», spec §7.7): festeggiato e occasione già scritti. */
+export interface GruppoBiglietto {
+  slug: string;
+  festeggiato: string;
+  occasione: string;
+}
+
+export function CreaBiglietto({ gruppo = null }: { gruppo?: GruppoBiglietto | null }) {
   const router = useRouter();
+  const chiaveSessione = gruppo ? `${CHIAVE_SESSIONE}.${gruppo.slug}` : CHIAVE_SESSIONE;
   const api = useApi();
   const { utente, auth } = useApp();
-  const [s, setS] = useState<Stato>(statoIniziale);
+  const [s, setS] = useState<Stato>(() => {
+    const iniziale = statoIniziale();
+    if (!gruppo) return iniziale;
+    // dal gruppo si parte dal nome (prototipi/biglietto-editor.html?passo=2&gruppo=1): l'occasione è già quella del regalo
+    const occasione = OCCASIONI_EDITOR.some((o) => o.id === gruppo.occasione) ? gruppo.occasione : iniziale.occasione;
+    return { ...iniziale, occasione, festeggiato: gruppo.festeggiato, passo: 1 };
+  });
   const [pronto, setPronto] = useState(false);
   const [invio, setInvio] = useState(false);
   const [errore, setErrore] = useState<string | null>(null);
@@ -105,13 +119,13 @@ export function CreaBiglietto() {
 
   // la bozza dell'editor sopravvive a un ricaricamento della pagina
   useEffect(() => {
-    const salvato = leggiSessione<Partial<Stato>>(CHIAVE_SESSIONE);
+    const salvato = leggiSessione<Partial<Stato>>(chiaveSessione);
     if (salvato) setS(ripristina(salvato));
     setPronto(true);
-  }, []);
+  }, [chiaveSessione]);
   useEffect(() => {
-    if (pronto) scriviSessione(CHIAVE_SESSIONE, s);
-  }, [s, pronto]);
+    if (pronto) scriviSessione(chiaveSessione, s);
+  }, [s, pronto, chiaveSessione]);
 
   // a ogni nuovo passo il fuoco va al titolo del pannello (il passo 2 lo dà al campo del nome)
   useEffect(() => {
@@ -152,7 +166,10 @@ export function CreaBiglietto() {
     try {
       let bid = s.bozzaId;
       if (!bid) {
-        const r = await api<{ id: string; chiave: string }>("/api/biglietti", { metodo: "POST", corpo: { occasione: s.occasione } });
+        const r = await api<{ id: string; chiave: string }>("/api/biglietti", {
+          metodo: "POST",
+          corpo: { occasione: s.occasione, ...(gruppo ? { collettaSlug: gruppo.slug } : {}) },
+        });
         salvaChiaveBozza(r.id, r.chiave);
         bid = r.id;
         imposta("bozzaId", bid);
@@ -175,7 +192,7 @@ export function CreaBiglietto() {
       });
       if (musica) await api(`/api/biglietti/${bid}/musica?nome=${encodeURIComponent(musica.name)}`, { metodo: "POST", bigliettoId: bid, file: musica });
       await api(`/api/biglietti/${bid}/pubblica`, { metodo: "POST", bigliettoId: bid, corpo: { nome: utente.nome } });
-      scriviSessione(CHIAVE_SESSIONE, null);
+      scriviSessione(chiaveSessione, null);
       router.push(`/biglietto/${bid}/gestisci`);
     } catch (e) {
       if (e instanceof ErroreApi && e.dati.motivo === "accesso") {

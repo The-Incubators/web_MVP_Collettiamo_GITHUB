@@ -34,6 +34,12 @@ export type Operazione =
 
 export const OPERAZIONI_ORGANIZZATORE: Operazione["tipo"][] = ["conferma", "nonTrovato", "segnaRinuncia", "rimuovi"];
 
+/** Le operazioni che muovono soldi: sospese finché si vota il regalo. */
+export const OPERAZIONI_DI_PAGAMENTO: Operazione["tipo"][] = ["sceglieMetodo", "dichiara", "conferma", "nonTrovato"];
+
+/** Dopo «Regalo consegnato» nessuno si aggiunge più, nemmeno a mano (D-15, AC-14). */
+export const ADESIONI_CHIUSE = "Le adesioni sono chiuse";
+
 export interface Contesto {
   colletta: Colletta;
   /** id della riga su cui si agisce */
@@ -129,10 +135,9 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
   const { colletta: c, riga, uid, ora } = ctx;
   const siaOrganizzatore = uid === c.organizzatoreUid;
 
-  // Durante il voto non si paga. Chi organizza però entra nella divisione appena crea il gruppo (D-16), anche con il voto
-  // aperto; le adesioni degli altri durante il voto arrivano con le nuove pagine del gruppo (spec §7.3).
-  const organizzatoreAderisce = op.tipo === "aderisci" && siaOrganizzatore && !op.rivendica;
-  if (c.stato === "aperta" && c.votazione && !c.votazione.chiusa && !organizzatoreAderisce) {
+  // Durante il voto non si paga: ci si unisce al gruppo (spec §7.3, AC-06), si vota, si rinuncia, ma metodo, «Ho pagato» e
+  // conferme aspettano il regalo deciso. Chi organizza entra nella divisione appena crea il gruppo (D-16).
+  if (c.stato === "aperta" && c.votazione && !c.votazione.chiusa && OPERAZIONI_DI_PAGAMENTO.includes(op.tipo)) {
     throw new ErroreDominio("Prima si sceglie il regalo con il voto: i pagamenti si aprono quando la votazione si chiude.");
   }
 
@@ -161,6 +166,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
         return { righe: [{ id: riga.id, valore: dopo }], colletta: {}, eventi: [] };
       }
       if (riga && riga.stato !== "rinunciato") return { righe: [], colletta: {}, eventi: [] }; // già dentro
+      if (c.consegnatoIl) throw new ErroreDominio(ADESIONI_CHIUSE);
       if (!riga && !c.listaAperta) {
         throw new ErroreDominio(`L'elenco è chiuso: chiedi a ${c.organizzatoreNome} di aggiungerti.`);
       }
@@ -280,6 +286,7 @@ export function creaInvitati(
   ora: number,
   nuovoId: () => string,
 ): Risultato {
+  if (c.consegnatoIl) throw new ErroreDominio(ADESIONI_CHIUSE);
   const causali = [...causaliEsistenti];
   const righe: RigaScritta[] = [];
   let colletta = { ...c };

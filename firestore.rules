@@ -15,6 +15,11 @@ service cloud.firestore {
       return slug != 'demo' && collettaDi(slug).stato == 'aperta';
     }
 
+    // Dopo «Regalo consegnato» nessuno si aggiunge più, nemmeno a mano (D-15, AC-14). Il campo manca nei gruppi di prima.
+    function nonConsegnato(slug) {
+      return collettaDi(slug).get('consegnatoIl', null) == null;
+    }
+
     // Si può votare e proporre solo mentre la votazione è aperta e non è scaduta (l'orario è quello del server).
     function votazioneAperta(slug) {
       return slug != 'demo'
@@ -112,13 +117,16 @@ service cloud.firestore {
         // il partecipante crea la propria riga, con il proprio uid
         allow create: if autenticato()
           && raccoltaAperta(slug)
+          && nonConsegnato(slug)
           && request.resource.data.uidAnonimo == request.auth.uid
           && pid == request.auth.uid
           && statiConsentitiAlPartecipante()
           && request.resource.data.confermatoIl == null;
 
-        // l'organizzatore crea righe della lista degli attesi
+        // l'organizzatore crea righe della lista degli attesi (prima della consegna); la cancellazione dell'account
+        // passa dall'Admin SDK, che riscrive le righe senza uid e non passa da queste regole
         allow create: if sonoOrganizzatore(slug)
+          && nonConsegnato(slug)
           && request.resource.data.stato == 'invitato';
 
         // il partecipante aggiorna solo la propria riga e mai lo stato 'confermato'
@@ -128,11 +136,14 @@ service cloud.firestore {
           && request.resource.data.uidAnonimo == resource.data.uidAnonimo
           && statiConsentitiAlPartecipante()
           && request.resource.data.confermatoIl == resource.data.confermatoIl
-          && campiTocchiDalPartecipante();
+          && campiTocchiDalPartecipante()
+          // chi aveva rinunciato non rientra dopo la consegna
+          && (resource.data.stato != 'rinunciato' || request.resource.data.stato == 'rinunciato' || nonConsegnato(slug));
 
         // chi sceglie il proprio nome in una lista chiusa lo rivendica
         allow update: if autenticato()
           && raccoltaAperta(slug)
+          && nonConsegnato(slug)
           && resource.data.uidAnonimo == null
           && resource.data.stato == 'invitato'
           && request.resource.data.uidAnonimo == request.auth.uid
@@ -189,7 +200,10 @@ service cloud.firestore {
                       && request.resource.data.stelle <= 5
                       && request.resource.data.ts == request.time
                       && exists(/databases/$(database)/documents/collette/$(slug)/proposte/$(request.resource.data.propostaId));
-        allow delete: if sonoOrganizzatore(slug);
+        // chi organizza, oppure la persona stessa finché si vota: il voto a scelta unica toglie i suoi voti agli altri
+        // regali («Quale regalo?», prototipi/invito.html)
+        allow delete: if sonoOrganizzatore(slug)
+                      || (autenticato() && resource.data.uid == request.auth.uid && votazioneAperta(slug));
       }
 
       match /eventi/{eid} {
@@ -205,6 +219,12 @@ service cloud.firestore {
         allow read: if sonoOrganizzatore(slug);
         allow update, delete: if false;
       }
+    }
+
+    // «I miei regali»: ciascuno ritrova le proprie righe nei regali di altri con una query sul gruppo di raccolte
+    // `partecipanti` (indice in firestore.indexes.json). Solo le proprie: la query deve filtrare su uidAnonimo.
+    match /{path=**}/partecipanti/{pid} {
+      allow read: if autenticato() && resource.data.uidAnonimo == request.auth.uid;
     }
 
     // Biglietto di auguri: tutto passa dalle rotte del server (Admin SDK, che ignora queste regole).

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PaginaPartecipante } from "@/components/partecipante/PaginaPartecipante";
+import { PaginaInvito } from "@/components/partecipante/PaginaInvito";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { righePubbliche } from "@/lib/dati/pubblico";
@@ -8,6 +8,7 @@ import { descrizionePubblica, titoloPubblico } from "@/lib/dominio/messaggi";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import { nomeRegalo } from "@/lib/dominio/regali";
 import { slugValido } from "@/lib/dominio/slug";
+import { bigliettoDelGruppo, catalogoFoglio } from "@/lib/gruppo/server";
 import type { Colletta } from "@/lib/tipi";
 
 // La prima schermata deve comparire subito: la pagina si rende sul server e il client prosegue da lì.
@@ -29,7 +30,7 @@ async function carica(slug: string): Promise<Colletta | null> {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const c = await carica(slug);
-  if (!c) return { title: "Colletta non trovata", robots: { index: false, follow: false } };
+  if (!c) return { title: "Regalo di gruppo non trovato", robots: { index: false, follow: false } };
 
   const votazione = !!c.votazione && !c.votazione.chiusa;
   const titolo = titoloPubblico({ festeggiato: c.festeggiato, quotaCent: quotaEffettiva(c), sorpresa: c.sorpresa, votazione });
@@ -58,7 +59,12 @@ export default async function PaginaColletta({ params }: Props) {
   const c = await carica(slug);
   if (!c) notFound();
 
-  const demo = slug === SLUG_DEMO;
-  const righe = demo || c.stato === "chiusa" ? righePubbliche(await datiServer().partecipanti(slug)) : null;
-  return <PaginaPartecipante iniziale={c} righeIniziali={righe} simulato={demo} />;
+  const righe = slug === SLUG_DEMO || c.stato === "chiusa" ? righePubbliche(await datiServer().partecipanti(slug)) : null;
+  const [biglietto, catalogo] = await Promise.all([
+    bigliettoDelGruppo(slug),
+    c.votazione && !c.votazione.chiusa && c.votazione.consentiProposte ? catalogoFoglio() : Promise.resolve([]),
+  ]);
+  // si firma solo un biglietto aperto: in bozza non c'è ancora il link, consegnato non si firma più
+  const daFirmare = biglietto && biglietto.stato === "aperto" && biglietto.slug ? { slug: biglietto.slug } : null;
+  return <PaginaInvito iniziale={c} righeIniziali={righe} biglietto={daFirmare} catalogo={catalogo} simulato={slug === SLUG_DEMO} />;
 }

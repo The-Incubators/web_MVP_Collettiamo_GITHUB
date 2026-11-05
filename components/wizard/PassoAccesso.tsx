@@ -6,7 +6,7 @@ import { CampoModulo, IconaTratto, Input } from "@/components/ui";
 import { CHIAVE_DOPO_ACCESSO, scriviLocale } from "@/lib/auth/tipi";
 
 /** Il logo di Google a colori, come nel prototipo (`.btn-google`). */
-function LogoGoogle() {
+export function LogoGoogle() {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
       <path fill="#4285F4" d="M22 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.6a4.8 4.8 0 0 1-2 3.1v2.6h3.3c1.9-1.8 3.1-4.4 3.1-7.5Z" />

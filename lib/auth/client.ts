@@ -30,7 +30,10 @@ export function creaAutenticazioneClient(modalita: Modalita): Autenticazione {
     completaLinkEmail: (url) => carica().then((a) => a.completaLinkEmail(url)),
     accediConGoogle: (nome) => carica().then((a) => a.accediConGoogle(nome)),
     esci: () => carica().then((a) => a.esci()),
-    token: () => carica().then((a) => a.token()),
+    token: (forza) => carica().then((a) => a.token(forza)),
+    cambiaNome: (nome) => carica().then((a) => a.cambiaNome(nome)),
+    riaccedi: (ritorno) => carica().then((a) => a.riaccedi(ritorno)),
+    completaRiaccesso: (url) => carica().then((a) => a.completaRiaccesso(url)),
   };
 }
 
