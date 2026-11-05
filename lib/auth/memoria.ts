@@ -75,7 +75,7 @@ export function creaAutenticazioneMemoria(): Autenticazione {
       return null;
     },
     async accediConGoogle(nome) {
-      const utente: Utente = { uid: "org-google-prova", nome: nome?.trim() || "Organizzatore", email: "prova@example.com", anonimo: false };
+      const utente: Utente = { uid: "org-google-prova", nome: nome?.trim() || "Giulia", email: "prova@example.com", anonimo: false };
       scriviLocale(CHIAVE_ORG, JSON.stringify(utente));
       notifica();
     },

@@ -51,5 +51,5 @@ export function scriviLocale(chiave: string, valore: string | null): void {
 export function nomeDaEmail(email: string): string {
   const locale = email.split("@")[0] ?? "";
   const parola = locale.split(/[._+-]/)[0] ?? "";
-  return parola ? parola.charAt(0).toUpperCase() + parola.slice(1) : "Organizzatore";
+  return parola ? parola.charAt(0).toUpperCase() + parola.slice(1) : email;
 }
