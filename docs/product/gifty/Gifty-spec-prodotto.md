@@ -30,7 +30,7 @@ Regola fondante: i soldi non passano mai da Gifty. Chi partecipa rimborsa l'orga
 | D-09 | Il biglietto si crea in Gifty e si manda via WhatsApp con il suo link | Cri, 28 ottobre 2026 |
 | D-10 | Gifty opera con una partita IVA, solo per fisco e amministrazione; non con Tempura. Nessuno Stripe | Cri, 28 ottobre e 5 novembre 2026 |
 | D-11 | Più avanti: un catalogo talmente curato che le persone comprano anche per sé. Non in questa versione | Cri, 28 ottobre 2026 |
-| D-12 | Reminder sta nell'account, non nella barra. È una funzione a sé, separata da «Idee regalo» | Cri, 5 novembre 2026 (era P-01) |
+| D-12 | Reminder è il promemoria che l'organizzatore manda a chi non ha ancora versato la quota, per essere rimborsato. Sta nel regalo di gruppo, accanto alle quote. Il calendario di compleanni e anniversari oggi chiamato «Reminder» è un'altra cosa (P-08) | Cri, 5 novembre 2026 |
 | D-13 | Accesso con Google o con un collegamento via email; nessuna password | Cri, 5 novembre 2026 (era P-02) |
 | D-14 | Chi apre il link prima di iscriversi vede il festeggiato, l'organizzatore e il regalo o lo scopo. Non vede quota né iscritti. L'accesso si chiede solo quando tocca «Partecipo» | Cri, 5 novembre 2026 (era P-03) |
 | D-15 | Nel wizard l'organizzatore fissa una data e ora limite per le adesioni. Le adesioni si chiudono a quella scadenza o quando l'organizzatore consegna il regalo (invio del biglietto o «Regalo consegnato»), se avviene prima | Cri, 5 novembre 2026 (era P-04) |
@@ -44,7 +44,7 @@ Regola fondante: i soldi non passano mai da Gifty. Chi partecipa rimborsa l'orga
 | Pagina del partecipante: «Nessuna registrazione: basta il tuo nome» (DECISIONI §4 punti 4–5, §5) | Per aderire serve l'account (D-06). Il recupero della riga per nome sparisce |
 | Votazione che blocca le operazioni finché non si chiude (`lib/dominio/operazioni.ts:132`) | Si può aderire durante la votazione; si paga quando il regalo è deciso |
 | Due home, varianti UX a cookie, `?modo=` come default (DECISIONI §25–28, §37–38) | Una home con due porte; il servizio da cui si entra decide il catalogo |
-| «Reminder» al posto di «Collette» nella barra (DECISIONI §41) | Le collette tornano raggiungibili dalla navigazione; Reminder va nell'account (D-12) |
+| «Reminder» al posto di «Collette» nella barra (DECISIONI §41) | Le collette tornano raggiungibili dalla navigazione; Reminder diventa il promemoria di rimborso dentro il regalo di gruppo (D-12); il calendario delle ricorrenze segue P-08 |
 
 ## 3. Proposte ancora da confermare
 
@@ -52,7 +52,8 @@ Non sono decisioni. Il lavoro può partire con l'assunzione indicata; se Cri dec
 
 | ID | Punto | Assunzione per lavorare | Cosa cambia altrimenti |
 |---|---|---|---|
-| P-01 | Reminder porta a «Idee regalo»? | Nessun collegamento: Reminder ricorda le date e basta (D-12) | Se si vuole, da una ricorrenza si apre «Idee regalo» per quella persona |
+| P-01 | Come parte il Reminder | Per ogni persona con quota non saldata, «Manda un promemoria» apre WhatsApp con un messaggio già scritto (importo, come pagare, link). Gifty non manda messaggi da sé | Un invio automatico (email o notifiche) richiede un servizio di invio e il consenso |
+| P-08 | Il calendario di compleanni e anniversari di oggi (`/reminder`) | Da decidere: tenerlo nell'account con un altro nome, o ritirarlo | Se resta, va rinominato perché «Reminder» ora è il promemoria di rimborso |
 | P-06 | Biglietto da solo e biglietto del gruppo | Un solo modello (`Biglietto` con `tipo` «solo-biglietto» o «con-colletta», già in `lib/tipi.ts:388`); il vecchio biglietto stampabile `/c/[slug]/biglietto` si ritira | Se restano due sistemi, due stili e due codici da tenere |
 | P-07 | Titolare per l'informativa privacy | Il titolare della partita IVA. Il GDPR (art. 13) chiede di indicarlo nell'informativa: una riga nella pagina Privacy, nient'altro di visibile | Senza, l'informativa non si può pubblicare |
 
@@ -82,7 +83,7 @@ Una sola home. Tutto il resto si raggiunge da tre ingressi: Idee regalo, Regalo 
 | S-08 | Pagina del gruppo per l'organizzatore | `/gestisci/[slug]` | Persone, regalo o votazione, quote, biglietto, acquisto |
 | S-09 | Pagina del gruppo per chi partecipa | `/c/[slug]` | Anteprima, iscrizione, adesione, voto, quota |
 | S-10 | Biglietto | `/biglietto/nuovo`, `/b/[slug]` | Lo stesso per il gruppo e da solo (P-06) |
-| S-11 | Account | `/account` (nuovo; raccoglie `/le-mie-collette`, `/reminder`, `/preferiti`) | Regali di gruppo, biglietti, ricorrenze, preferiti, profilo, Esci |
+| S-11 | Account | `/account` (nuovo; raccoglie `/le-mie-collette`, `/preferiti` e, secondo P-08, `/reminder`) | Regali di gruppo, biglietti, ricorrenze (P-08), preferiti, profilo, Esci |
 | S-12 | Accesso | `/accedi` | Ritorna sempre alla pagina da cui si è partiti |
 | S-13 | Privacy e dati | `/privacy` | Titolare (P-07), fornitori, conservazione, diritti |
 
@@ -93,7 +94,7 @@ Da ritirare: `/scegli-ux` e `components/SceltaUx.tsx`, `/home-nuova`, la costant
 ## 6. Account
 
 - Un account per persona. Si crea all'iscrizione, da organizzatore o da partecipante (D-06).
-- L'account contiene: i regali di gruppo avviati, quelli a cui si partecipa, i biglietti avviati, le ricorrenze (D-12), i preferiti, il profilo (nome, email in sola lettura, metodo di accesso, scelta newsletter), Esci.
+- L'account contiene: i regali di gruppo avviati, quelli a cui si partecipa, i biglietti avviati, le ricorrenze (P-08), i preferiti, il profilo (nome, email in sola lettura, metodo di accesso, scelta newsletter), Esci.
 - Preferiti e ricorrenze salvati nel browser passano all'account al primo accesso, come oggi (DECISIONI §13, §41).
 - Il consenso alla newsletter è separato, facoltativo e non preselezionato; rifiutarlo non impedisce nulla.
 
@@ -150,6 +151,7 @@ F-02 e F-03 sono la stessa partenza con uno o più regali: nel wizard è una sol
 
 - Il budget previsto non è mai mostrato come denaro ricevuto.
 - Se la quota cambia, il ricevuto resta; cambia il saldo. Per esempio: ricevuto 15 €, la quota sale a 18,75 €, il saldo diventa 3,75 €.
+- Reminder (D-12): accanto a ogni persona con saldo da versare l'organizzatore ha «Manda un promemoria» (P-01); vale anche per chi è stato aggiunto a mano.
 - Nessuna divisione per zero: senza aderenti non c'è una quota divisa.
 - Il gruppo discute in chat; l'organizzatore riporta l'accordo in Gifty senza riconferme individuali.
 
