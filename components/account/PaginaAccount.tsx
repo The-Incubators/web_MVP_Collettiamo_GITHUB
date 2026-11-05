@@ -80,7 +80,7 @@ export function PaginaAccount() {
     <div className="mx-auto flex max-w-lg flex-col gap-6">
       <header className="flex flex-col gap-1">
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Il tuo account</h1>
+          <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent">Il mio account</h1>
           <div className="md:hidden">
             <MenuProfilo />
           </div>
