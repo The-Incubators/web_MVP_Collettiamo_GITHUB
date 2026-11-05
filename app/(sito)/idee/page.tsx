@@ -4,7 +4,7 @@ import { Icona, type NomeIcona } from "@/components/ui";
 
 /**
  * Idee regalo (Gifty-spec-prodotto.md S-02, D-02): trovare idee per qualcuno, con le domande di «Trova il regalo»
- * o sfogliando il catalogo; e chi vuole solo il biglietto lo fa da qui (D-03). I testi si rivedono con la fase 2.
+ * o sfogliando il catalogo. Il biglietto ha la sua voce di menu (Gifty-architettura-e-flussi.md §2).
  */
 export const metadata: Metadata = {
   title: "Idee regalo",
@@ -52,13 +52,6 @@ export default function PaginaIdee() {
             </li>
           ))}
         </ul>
-        <Link
-          href="/biglietto/nuovo"
-          className="flex min-h-12 items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte"
-        >
-          <Icona nome="draw" dimensione={18} />
-          Fai solo un biglietto di auguri
-        </Link>
       </div>
     </div>
   );

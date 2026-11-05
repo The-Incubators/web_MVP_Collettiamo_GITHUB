@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: "Prova biglietto", robots: { index: f
 export default function PaginaProva() {
   return (
     <>
-      <IntestazioneWizard indietro="/" accedi={false} larghezza="max-w-dashboard" />
+      <IntestazioneWizard indietro="/" larghezza="max-w-dashboard" />
       <div className="gutter py-8">
         <ProvaBiglietto />
       </div>

@@ -5,7 +5,7 @@
  * «Trova regalo» come faceva il confronto con `startsWith("/regalo")` (UX-11).
  */
 
-export type Sezione = "home" | "idee" | "gruppo" | "preferiti" | "account";
+export type Sezione = "home" | "idee" | "gruppo" | "biglietto" | "preferiti" | "account";
 
 const SEZIONI: Record<string, Sezione> = {
   // Idee regalo raccoglie le domande e il catalogo (S-02…S-05)
@@ -18,6 +18,8 @@ const SEZIONI: Record<string, Sezione> = {
   crea: "gruppo",
   gestisci: "gruppo",
   c: "gruppo",
+  // il biglietto è un servizio a sé (Gifty-architettura-e-flussi.md §2)
+  biglietto: "biglietto",
   preferiti: "preferiti",
   // le pagine che finiranno nell'account (S-11, S-12)
   account: "account",
@@ -26,7 +28,7 @@ const SEZIONI: Record<string, Sezione> = {
   accedi: "account",
 };
 
-/** La sezione di un indirizzo; `null` per le pagine fuori dalla navigazione (biglietto, privacy, backoffice…). */
+/** La sezione di un indirizzo; `null` per le pagine fuori dalla navigazione (firma del biglietto, privacy, backoffice…). */
 export function sezioneDi(percorso: string): Sezione | null {
   const primo = percorso.split(/[?#]/)[0].split("/").filter(Boolean)[0];
   if (primo === undefined) return "home";
