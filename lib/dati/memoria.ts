@@ -69,12 +69,12 @@ function notifica(a: Archivio) {
 }
 
 function sololeggibile(slug: string) {
-  if (slug === SLUG_DEMO) throw new ErroreDominio("Questa è la colletta dimostrativa: si può guardare, non modificare.");
+  if (slug === SLUG_DEMO) throw new ErroreDominio("Questo è un regalo di gruppo di esempio: si può guardare, non modificare.");
 }
 
 function colletta(a: Archivio, slug: string): Colletta {
   const c = a.collette.get(slug);
-  if (!c) throw new ErroreDominio("Questa colletta non esiste.");
+  if (!c) throw new ErroreDominio("Questo regalo di gruppo non esiste.");
   return c;
 }
 
@@ -244,9 +244,9 @@ export function creaDatiMemoria(uid: string): Dati {
       return !a.collette.has(slug);
     },
     async creaColletta(c) {
-      if (c.organizzatoreUid !== uid) throw new ErroreDominio("Non puoi creare una colletta per un altro.");
+      if (c.organizzatoreUid !== uid) throw new ErroreDominio("Non puoi creare un regalo di gruppo a nome di un altro.");
       if (a.collette.has(c.slug)) throw new ErroreDominio("Questo link esiste già.");
-      if (c.totaleConfermatoCent !== 0 || c.nConfermati !== 0) throw new ErroreDominio("Una colletta nuova parte da zero.");
+      if (c.totaleConfermatoCent !== 0 || c.nConfermati !== 0) throw new ErroreDominio("Un regalo di gruppo nuovo parte da zero.");
       a.collette.set(c.slug, copia(c));
       notifica(a);
     },
@@ -268,7 +268,7 @@ export function creaDatiMemoria(uid: string): Dati {
       notifica(a);
     },
     async elencaCollette(organizzatoreUid) {
-      if (organizzatoreUid !== uid) throw new ErroreDominio("Non puoi elencare le collette di altri.");
+      if (organizzatoreUid !== uid) throw new ErroreDominio("Non puoi elencare i regali di gruppo di altri.");
       return [...a.collette.values()]
         .filter((c) => c.organizzatoreUid === organizzatoreUid)
         .sort((x, y) => y.creatoIl - x.creatoIl)

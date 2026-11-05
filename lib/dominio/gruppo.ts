@@ -72,7 +72,7 @@ export function registro(c: Colletta, righe: Partecipante[]): RigaRegistro[] {
     }
     const stato =
       saldoCent === 0
-        ? "Ha pagato, ricevuto"
+        ? "Ha pagato tutto"
         : r.stato === "dichiarato"
           ? `Dice di aver pagato ${formattaEuro(dichiaratoCent - ricevutoCent)}`
           : ricevutoCent > 0

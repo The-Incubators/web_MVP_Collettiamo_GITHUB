@@ -34,7 +34,7 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
       setRiapri(false);
       router.refresh();
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a riaprire il biglietto. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a riaprire il biglietto. Riprova.");
     } finally {
       setInvio(false);
     }
@@ -43,7 +43,7 @@ export function PaginaRivelazione({ b, firme, anteprima = false }: { b: Bigliett
   const alto = anteprima ? (
     <Link href={`/b/${b.slug}`} className="btn btn-quieto bg-surface shadow-carta">
       <Icona nome="close" dimensione={20} />
-      Anteprima · torna alla bacheca
+      Torna alla bacheca
     </Link>
   ) : null;
 

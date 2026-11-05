@@ -18,7 +18,7 @@ const BLOCCHI: { titolo: string; icona: NomeIcona; tinta: string; testi: string[
     titolo: "Chi organizza",
     icona: "person",
     tinta: "bg-ok-field text-accent",
-    testi: ["Per pubblicare un biglietto o una colletta accedi con Google: conserviamo nome, email e i dati che inserisci (destinatario, data di consegna, messaggi)."],
+    testi: ["Per pubblicare un biglietto o un regalo di gruppo accedi con Google: conserviamo nome, email e i dati che inserisci (destinatario, data di consegna, messaggi)."],
   },
   {
     titolo: "Soldi",
@@ -34,7 +34,7 @@ export default function Privacy() {
       <article className="mx-auto flex max-w-2xl flex-col gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-[32px] font-bold leading-[38px] tracking-tight text-accent-2">Come trattiamo i dati</h1>
-          <p className="text-ink-soft">Questo è un prototipo: ecco, in breve, cosa conserviamo e perché.</p>
+          <p className="text-ink-soft">Questo è un prototipo. Qui trovi che cosa conserviamo e perché.</p>
         </div>
         {BLOCCHI.map((b) => (
           <section key={b.titolo} className="flex gap-4 rounded-3xl bg-surface p-5 shadow-carta">

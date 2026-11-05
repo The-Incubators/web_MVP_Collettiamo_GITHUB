@@ -36,7 +36,7 @@ describe("registro di chi organizza", () => {
     expect(registro(c, righe).map((x) => x.azione)).toEqual([null, { tipo: "ricevuto", cent: 1000 }, null, { tipo: "pagamento" }]);
   });
   it("lo stato in parole", () => {
-    expect(registro(c, righe).map((x) => x.stato)).toEqual(["Ha pagato, ricevuto", "Dice di aver pagato 10\u00a0€", "Ha aderito", "Ricevuto 5\u00a0€"]);
+    expect(registro(c, righe).map((x) => x.stato)).toEqual(["Ha pagato tutto", "Dice di aver pagato 10\u00a0€", "Ha aderito", "Ricevuto 5\u00a0€"]);
     expect(registro({ ...c, consegnatoIl: ORA }, righe)[2].stato).toBe("Non ha ancora pagato");
   });
   it("se la quota sale, il ricevuto resta e cambia il saldo (AC-12)", () => {

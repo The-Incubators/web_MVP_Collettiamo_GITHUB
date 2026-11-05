@@ -36,7 +36,7 @@ const ts = (ms: number) => Timestamp.fromMillis(ms);
 
 function identita(): string {
   const uid = authFirebase().currentUser?.uid;
-  if (!uid) throw new Error("Non sei collegato. Ricarica la pagina.");
+  if (!uid) throw new Error("Non hai fatto l'accesso. Ricarica la pagina.");
   return uid;
 }
 
@@ -265,7 +265,7 @@ export function creaDatiFirestore(): Dati {
         const cRef = refColletta(slug);
         const pRef = doc(righe(slug), pid);
         const cSnap = await tx.get(cRef);
-        if (!cSnap.exists()) throw new ErroreDominio("Questa colletta non esiste.");
+        if (!cSnap.exists()) throw new ErroreDominio("Questo regalo di gruppo non esiste.");
         const pSnap = await tx.get(pRef);
         const r = eseguiOperazione(op, {
           colletta: collettaDaDoc(cSnap.data()),
@@ -292,7 +292,7 @@ export function creaDatiFirestore(): Dati {
       await runTransaction(db, async (tx) => {
         const cRef = refColletta(slug);
         const cSnap = await tx.get(cRef);
-        if (!cSnap.exists()) throw new ErroreDominio("Questa colletta non esiste.");
+        if (!cSnap.exists()) throw new ErroreDominio("Questo regalo di gruppo non esiste.");
         const r = creaInvitati(collettaDaDoc(cSnap.data()), nomi, causali, Date.now(), () => doc(righe(slug)).id);
         for (const { id, valore } of r.righe) {
           if (valore) tx.set(doc(righe(slug), id), docDaPartecipante(valore, ts));

@@ -32,7 +32,7 @@ describe("righe di «I miei biglietti»", () => {
   };
   it("creati da te: occasione con la data, firme, «Da mandare»", () => {
     expect(voceBiglietto(b, true)).toMatchObject({ href: "/biglietto/b1/gestisci", iniziale: "M", tema: "tema-menta", titolo: "Il biglietto per Marta", supporto: "Compleanno il 28 novembre, 4 firme", stato: { testo: "Da mandare" } });
-    expect(voceBiglietto({ ...b, collettaSlug: "x", nFirme: 1, stato: "consegnato" }, true)).toMatchObject({ supporto: "Del regalo di gruppo, 1 firma", stato: { testo: "Mandato a Marta", tono: "neutro" } });
+    expect(voceBiglietto({ ...b, collettaSlug: "x", nFirme: 1, stato: "consegnato" }, true)).toMatchObject({ supporto: "Con il regalo di gruppo, 1 firma", stato: { testo: "Mandato a Marta", tono: "neutro" } });
   });
   it("firmati da te: chi l'ha creato, e se è già stato mandato", () => {
     expect(voceBiglietto(b, false)).toMatchObject({ href: "/b/per-marta", supporto: "Compleanno, creato da Marco", stato: { testo: "Non ancora mandato" } });

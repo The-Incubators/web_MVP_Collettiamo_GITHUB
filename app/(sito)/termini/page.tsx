@@ -20,7 +20,7 @@ const BLOCCHI: { titolo: string; testi: string[] }[] = [
   },
   {
     titolo: "Acquisti su Amazon",
-    testi: ["I prodotti del catalogo si comprano su Amazon.it: l’acquisto lo fai su Amazon, non su Gifty.", NOTA_PREZZI],
+    testi: ["I prodotti del catalogo si comprano su Amazon.it, non su Gifty.", NOTA_PREZZI],
   },
   {
     titolo: "Affiliazione Amazon",

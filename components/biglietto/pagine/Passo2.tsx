@@ -86,7 +86,7 @@ export function ModuloDettagli({
       if (e instanceof ErroreApi && e.status === 409 && (e.dati.campi as Record<string, string> | undefined)?.slug) {
         // preso da qualcun altro tra la verifica e il salvataggio: stesso avviso del passo 2
         setGiro((g) => g + 1);
-      } else setErrore(e instanceof Error ? e.message : "Non sono riuscito a salvare. Riprova.");
+      } else setErrore(e instanceof Error ? e.message : "Non siamo riusciti a salvare. Riprova.");
       setInvio(false);
     }
   }
@@ -199,13 +199,13 @@ function RiquadroRegalo() {
         </span>
       </summary>
       <div className="flex flex-col gap-3 px-4 pb-4 text-sm">
-        <p>Con una colletta ognuno mette la sua quota: i soldi arrivano direttamente a chi organizza, mai a noi.</p>
+        <p>Con un regalo di gruppo ognuno mette la sua quota: i soldi arrivano direttamente a chi organizza, mai a noi.</p>
         <div className="flex flex-wrap gap-x-6 gap-y-1">
           <Link href={CATALOGO_GRUPPO} className="inline-flex min-h-tocco items-center font-semibold text-accent-2 underline underline-offset-4">
             Sfoglia le idee regalo
           </Link>
           <Link href="/crea" className="inline-flex min-h-tocco items-center font-semibold text-accent-2 underline underline-offset-4">
-            Organizza una colletta
+            Organizza un regalo di gruppo
           </Link>
         </div>
       </div>

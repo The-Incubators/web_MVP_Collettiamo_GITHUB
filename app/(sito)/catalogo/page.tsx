@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Catalogo",
-  description: "Le idee regalo scelte da noi, per tema e per prezzo.",
+  description: "Le nostre idee regalo, per tema e per prezzo.",
 };
 
 /** Quante idee si mostrano all'inizio e a ogni «Mostra altre idee». */

@@ -84,7 +84,7 @@ export function PaginaInvito({
   const aperto = c.stato === "aperta" && !consegnato(c) && c.listaAperta;
   const voto = votazioneInCorso(c) && c.stato === "aperta";
 
-  const messaggio = (e: unknown) => (e instanceof ErroreDominio ? e.message : "Non sono riuscito a salvare. Controlla la connessione e riprova.");
+  const messaggio = (e: unknown) => (e instanceof ErroreDominio ? e.message : "Non siamo riusciti a salvare. Controlla la connessione e riprova.");
 
   async function aderisci() {
     if (!conAccount || inCorso.current) return;
@@ -354,7 +354,7 @@ function BloccoQuota({ c, riga, org, p, onErrore }: { c: Colletta; riga: Parteci
     try {
       await p.esegui(riga.id, { tipo: "dichiara", metodo: metodoDichiarabile, importoCent: importo || undefined });
     } catch (e) {
-      onErrore(e instanceof ErroreDominio ? e.message : "Non sono riuscito a salvare. Controlla la connessione e riprova.");
+      onErrore(e instanceof ErroreDominio ? e.message : "Non siamo riusciti a salvare. Controlla la connessione e riprova.");
     } finally {
       setOccupato(false);
     }
@@ -447,7 +447,7 @@ function FoglioAccesso({ slug, onChiudi }: { slug: string; onChiudi: () => void 
       const { accessoImmediato } = await auth.inviaLinkEmail(email, "");
       if (!accessoImmediato) setInviata(email.trim());
     } catch {
-      setErrore("Non sono riuscito a mandare il collegamento. Riprova fra poco.");
+      setErrore("Non siamo riusciti a mandare il link. Riprova fra poco.");
     } finally {
       setOccupato(false);
     }

@@ -48,7 +48,7 @@ export async function preparaImmagine(file: File): Promise<ImmaginePronta> {
   const url = URL.createObjectURL(file);
   try {
     const img = await carica(url).catch(() => {
-      throw new Error("Non riesco ad aprire questa immagine.");
+      throw new Error("Non riusciamo ad aprire questa immagine.");
     });
     for (const [lato, q] of [
       [1200, 0.85],
@@ -62,7 +62,7 @@ export async function preparaImmagine(file: File): Promise<ImmaginePronta> {
       c.width = w;
       c.height = h;
       const ctx = c.getContext("2d");
-      if (!ctx) throw new Error("Non riesco a preparare l'immagine.");
+      if (!ctx) throw new Error("Non riusciamo a preparare l'immagine.");
       ctx.fillStyle = "#FFFFFF"; // le parti trasparenti dei PNG diventano bianche, non nere
       ctx.fillRect(0, 0, w, h);
       ctx.drawImage(img, 0, 0, w, h);

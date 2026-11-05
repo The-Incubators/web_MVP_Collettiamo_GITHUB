@@ -38,7 +38,7 @@ function CaroselloAnteprima({ b, librerie }: { b: Biglietto; librerie: Librerie 
           </button>
         </div>
         <p className="text-center text-sm text-ink-soft" aria-live="polite">
-          {i === 0 ? "1 di 2 · L’invito" : "2 di 2 · La firma"}
+          {i === 0 ? "1 di 2: l’invito" : "2 di 2: la firma"}
         </p>
         {/* cornice che simula un telefono: angoli superiori arrotondati */}
         <div className="mx-auto w-full max-w-[420px] overflow-hidden rounded-t-[28px] border-x-[6px] border-t-[6px] border-ink/80 bg-field shadow-xl">
@@ -88,7 +88,7 @@ export function Passo4({ id, librerie }: { id: string; librerie: Librerie }) {
         setAccesso(true);
       } else if (e instanceof ErroreApi && e.dati.motivo === "data") {
         setErrore({ testo: "La data di consegna è già passata: scegline un’altra prima di pubblicare.", data: true });
-      } else setErrore({ testo: e instanceof Error ? e.message : "Non sono riuscito a pubblicare. Riprova." });
+      } else setErrore({ testo: e instanceof Error ? e.message : "Non siamo riusciti a pubblicare. Riprova." });
     } finally {
       setInvio(false);
     }

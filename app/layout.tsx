@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(baseUrl()),
   title: { default: "Gifty · Regali di gruppo, idee regalo e biglietti di auguri", template: "%s · Gifty" },
   description:
-    "Un unico link per coinvolgere tutti e seguire i contributi: sai chi ha partecipato, chi manca e a che punto siete. I soldi arrivano direttamente a te.",
+    "Trova un’idea regalo, organizza un regalo di gruppo con un solo link e crea un biglietto di auguri da firmare insieme. I soldi arrivano direttamente a chi organizza.",
   applicationName: "Gifty",
 };
 

@@ -63,7 +63,7 @@ export function EditorNota({
       const img = await preparaImmagine(f);
       imposta("foto", { tipo: "caricata", ...img });
     } catch (e) {
-      setErroreFoto(e instanceof Error ? e.message : "Non sono riuscito a leggere l’immagine.");
+      setErroreFoto(e instanceof Error ? e.message : "Non siamo riusciti a leggere l’immagine.");
     }
   }
 

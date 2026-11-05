@@ -208,7 +208,7 @@ export function EditorFirma({
         {lunghezza > MAX_TESTO_MESSAGGIO - 100 ? (
           <p aria-live="polite" className={`px-4 pb-2 text-right text-sm ${lunghezza > MAX_TESTO_MESSAGGIO ? "font-semibold text-error" : "text-ink-soft"}`}>
             {lunghezza} / {MAX_TESTO_MESSAGGIO}
-            {lunghezza > MAX_TESTO_MESSAGGIO ? " · accorcia un po’ il messaggio" : ""}
+            {lunghezza > MAX_TESTO_MESSAGGIO ? ": accorcia un po’ il messaggio" : ""}
           </p>
         ) : null}
         <div className="border-t border-line px-4 py-2">

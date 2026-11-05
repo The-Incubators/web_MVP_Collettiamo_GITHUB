@@ -345,7 +345,7 @@ export function SelettoreFuso({ valore, onScegli }: { valore: string; onScegli: 
         setAperto(false);
       }}
       altezzaRiga={48}
-      opzioni={elenco.map((f) => ({ valore: f, etichetta: f === "Europe/Rome" ? `${etichettaFuso(f, Date.now())} · Ora italiana` : etichettaFuso(f, Date.now()), testo: f }))}
+      opzioni={elenco.map((f) => ({ valore: f, etichetta: f === "Europe/Rome" ? `${etichettaFuso(f, Date.now())}, ora italiana` : etichettaFuso(f, Date.now()), testo: f }))}
     />
   );
 }

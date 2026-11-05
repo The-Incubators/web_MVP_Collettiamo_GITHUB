@@ -255,7 +255,7 @@ export const OCCASIONI_BIGLIETTO = [
   { emoji: "🏅", voce: "Allenatore", valore: "allenatore" },
   { emoji: "🏆", voce: "Anniversario di lavoro", valore: "anniversario-lavoro" },
   { emoji: "💼", voce: "Capo", valore: "capo" },
-  { emoji: "🌷", voce: "Guarisci presto", valore: "guarisci" },
+  { emoji: "🌷", voce: "Rimettiti presto", valore: "guarisci" },
   { emoji: "🤍", voce: "Condoglianze", valore: "condoglianze" },
   { emoji: "🐾", voce: "Per un amico a quattro zampe", valore: "animale" },
   { emoji: "🎉", voce: "Festeggiamo", valore: "festa" },

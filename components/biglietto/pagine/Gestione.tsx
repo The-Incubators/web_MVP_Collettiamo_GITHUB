@@ -80,7 +80,7 @@ export function Gestione({ id }: { id: string }) {
       setB(r.biglietto);
       setModifica(null);
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a salvare. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a salvare. Riprova.");
     } finally {
       setAttesa(false);
     }
@@ -97,7 +97,7 @@ export function Gestione({ id }: { id: string }) {
       setB(r.biglietto);
       setAvviso(f ? "Musica caricata." : "Musica tolta.");
     } catch (e) {
-      setErroreMusica(e instanceof Error ? e.message : "Non sono riuscito a caricare la musica. Riprova.");
+      setErroreMusica(e instanceof Error ? e.message : "Non siamo riusciti a caricare la musica. Riprova.");
     } finally {
       setCaricaMusica(false);
     }
@@ -117,7 +117,7 @@ export function Gestione({ id }: { id: string }) {
       if (azione === "consegna") await manda();
       else setAvviso("Biglietto riaperto: si può di nuovo scrivere.");
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non ci sono riuscito. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non ci siamo riusciti. Riprova.");
     } finally {
       setAttesa(false);
     }

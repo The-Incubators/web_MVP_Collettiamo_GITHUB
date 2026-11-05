@@ -35,7 +35,7 @@ export async function generaSlugLibero(
     const slug = generaSlug();
     if (!(await esiste(slug))) return slug;
   }
-  throw new Error("Non riesco a generare un link libero, riprova.");
+  throw new Error("Non riusciamo a creare un link libero. Riprova.");
 }
 
 export function slugValido(slug: string): boolean {

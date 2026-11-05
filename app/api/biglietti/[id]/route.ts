@@ -135,7 +135,7 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
         const s = slugPerFesteggiato(festeggiato);
         if (await archivio.prenotaSlug(id, s)) slug = s;
       }
-      if (!slug) return errore("Non sono riuscito a creare il link. Riprova.", 503);
+      if (!slug) return errore("Non siamo riusciti a creare il link. Riprova.", 503);
       patch.slug = slug;
     }
     Object.assign(patch, {

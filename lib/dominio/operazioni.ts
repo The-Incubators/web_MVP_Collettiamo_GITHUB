@@ -143,8 +143,8 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
 
   if (OPERAZIONI_ORGANIZZATORE.includes(op.tipo)) {
     if (!siaOrganizzatore) throw new ErroreDominio("Solo chi organizza può farlo.");
-    if (c.stato === "chiusa") throw new ErroreDominio("La colletta è chiusa.");
-    if (!riga) throw new ErroreDominio("Partecipante non trovato.");
+    if (c.stato === "chiusa") throw new ErroreDominio("Il regalo di gruppo è chiuso.");
+    if (!riga) throw new ErroreDominio("Persona non trovata.");
   } else if (c.stato !== "aperta") {
     throw new ErroreDominio(c.stato === "chiusa" ? "La raccolta è chiusa." : "La raccolta non è ancora aperta.");
   }
@@ -153,7 +153,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
     case "aderisci": {
       const nome = pulisciNome(op.nome);
       if (op.rivendica) {
-        if (!riga) throw new ErroreDominio("Non trovo questo nome.");
+        if (!riga) throw new ErroreDominio("Questo nome non è nell'elenco.");
         if (riga.uidAnonimo === null && riga.stato === "invitato") {
           // un nome della lista chiusa: chi lo sceglie ne diventa il proprietario
           const dopo: Partecipante = { ...riga, uidAnonimo: uid, stato: "aderito" };
@@ -179,7 +179,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
 
     case "sceglieMetodo": {
       const mia = rigaPropria(riga, uid);
-      if (mia.stato !== "aderito" && mia.stato !== "dichiarato") throw new ErroreDominio("Prima partecipa alla colletta.");
+      if (mia.stato !== "aderito" && mia.stato !== "dichiarato") throw new ErroreDominio("Prima partecipa al regalo di gruppo.");
       if (!metodoAttivo(c, op.metodo)) throw new ErroreDominio("Questo metodo non è disponibile.");
       const dopo = { ...mia, metodo: op.metodo };
       return esito(c, mia, dopo, ora, [{ tipo: "metodo_scelto", uidAnonimo: uid, partecipanteId: mia.id, meta: { metodo: op.metodo } }]);
@@ -188,7 +188,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
     case "dichiara": {
       const mia = rigaPropria(riga, uid);
       if (mia.stato === "confermato") return { righe: [], colletta: {}, eventi: [] };
-      if (mia.stato !== "aderito" && mia.stato !== "dichiarato") throw new ErroreDominio("Prima partecipa alla colletta.");
+      if (mia.stato !== "aderito" && mia.stato !== "dichiarato") throw new ErroreDominio("Prima partecipa al regalo di gruppo.");
       if (op.metodo === "contanti") throw new ErroreDominio("I contanti li segna chi organizza quando li riceve.");
       if (!metodoAttivo(c, op.metodo)) throw new ErroreDominio("Questo metodo non è disponibile.");
       let importoCent = mia.importoCent;
@@ -211,7 +211,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
 
     case "messaggio": {
       const mia = rigaPropria(riga, uid);
-      if (mia.stato === "rinunciato" || mia.stato === "invitato") throw new ErroreDominio("Prima partecipa alla colletta.");
+      if (mia.stato === "rinunciato" || mia.stato === "invitato") throw new ErroreDominio("Prima partecipa al regalo di gruppo.");
       const testo = op.testo.trim().slice(0, MAX_MESSAGGIO);
       const dopo = { ...mia, messaggio: testo === "" ? null : testo };
       return esito(c, mia, dopo, ora, testo ? [{ tipo: "messaggio", uidAnonimo: uid, partecipanteId: mia.id, meta: { lunghezza: testo.length } }] : []);
@@ -274,7 +274,7 @@ export function eseguiOperazione(op: Operazione, ctx: Contesto): Risultato {
 }
 
 function rigaPropria(riga: Partecipante | null, uid: string): Partecipante {
-  if (!riga || riga.uidAnonimo !== uid) throw new ErroreDominio("Non trovo la tua partecipazione.");
+  if (!riga || riga.uidAnonimo !== uid) throw new ErroreDominio("Non troviamo la tua partecipazione.");
   return riga;
 }
 

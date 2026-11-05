@@ -81,7 +81,7 @@ export function Passo3({ id, librerie }: { id: string; librerie: Librerie }) {
       const r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}/copertina`, { metodo: "POST", bigliettoId: id, corpo });
       setB(r.biglietto);
     } catch (e) {
-      setErrore(e instanceof Error ? e.message : "Non sono riuscito a caricare l'immagine.");
+      setErrore(e instanceof Error ? e.message : "Non siamo riusciti a caricare l'immagine.");
     } finally {
       setLavoro(false);
     }
@@ -96,7 +96,7 @@ export function Passo3({ id, librerie }: { id: string; librerie: Librerie }) {
     const ok = await salva(modello, t);
     setLavoro(false);
     if (!ok) {
-      setErrore("Non sono riuscito a salvare. Riprova.");
+      setErrore("Non siamo riusciti a salvare. Riprova.");
       return;
     }
     scriviSessione(chiaveSessione, null);

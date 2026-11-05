@@ -95,7 +95,7 @@ export function PannelloPagamento({
               testo={payloadEpc({ iban, intestatario: b.intestatario, importoCent, causale })}
               descrizione={`Codice QR per il bonifico di ${importo} a ${b.intestatario}`}
             />
-            <p className="text-center text-xs text-ink-soft">Giro-code (EPC): da verificare su app bancarie italiane. Se non funziona, usa i dati qui sopra.</p>
+            <p className="text-center text-xs text-ink-soft">Se il codice non funziona, usa i dati qui sopra.</p>
           </div>
         </details>
       ) : null}

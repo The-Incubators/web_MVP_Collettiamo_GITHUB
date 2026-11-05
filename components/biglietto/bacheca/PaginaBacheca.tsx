@@ -159,7 +159,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       setScatto(Date.now());
       setAvviso(r.nuova ? "Fatto! Il tuo messaggio è sul biglietto." : "Modifiche salvate.");
     } catch (e) {
-      setErrore(e instanceof Error ? e.message : "Non sono riuscito a pubblicare il messaggio. Riprova.");
+      setErrore(e instanceof Error ? e.message : "Non siamo riusciti a pubblicare il messaggio. Riprova.");
     } finally {
       setInvio(false);
     }
@@ -175,7 +175,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       scriviSessione(chiaveBozza(b.slug), null);
       setAvviso("Messaggio eliminato.");
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a eliminare il messaggio. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a eliminare il messaggio. Riprova.");
     }
   }
 
@@ -187,7 +187,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       await rileggi();
       setAvviso(f.nascosta ? "Il messaggio è di nuovo visibile." : "Messaggio nascosto: lo vedi solo tu.");
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non ci sono riuscito. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non ci siamo riusciti. Riprova.");
     }
   }
 
@@ -201,7 +201,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       await rileggi();
       setAvviso("Messaggio eliminato.");
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a eliminare il messaggio. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a eliminare il messaggio. Riprova.");
     } finally {
       setAttesa(false);
       setDaEliminare(null);
@@ -216,7 +216,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       // la pagina si rifà dal server: lo stesso link ora è la rivelazione
       router.refresh();
     } catch (e) {
-      setAvviso(e instanceof Error ? e.message : "Non sono riuscito a consegnare il biglietto. Riprova.");
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a consegnare il biglietto. Riprova.");
     } finally {
       setAttesa(false);
     }
@@ -325,7 +325,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
               💬
             </span>
             <p className="font-semibold">{aperto ? "Ancora nessun messaggio" : "Nessun messaggio"}</p>
-            {aperto ? <p className="text-sm opacity-70">Scrivi tu il primo: gli altri seguiranno.</p> : null}
+            {aperto ? <p className="text-sm opacity-70">Scrivi tu il primo.</p> : null}
           </div>
         ) : null}
 
