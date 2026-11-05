@@ -968,8 +968,6 @@
   .pannello-ed .maniglia { width: 40px; height: 4px; border-radius: 2px; background: var(--line); justify-self: center; margin-top: calc(-1 * var(--s2)); }
   .pannello-ed .corpo-ed { display: grid; gap: var(--s4); align-content: start; }
   .comandi { position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s3) var(--s5) calc(var(--s3) + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); margin: 0 calc(-1 * var(--s5)); }
-  .comandi .btn-quieto { background: transparent; }
-  .comandi .btn-quieto:hover { background: var(--green-field); }
   @media (min-width: 900px) {
     .editor-b { grid-template-columns: 1fr 440px; grid-template-rows: auto 1fr; }
     .barra-ed { grid-column: 1 / -1; padding: 0 var(--s8); min-height: 72px; }
@@ -999,7 +997,7 @@
 
   /* ---------- gestione ---------- */
   .gestione-b .su { padding: var(--s4) 0 var(--s6); display: grid; gap: var(--s3); justify-items: start; }
-  .gestione-b .su .btn-quieto { margin-left: -12px; background: transparent; }
+  .gestione-b .su .btn-quieto { margin-left: 0; }
   .gestione-b .su .btn-quieto:hover { background: var(--green-field); }
   .gestione-b .corpo { display: grid; gap: var(--s10); padding-bottom: var(--s16); }
   @media (min-width: 900px) { .gestione-b .corpo { grid-template-columns: 420px minmax(0, 1fr); gap: var(--s16); align-items: start; } .gestione-b .corpo > .colonna-carta { position: sticky; top: calc(var(--testa-h) + var(--s8)); } }
