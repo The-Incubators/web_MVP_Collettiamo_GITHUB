@@ -13,7 +13,7 @@ _Proposta del 5 novembre 2026, da approvare prima di toccare la UX o aggiungere 
 
 | Dove | Voci |
 |---|---|
-| Intestazione, da tablet in su | Home · Idee regalo · Regalo di gruppo · Biglietto · cuore dei Preferiti con il numero · tondo dell'account |
+| Intestazione, da tablet in su | logo (porta alla home) · Idee regalo · Regalo di gruppo · Biglietto · cuore dei Preferiti con il numero · tondo dell'account |
 | Barra in basso, telefono (massimo 5) | Home · Idee regalo · Gruppo · Biglietto · Account |
 
 Sul telefono i Preferiti si raggiungono dal cuore nell'intestazione e dall'account. **Cambia la specifica §5**: il biglietto diventa una voce di menu e non sta più sotto Idee regalo.
