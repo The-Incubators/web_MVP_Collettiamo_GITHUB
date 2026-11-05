@@ -1,19 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google";
+import { Source_Sans_3, Urbanist } from "next/font/google";
 import { AppProvider } from "@/components/AppProvider";
 import { PreferitiProvider } from "@/components/PreferitiProvider";
 import { Avviso, URL_FONT_ICONE } from "@/components/ui";
 import { baseUrl, modalitaDati } from "@/lib/config";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+// Direzione A (docs/product/gifty/Gifty-UX-design-guidelines.md): Urbanist per i titoli, Source Sans 3 per il testo.
+const display = Urbanist({
   subsets: ["latin"],
   weight: ["500", "700", "800"],
   variable: "--font-display",
   display: "swap",
 });
 
-const testo = Plus_Jakarta_Sans({
+const testo = Source_Sans_3({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-testo",
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#F6FBF4",
+  themeColor: "#F5FAF6",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

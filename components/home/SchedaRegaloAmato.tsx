@@ -12,7 +12,7 @@ export const ALTRI_REGALI_PER_VOLTA = 3;
 
 /** Il pulsante grigio della home nuova (lo stesso dei «Guarda un esempio» sotto i tre pulsanti). */
 export const CLASSI_SECONDARIO =
-  "flex min-h-12 w-full items-center justify-center gap-1.5 rounded-full bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte";
+  "flex min-h-12 w-full items-center justify-center gap-1.5 rounded-controllo bg-line px-4 text-sm font-bold text-accent transition-colors hover:bg-line-forte";
 
 /**
  * Un prodotto Amazon tra «I Regali più amati»: le stelle del backoffice, il cuore dei preferiti, la foto e

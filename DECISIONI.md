@@ -626,3 +626,14 @@ Richiesta: una sezione «Reminder», nella barra in basso al posto di «Collette
 - **Regole Firestore**: solo il proprietario legge e scrive, con gli stessi controlli di `lib/dominio/reminder.ts` (campi ammessi, date possibili, lunghezze). Vanno pubblicate insieme al sito (`firebase deploy --only firestore`), altrimenti chi ha un account non riesce a salvare. I test delle regole sono in tests/regole ma non sono stati fatti girare: su questo Mac manca Java per l'emulatore.
 - **Pagina** (/reminder, non indicizzata): «In arrivo» con le prossime 3 (quanto manca, «Trova un regalo», «Modifica»; la data è piena quando si è già dentro il preavviso), poi il calendario del mese con frecce e «Torna a oggi»: i giorni con ricorrenze sono evidenziati e toccandoli si filtra l'elenco del mese sotto. Dopo un salvataggio il calendario va al mese in cui la ricorrenza cade la prossima volta.
 - **Notifiche**: non ci sono ancora, e la pagina lo dice. Per farle è già pronto `dataAvviso` (il giorno in cui avvisare); serviranno un service worker, il permesso del browser, i token salvati per utente e un invio programmato dal server.
+
+## 42. Lo stile della direzione A sul main nuovo (5 novembre 2026)
+
+Richiesta di Cri: adottare l'aspetto della direzione A (ramo `feat/gifty-ux-direction-a`, un prototipo statico a parte) senza cambiare le funzioni del main. Il ramo non si unisce con git: l'aspetto è stato riportato a mano nei componenti Next.
+
+- **Marchio**: nastro arancio (`public/logo/gifty-nastro.svg`) e scritta «Gifty» in Urbanist verde (`components/ui/Logo.tsx`); favicon a nodino (`app/icon.svg`). Il vecchio `public/logo/gifty.png` resta.
+- **Caratteri**: Urbanist per i titoli, Source Sans 3 per il testo (`app/layout.tsx`). I caratteri scelti nei biglietti non cambiano.
+- **Colori e forme**: fondo, testo e linee con i valori della direzione A (`app/globals.css`); superfici 20 px e controlli 10 px (`tailwind.config.ts`). I bottoni di conversione (variante `azione`, «Regalalo», «Pubblica», «Firma»…) sono verdi come i principali; l'arancio resta per nastro, puntini, stelle e dettagli.
+- **Home nuova**: stesso testo e stesse tre strade, con il titolo grande; da tablet in su le strade stanno su tre colonne. Sotto, la scena fotografica a tutta larghezza (`public/home/scena-desktop.jpg` e `scena-mobile.jpg`, decorative). La home classica non cambia, salvo colori e caratteri.
+- **Footer** (`components/PiePagina.tsx`): marchio e «I soldi non passano mai da qui.», due gruppi di collegamenti («Idee regalo», «Regali di gruppo») verso pagine che esistono già, «Privacy e dati» e la dichiarazione di affiliazione Amazon.
+- **Non portato**: il racconto «Come funziona» a cinque passi della direzione A e il menu a tendina del telefono; restano la barra in basso e il «Come funziona» della home classica.
