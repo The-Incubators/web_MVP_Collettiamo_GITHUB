@@ -44,11 +44,6 @@ export function SchedaProdotto({
           <ImmagineProdotto prodotto={prodotto} />
         </Link>
         <BottoneCuore slug={prodotto.slug} nome={prodotto.nome} className="absolute right-2 top-2" />
-        <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-0.5 text-[11px] font-bold text-on-accent">
-          <Icona nome="local_shipping" dimensione={14} />
-          <span className="sr-only">{testoConsegna(prodotto.consegnaGiorni)}</span>
-          <span aria-hidden="true">{prodotto.consegnaGiorni} gg</span>
-        </span>
       </div>
       <div className="flex flex-1 flex-col gap-1 px-1">
         {prodotto.marca !== "Generico" ? (

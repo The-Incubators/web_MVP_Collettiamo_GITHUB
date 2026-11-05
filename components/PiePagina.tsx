@@ -3,26 +3,38 @@ import { DICHIARAZIONE_AFFILIATO_AMAZON } from "@/lib/dominio/amazon";
 import { Icona, Logo } from "@/components/ui";
 
 /**
- * Il footer della direzione A: marchio, due gruppi di collegamenti, poi la riga in fondo con «Privacy e dati».
- * Restano la garanzia «I soldi non passano mai da qui» e la dichiarazione di affiliazione Amazon, obbligatoria.
- * Gli indirizzi sono quelli che esistono già: il footer non aggiunge pagine.
+ * Il piè di pagina: marchio, un gruppo di collegamenti per servizio (Gifty-architettura-e-flussi.md §2), poi la riga in
+ * fondo con «Privacy e dati». Restano la garanzia «I soldi non passano mai da qui» e la dichiarazione di affiliazione
+ * Amazon, obbligatoria.
  */
 const GRUPPI: { titolo: string; voci: { href: string; testo: string }[] }[] = [
   {
     titolo: "Idee regalo",
     voci: [
+      { href: "/regalo", testo: "Trova un regalo" },
       { href: "/catalogo", testo: "Catalogo" },
-      { href: "/regalo", testo: "Trova regalo" },
-      { href: "/preferiti", testo: "Preferiti" },
-      { href: "/reminder", testo: "Reminder" },
     ],
   },
   {
-    titolo: "Regali di gruppo",
+    titolo: "Regalo di gruppo",
     voci: [
-      { href: "/regalo-di-gruppo", testo: "Organizza un regalo" },
-      { href: "/le-mie-collette", testo: "Le mie collette" },
-      { href: "/biglietto", testo: "Biglietto" },
+      { href: "/crea", testo: "Organizza un regalo" },
+      { href: "/regalo-di-gruppo#come-funziona", testo: "Come si fa" },
+    ],
+  },
+  {
+    titolo: "Biglietto",
+    voci: [
+      { href: "/biglietto/nuovo", testo: "Crea un biglietto" },
+      { href: "/biglietto/esempio", testo: "Come si fa" },
+    ],
+  },
+  {
+    titolo: "Account",
+    voci: [
+      { href: "/account", testo: "Il tuo account" },
+      { href: "/preferiti", testo: "Preferiti" },
+      { href: "/reminder", testo: "Ricorrenze" },
     ],
   },
 ];
@@ -40,7 +52,7 @@ export function PiePagina() {
               <Icona nome="verified_user" dimensione={18} />I soldi non passano mai da qui.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:flex sm:gap-16">
+          <div className="grid grid-cols-2 gap-8 sm:flex sm:gap-12">
             {GRUPPI.map((g) => (
               <nav key={g.titolo} aria-label={g.titolo} className="flex flex-col">
                 <h2 className="mb-1 text-base font-extrabold text-accent">{g.titolo}</h2>

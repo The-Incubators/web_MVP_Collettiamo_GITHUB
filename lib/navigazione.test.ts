@@ -34,3 +34,14 @@ describe("sezione della navigazione", () => {
     for (const p of ["/regalone", "/catalogo-vecchio", "/cx", "/bigliettone", "/b/abc", "/privacy"]) expect(sezioneDi(p)).toBeNull();
   });
 });
+
+import { piePaginaVisibile } from "./navigazione";
+
+describe("piè di pagina", () => {
+  it("non c'è nei percorsi a passi", () => {
+    for (const p of ["/regalo", "/crea", "/crea?bozza=x", "/accedi", "/biglietto/nuovo", "/biglietto/abc/design"]) expect(piePaginaVisibile(p)).toBe(false);
+  });
+  it("c'è nelle altre pagine", () => {
+    for (const p of ["/", "/idee", "/catalogo", "/regalo-di-gruppo", "/biglietto", "/biglietto/abc/gestisci", "/account"]) expect(piePaginaVisibile(p)).toBe(true);
+  });
+});

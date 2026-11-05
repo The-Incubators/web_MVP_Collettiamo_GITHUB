@@ -99,7 +99,7 @@ export function FormAccesso() {
 
       {modalita === "firestore" ? (
         <div className="flex flex-col gap-5">
-          {/* il nome si legge al tocco di «Sign in with Google»: per questo il campo viene prima */}
+          {/* il nome si legge al tocco di «Accedi con Google»: per questo il campo viene prima */}
           {campoNome}
           <div className="flex flex-col items-center gap-3">
             <BottoneGoogle onClick={() => void google()} disabled={occupato} />

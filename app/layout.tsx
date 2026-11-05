@@ -23,7 +23,7 @@ const testo = Source_Sans_3({
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl()),
-  title: { default: "Gifty · Il regalo di gruppo, senza dover rincorrere tutti", template: "%s · Gifty" },
+  title: { default: "Gifty · Regali di gruppo, idee regalo e biglietti di auguri", template: "%s · Gifty" },
   description:
     "Un unico link per coinvolgere tutti e seguire i contributi: sai chi ha partecipato, chi manca e a che punto siete. I soldi arrivano direttamente a te.",
   applicationName: "Gifty",

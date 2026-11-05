@@ -3,7 +3,6 @@ import { BottoneCondividi } from "@/components/BottoneCondividi";
 import { BottoneCuore, BottonePreferitiTesto } from "@/components/BottoneCuore";
 import { BottoneListaRegali } from "@/components/BottoneListaRegali";
 import { CalcoloAGruppo } from "@/components/CalcoloAGruppo";
-import { testoConsegna } from "@/components/SchedaProdotto";
 import { TestoEspandibile } from "@/components/TestoEspandibile";
 import { BottoneLink, Icona, ImmagineProdotto } from "@/components/ui";
 import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
@@ -71,10 +70,6 @@ export function DettaglioProdotto({
           <div className="flex flex-col gap-2">
             <Titolo className="font-display text-[26px] font-bold leading-tight text-accent-2">{p.nome}</Titolo>
             <p className="cifre text-[44px] font-extrabold leading-none tracking-tight text-accent-2">{formattaEuro(p.prezzoCent)}</p>
-            <p className="inline-flex items-center gap-1.5 self-start rounded-full bg-ok-field px-3 py-1 text-xs font-bold text-ok">
-              <Icona nome="check_circle" dimensione={16} />
-              {testoConsegna(p.consegnaGiorni)}
-            </p>
           </div>
 
           {gruppo ? (
