@@ -860,3 +860,194 @@
 .coriandolo {
   animation: coriandolo var(--durata, 2.6s) ease-in var(--ritardo, 0s) both;
 }
+
+/*
+ * Gifty UX v2, biglietto (design.md §10.4 e §5; prototipi/biglietto.html, biglietto-editor.html, biglietto-gestisci.html,
+ * biglietto-apertura.html): la carta con i foglietti firmati, la scena della pagina del servizio con il telefono che
+ * mostra i quattro modi, l'editor a schermo intero, la gestione e l'apertura per il festeggiato.
+ */
+@layer components {
+  /* ---------- la carta con dedica e foglietti ---------- */
+  .biglietto { padding: var(--s8) var(--s6) var(--s6); display: grid; gap: var(--s5); }
+  .biglietto .titolo-b { font-family: var(--f-hand); font-weight: 700; font-size: 40px; line-height: 1; color: var(--green); text-align: center; overflow-wrap: anywhere; }
+  .biglietto .righe-b { text-align: center; color: var(--muted); font-size: 16px; white-space: pre-line; overflow-wrap: anywhere; }
+  .foglietti { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); }
+  .foglietto-firma { padding: var(--s3); border-radius: var(--r-paper); display: grid; gap: var(--s2); align-content: start; box-shadow: 0 1px 2px rgba(20, 43, 32, .1); font-size: 14px; line-height: 1.4; color: var(--ink); background: var(--c3); overflow-wrap: anywhere; }
+  .foglietto-firma:nth-child(odd) { transform: rotate(-1.2deg); }
+  .foglietto-firma:nth-child(even) { transform: rotate(1deg); }
+  .foglietto-firma img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 2px; }
+  .foglietto-firma .chi { color: var(--muted); font-weight: 700; }
+  .foglietto-firma.vuoto { border: 1.5px dashed var(--line-strong); box-shadow: none; background: transparent; color: var(--muted); min-height: 72px; }
+  .foglietto-firma.c1 { background: var(--c1); } .foglietto-firma.c2 { background: var(--c2); } .foglietto-firma.c3 { background: var(--c3); } .foglietto-firma.c4 { background: var(--c4); }
+  .foglietto-firma.c5 { background: var(--c5); } .foglietto-firma.c6 { background: var(--c6); } .foglietto-firma.c7 { background: var(--c7); } .foglietto-firma.c8 { background: var(--c8); }
+  .tema-menta { background-color: var(--wall); }
+  .tema-pesca { background-color: var(--peach); }
+  .tema-notte { background-color: var(--green); }
+  .tema-notte .titolo-b, .tema-notte .righe-b { color: #fff; }
+
+  /* ---------- pagina del servizio: parete e tavolo, il biglietto aperto ---------- */
+  .scena-b { position: relative; overflow: hidden; background: linear-gradient(to bottom, var(--wall) 0, var(--wall) 58%, var(--table) 58%, var(--table) 100%); }
+  .scena-b::after { content: ""; position: absolute; left: 0; right: 0; top: 58%; height: 24px; background: linear-gradient(to bottom, rgba(20, 43, 32, .08), transparent); pointer-events: none; }
+  .scena-in { position: relative; display: grid; gap: var(--s8); padding-top: var(--s8); padding-bottom: var(--s12); }
+  .testo-b { display: grid; gap: var(--s4); justify-items: start; position: relative; z-index: 2; }
+  .testo-b .riga-b { font-size: 20px; line-height: 1.3; font-weight: 600; color: var(--ink); max-width: 26ch; }
+  .oggetti { position: relative; min-height: 440px; padding-bottom: var(--s8); }
+  .nastro-b { position: absolute; left: -30%; width: 160%; bottom: 40px; height: 160px; color: var(--orange); pointer-events: none; z-index: 0; }
+  .busta-b { position: absolute; z-index: 1; right: -12px; top: 6px; width: 200px; aspect-ratio: 3 / 2; transform: rotate(8deg); display: grid; place-items: center; overflow: hidden; }
+  .busta-b::before, .busta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 56%; background: linear-gradient(to bottom right, transparent 49.5%, rgba(20, 43, 32, .08) 50%) left / 50% 100% no-repeat, linear-gradient(to bottom left, transparent 49.5%, rgba(20, 43, 32, .08) 50%) right / 50% 100% no-repeat; }
+  .busta-b .mano { position: relative; font-size: 28px; margin-top: 28px; }
+  .aperto { position: relative; z-index: 2; display: grid; grid-template-columns: 1fr; width: min(100%, 360px); margin: 64px auto 0; transform: rotate(-2deg); }
+  .anta { padding: var(--s5); display: grid; gap: var(--s3); align-content: start; }
+  .anta-sx { display: none; }
+  .aperto .titolo-b { font-family: var(--f-hand); font-weight: 700; font-size: 36px; line-height: 1; color: var(--green); }
+  .aperto .dedica { color: var(--muted); font-size: 16px; }
+  .aperto .foglietti { gap: var(--s3); }
+  .aperto .foglietto-firma { font-size: 14px; }
+  .polaroid { background: #fff; padding: 8px 8px 28px; box-shadow: 0 1px 2px rgba(20, 43, 32, .14), 0 8px 18px -10px rgba(20, 43, 32, .35); transform: rotate(3deg); width: 70%; justify-self: center; position: relative; }
+  .polaroid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .polaroid .mano { position: absolute; left: 0; right: 0; bottom: 2px; text-align: center; font-size: 20px; line-height: 1; }
+  .esempio-b { position: absolute; z-index: 3; left: 0; bottom: 8px; font-size: 14px; color: var(--muted); }
+  @media (min-width: 900px) {
+    .scena-b { background: linear-gradient(to bottom, var(--wall) 0, var(--wall) 64%, var(--table) 64%, var(--table) 100%); }
+    .scena-b::after { top: 64%; }
+    .scena-in { grid-template-columns: 4fr 7fr; align-items: center; gap: var(--s10); padding-top: var(--s16); padding-bottom: var(--s16); min-height: 640px; }
+    .testo-b { align-self: start; padding-top: var(--s10); }
+    .oggetti { min-height: 520px; }
+    .aperto { grid-template-columns: 1fr 1fr; width: 640px; margin: 40px 0 0 auto; }
+    .anta-sx { display: grid; background-image: linear-gradient(to left, rgba(20, 43, 32, .07), transparent 18px); }
+    .anta-dx { background-image: linear-gradient(to right, rgba(20, 43, 32, .06), transparent 14px); }
+    .anta-dx .titolo-b { display: none; }
+    .aperto .titolo-b { font-size: 40px; }
+    .busta-b { right: auto; left: 0; top: auto; bottom: 24px; width: 240px; transform: rotate(-9deg); z-index: 1; }
+    .nastro-b { bottom: 30px; height: 200px; }
+    .esempio-b { left: auto; right: 0; bottom: 0; }
+  }
+
+  /* come lo apre: il telefono mostra il modo scelto */
+  .apre-in { display: grid; gap: var(--s8); align-items: center; }
+  @media (min-width: 900px) { .apre-in { grid-template-columns: 5fr 6fr; gap: var(--s16); } .apre-testo { order: 2; } }
+  .apre-testo { display: grid; gap: var(--s4); justify-items: start; align-content: start; }
+  .apre-testo .segmenti button { padding: 0 var(--s3); }
+  .apre-testo .desc { min-height: 2.9em; max-width: 40ch; margin: 0; }
+  .vetrina { background: var(--wall); border-radius: var(--r-surface); padding: var(--s8) var(--s4); display: grid; place-items: center; }
+  .telefono { width: 272px; height: 544px; padding: 12px; border-radius: 28px; background: var(--ink); box-shadow: var(--ombra-carta); }
+  .schermo { position: relative; width: 100%; height: 100%; border-radius: 20px; overflow: hidden; background: var(--peach); }
+  .schermo .titolo-s { font-family: var(--f-hand); font-weight: 700; font-size: 28px; line-height: 1; color: var(--green); text-align: center; padding: var(--s6) var(--s3) var(--s3); margin: 0; }
+  .schermo .fg { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s2); padding: 0 var(--s3); }
+  .schermo .foglietto-firma { font-size: 12px; line-height: 1.3; padding: var(--s2); gap: 4px; }
+  .schermo .foglietto-firma img { aspect-ratio: 4 / 3; }
+  .storia-s { display: grid; grid-template-rows: auto 1fr auto; height: 100%; padding: var(--s3); gap: var(--s3); }
+  .tacche-s { display: flex; gap: 4px; }
+  .tacche-s i { flex: 1; height: 3px; border-radius: 2px; background: rgba(20, 43, 32, .18); }
+  .tacche-s i.ok { background: var(--green); }
+  .storia-s .grande { align-self: center; padding: var(--s4); font-size: 16px; line-height: 1.4; gap: var(--s3); transform: rotate(-1deg); }
+  .storia-s .grande img { aspect-ratio: 1; }
+  .storia-s .chi-s { text-align: center; font-size: 12px; color: var(--muted); }
+  .film-s { background: var(--green); height: 100%; display: grid; align-content: center; justify-items: center; gap: var(--s4); padding: var(--s6) var(--s4); color: #fff; text-align: center; }
+  .film-s .mano { color: #fff; font-size: 56px; line-height: 1; }
+  .film-s p { font-size: 14px; line-height: 1.6; color: var(--card-paper); margin: 0; }
+  .film-s .barra-f { position: absolute; left: var(--s4); right: var(--s4); bottom: var(--s5); height: 3px; border-radius: 2px; background: rgba(255, 255, 255, .25); }
+  .film-s .barra-f i { display: block; width: 62%; height: 100%; background: #fff; border-radius: 2px; }
+  .scorre-s { height: 100%; display: grid; gap: var(--s3); align-content: start; padding: 0 var(--s4); -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent); mask-image: linear-gradient(to bottom, #000 70%, transparent); }
+  .scorre-s .foglietto-firma:nth-child(odd) { margin-right: var(--s6); }
+  .scorre-s .foglietto-firma:nth-child(even) { margin-left: var(--s6); }
+
+  /* ---------- editor a schermo intero ---------- */
+  .editor-b { position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto; background: var(--wall); z-index: 40; }
+  .barra-ed { display: flex; align-items: center; gap: var(--s3); padding: var(--s2) var(--s4); background: var(--surface); border-bottom: 1px solid var(--line); min-height: 64px; padding-top: max(var(--s2), env(safe-area-inset-top, 0px)); }
+  .barra-ed .info { display: grid; gap: 6px; flex: 1; min-width: 0; max-width: 420px; }
+  .barra-ed .info b { font-family: var(--f-display); font-size: 16px; color: var(--green); }
+  .barra-ed .tacche { display: flex; gap: 4px; }
+  .barra-ed .tacche i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .barra-ed .tacche i.fatto { background: var(--green); }
+  .barra-ed .tacche i.ora { background: var(--orange); }
+  .tela { overflow: auto; display: grid; place-items: start center; padding: var(--s6) var(--s4) var(--s6); }
+  .tela .carta { width: min(100%, 420px); }
+  .pannello-ed { background: var(--surface); border-radius: var(--r-surface) var(--r-surface) 0 0; box-shadow: 0 -8px 24px -12px rgba(20, 43, 32, .3); padding: var(--s5) var(--s5) 0; display: grid; gap: var(--s4); max-height: 52vh; max-height: 52dvh; overflow: auto; align-content: start; }
+  .pannello-ed > h1 { margin: 0; outline: none; }
+  .pannello-ed .maniglia { width: 40px; height: 4px; border-radius: 2px; background: var(--line); justify-self: center; margin-top: calc(-1 * var(--s2)); }
+  .pannello-ed .corpo-ed { display: grid; gap: var(--s4); align-content: start; }
+  .comandi { position: sticky; bottom: 0; display: flex; justify-content: space-between; gap: var(--s3); padding: var(--s3) var(--s5) calc(var(--s3) + env(safe-area-inset-bottom, 0px)); background: var(--surface); border-top: 1px solid var(--line); margin: 0 calc(-1 * var(--s5)); }
+  .comandi .btn-quieto { background: transparent; }
+  .comandi .btn-quieto:hover { background: var(--green-field); }
+  @media (min-width: 900px) {
+    .editor-b { grid-template-columns: 1fr 440px; grid-template-rows: auto 1fr; }
+    .barra-ed { grid-column: 1 / -1; padding: 0 var(--s8); min-height: 72px; }
+    .tela { place-items: center; padding: var(--s8); }
+    .tela .carta { width: 480px; }
+    .pannello-ed { border-radius: 0; box-shadow: none; border-left: 1px solid var(--line); max-height: none; padding: var(--s8) var(--s8) 0; grid-template-rows: auto auto 1fr auto; }
+    .pannello-ed .maniglia { display: none; }
+    .comandi { margin: 0 calc(-1 * var(--s8)); padding-left: var(--s8); padding-right: var(--s8); align-self: end; }
+  }
+  .temi { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s3); }
+  .temi button { display: grid; gap: 6px; justify-items: center; border: 0; background: none; cursor: pointer; font-size: 14px; font-weight: 600; padding: 0; color: var(--ink); font-family: var(--f-text); }
+  .temi i { width: 100%; aspect-ratio: 3 / 4; border-radius: var(--r-paper); border: 2px solid var(--line); display: block; }
+  .temi button[aria-checked="true"] i { border: 3px solid var(--green); }
+  .riep-b { display: grid; margin: 0; }
+  .riep-b > div { display: flex; align-items: center; gap: var(--s3); min-height: 56px; border-bottom: 1px solid var(--line); }
+  .riep-b dt { color: var(--muted); width: 8.5rem; flex: none; font-size: 14px; }
+  .riep-b dd { flex: 1; margin: 0; font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+  .gestione-b .riep-b dt { width: 9rem; }
+
+  /* la musica */
+  .musica-b { display: grid; gap: var(--s3); }
+  .musica-b .scelta-file { min-height: 88px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-control); background: transparent; color: var(--ink); display: grid; place-items: center; gap: 4px; padding: var(--s4); text-align: center; cursor: pointer; font-family: var(--f-text); font-size: 16px; }
+  .musica-b .scelta-file:hover, .musica-b .scelta-file.sopra { border-color: var(--green); background: var(--green-field); }
+  .musica-b .scelta-file b { color: var(--green); }
+  .musica-b .file { display: grid; gap: var(--s3); padding: var(--s4); border: 1px solid var(--line); border-radius: var(--r-control); background: var(--surface); }
+  .musica-b .azioni { display: flex; flex-wrap: wrap; gap: var(--s2); }
+
+  /* ---------- gestione ---------- */
+  .gestione-b .su { padding: var(--s4) 0 var(--s6); display: grid; gap: var(--s3); justify-items: start; }
+  .gestione-b .su .btn-quieto { margin-left: -12px; background: transparent; }
+  .gestione-b .su .btn-quieto:hover { background: var(--green-field); }
+  .gestione-b .corpo { display: grid; gap: var(--s10); padding-bottom: var(--s16); }
+  @media (min-width: 900px) { .gestione-b .corpo { grid-template-columns: 420px minmax(0, 1fr); gap: var(--s16); align-items: start; } .gestione-b .corpo > .colonna-carta { position: sticky; top: calc(var(--testa-h) + var(--s8)); } }
+  .gestione-b .colonna-carta { display: grid; gap: var(--s4); justify-items: center; align-content: start; }
+  .gestione-b .colonna-carta > .carta { width: 100%; }
+  .gestione-b .blocco { display: grid; gap: var(--s4); align-content: start; }
+  .gestione-b .blocco + .blocco { padding-top: var(--s8); border-top: 1px solid var(--line); margin-top: var(--s8); }
+  .gestione-b .blocco h2 { margin: 0; }
+  .gestione-b .blocco p { margin: 0; }
+  .gestione-b .azioni { display: flex; flex-wrap: wrap; gap: var(--s3); }
+  .firme-b { display: flex; flex-wrap: wrap; gap: var(--s2); margin: 0; padding: 0; list-style: none; }
+  .firme-b li { display: inline-flex; align-items: center; gap: var(--s2); padding: 4px 12px 4px 4px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line); font-weight: 600; }
+  .firme-b li.nascosta { opacity: .6; }
+
+  /* ---------- apertura per il festeggiato ---------- */
+  .apertura-b { position: relative; min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: var(--peach); }
+  .nastro-a { position: absolute; left: -5%; right: -5%; top: 120px; width: 110%; height: 200px; color: var(--orange); pointer-events: none; }
+  .busta-scena { display: grid; place-items: center; align-content: center; gap: var(--s8); padding: var(--s12) var(--s5); position: relative; z-index: 1; text-align: center; }
+  .busta { width: min(320px, 80vw); aspect-ratio: 3 / 2; background: var(--card-paper); border-radius: var(--r-paper); box-shadow: var(--ombra-carta); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .busta .mano { font-size: 40px; position: relative; overflow-wrap: anywhere; padding: 0 var(--s4); }
+  .muro { padding: var(--s12) var(--s5) var(--s8); max-width: 1000px; width: 100%; margin: 0 auto; position: relative; z-index: 1; display: grid; gap: var(--s8); align-content: start; }
+  .muro h1 { font-family: var(--f-hand); font-weight: 700; font-size: 56px; line-height: 1; text-align: center; color: var(--green); letter-spacing: 0; margin: 0; overflow-wrap: anywhere; }
+  .muro .da { text-align: center; color: var(--ink); margin: 0; }
+  .muro .righe-m { text-align: center; color: var(--muted); margin: 0; white-space: pre-line; }
+  .muro .foglietti { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--s4); }
+  @media (min-width: 768px) { .muro h1 { font-size: 64px; } .muro .foglietti { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s6); } .muro .foglietto-firma { font-size: 16px; padding: var(--s4); } }
+  .muro .azioni-m { display: flex; justify-content: center; }
+  .dono { display: grid; grid-template-columns: 96px 1fr; gap: var(--s4); align-items: center; background: var(--surface); border-radius: var(--r-surface); padding: var(--s4); max-width: 420px; justify-self: center; width: 100%; }
+  .dono .lastra { width: 96px; border-radius: 14px; }
+  .firma-g { text-align: center; padding: var(--s6) 0 var(--s8); font-size: 14px; color: var(--muted); display: flex; justify-content: center; align-items: center; gap: 6px; position: relative; z-index: 1; margin: 0; }
+  .firma-g img { height: 16px; width: auto; }
+  /* storia e film, a tutto schermo */
+  .scena-riv { position: fixed; inset: 0; display: flex; flex-direction: column; background: var(--peach); }
+  .scena-riv.film { background: var(--green); color: #fff; }
+  .scena-riv .tacche-r { display: flex; gap: 6px; padding: 0 var(--s4); }
+  .scena-riv .tacche-r span { flex: 1; height: 4px; border-radius: 2px; background: rgba(20, 43, 32, .18); overflow: hidden; }
+  .scena-riv .tacche-r span i { display: block; height: 100%; background: var(--green); }
+  .scena-riv.film .barra-r { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .25); overflow: hidden; margin: 0 var(--s4); }
+  .scena-riv.film .barra-r i { display: block; height: 100%; background: #fff; }
+  .scena-riv .grande-r { width: 100%; max-width: 440px; padding: var(--s5); font-size: 18px; line-height: 1.45; gap: var(--s3); transform: rotate(-1deg); }
+  .scena-riv .grande-r img { aspect-ratio: auto; max-height: 40dvh; object-fit: cover; }
+  .scena-riv .conta { text-align: center; font-size: 14px; color: var(--muted); }
+  .scena-riv.film .conta { color: var(--card-paper); }
+  .scena-riv.film .mano { color: #fff; }
+  .comandi-r { display: flex; align-items: center; justify-content: center; gap: var(--s3); padding: var(--s3) var(--s4) max(var(--s5), env(safe-area-inset-bottom, 0px)); }
+  .tondo-r { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--surface); color: var(--green); display: inline-grid; place-items: center; cursor: pointer; box-shadow: 0 1px 2px rgba(20, 43, 32, .14); }
+  .tondo-r:hover { background: var(--green-field); }
+  .tondo-r svg, .tondo-r .material-symbols-rounded { width: 22px; height: 22px; }
+  .scorre-r .foglietto-firma { margin-bottom: var(--s4); font-size: 16px; padding: var(--s4); }
+  @media (min-width: 640px) { .scorre-r .foglietto-firma:nth-child(odd) { margin-right: var(--s16); } .scorre-r .foglietto-firma:nth-child(even) { margin-left: var(--s16); } }
+}

@@ -34,15 +34,10 @@ function notaDaFirma(f: Firma, colore: string): NotaInCorso {
 function Conferma({ etichetta, pericolo, invio, onConferma, onAnnulla }: { etichetta: string; pericolo?: boolean; invio?: boolean; onConferma: () => void; onAnnulla: () => void }) {
   return (
     <div className="flex flex-col gap-2 sm:flex-row-reverse">
-      <button
-        type="button"
-        disabled={invio}
-        onClick={onConferma}
-        className={`inline-flex min-h-12 flex-1 items-center justify-center rounded-full px-5 font-bold text-white disabled:opacity-60 ${pericolo ? "bg-error" : "bg-accent-2"}`}
-      >
-        {invio ? "Un momento…" : etichetta}
+      <button type="button" disabled={invio} aria-busy={invio || undefined} onClick={onConferma} className={`btn flex-1 ${pericolo ? "bg-error text-white" : "btn-primario"}`}>
+        {etichetta}
       </button>
-      <button type="button" onClick={onAnnulla} className="inline-flex min-h-12 flex-1 items-center justify-center rounded-full border border-line px-5 font-semibold hover:bg-surface-2">
+      <button type="button" onClick={onAnnulla} className="btn btn-contorno flex-1">
         Annulla
       </button>
     </div>
@@ -302,7 +297,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
               const etichette = [propria ? "Tuo" : "", moderazione && f.nascosta ? "Nascosto" : ""].filter(Boolean);
               const mieAzioni = propria && aperto;
               return (
-                <NotaFirma key={f.id} f={f} i={i} colore={colori.get(f.id) ?? coloreDellaNota(f.coloreNota, i)} evidenziata={propria} accento={accento} attenuata={moderazione && f.nascosta} etichette={etichette}>
+                <NotaFirma key={f.id} f={f} i={i} className="mb-4 break-inside-avoid" colore={colori.get(f.id) ?? coloreDellaNota(f.coloreNota, i)} evidenziata={propria} accento={accento} attenuata={moderazione && f.nascosta} etichette={etichette}>
                   {mieAzioni || moderazione ? (
                     <>
                       {mieAzioni ? <BottoneNota icona="edit" etichetta="Modifica il tuo messaggio" onClick={apri} /> : null}
@@ -334,10 +329,10 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
           </div>
         ) : null}
 
-        <p className="mt-10 text-center text-sm" style={{ color: coloreTesto }}>
-          <Link href="/biglietto/nuovo" className="opacity-75 underline-offset-4 hover:underline hover:opacity-100">
-            Fatto con Gifty · crea il tuo biglietto gratis
-          </Link>
+        <p className="firma-g mt-6" style={{ color: coloreTesto }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo/gifty-nastro.svg" alt="" />
+          Fatto con Gifty
         </p>
       </div>
 
@@ -384,7 +379,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
       ) : null}
 
       <Avviso testo={avviso} />
-      <Coriandoli scatto={scatto} emoji={aspetto.emoji} />
+      <Coriandoli scatto={scatto} emoji={aspetto.emoji || "🎉"} />
 
       <Finestra aperta={elimina} onChiudi={() => setElimina(false)} titolo="Eliminare il tuo messaggio?">
         <div className="flex flex-col gap-4">
@@ -405,10 +400,10 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
           <p>
             Da quel momento nessuno potrà più scrivere e questo stesso link mostrerà la sorpresa. Poi mandalo a {b.festeggiato}. Se serve, potrai riaprirlo.
           </p>
-          <Link href={`/b/${b.slug}?anteprima=1`} className="self-start text-sm font-semibold text-accent-2 underline underline-offset-4">
+          <Link href={`/b/${b.slug}?anteprima=1`} className="btn btn-quieto justify-self-start self-start">
             Guarda prima come lo vedrà
           </Link>
-          <Conferma etichetta="Consegna 🎁" invio={attesa} onConferma={() => void consegnaOra()} onAnnulla={() => setConsegna(false)} />
+          <Conferma etichetta="Consegna" invio={attesa} onConferma={() => void consegnaOra()} onAnnulla={() => setConsegna(false)} />
         </div>
       </Finestra>
     </div>

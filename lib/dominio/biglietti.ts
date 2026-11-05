@@ -185,7 +185,11 @@ export const FONT_BIGLIETTO: FontBiglietto[] = [
   F("Rock Salt", "decorativo", "cursive"),
 ];
 
+/** Il carattere a mano del sito (Caveat, servito da app/fonts): il titolo dei quattro stili della carta. */
+export const FONT_MANO: FontBiglietto = { id: "mano", nome: "A mano", categoria: "a-mano", css: "var(--font-mano), cursive", google: null };
+
 export function fontPerId(id: string | null | undefined): FontBiglietto {
+  if (id === FONT_MANO.id) return FONT_MANO;
   return FONT_BIGLIETTO.find((f) => f.id === id) ?? FONT_BIGLIETTO[0];
 }
 

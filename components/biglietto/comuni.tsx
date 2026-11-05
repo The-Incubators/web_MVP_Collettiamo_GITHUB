@@ -6,6 +6,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { IconaTratto } from "@/components/ui/IconaTratto";
 import { giaVisto, segnaVisto } from "@/lib/biglietti/client";
 
 /**
@@ -236,24 +237,25 @@ export function Finestra({ aperta, onChiudi, titolo, children, larga }: { aperta
     };
   }, [aperta]);
   if (!aperta) return null;
+  // il foglio del sistema (design.md §4, «Finestra»): dal basso sul telefono, al centro su desktop; chiudi con la X
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 sm:items-center sm:p-4" onClick={onChiudi}>
+    <div className="velo" onClick={onChiudi}>
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={idTitolo}
         onClick={(e) => e.stopPropagation()}
-        className={`flex max-h-[92dvh] w-full flex-col rounded-t-3xl bg-surface shadow-sollevata sm:rounded-3xl ${larga ? "sm:max-w-[600px]" : "sm:max-w-md"}`}
+        className={`foglio flex max-h-[92dvh] flex-col overflow-y-auto ${larga ? "md:max-w-[600px]" : ""}`}
       >
-        <div className="flex items-center justify-between gap-2 py-2 pl-5 pr-2">
-          <h2 id={idTitolo} className="font-display text-xl font-bold text-accent-2">
+        <div className="foglio-testa">
+          <h2 id={idTitolo} className="t-sezione">
             {titolo}
           </h2>
-          <button ref={chiudi} type="button" onClick={onChiudi} aria-label="Chiudi" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-2xl">
-            <span aria-hidden="true">×</span>
+          <button ref={chiudi} type="button" onClick={onChiudi} aria-label="Chiudi" className="icona-btn">
+            <IconaTratto nome="chiudi" />
           </button>
         </div>
-        <div className="overflow-y-auto p-5">{children}</div>
+        <div>{children}</div>
       </div>
     </div>
   );

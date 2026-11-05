@@ -1,8 +1,28 @@
 // Regole pure della «bacheca» (wizard di creazione V2): titoli per occasione, colori dei temi, rivelazione, link.
 // Niente Firebase qui: le usano la rotta server, il wizard e i test.
 
-import type { ColoriBacheca, ModelloBiglietto, ModoRivelazione } from "../tipi";
+import { OCCASIONI_REGALO } from "../regalo/dati";
+import { OCCASIONI_BIGLIETTO, type ColoriBacheca, type ModelloBiglietto, type ModoRivelazione } from "../tipi";
 import { slugDaNome } from "./biglietti";
+
+// ---------- Occasioni ----------
+
+/**
+ * Le occasioni che l'editor offre (Gifty UX v2, design.md §8 decisione 3): l'elenco unico delle dieci, lo stesso delle
+ * domande e del wizard del regalo di gruppo.
+ */
+export const OCCASIONI_EDITOR: readonly { id: string; etichetta: string }[] = OCCASIONI_REGALO;
+
+/** Un'occasione accettata dal server: una delle dieci, o una dell'elenco di prima (biglietti già creati). */
+export function occasioneBigliettoValida(v: unknown): v is string {
+  if (typeof v !== "string") return false;
+  return OCCASIONI_EDITOR.some((o) => o.id === v) || OCCASIONI_BIGLIETTO.some((o) => o.valore === v);
+}
+
+/** Il nome dell'occasione da mostrare (riepilogo e gestione), anche per quelle dell'elenco di prima. */
+export function nomeOccasione(id: string): string {
+  return OCCASIONI_EDITOR.find((o) => o.id === id)?.etichetta ?? OCCASIONI_BIGLIETTO.find((o) => o.valore === id)?.voce ?? id;
+}
 
 // ---------- Titolo predefinito ----------
 
@@ -14,6 +34,9 @@ const TITOLI: Record<string, string> = {
   laurea: "Complimenti per la laurea, {nome}!",
   nascita: "Un grande benvenuto, {nome}!",
   matrimonio: "Viva gli sposi, {nome}!",
+  anniversario: "Buon anniversario, {nome}!",
+  "san-valentino": "Buon San Valentino, {nome}!",
+  natale: "Buon Natale, {nome}!",
   grazie: "Grazie di cuore, {nome}!",
   insegnante: "Grazie di tutto, {nome}!",
   allenatore: "Grazie, coach {nome}!",
@@ -35,9 +58,63 @@ export function titoloPredefinito(occasione: string, festeggiato: string): strin
   return (TITOLI[occasione] ?? TITOLI.altro).replace("{nome}", nome);
 }
 
+/**
+ * Il titolo dell'anteprima dell'editor: finché il nome non c'è, quello dell'occasione senza nome («Buon compleanno!»,
+ * prototipi/biglietto-editor.html, passo 1); poi quello con il nome.
+ */
+export function titoloAnteprima(occasione: string, festeggiato: string): string {
+  if (festeggiato.trim()) return titoloPredefinito(occasione, festeggiato);
+  const senza = (TITOLI[occasione] ?? TITOLI.altro).replace(/,? ?\{nome\}/, "").trim();
+  return senza.length > 4 ? senza : "Auguri!";
+}
+
 /** Il titolo da mostrare: quello scritto, o il predefinito dell'occasione. */
 export function titoloEffettivo(titolo: string, occasione: string, festeggiato: string): string {
   return titolo.trim() || titoloPredefinito(occasione, festeggiato);
+}
+
+/**
+ * Cambiando l'occasione dalla gestione: se il titolo era quello proposto per l'occasione di prima, diventa quello della
+ * nuova; un titolo scritto da chi organizza resta com'è.
+ */
+export function titoloDopoCambioOccasione(titolo: string, vecchia: string, nuova: string, festeggiato: string): string {
+  const t = titolo.trim();
+  if (!t || t === titoloPredefinito(vecchia, festeggiato)) return titoloPredefinito(nuova, festeggiato);
+  return t;
+}
+
+/** «Da Chiara, Paolo e Luca»: i nomi in fila, senza doppioni, con la «e» prima dell'ultimo. */
+export function elencoNomi(nomi: string[]): string {
+  const n = [...new Set(nomi.map((x) => x.trim()).filter(Boolean))];
+  if (n.length <= 1) return n.join("");
+  return `${n.slice(0, -1).join(", ")} e ${n[n.length - 1]}`;
+}
+
+/** Le prime due lettere del nome, per il tondo delle iniziali. */
+export function inizialiDi(nome: string): string {
+  return [...nome.trim()].slice(0, 2).join("").toUpperCase();
+}
+
+// ---------- Stili della carta ----------
+
+/**
+ * I quattro stili dell'editor (Gifty UX v2, prototipi/biglietto-editor.html, passo 3): il colore della carta.
+ * Sono modelli come gli altri (lib/dati/modelli-biglietto.ts), così i biglietti creati prima restano validi.
+ */
+export const STILI_CARTA = [
+  { id: "carta-avorio", nome: "Avorio", classe: "", colori: { sfondo1: "#F7F0E6", sfondo2: "#F7F0E6", accento: "#033922" } },
+  { id: "carta-menta", nome: "Menta", classe: "tema-menta", colori: { sfondo1: "#E9F2EC", sfondo2: "#E9F2EC", accento: "#033922" } },
+  { id: "carta-pesca", nome: "Pesca", classe: "tema-pesca", colori: { sfondo1: "#FFE9DE", sfondo2: "#FFE9DE", accento: "#033922" } },
+  { id: "carta-verde", nome: "Verde", classe: "tema-notte", colori: { sfondo1: "#033922", sfondo2: "#033922", accento: "#FFFFFF" } },
+] as const satisfies readonly { id: string; nome: string; classe: string; colori: ColoriBacheca }[];
+
+export type StileCarta = (typeof STILI_CARTA)[number];
+
+export const STILE_PREDEFINITO_CARTA: StileCarta = STILI_CARTA[0];
+
+/** Lo stile della carta di un modello; null per i temi di prima (gradiente e motivo). */
+export function stileCartaDi(modelloId: string | null | undefined): StileCarta | null {
+  return STILI_CARTA.find((s) => s.id === modelloId) ?? null;
 }
 
 // ---------- Colori ----------
@@ -105,11 +182,18 @@ export function scurisciValido(v: unknown): number {
 // ---------- Rivelazione ----------
 
 export const MODI_RIVELAZIONE: { id: ModoRivelazione; nome: string; descrizione: string }[] = [
-  { id: "griglia", nome: "Griglia", descrizione: "Tutti i messaggi compaiono insieme, come una parete di bigliettini." },
-  { id: "storie", nome: "Storia", descrizione: "Un messaggio alla volta, si va avanti con un tocco." },
-  { id: "film", nome: "Film", descrizione: "Parte da solo su sfondo scuro e finisce con i nomi di tutti." },
-  { id: "scorrimento", nome: "Scorrimento", descrizione: "I messaggi appaiono uno dopo l’altro mentre si scorre." },
+  { id: "griglia", nome: "Griglia", descrizione: "Tutti i messaggi insieme" },
+  { id: "storie", nome: "Storia", descrizione: "Un messaggio alla volta" },
+  { id: "film", nome: "Film", descrizione: "Parte da solo e finisce con i nomi" },
+  { id: "scorrimento", nome: "Scorrimento", descrizione: "I messaggi appaiono mentre scorre" },
 ];
+
+/** Il modo che l'editor propone (prototipi/biglietto-editor.html, passo 4). */
+export const RIVELAZIONE_EDITOR: ModoRivelazione = "griglia";
+
+export function nomeRivelazione(m: ModoRivelazione): string {
+  return MODI_RIVELAZIONE.find((x) => x.id === m)?.nome ?? "";
+}
 
 export const RIVELAZIONE_PREDEFINITA: ModoRivelazione = "storie";
 
