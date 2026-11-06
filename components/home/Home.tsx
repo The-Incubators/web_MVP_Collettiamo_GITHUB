@@ -73,8 +73,9 @@ export async function PaginaHome() {
       <section className="hero" aria-labelledby="titolo-hero">
         <div className="pagina hero-testo">
           <h1 id="titolo-hero" className="t-hero">
-            Scegli il regalo di gruppo e tieni il conto delle quote
+            Chi trova Gifty trova il regalo.
           </h1>
+          <p className="hero-sotto">Idee regalo, regali di gruppo e biglietti da firmare insieme</p>
         </div>
         <ScenaHero />
         <Porte />
