@@ -17,8 +17,8 @@ type Props = { searchParams: Promise<Record<string, string | string[] | undefine
 /**
  * «Fai un regalo» (revisione di Cri, 6 novembre 2026): il bivio fra il regalo personale e il regalo di gruppo.
  * Da una tessera o dalla scheda arriva con `?prodotto=`: il regalo resta in vista e porta le due strade già scelte
- * (Amazon per chi lo regala da solo, il wizard con il regalo per il gruppo). Senza prodotto, la strada personale
- * porta alle idee regalo e quella di gruppo al wizard vuoto.
+ * (Amazon per chi lo regala da solo, il wizard con il regalo per il gruppo). Niente biglietto qui: si sceglie solo se regalarlo da
+ * soli o in gruppo (Cri, 6 nov). Senza prodotto, la strada personale porta alle idee regalo e quella di gruppo al wizard vuoto.
  */
 export default async function PaginaFaiUnRegalo({ searchParams }: Props) {
   const v = (await searchParams).prodotto;
@@ -55,21 +55,15 @@ export default async function PaginaFaiUnRegalo({ searchParams }: Props) {
             <h2>Lo regalo io</h2>
             <p>
               {p
-                ? "Lo compri su Amazon e arriva a casa tua o del festeggiato. Se vuoi, ci aggiungi un biglietto."
+                ? "Lo compri su Amazon e arriva a casa tua o del festeggiato."
                 : "Ti aiutiamo a trovare l'idea giusta: quattro domande o il nostro catalogo."}
             </p>
             {p ? (
-              <div className="bivio-azioni">
-                <a className="btn btn-primario" href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
-                  Compralo su Amazon
-                  <IconaTratto nome="esterno" />
-                  <span className="sr-only"> (si apre in una nuova scheda)</span>
-                </a>
-                <Link className="btn btn-quieto" href="/biglietto/nuovo">
-                  <IconaTratto nome="biglietto" />
-                  Aggiungi un biglietto
-                </Link>
-              </div>
+              <a className="btn btn-primario" href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
+                Compralo su Amazon
+                <IconaTratto nome="esterno" />
+                <span className="sr-only"> (si apre in una nuova scheda)</span>
+              </a>
             ) : (
               <Link className="btn btn-primario" href="/idee">
                 Trova un&apos;idea regalo
@@ -86,7 +80,7 @@ export default async function PaginaFaiUnRegalo({ searchParams }: Props) {
                 <span style={{ background: "var(--c2)" }} />
               </div>
             </div>
-            <h2>Lo regaliamo insieme</h2>
+            <h2>Lo regaliamo in gruppo</h2>
             <p>Mandi il link nella chat, chi vuole aderisce e tu tieni il conto di chi ti ha dato la quota.</p>
             <Link className="btn btn-primario" href={crea}>
               Organizza un regalo di gruppo

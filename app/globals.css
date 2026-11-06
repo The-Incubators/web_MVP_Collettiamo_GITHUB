@@ -424,15 +424,24 @@
   .porta p { color: var(--muted); }
   .porta .btn { grid-column: 1 / -1; margin-top: var(--s2); }
   .segno img { width: 80%; height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+  .porta .segno > svg { width: 28px; height: 28px; color: var(--green); }
   .segno .mini-ini { display: grid; grid-template-columns: repeat(2, 24px); gap: 4px; }
   .segno .mini-ini span { width: 24px; height: 24px; border-radius: 50%; }
   .segno .mini-carta { width: 48px; height: 40px; display: grid; place-items: center; transform: rotate(-5deg); }
   .segno .mini-carta span { font-size: 16px; line-height: 1; }
   @media (min-width: 768px) {
     .porte { grid-template-columns: repeat(3, 1fr); gap: var(--s6); margin-top: -48px; }
-    .porta { grid-template-columns: 56px 1fr; padding: var(--s5); gap: var(--s1) var(--s4); }
-    .porta .segno { width: 56px; height: 56px; }
-    .porta .btn { justify-self: start; margin-top: var(--s3); }
+    /* in colonna e centrate, con il segno grande e il pulsante in fondo alla stessa altezza (revisione di Cri, 6 nov) */
+    .porta { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--s3); padding: var(--s8) var(--s6) var(--s6); }
+    .porta .segno { width: 104px; height: 104px; border-radius: 24px; margin-bottom: var(--s2); }
+    .porta h2 { font-size: 24px; }
+    .porta p { flex: 1; max-width: 30ch; font-size: 17px; line-height: 1.5; }
+    .porta .btn { align-self: stretch; margin-top: var(--s3); }
+    .porta .segno .mini-ini { grid-template-columns: repeat(2, 36px); gap: 6px; }
+    .porta .segno .mini-ini span { width: 36px; height: 36px; }
+    .porta .segno .mini-carta { width: 76px; height: 62px; }
+    .porta .segno .mini-carta span { font-size: 24px; }
+    .porta .segno > svg { width: 44px; height: 44px; }
   }
 
   /* idee: a scorrimento sul telefono, in griglia da 768 px */
@@ -557,12 +566,8 @@
   .bivio-regalo:hover .bivio-nome { color: var(--green); text-decoration: underline; }
   .bivio-regalo .prezzo { font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--green); }
   .bivio-strade { display: grid; gap: var(--s4); width: 100%; max-width: 880px; text-align: left; }
-  .bivio-strade .porta { grid-template-rows: auto 1fr auto; }
-  .bivio-strade .porta > .btn, .bivio-azioni { align-self: end; }
-  .bivio-strade .segno svg { width: 28px; height: 28px; color: var(--green); }
-  .bivio-azioni { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); margin-top: var(--s2); }
-  .bivio-azioni .btn { margin-top: 0; }
-  @media (min-width: 768px) { .bivio-strade { grid-template-columns: repeat(2, 1fr); gap: var(--s6); } .bivio-strade .porta .btn { justify-self: start; } }
+  .bivio-strade .btn svg { width: 20px; height: 20px; color: currentColor; }
+  @media (min-width: 768px) { .bivio-strade { grid-template-columns: repeat(2, 1fr); gap: var(--s6); } }
   /* pagine di solo testo (Termini e condizioni) */
   .testo-legale { max-width: 720px; display: grid; gap: var(--s8); padding-top: var(--s8); }
   .testo-legale section { display: grid; gap: var(--s3); justify-items: start; }
