@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { Icona, type NomeIcona } from "@/components/ui";
-import { coloreDellaNota, durataLettura, elencoNomi, rivelazioneValida } from "@/lib/dominio/bacheca";
+import { coloreDellaNota, durataLettura, effettoDi, elencoNomi, rivelazioneValida } from "@/lib/dominio/bacheca";
 import { firmeOrdinate } from "@/lib/dominio/biglietto";
 import { fontPerId, testoDaHtml } from "@/lib/dominio/biglietti";
 import type { BigliettoPubblico, Firma, ModoRivelazione } from "@/lib/tipi";
@@ -401,6 +401,7 @@ export function Rivelazione({
   const aspetto = useMemo(() => aspettoDaBiglietto(b), [b]);
   const note = useMemo<Nota[]>(() => firmeOrdinate(firme, b.ordineFirme).map((f, i) => ({ f, colore: coloreDellaNota(f.coloreNota, i) })), [firme, b.ordineFirme]);
   const modo = rivelazioneValida(b.rivelazione);
+  const effetto = effettoDi(b.effetto);
   const [fase, setFase] = useState<Fase>("apertura");
   const [scatto, setScatto] = useState(0);
   const audio = useRef<HTMLAudioElement>(null);
@@ -480,7 +481,7 @@ export function Rivelazione({
         </div>
       ) : null}
 
-      <Coriandoli scatto={scatto} emoji={aspetto.emoji || "🎉"} />
+      <Coriandoli scatto={scatto} emoji={aspetto.emoji || "🎉"} serie={effetto.emoji} sale={effetto.sale} />
       {musica ? <audio ref={audio} src={musica} loop preload="auto" onPlay={() => setSuona(true)} onPause={() => setSuona(false)} /> : null}
     </div>
   );

@@ -8,8 +8,10 @@ const DURATA_MS = 3600;
 /**
  * Una pioggia di emoji (quella del tema, più qualche festa) che cade e sparisce da sola.
  * Ogni nuovo valore di `scatto` la fa ripartire; 0 = niente. Con il movimento ridotto non compare.
+ * `serie`: le emoji dell'effetto scelto (ritocchi finali), al posto di quelle di festa; vuota = niente.
+ * `sale`: i pezzi salgono dal basso (i palloncini) invece di cadere.
  */
-export function Coriandoli({ scatto, emoji }: { scatto: number; emoji: string }) {
+export function Coriandoli({ scatto, emoji, serie, sale = false, contenuto = false }: { scatto: number; emoji: string; serie?: readonly string[]; sale?: boolean; contenuto?: boolean }) {
   const [attivo, setAttivo] = useState(0);
 
   useEffect(() => {
@@ -22,7 +24,8 @@ export function Coriandoli({ scatto, emoji }: { scatto: number; emoji: string })
 
   const pezzi = useMemo(() => {
     if (!attivo) return [];
-    const scelta = [emoji, emoji, "🎉", "💖", "⭐", "✨"];
+    const scelta = serie ?? [emoji, emoji, "🎉", "💖", "⭐", "✨"];
+    if (!scelta.length) return [];
     return Array.from({ length: QUANTI }, (_, i) => ({
       e: scelta[i % scelta.length],
       x: Math.random() * 100,
@@ -31,15 +34,15 @@ export function Coriandoli({ scatto, emoji }: { scatto: number; emoji: string })
       giro: (Math.random() < 0.5 ? -1 : 1) * (180 + Math.random() * 360),
       dim: 18 + Math.random() * 16,
     }));
-  }, [attivo, emoji]);
+  }, [attivo, emoji, serie]);
 
-  if (!attivo) return null;
+  if (!attivo || !pezzi.length) return null;
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-40 overflow-hidden">
+    <div aria-hidden="true" className={`pointer-events-none ${contenuto ? "absolute" : "fixed"} inset-0 z-40 overflow-hidden`}>
       {pezzi.map((p, i) => (
         <span
           key={`${attivo}-${i}`}
-          className="coriandolo absolute top-0"
+          className={sale ? "coriandolo sale absolute bottom-0" : "coriandolo absolute top-0"}
           style={{ left: `${p.x}%`, fontSize: p.dim, ["--ritardo" as string]: `${p.ritardo}s`, ["--durata" as string]: `${p.durata}s`, ["--giro" as string]: `${p.giro}deg` }}
         >
           {p.e}

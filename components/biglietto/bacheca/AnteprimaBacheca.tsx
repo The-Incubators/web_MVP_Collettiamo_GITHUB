@@ -2,7 +2,7 @@
 
 import type { CSSProperties, ReactNode } from "react";
 import { modelloPerId, MODELLI_BIGLIETTO } from "@/lib/dati/modelli-biglietto";
-import { coloriDelModello, COLORI_NOTA, SCURISCI_PREDEFINITO, stileCartaDi, testoSu } from "@/lib/dominio/bacheca";
+import { coloriDelModello, COLORI_NOTA, MODELLO_LIBERO, SCURISCI_PREDEFINITO, stileCartaDi, testoSu } from "@/lib/dominio/bacheca";
 import { fontPerId, testoDaHtml } from "@/lib/dominio/biglietti";
 import { emojiOccasione, type BigliettoPubblico, type ColoriBacheca } from "@/lib/tipi";
 import { useFontBiglietto } from "../useFontBiglietto";
@@ -35,8 +35,10 @@ export interface AspettoBacheca {
   /** dataUrl o url dell'immagine di sfondo; null = colori del tema */
   immagine: string | null;
   scurisci: number;
-  /** la classe dello stile della carta (`tema-menta`…); null per i temi di prima, che usano i loro colori */
+  /** la classe dello stile della carta (`tema-menta`…); null per i temi di prima e per «Colori e font», che usano i loro colori */
   classeCarta: string | null;
+  /** il colore del titolo scelto in «Colori e font»; null = quello che si legge meglio sullo sfondo */
+  coloreTitolo?: string | null;
 }
 
 /** L'aspetto di un biglietto pubblicato. Quelli creati prima della bacheca prendono i colori del loro modello. */
@@ -46,12 +48,13 @@ export function aspettoDaBiglietto(b: Pick<BigliettoPubblico, "occasione" | "nom
   return {
     titolo: b.copertina.titolo || b.nome,
     benvenuto: testoDaHtml(b.messaggioGruppo),
-    emoji: stile ? "" : modello.sfondo.motivo || emojiOccasione(b.occasione),
-    fontTitolo: modello.fontBacheca ?? "predefinito",
+    emoji: stile || modello.id === MODELLO_LIBERO ? "" : modello.sfondo.motivo || emojiOccasione(b.occasione),
+    fontTitolo: b.copertina.fontTitolo ?? modello.fontBacheca ?? "predefinito",
     colori: b.copertina.colori ?? coloriDelModello(modello),
     immagine: b.copertina.immagineUrl,
     scurisci: b.copertina.scurisci ?? SCURISCI_PREDEFINITO,
     classeCarta: stile ? stile.classe : null,
+    coloreTitolo: b.copertina.coloreTitolo ?? null,
   };
 }
 
@@ -93,7 +96,7 @@ export function TestaBacheca({ aspetto, nMessaggi, compatta = false, vera = fals
       ) : null}
       <Titolo
         className={`break-words font-bold leading-tight ${mano ? (compatta ? "text-[32px] leading-none" : "text-[44px] leading-none sm:text-[56px]") : compatta ? "text-2xl" : "text-[30px]"}`}
-        style={{ fontFamily: fontPerId(aspetto.fontTitolo).css }}
+        style={{ fontFamily: fontPerId(aspetto.fontTitolo).css, color: aspetto.coloreTitolo ?? undefined }}
       >
         {aspetto.titolo}
       </Titolo>
@@ -106,11 +109,12 @@ export function TestaBacheca({ aspetto, nMessaggi, compatta = false, vera = fals
 }
 
 /** Classe e stile della carta di un biglietto: lo stile scelto, o i colori dei temi di prima. */
-export function cartaDi(aspetto: AspettoBacheca): { className: string; style?: CSSProperties; coloreTitolo?: string } {
+export function cartaDi(aspetto: AspettoBacheca): { className: string; style?: CSSProperties; coloreTitolo?: string; coloreRighe?: string } {
   if (aspetto.classeCarta !== null) return { className: aspetto.classeCarta };
   const s = stileSfondo(aspetto);
   const chiaro = testoSopra(aspetto) === "#FFFFFF";
-  return { className: "", style: s, coloreTitolo: chiaro ? "#FFFFFF" : aspetto.colori.accento };
+  const righe = chiaro ? "#FFFFFF" : aspetto.coloreTitolo ? testoSopra(aspetto) : aspetto.colori.accento;
+  return { className: chiaro ? "scura" : "", style: s, coloreTitolo: aspetto.coloreTitolo ?? righe, coloreRighe: righe };
 }
 
 /** Un foglietto firmato dell'anteprima (niente si clicca). */
@@ -138,7 +142,7 @@ export function CartaBiglietto({ aspetto, note = NOTE_ESEMPIO, children, classNa
         {aspetto.titolo}
       </p>
       {aspetto.benvenuto.trim() ? (
-        <p className="righe-b" style={c.coloreTitolo ? { color: c.coloreTitolo } : undefined}>
+        <p className="righe-b" style={c.coloreRighe ? { color: c.coloreRighe } : undefined}>
           {aspetto.benvenuto}
         </p>
       ) : null}

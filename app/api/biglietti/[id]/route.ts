@@ -4,8 +4,12 @@ import { bigliettoDelProprietario, corpoJson, errore, risposta, testo } from "@/
 import { modelloPerId } from "@/lib/dati/modelli-biglietto";
 import {
   coloriDelModello,
+  coloreValido,
   coloriValidi,
   dataEventoValida,
+  effettoValido,
+  fontTitoloValido,
+  MODELLO_LIBERO,
   htmlDaTestoSemplice,
   occasioneBigliettoValida,
   rivelazioneValida,
@@ -44,11 +48,14 @@ export async function GET(richiesta: Request, { params }: Ctx) {
  * Salva un passo del wizard (o le modifiche dalla gestione). Parti accettate:
  * - dettagli (passo 2): tutti i campi + slug, validati insieme; lo slug si prenota in transazione.
  * - copertina (passo 3): modello, variante, titolo, sottotitolo.
- * - bacheca (wizard V2, /biglietto/nuovo): festeggiato, titolo, benvenuto, data dell'evento, tema, colori, sfondo, rivelazione.
+ * - bacheca (wizard V2, /biglietto/nuovo): festeggiato, titolo, benvenuto, data dell'evento, tema, colori, sfondo,
+ *   carattere e colore del titolo, rivelazione, effetto all'apertura.
  *   Il link si crea qui dal nome del festeggiato; email e consegna si scelgono dopo, dalla gestione.
  * - colonne.
  * - rivelazione (dalla gestione; anche dopo la consegna).
- * - stile (dalla gestione, Gifty UX v2): uno dei quattro colori della carta.
+ * - stile (dalla gestione, Gifty UX v2): uno dei quattro colori della carta (biglietti di prima).
+ * - aspetto (dalla gestione): colore dello sfondo, carattere e colore del titolo (la foto passa da /copertina).
+ * - effetto (dalla gestione): l'effetto all'apertura.
  * - occasione (dalla gestione, Gifty UX v2): il titolo proposto segue la nuova occasione, quello scritto resta.
  */
 export async function PATCH(richiesta: Request, { params }: Ctx) {
@@ -57,8 +64,8 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
   if (!b) return esito;
   const c = await corpoJson(richiesta);
   if (!c) return errore("Richiesta non valida.");
-  // dopo la consegna si può cambiare solo la modalità della rivelazione
-  if (b.stato === "consegnato" && Object.keys(c).some((k) => k !== "rivelazione")) return errore("Il biglietto è già stato consegnato.", 409);
+  // dopo la consegna si possono cambiare solo la modalità della rivelazione e l'effetto all'apertura
+  if (b.stato === "consegnato" && Object.keys(c).some((k) => k !== "rivelazione" && k !== "effetto")) return errore("Il biglietto è già stato consegnato.", 409);
   const archivio = archivioBiglietti();
   const patch: Partial<BigliettoServer> = {};
 
@@ -144,6 +151,7 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
       messaggioGruppo: messaggio,
       dataEvento: dataEventoValida(k.dataEvento),
       rivelazione: rivelazioneValida(k.rivelazione),
+      effetto: effettoValido(k.effetto),
       copertina: {
         ...b.copertina,
         modelloId: modello.id,
@@ -151,6 +159,7 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
         sottotitolo: null,
         colori: coloriValidi(k.colori) ?? coloriDelModello(modello),
         scurisci: scurisciValido(k.scurisci),
+        ...aspettoTitolo(k),
       },
     });
   }
@@ -167,6 +176,16 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
     patch.copertina = { ...(patch.copertina ?? b.copertina), modelloId: stile.id, colori: { ...stile.colori } };
   }
 
+  if (c.aspetto && typeof c.aspetto === "object") {
+    const k = c.aspetto as Record<string, unknown>;
+    const sfondo = coloreValido(k.coloreSfondo);
+    if (!sfondo) return errore("Colore non valido.");
+    const base = patch.copertina ?? b.copertina;
+    patch.copertina = { ...base, modelloId: MODELLO_LIBERO, colori: { sfondo1: sfondo, sfondo2: sfondo, accento: base.colori?.accento ?? sfondo }, ...aspettoTitolo(k) };
+  }
+
+  if (c.effetto !== undefined) patch.effetto = effettoValido(c.effetto);
+
   if (c.colonne === 1 || c.colonne === 2 || c.colonne === 3) patch.colonne = c.colonne;
 
   // dalla gestione: solo la modalità della rivelazione
@@ -177,4 +196,11 @@ export async function PATCH(richiesta: Request, { params }: Ctx) {
   await archivio.aggiorna(id, patch);
   const dopo = await archivio.leggi(id);
   return risposta({ ok: true, biglietto: dopo ? senzaSegreti(dopo) : null });
+}
+
+/** Carattere e colore del titolo scelti in «Colori e font»: si salvano solo se validi. */
+function aspettoTitolo(k: Record<string, unknown>): { fontTitolo?: string; coloreTitolo?: string } {
+  const font = fontTitoloValido(k.fontTitolo);
+  const colore = coloreValido(k.coloreTitolo);
+  return { ...(font ? { fontTitolo: font } : {}), ...(colore ? { coloreTitolo: colore } : {}) };
 }
