@@ -1,4 +1,4 @@
-# Gifty: ingressi, uscite e soluzioni
+# Gifty: ingressi, uscite e memoria
 
 _6 novembre 2026, su main `c6a35c9` più il PR 34. Ogni ingresso è stato aperto in locale (modalità memoria, senza account) il 6 novembre; le pagine pubbliche anche sul sito live. Base: `Gifty-architettura-e-flussi.md`._
 
@@ -45,72 +45,80 @@ Da dove arriva una persona, dove atterra e che cosa succede. «OK» = provato e 
 |---|---|---|
 | **Email** (promemoria, quota da pagare, biglietto da firmare, biglietto arrivato, ricorrenza in arrivo) | È il modo per far tornare chi è uscito | Non esiste: nessun servizio email (D-18) |
 | **Notifica sul telefono** (Ricorrenze) | Ricordare la data senza email | Non esiste (`dataAvviso` pronto) |
-| **Ritorno da Amazon** | La scheda di Gifty resta aperta: chi torna trova la stessa pagina, senza nulla di nuovo | Nessun riconoscimento del ritorno |
+| **Ritorno da Amazon** | Chi torna deve ritrovare quello che ha aperto e comprato | Gifty non ricorda nulla del clic |
 | **Visti di recente** | Ritrovare l'idea guardata ieri | Non esiste nel codice |
 
 ## 2. Uscite
 
-Dove una persona lascia Gifty, se torna e che cosa resta.
+Dove una persona lascia Gifty, se torna e che cosa resta. **Amazon è l'uscita che vogliamo**: è lì che Gifty guadagna la commissione di affiliazione. Il lavoro non è trattenere chi esce, ma far sì che quando torna Gifty ricordi che cosa ha fatto.
 
-| Uscita | Da dove | Torna? | Che cosa resta a Gifty |
+| Uscita | Da dove | Torna? | Che cosa ricorda Gifty quando torna |
 |---|---|---|---|
-| **Amazon** («Guarda su Amazon», «Compralo su Amazon») | tessere, scheda, `/fai-un-regalo` | Si apre in una nuova scheda: Gifty resta aperto dietro | Niente: non sappiamo che cosa ha guardato né se ha comprato; nessun motivo per tornare |
-| WhatsApp, condividi il link | fine del wizard, pagina del gruppo, biglietto | Sì, è previsto: chi organizza torna sulla pagina del gruppo | Il gruppo è salvato nell'account |
-| PayPal o Satispay per la quota | pagina del gruppo di chi partecipa | Deve tornare a toccare «Ho pagato» | Nessun richiamo se non torna |
-| Accesso: Google o link via email | wizard, «Partecipo», account | Sì: torna alla pagina di partenza con la bozza o l'adesione | OK |
-| Chiudi il wizard o l'editor | `/crea`, `/biglietto/nuovo` | La bozza resta nel browser | Persa se cambia dispositivo |
+| **Amazon** («Guarda su Amazon», «Compralo su Amazon») | tessere, scheda, `/fai-un-regalo` | Si apre in una nuova scheda: Gifty resta aperto dietro | **Niente**: non sa che cosa ha aperto su Amazon, per chi, né se l'ha comprato. Al ritorno la pagina è identica a prima |
+| WhatsApp, condividi il link | fine del wizard, pagina del gruppo, biglietto | Sì: chi organizza torna sulla pagina del gruppo | Il gruppo, nell'account |
+| PayPal o Satispay per la quota | pagina del gruppo di chi partecipa | Deve tornare a toccare «Ho pagato» | La sua adesione; nessun richiamo se non torna |
+| Accesso: Google o link via email | wizard, «Partecipo», account | Sì: torna alla pagina di partenza | La bozza o l'adesione |
+| Chiudi il wizard o l'editor | `/crea`, `/biglietto/nuovo` | Quando vuole | La bozza, solo su quel browser |
 | Il festeggiato ha aperto il biglietto | `/b/[slug]` | **Finisce lì**: l'unico pulsante riapre il biglietto | Niente: nessun «Ringrazia», nessun «Crea un biglietto anche tu» |
 | Biglietto firmato | `/b/[slug]` | Finisce lì | Il biglietto in «I miei biglietti» se ha firmato con l'account |
 | «Provalo» della cover iPhone | scheda della cover | Sito esterno | Niente (la cover oggi non è nel catalogo) |
 | Cancella l'account | `/account/cancella` | No | Tutto cancellato |
 
-## 3. Le uscite più costose
+## 3. Dove manca la memoria
 
-1. **Amazon.** È l'uscita di tutta la strada «Lo regalo io», cioè della parte che piace di più (il catalogo). Dopo il clic Gifty non lascia niente.
-2. **Il festeggiato e chi firma.** Sono le persone che vedono Gifty senza averlo cercato, il canale di crescita gratis, e la pagina finisce senza una porta.
+1. **Il ritorno da Amazon.** È la strada «Lo regalo io», quella del catalogo che piace di più. Chi torna non trova traccia di quello che ha aperto né di quello che ha comprato.
+2. **Il festeggiato e chi firma.** Vedono Gifty senza averlo cercato e la pagina finisce senza una porta.
 3. **Chi non ha pagato.** Senza email il solo richiamo è il messaggio che chi organizza inoltra a mano.
 
-## 4. Soluzioni per l'uscita verso Amazon
+## 4. Il ritorno da Amazon: Gifty ricorda
 
-### 4.1 Che cosa non si può fare (regole Amazon.it)
+### 4.1 Che cosa possiamo sapere (regole Amazon.it)
 
 Fonte: [Requisiti del programma](https://programma-affiliazione.amazon.it/help/operating/policies) e [Accordo operativo](https://programma-affiliazione.amazon.it/help/operating/agreement), letti il 6 novembre 2026.
 
-- **Niente pagina intermedia automatica** («Stai lasciando Gifty…» che reindirizza da sola): gli acquisti non contano (Allegato Commissioni 2(e)) e aprire Amazon senza il clic della persona è vietato (Requisiti 6(q)). La scheda nuova con `target=_blank` va bene.
-- **Niente premi in cambio del clic** («lasciaci l'email e ti diamo uno sconto»): vietato (6(g)). Chiedere l'email per un servizio, senza premio, si può.
-- **Non sapremo mai chi ha comprato**: Amazon dà solo totali; non si possono assegnare tag ai singoli utenti (2(b)). L'unico modo di saperlo è chiederlo alla persona.
-- **Link Amazon nelle email solo se richieste** dalla persona (Requisiti 4), come un promemoria che ha chiesto lei.
-- **Attenzione, oggi**: si possono mostrare i prezzi solo se arrivano da Creators API o PA-API (2(b)), e le **immagini dei prodotti non si possono salvare** (Licenza 2(h)). Gifty mostra prezzi fotografati dalle playlist e tiene 517 foto dei prodotti in `public/foto-prodotti/` (da verificare con Stefano se sono foto Amazon). Va sistemato con l'API Creators prima del lancio.
+- **Amazon non ci dice chi ha comprato che cosa**: solo totali, e non si possono dare tag diversi ai singoli utenti (Requisiti 2(b)). Possiamo sapere solo due cose: **il clic su Amazon**, che è nostro, e **quello che la persona ci dice** («L'ho preso»).
+- Si possono usare **ID di monitoraggio diversi per sezione** (home, domande, catalogo, `/fai-un-regalo`): così il rapporto di Amazon dice quale strada fa comprare di più. Mai uno per persona.
+- La scheda nuova (`target=_blank`) va bene; vietata solo una pagina intermedia che apre Amazon da sola (Allegato Commissioni 2(e), Requisiti 6(q)), e nessun premio in cambio del clic (6(g)).
+- Link Amazon nelle email solo se l'email l'ha chiesta la persona (Requisiti 4), come un promemoria che ha chiesto lei.
+- **Da sistemare prima del lancio**: i prezzi si possono mostrare solo se arrivano da Creators API o PA-API (2(b)) e le immagini dei prodotti non si possono salvare (Licenza 2(h)). Gifty mostra prezzi fotografati dalle playlist e tiene 517 foto in `public/foto-prodotti/` (da verificare con Stefano se sono foto Amazon). La soluzione è l'API Creators.
 
-### 4.2 Le opzioni
+### 4.2 La memoria: «I tuoi regali»
 
-**A. Prima del clic: lasciare una traccia**
+Gifty tiene, per ogni persona che lo usa, la storia delle sue idee in quattro stati, sul dispositivo e, se accede, nell'account (come oggi Preferiti e Ricorrenze):
 
-| # | Soluzione | Che cosa resta | Serve |
-|---|---|---|---|
-| A1 | **Visti di recente**: una fila «Li hai guardati di recente» in home, in Idee regalo e sotto la scheda | L'idea guardata ieri si ritrova in un tocco | Solo il browser. Se la lista resta sul dispositivo ed è mostrata come funzione, per il Garante è uno strumento tecnico: basta l'informativa, niente banner ([Provv. 231/2021](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)). Se va in Firestore o nelle analisi, serve il consenso. |
-| A2 | **«Per chi è?»** in «Lo regalo io»: nome e data facoltativi prima di «Compralo su Amazon» | Una ricorrenza con l'idea dentro: «Marta, 12 marzo, cuffie» | Le Ricorrenze ci sono già |
-| A3 | **Cuore accanto a «Compralo su Amazon»** in `/fai-un-regalo` (oggi c'è solo sulla tessera e sulla scheda) | L'idea nei Preferiti | Niente di nuovo |
-
-**B. Al ritorno: la scheda di Gifty è ancora aperta**
-
-| # | Soluzione | Come funziona |
+| Stato | Quando entra | Esempio |
 |---|---|---|
-| B1 | **«L'hai preso?»** quando la persona torna sulla scheda di Gifty dopo il clic verso Amazon | Un riquadro sulla stessa pagina, una volta sola. **Sì** → «Segnato come regalato a…» con due proposte: «Aggiungi un biglietto da firmare» e «Ricordami il prossimo compleanno». **Non ancora** → «Salvalo nei preferiti», «Fallo in gruppo» (stessa idea, prezzo diviso) o «Idee simili». La risposta della persona è l'unico dato sull'acquisto che possiamo avere, e non viola le regole perché non c'è premio. |
-| B2 | **«Fallo in gruppo»** quando il prezzo è alto | Chi è uscito per un regalo da 120 € trova la quota a testa: «Con 8 persone sono 15 € a testa» |
+| **Visto** | apre una scheda prodotto | «Cuffie Sony, viste ieri» |
+| **Salvato** | tocca il cuore | già oggi nei Preferiti |
+| **Aperto su Amazon** | tocca «Compralo su Amazon», con data, prezzo di quel momento e, se l'ha detto, per chi | «Aperto su Amazon il 6 nov, per Marta» |
+| **Regalato** | dice «L'ho preso» | «Regalato a Marta, compleanno 2026» |
 
-**C. Dopo: un motivo per tornare**
+Dove si vede, al ritorno:
 
-| # | Soluzione | Serve |
+| # | Dove | Che cosa mostra |
 |---|---|---|
-| C1 | **Promemoria della ricorrenza** una settimana prima, con tre idee | Servizio email e consenso esplicito; il soft opt-in non vale perché Gifty non vende nulla ([art. 130 c. 4](https://www.osborneclarke.com/it/insights/soft-spam-italia-stiamo-correttamente-applicando-la-norma)) |
-| C2 | **Notifica sul telefono** per la stessa ricorrenza | Permesso del browser chiesto dopo che la persona salva una ricorrenza |
-| C3 | **«Che cosa le hai regalato»**: nell'account, i regali segnati con B1 per persona | Così l'anno dopo non regala la stessa cosa |
-| C4 | **Avviso di calo del prezzo** su un preferito | API Creators (prezzi veri); dopo il lancio |
+| M1 | **Sulla stessa scheda**, quando la persona torna su Gifty dopo il clic (la scheda era rimasta aperta) | Sulla tessera o sulla scheda del prodotto: «Aperto su Amazon poco fa · L'hai preso?». Un tocco su **«L'ho preso»** lo segna come regalato. Nessun riquadro che interrompe: è un'etichetta sulla cosa che ha guardato. |
+| M2 | **In home e in Idee regalo**, alla visita dopo | Una fila «Riprendi da qui»: l'ultimo aperto su Amazon con «L'hai preso?», poi i visti di recente e i salvati. |
+| M3 | **Nella pagina «I tuoi regali»** (nel menu dell'account, accanto a Preferiti) | Tutto per stato e per persona: «Per Marta: viste 3 idee, regalate le cuffie (compleanno 2026)». |
+| M4 | **Nella ricorrenza di quella persona** | L'anno dopo: «L'anno scorso le hai regalato le cuffie Sony», con idee nuove e non la stessa. |
+| M5 | **Dopo «L'ho preso»**, solo se c'entra | Se la data è vicina: «Vuoi anche un biglietto da far firmare?». Se manca la ricorrenza: «Ti ricordiamo il compleanno di Marta l'anno prossimo?». |
 
-### 4.3 Raccomandazione
+**«Per chi è?»** (facoltativo, in `/fai-un-regalo` sotto «Lo regalo io»: nome e data) è quello che lega il regalo a una persona e fa funzionare M3, M4 e M5. Senza, la memoria funziona lo stesso, per prodotto.
 
-Prima **A1, A2 e B1**: funzionano senza email né account, usano pagine che esistono già (Ricorrenze, Preferiti, wizard) e trasformano l'uscita verso Amazon in un «L'hai preso?» che porta al biglietto o al regalo di gruppo. Poi **C1 e C2** quando c'è il servizio email (serve anche al Reminder del regalo di gruppo). **C4** dopo l'API Creators, che va fatta comunque per i prezzi e le foto.
+### 4.3 Cookie e consenso
+
+- La memoria sul dispositivo, mostrata come funzione e mai mandata ad analisi o pubblicità, per il Garante è uno strumento tecnico: basta l'informativa, niente banner ([Provv. 231/2021](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)).
+- Nell'account è parte del servizio che la persona usa da connessa: si scrive nell'informativa e si cancella con l'account.
+- Contare i clic su Amazon nelle analisi (Firebase, con Stefano a fine lavoro) è un'altra cosa e chiede il consenso al banner.
+- Promemoria via email o notifica sul telefono: consenso esplicito; il soft opt-in non vale perché Gifty non vende nulla ([art. 130 c. 4](https://www.osborneclarke.com/it/insights/soft-spam-italia-stiamo-correttamente-applicando-la-norma)).
+
+### 4.4 Ordine proposto
+
+1. **La memoria sul dispositivo e M1, M2**: visti, aperti su Amazon, «L'ho preso». Nessuna email, nessun account.
+2. **«Per chi è?», M3, M4, M5**, sopra Ricorrenze e Preferiti che esistono già; con l'accesso la memoria passa nell'account.
+3. **ID di monitoraggio per sezione**, da creare nel pannello Amazon di Stefano.
+4. **Promemoria via email e notifica** quando c'è il servizio email (serve anche al Reminder del regalo di gruppo).
+5. **API Creators** per prezzi e foto, prima del lancio.
 
 ## 5. Le altre uscite
 
