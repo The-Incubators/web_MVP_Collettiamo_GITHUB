@@ -4,12 +4,11 @@ import { TestoEspandibile } from "@/components/TestoEspandibile";
 import { IconaTratto, ImmagineProdotto } from "@/components/ui";
 import { REL_LINK_PRODOTTO, urlPerAcquisto } from "@/lib/dominio/amazon";
 import { formattaEuro } from "@/lib/dominio/importi";
-import { testoIlGiorno } from "@/lib/dominio/regali";
 import type { Prodotto } from "@/lib/tipi";
 
 /**
  * La scheda prodotto di Gifty UX v2 (prototipi/prodotto.html): lastra grande con il cuore; marca, nome, prezzo,
- * descrizione e il «perché» del catalogo; «Guarda su Amazon» pieno e «Aggiungi a un regalo di gruppo» contorno, che
+ * descrizione e il «perché» del catalogo; «Guarda su Amazon» pieno e «Fai un regalo» pieno, che
  * apre il wizard con il regalo già scelto (I-08); la nota sul prezzo una volta. Niente biglietto (I-10).
  *
  * `gruppo`: aperta dal catalogo del wizard (`?modo=gruppo`): le azioni sono «Scegli questo regalo» e «Aggiungi al
@@ -52,13 +51,11 @@ export function DettaglioProdotto({ p, gruppo = false }: { p: Prodotto; gruppo?:
             <IconaTratto nome="esterno" />
             <span className="sr-only"> (si apre in una nuova scheda)</span>
           </a>
-          <Link className="btn btn-contorno btn-largo btn-largo-tel" href={`/crea?prodotto=${encodeURIComponent(p.slug)}`}>
-            <IconaTratto nome="gruppo" />
-            Aggiungi a un regalo di gruppo
+          <Link className="btn btn-primario btn-largo btn-largo-tel" href={`/crea?prodotto=${encodeURIComponent(p.slug)}`}>
+            Fai un regalo
           </Link>
         </div>
         )}
-        <p className="t-piccolo muted">Prezzo rilevato su Amazon {testoIlGiorno(p.rilevatoIl ?? "2026-10-14")}: quello finale lo vedi su Amazon.</p>
       </div>
     </div>
   );

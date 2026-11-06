@@ -3,7 +3,6 @@ import Link from "next/link";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { IndicatorePassi } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
-import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { GENERI } from "@/lib/regalo/dati";
 import { etichettaPer } from "@/lib/regalo/indirizzo";
 
@@ -71,7 +70,6 @@ export default async function PaginaIdee() {
               <TesseraProdotto key={p.slug} prodotto={p} />
             ))}
           </div>
-          <p className="nota-prezzi">{NOTA_PREZZI}</p>
         </div>
       </section>
     </div>

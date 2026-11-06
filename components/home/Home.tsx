@@ -4,7 +4,6 @@ import { ComeFunziona } from "@/components/regalo-di-gruppo/ComeFunziona";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { Carta } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
-import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { ScenaHero } from "./ScenaHero";
 
@@ -44,7 +43,7 @@ function Porte() {
           </div>
           <h2>Idee regalo</h2>
           <p>Rispondi a quattro domande o sfoglia il catalogo che curiamo noi.</p>
-          <Link className="btn btn-contorno" href="/idee">
+          <Link className="btn btn-primario" href="/idee">
             Trova un&apos;idea regalo
           </Link>
         </article>
@@ -56,7 +55,7 @@ function Porte() {
           </div>
           <h2>Biglietto</h2>
           <p>Lo firmano tutti dal link e il festeggiato lo apre sul telefono.</p>
-          <Link className="btn btn-contorno" href="/biglietto/nuovo">
+          <Link className="btn btn-primario" href="/biglietto/nuovo">
             Crea un biglietto
           </Link>
         </article>
@@ -97,7 +96,6 @@ export async function PaginaHome() {
                 <TesseraProdotto key={p.slug} prodotto={p} />
               ))}
             </div>
-            <p className="nota-prezzi">{NOTA_PREZZI}</p>
           </div>
         </section>
       ) : null}

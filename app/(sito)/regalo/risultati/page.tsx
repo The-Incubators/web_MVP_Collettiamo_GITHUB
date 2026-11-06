@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { ChipLink } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
-import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { OCCASIONI_REGALO } from "@/lib/regalo/dati";
 import { etichettaEta, etichettaPer, hrefDomande, hrefRisultati, risposteComplete, statoDaParametri, testiInteressi, titoloRisultati } from "@/lib/regalo/indirizzo";
 import { ordinaProdotti } from "@/lib/regalo/punteggio";
@@ -69,7 +68,6 @@ export default async function Risultati({ searchParams }: Props) {
           </Link>
         </div>
       ) : null}
-      <p className="nota-prezzi">{NOTA_PREZZI}</p>
     </div>
   );
 }

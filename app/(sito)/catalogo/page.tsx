@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FiltriCatalogo } from "@/components/FiltriCatalogo";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { datiServer } from "@/lib/dati";
-import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { filtraCatalogo, hrefCatalogo, leggiFiltriCatalogo } from "@/lib/dominio/catalogoIdee";
 import { modoCatalogo } from "@/lib/ux";
 
@@ -62,7 +61,6 @@ export default async function Catalogo({ searchParams }: { searchParams: Promise
           </Link>
         </div>
       ) : null}
-      <p className="nota-prezzi">{NOTA_PREZZI}</p>
     </div>
   );
 }
