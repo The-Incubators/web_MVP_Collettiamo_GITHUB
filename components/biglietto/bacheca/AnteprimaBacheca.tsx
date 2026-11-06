@@ -70,6 +70,14 @@ export function stileSfondo(a: Pick<AspettoBacheca, "colori" | "immagine" | "scu
   return { backgroundImage: `linear-gradient(165deg, ${a.colori.sfondo1}, ${a.colori.sfondo2})` };
 }
 
+/**
+ * Il font scelto da chi organizza vale per tutto il biglietto, titolo e messaggi (Cri, 6 nov): chi firma non sceglie un
+ * suo font. Il campo resta `fontTitolo` nei dati; qui diventa la variabile `--font-b` che i foglietti leggono (globals.css).
+ */
+export function varFontBiglietto(id: string): CSSProperties {
+  return { "--font-b": fontPerId(id).css } as CSSProperties;
+}
+
 /** Il colore dei testi sopra lo sfondo. */
 export function testoSopra(a: Pick<AspettoBacheca, "colori" | "immagine" | "scurisci">): string {
   return a.immagine ? "#FFFFFF" : testoSu(a.colori.sfondo1);
@@ -88,7 +96,7 @@ export function TestaBacheca({ aspetto, nMessaggi, compatta = false, vera = fals
   const Titolo = vera ? "h1" : "p";
   const mano = aspetto.fontTitolo === "mano";
   return (
-    <div className="flex flex-col items-center gap-2 text-center" style={{ color: testoSopra(aspetto), textShadow: aspetto.immagine ? "0 1px 8px rgba(0,0,0,0.45)" : undefined }}>
+    <div className="flex flex-col items-center gap-2 text-center" style={{ ...varFontBiglietto(aspetto.fontTitolo), color: testoSopra(aspetto), textShadow: aspetto.immagine ? "0 1px 8px rgba(0,0,0,0.45)" : undefined }}>
       {aspetto.emoji ? (
         <span aria-hidden="true" className={compatta ? "text-3xl" : "text-[44px] leading-none"}>
           {aspetto.emoji}
@@ -100,7 +108,7 @@ export function TestaBacheca({ aspetto, nMessaggi, compatta = false, vera = fals
       >
         {aspetto.titolo}
       </Titolo>
-      {aspetto.benvenuto.trim() ? <p className={`whitespace-pre-line opacity-90 ${vera ? "" : "line-clamp-3 text-sm"}`}>{aspetto.benvenuto}</p> : null}
+      {aspetto.benvenuto.trim() ? <p className={`testo-biglietto whitespace-pre-line opacity-90 ${vera ? "" : "line-clamp-3 text-sm"}`}>{aspetto.benvenuto}</p> : null}
       <span className="stato mt-1" style={{ textShadow: "none" }}>
         {testoMessaggi(nMessaggi)}
       </span>
@@ -137,7 +145,7 @@ export function CartaBiglietto({ aspetto, note = NOTE_ESEMPIO, children, classNa
   useFontBiglietto([aspetto.fontTitolo]);
   const c = cartaDi(aspetto);
   return (
-    <div className={`carta biglietto ${c.className} ${className}`.replace(/\s+/g, " ").trim()} style={c.style} aria-label="Anteprima del biglietto">
+    <div className={`carta biglietto ${c.className} ${className}`.replace(/\s+/g, " ").trim()} style={{ ...c.style, ...varFontBiglietto(aspetto.fontTitolo) }} aria-label="Anteprima del biglietto">
       <p className="titolo-b" style={{ fontFamily: fontPerId(aspetto.fontTitolo).css, color: c.coloreTitolo }}>
         {aspetto.titolo}
       </p>

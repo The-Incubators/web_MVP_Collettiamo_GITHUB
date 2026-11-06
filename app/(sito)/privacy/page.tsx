@@ -25,7 +25,7 @@ const BLOCCHI: { titolo: string; icona: NomeIcona; tinta: string; testi: string[
     titolo: "Chi guarda le idee regalo",
     icona: "visibility",
     tinta: "bg-cta-field text-cta-2",
-    testi: ["Gli ultimi quattro prodotti che apri restano solo su questo dispositivo, per ritrovarli in home in «Visti di recente». Non li riceviamo e non li usiamo per altro."],
+    testi: ["Gli ultimi quattro prodotti che apri restano solo su questo dispositivo, per ritrovarli in «Visti di recente», in home e in Idee regalo. Non li riceviamo e non li usiamo per altro."],
   },
   {
     titolo: "Soldi",

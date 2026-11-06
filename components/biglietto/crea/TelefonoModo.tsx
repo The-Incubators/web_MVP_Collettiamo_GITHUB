@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { COLORI_NOTA } from "@/lib/dominio/bacheca";
 import { fontPerId } from "@/lib/dominio/biglietti";
 import type { ModoRivelazione } from "@/lib/tipi";
-import { stileSfondo, testoSopra, type AspettoBacheca } from "../bacheca/AnteprimaBacheca";
+import { stileSfondo, testoSopra, varFontBiglietto, type AspettoBacheca } from "../bacheca/AnteprimaBacheca";
 import { useFontBiglietto } from "../useFontBiglietto";
 
 /** I messaggi d'esempio del telefono: neutri, adatti a quasi ogni occasione. */
@@ -20,7 +20,7 @@ const NOTE: [string, string][] = [
 const PASSO_MS = 1400;
 
 /** Un contatore che avanza da solo (fermo con il movimento ridotto): muove le quattro scene. */
-function useGiro(chiave: string): { n: number; fermo: boolean } {
+export function useGiro(chiave: string): { n: number; fermo: boolean } {
   const [n, setN] = useState(0);
   const [fermo, setFermo] = useState(false);
   useEffect(() => {
@@ -46,7 +46,7 @@ function Nota({ i, grande = false, className = "" }: { i: number; grande?: boole
 
 /**
  * Il telefono dell'editor al passo «Come lo scoprirà»: mostra, in movimento, come appare il biglietto con il modo scelto
- * (prende titolo e font del titolo dalle scelte fatte). È un'illustrazione: niente si clicca.
+ * (prende titolo e font del biglietto dalle scelte fatte). È un'illustrazione: niente si clicca.
  */
 export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelazione; aspetto: AspettoBacheca; festeggiato: string }) {
   const { n, fermo } = useGiro(modo);
@@ -136,7 +136,7 @@ export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelaz
 
   return (
     <div className="telefono telefono-ed" aria-hidden="true">
-      <div className={`schermo ${chiaro ? "scuro-s" : ""}`} style={modo === "film" ? undefined : stileSfondo(aspetto)}>
+      <div className={`schermo ${chiaro ? "scuro-s" : ""}`} style={{ ...varFontBiglietto(aspetto.fontTitolo), ...(modo === "film" ? {} : stileSfondo(aspetto)) }}>
         {schermo}
       </div>
     </div>

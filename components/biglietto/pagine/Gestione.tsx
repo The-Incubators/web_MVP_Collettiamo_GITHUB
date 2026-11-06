@@ -277,7 +277,7 @@ export function Gestione({ id }: { id: string }) {
                   [
                     ["Occasione", nomeOccasione(b.occasione), "occasione", !consegnato, "Modifica l'occasione"],
                     ["Sfondo", valore.sfondo === "foto" ? "Foto" : <NomeColore key="s" colore={valore.coloreSfondo} />, "aspetto", !consegnato, "Modifica colori e font"],
-                    ["Font del titolo", <span key="f" style={{ fontFamily: fontPerId(valore.fontTitolo).css }}>{fontPerId(valore.fontTitolo).nome}</span>, "aspetto", !consegnato, "Modifica colori e font"],
+                    ["Font del biglietto", <span key="f" style={{ fontFamily: fontPerId(valore.fontTitolo).css }}>{fontPerId(valore.fontTitolo).nome}</span>, "aspetto", !consegnato, "Modifica colori e font"],
                     ["Colore del titolo", <NomeColore key="c" colore={valore.coloreTitolo} />, "aspetto", !consegnato, "Modifica colori e font"],
                     ["Come lo scopre", nomeRivelazione(modo), "rivelazione", true, "Modifica come lo scopre"],
                     ["Musica", b.musica?.nome ?? "Nessuna", "musica", true, "Modifica la musica"],

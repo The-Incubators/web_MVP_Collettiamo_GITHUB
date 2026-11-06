@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useGiro } from "../crea/TelefonoModo";
 
 const FOTO = "/biglietto-esempio/";
 
@@ -17,18 +18,15 @@ const F: [string, string, string, string][] = [
   ["c7", "sara.jpg", "Stasera si festeggia!", "Sara"],
 ];
 
-function Foglietti({ voci }: { voci: typeof F }) {
+function Foglio({ voce, className = "", grande = false }: { voce: (typeof F)[number]; className?: string; grande?: boolean }) {
+  const [c, f, t, n] = voce;
   return (
-    <>
-      {voci.map(([c, f, t, n]) => (
-        <div key={n} className={`foglietto-firma ${c}`}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          {f ? <img src={`${FOTO}${f}`} alt="" /> : null}
-          {t}
-          <span className="chi">{n}</span>
-        </div>
-      ))}
-    </>
+    <div className={`foglietto-firma ${c} ${grande ? "grande" : ""} ${className}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      {f ? <img src={`${FOTO}${f}`} alt="" /> : null}
+      {t}
+      <span className="chi">{n}</span>
+    </div>
   );
 }
 
@@ -39,51 +37,80 @@ const MODI: Record<Modo, { nome: string; desc: string }> = {
   scorrimento: { nome: "Scorrimento", desc: "I messaggi compaiono mentre Marta scorre." },
 };
 
+/** Il telefono in movimento, come quello dell'editor (TelefonoModo): ogni modo si vede come lo vede Marta (Cri, 6 nov). */
 function Schermo({ modo }: { modo: Modo }) {
+  const { n, fermo } = useGiro(modo);
   if (modo === "storia") {
+    const i = n % F.length;
     return (
       <div className="storia-s">
         <span className="tacche-s">
-          {F.map((_, i) => (
-            <i key={i} className={i < 2 ? "ok" : ""} />
+          {F.map((_, k) => (
+            <i key={k} className={k < i ? "ok" : k === i ? "ora" : ""} />
           ))}
         </span>
-        <div className="foglietto-firma c2 grande">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`${FOTO}marco.jpg`} alt="" />
-          La torta la porto io. E anche le candeline, stavolta.<span className="chi">Marco</span>
-        </div>
-        <span className="chi-s">2 di 6</span>
+        <Foglio key={i} voce={F[i]} grande className="entra-s" />
+        <span className="chi-s">
+          {i + 1} di {F.length}
+        </span>
       </div>
     );
   }
   if (modo === "film") {
+    // il titolo, poi un messaggio alla volta, poi i nomi di tutti
+    const scene = F.length + 2;
+    const k = n % scene;
     return (
       <div className="film-s">
-        <span className="mano">Marta</span>
-        <p>
-          Chiara, Paolo, Elena,
-          <br />
-          Marco, Luca e Sara
-        </p>
+        <div key={k} className="entra-s grid justify-items-center gap-3">
+          {k === 0 ? (
+            <>
+              <span className="mano">Marta</span>
+              <p>Buon compleanno, Marta!</p>
+            </>
+          ) : k <= F.length ? (
+            <Foglio voce={F[k - 1]} grande />
+          ) : (
+            <>
+              <span className="mano">Marta</span>
+              <p>
+                Chiara, Paolo, Elena,
+                <br />
+                Marco, Luca e Sara
+              </p>
+            </>
+          )}
+        </div>
         <span className="barra-f">
-          <i />
+          <i style={{ width: `${((k + 1) / scene) * 100}%` }} />
         </span>
       </div>
     );
   }
+  if (modo === "scorrimento") {
+    return (
+      <>
+        <p className="titolo-s">Buon compleanno, Marta!</p>
+        <div className="scorre-s">
+          <div className="nastro-s">
+            {[...F, ...F].map((v, i) => (
+              <Foglio key={i} voce={v} />
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+  // griglia: i bigliettini arrivano uno dopo l'altro, poi restano tutti insieme
+  const visibili = fermo ? F.length : Math.min(F.length, (n % (F.length + 3)) + 1);
   return (
     <>
       <p className="titolo-s">Buon compleanno, Marta!</p>
-      {modo === "griglia" ? (
-        <div className="fg">
-          <Foglietti voci={F} />
-        </div>
-      ) : (
-        <div className="scorre-s">
-          <Foglietti voci={F.slice(0, 4)} />
-        </div>
-      )}
+      <div className="fg">
+        {F.map((v, i) => (
+          <Foglio key={v[3]} voce={v} className={i < visibili ? "entra-s" : "nascosta-s"} />
+        ))}
+      </div>
     </>
   );
 }

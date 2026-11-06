@@ -375,7 +375,7 @@ export function CreaBiglietto({ gruppo = null }: { gruppo?: GruppoBiglietto | nu
             ["Titolo", titolo, 1],
             ["Messaggio", s.benvenuto.trim() || "–", 1],
             ["Sfondo", conFoto ? "Foto" : <NomeColore key="s" colore={s.coloreSfondo} />, 2],
-            ["Font del titolo", <span key="f" style={{ fontFamily: fontPerId(s.fontTitolo).css }}>{fontPerId(s.fontTitolo).nome}</span>, 2],
+            ["Font del biglietto", <span key="f" style={{ fontFamily: fontPerId(s.fontTitolo).css }}>{fontPerId(s.fontTitolo).nome}</span>, 2],
             ["Colore del titolo", <NomeColore key="c" colore={s.coloreTitolo} />, 2],
             ["Come lo scopre", nomeRivelazione(s.rivelazione), 3],
             ["Musica", musica?.name ?? "Nessuna", 4],

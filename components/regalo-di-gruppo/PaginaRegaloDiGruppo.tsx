@@ -5,8 +5,8 @@ import { SLUG_DEMO } from "@/lib/dati/demo";
 import { ComeFunziona } from "./ComeFunziona";
 
 /**
- * La pagina del regalo di gruppo (Gifty-spec-prodotto.md S-06; Gifty UX v2, prototipi/regalo-di-gruppo.html): titolo
- * con la pillola del tutorial accanto, poi l'azione; le due partenze (D-05) come due biglietti; «Come funziona», lo stesso della home; in
+ * La pagina del regalo di gruppo (Gifty-spec-prodotto.md S-06; Gifty UX v2, prototipi/regalo-di-gruppo.html): titolo,
+ * l'azione e sotto la pillola del video (Cri, 6 nov); le due partenze (D-05) come due biglietti; «Come funziona», lo stesso della home; in
  * fondo un regalo di gruppo di esempio.
  */
 export function PaginaRegaloDiGruppo() {
@@ -15,16 +15,14 @@ export function PaginaRegaloDiGruppo() {
       <section className="apertura">
         <div className="pagina apertura-in">
           <div className="testo">
-            <div className="titolo-con-pillola">
-              <h1 className="t-pagina">Regalo di gruppo</h1>
-              <ChipTutorial href={`/c/${SLUG_DEMO}`} video />
-            </div>
+            <h1 className="t-pagina">Regalo di gruppo</h1>
             <p className="t-titolo sottotitolo">Parti dalle adesioni o dal regalo. Il gruppo resta nella vostra chat.</p>
             <div className="azioni">
               <Link className="btn btn-primario" href="/crea">
                 Organizza un regalo di gruppo
               </Link>
             </div>
+            <ChipTutorial href={`/c/${SLUG_DEMO}`} video />
           </div>
           <div className="partenze" aria-label="Le due partenze">
             <Carta className="partenza">

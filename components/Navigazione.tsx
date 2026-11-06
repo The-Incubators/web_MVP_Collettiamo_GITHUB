@@ -11,14 +11,15 @@ import { Velo } from "./ui/Velo";
 
 /**
  * La cornice del sito di Gifty UX v2 (design.md §4, prototipi/comuni.js; Gifty-architettura-e-flussi.md §2).
- * Intestazione: logo · Idee regalo · Regalo di gruppo · Biglietto · cuore con il numero dei preferiti · tondo
+ * Intestazione: logo · Idee regalo · Regalo di gruppo · Fai un biglietto personalizzato · cuore con il numero dei preferiti · tondo
  * dell'account; sul telefono logo e cuore. Barra in basso, solo sul telefono: Home · Idee regalo · Gruppo · Biglietto ·
  * Account. In home l'intestazione è trasparente sulla parete della scena.
  */
 const MENU: { href: string; testo: string; sezione: Sezione }[] = [
   { href: "/idee", testo: "Idee regalo", sezione: "idee" },
   { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", sezione: "gruppo" },
-  { href: "/biglietto", testo: "Biglietto", sezione: "biglietto" },
+  // nell'intestazione il nome intero (Cri, 6 nov); nella barra in basso resta «Biglietto», che ci sta
+  { href: "/biglietto", testo: "Fai un biglietto personalizzato", sezione: "biglietto" },
 ];
 
 const BARRA: { href: string; testo: string; icona: NomeIconaTratto; sezione: Sezione; nomeIntero?: string }[] = [

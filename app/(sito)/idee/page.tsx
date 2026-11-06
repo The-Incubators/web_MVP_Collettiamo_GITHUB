@@ -2,14 +2,16 @@ import type { Metadata } from "next";
 import { metaPubblica } from "@/lib/seo";
 import Link from "next/link";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
-import { IndicatorePassi } from "@/components/ui";
+import { VistiDiRecente } from "@/components/home/VistiDiRecente";
 import { datiServer } from "@/lib/dati";
 import { GENERI } from "@/lib/regalo/dati";
 import { etichettaPer } from "@/lib/regalo/indirizzo";
 
 /**
  * Idee regalo (Gifty UX v2, prototipi/idee.html; spec S-02): la prima domanda di «Trova il regalo» è già qui
- * (decisione 4, I-01), accanto «Sfoglia il catalogo», sotto «Le nostre scelte» dal catalogo vero, nell'ordine curato.
+ * (decisione 4, I-01), accanto «Sfoglia il catalogo»: due riquadri uguali, titolo, una riga, la scelta in fondo (audit
+ * di Cri, 6 nov; il «1 di 4» è diventato la riga delle quattro domande), sotto «Le nostre scelte» dal catalogo vero, nell'ordine curato,
+ * e poi «Visti di recente» se ce ne sono.
  */
 export const dynamic = "force-dynamic";
 
@@ -33,10 +35,10 @@ export default async function PaginaIdee() {
           <h1 className="t-pagina">Idee regalo</h1>
           <div className="due">
             <div className="blocco-domanda">
-              <IndicatorePassi passo={1} totale={4} />
               <h2 className="t-sezione" id="domanda-per-chi">
                 Per chi cerchi un regalo?
               </h2>
+              <p className="muted">Rispondi a quattro domande e ti mostriamo le idee adatte.</p>
               <div className="genere" role="group" aria-labelledby="domanda-per-chi">
                 {GENERI.map((g) => (
                   <Link key={g.id} href={`/regalo?per=${g.id}`}>
@@ -46,6 +48,8 @@ export default async function PaginaIdee() {
               </div>
             </div>
             <div className="blocco-catalogo">
+              <h2 className="t-sezione">Sfoglia il catalogo</h2>
+              <p className="muted">Tutti i regali, da filtrare per tema e prezzo.</p>
               <div className="collage" aria-hidden="true">
                 {COLLAGE.map((src) => (
                   <span key={src}>
@@ -54,7 +58,6 @@ export default async function PaginaIdee() {
                   </span>
                 ))}
               </div>
-              <h2 className="t-titolo">Sfoglia il catalogo</h2>
               <Link className="btn btn-contorno" href="/catalogo">
                 Apri il catalogo
               </Link>
@@ -74,6 +77,8 @@ export default async function PaginaIdee() {
           </div>
         </div>
       </section>
+      {/* sotto «Le nostre scelte», come in home ma dopo: solo se se ne sono visti (Cri, 6 nov) */}
+      <VistiDiRecente />
     </div>
   );
 }
