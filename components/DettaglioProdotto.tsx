@@ -9,7 +9,7 @@ import type { Prodotto } from "@/lib/tipi";
 /**
  * La scheda prodotto di Gifty UX v2 (prototipi/prodotto.html): lastra grande con il cuore; marca, nome, prezzo,
  * descrizione e il «perché» del catalogo; «Guarda su Amazon» pieno e «Fai un regalo» pieno, che
- * apre il wizard con il regalo già scelto (I-08); la nota sul prezzo una volta. Niente biglietto (I-10).
+ * porta al bivio fra regalo personale e di gruppo (/fai-un-regalo); la nota sul prezzo una volta. Niente biglietto (I-10).
  *
  * `gruppo`: aperta dal catalogo del wizard (`?modo=gruppo`): le azioni sono «Scegli questo regalo» e «Aggiungi al
  * voto», come sulla tessera (G-04).
@@ -51,7 +51,7 @@ export function DettaglioProdotto({ p, gruppo = false }: { p: Prodotto; gruppo?:
             <IconaTratto nome="esterno" />
             <span className="sr-only"> (si apre in una nuova scheda)</span>
           </a>
-          <Link className="btn btn-primario btn-largo btn-largo-tel" href={`/crea?prodotto=${encodeURIComponent(p.slug)}`}>
+          <Link className="btn btn-primario btn-largo btn-largo-tel" href={`/fai-un-regalo?prodotto=${encodeURIComponent(p.slug)}`}>
             Fai un regalo
           </Link>
         </div>

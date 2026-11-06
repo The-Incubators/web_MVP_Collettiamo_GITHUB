@@ -321,7 +321,7 @@
   .piede { border-top: 1px solid var(--line); background: var(--paper); padding: var(--s12) 0; }
   /* colonne larghe uguali: minmax(0, 1fr) non lascia che una voce lunga allarghi la sua colonna */
   .piede-in { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s8) var(--s6); }
-  .piede-in > nav { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .piede-in > nav { justify-self: center; display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
   .piede h2 { font-family: var(--f-display); font-size: 16px; line-height: 1.3; font-weight: 700; letter-spacing: 0; margin-bottom: var(--s2); color: var(--ink); }
   .piede a:not(.marchio) { display: flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; }
   .piede a:not(.marchio):hover { color: var(--green); text-decoration: underline; }
@@ -548,6 +548,21 @@
   @media (min-width: 1100px) { .griglia-prodotti { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .altre-idee { display: flex; justify-content: center; margin-top: var(--s8); }
   .fondo { padding-bottom: var(--s12); }
+  /* «Fai un regalo»: il regalo in vista, poi le due strade (revisione di Cri, 6 nov) */
+  .bivio { display: grid; justify-items: center; gap: var(--s6); padding-top: var(--s8); text-align: center; }
+  .bivio-regalo { display: grid; justify-items: center; gap: var(--s2); max-width: 320px; text-decoration: none; color: inherit; }
+  .bivio-regalo .lastra { width: 160px; aspect-ratio: 1; border-radius: var(--r-surface); background: var(--wall); display: grid; place-items: center; overflow: hidden; }
+  .bivio-regalo .lastra img { width: 80%; height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+  .bivio-nome { font-weight: 700; line-height: 1.3; }
+  .bivio-regalo:hover .bivio-nome { color: var(--green); text-decoration: underline; }
+  .bivio-regalo .prezzo { font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--green); }
+  .bivio-strade { display: grid; gap: var(--s4); width: 100%; max-width: 880px; text-align: left; }
+  .bivio-strade .porta { grid-template-rows: auto 1fr auto; }
+  .bivio-strade .porta > .btn, .bivio-azioni { align-self: end; }
+  .bivio-strade .segno svg { width: 28px; height: 28px; color: var(--green); }
+  .bivio-azioni { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s3); margin-top: var(--s2); }
+  .bivio-azioni .btn { margin-top: 0; }
+  @media (min-width: 768px) { .bivio-strade { grid-template-columns: repeat(2, 1fr); gap: var(--s6); } .bivio-strade .porta .btn { justify-self: start; } }
   /* pagine di solo testo (Termini e condizioni) */
   .testo-legale { max-width: 720px; display: grid; gap: var(--s8); padding-top: var(--s8); }
   .testo-legale section { display: grid; gap: var(--s3); justify-items: start; }
