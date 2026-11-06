@@ -1265,6 +1265,12 @@
   /* ---------- pagina di chi riceve il link (invito) ---------- */
   .i-scena { background: var(--wall); padding: var(--s10) 0 var(--s12); }
   .i-scena .carta { max-width: 520px; margin: 0 auto; padding: var(--s8) var(--s6) var(--s6); transform: rotate(-1.5deg); display: grid; gap: var(--s3); }
+  .i-scena .carta.carta-tutorial { max-width: 900px; padding: var(--s4); transform: none; }
+  .video-tutorial { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--wall); border-radius: 10px; }
+  @media (max-width: 767px) {
+    .i-scena .carta.carta-tutorial { max-width: 420px; padding: var(--s3); }
+    .video-tutorial { aspect-ratio: 9 / 16; }
+  }
   .i-scena .mano { font-size: 40px; line-height: 1; overflow-wrap: anywhere; }
   .i-scena .chi { color: var(--muted); }
   .i-scena .chi b { color: var(--ink); }
