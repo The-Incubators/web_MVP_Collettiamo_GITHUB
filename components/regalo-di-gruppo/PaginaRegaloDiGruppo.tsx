@@ -17,7 +17,7 @@ export function PaginaRegaloDiGruppo() {
           <div className="testo">
             <div className="titolo-con-pillola">
               <h1 className="t-pagina">Regalo di gruppo</h1>
-              <ChipTutorial href={`/c/${SLUG_DEMO}`} />
+              <ChipTutorial href={`/c/${SLUG_DEMO}`} video />
             </div>
             <p className="t-titolo sottotitolo">Parti dalle adesioni o dal regalo. Il gruppo resta nella vostra chat.</p>
             <div className="azioni">

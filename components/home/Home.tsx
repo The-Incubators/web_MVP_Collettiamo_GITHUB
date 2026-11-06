@@ -107,7 +107,7 @@ export async function PaginaHome() {
             <h2 id="titolo-come" className="t-sezione">
               Come funziona il regalo di gruppo
             </h2>
-            <ChipTutorial href={`/c/${SLUG_DEMO}`} />
+            <ChipTutorial href={`/c/${SLUG_DEMO}`} video />
           </div>
           <ComeFunziona />
           <Link className="btn btn-primario percorso-cta" href="/crea">

@@ -20,6 +20,7 @@ import { MAX_PROPOSTE_PER_PERSONA, proposteDi, votazioneInCorso } from "@/lib/do
 import { etichettaOccasione } from "@/lib/regalo/dati";
 import type { Colletta, Metodo, Partecipante } from "@/lib/tipi";
 import { usePartecipazione } from "./usePartecipazione";
+import { VideoTutorial } from "./VideoTutorial";
 
 /** Il biglietto del gruppo da firmare, se chi organizza l'ha preparato e non l'ha ancora mandato. */
 export interface BigliettoDaFirmare {
@@ -147,7 +148,8 @@ export function PaginaInvito({
     <>
       <section className="i-scena">
         <div className="pagina">
-          <div className="carta">
+          <div className={simulato ? "carta carta-tutorial" : "carta"}>
+            {simulato ? <VideoTutorial /> : null}
             <p className="mano">Il regalo di gruppo per {c.festeggiato}</p>
             <p className="chi">
               {occasione}

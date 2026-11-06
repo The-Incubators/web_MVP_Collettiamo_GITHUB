@@ -30,7 +30,7 @@ export function costruisciDemo(adesso: number = Date.now()): {
   partecipanti: Partecipante[];
   eventi: Evento[];
 } {
-  const prodotto = CATALOGO.find((p) => p.id === "PRD-028")!;
+  const prodotto = CATALOGO.find((p) => p.slug === "speaker-bluetooth-retro-verde")!;
   const scadenza = adesso + 6 * GIORNO;
 
   const partecipanti: Partecipante[] = RIGHE.map(([nome, stato, metodo, messaggio], i) => ({
