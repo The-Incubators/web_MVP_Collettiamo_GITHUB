@@ -78,7 +78,7 @@ export function ScenaHero() {
           height={1145}
           fetchPriority="high"
           decoding="async"
-          alt="Due biglietti su un tavolo uniti da un nastro arancio: su uno è scritto «Il regalo di gruppo per Mauro, 8 persone hanno aderito, 10 € a testa», esempio"
+          alt="Due biglietti su un tavolo uniti da un nastro arancio: su uno è scritto «Il regalo di gruppo per Mauro, 8 persone hanno aderito, 10 € a testa»"
         />
       </picture>
       <div ref={carta} className="carta-foto" aria-hidden="true" style={posata ? undefined : { visibility: "hidden" }}>
@@ -93,7 +93,6 @@ export function ScenaHero() {
             <Iniziali key={testo} testo={testo} tinta={tinta} />
           ))}
         </div>
-        <span className="esempio-etichetta">Esempio</span>
       </div>
     </div>
   );

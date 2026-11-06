@@ -2,7 +2,6 @@
 
 import { useMemo, useRef, useState } from "react";
 import { Chip, IconaTratto, ImmagineProdotto, Velo } from "@/components/ui";
-import { NOTA_PREZZI } from "@/lib/dominio/amazon";
 import { TEMI_CATALOGO } from "@/lib/dominio/catalogoIdee";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { contiene } from "@/lib/dominio/regali";
@@ -152,7 +151,6 @@ export function FoglioCatalogo({
             </button>
           </div>
         ) : null}
-        <p className="nota-prezzi">{NOTA_PREZZI}</p>
       </div>
       {voto ? (
         <div className="fg-piede">
