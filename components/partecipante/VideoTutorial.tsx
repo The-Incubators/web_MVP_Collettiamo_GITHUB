@@ -21,7 +21,6 @@ export function VideoTutorial() {
       className="video-tutorial"
       aria-label="Come funziona il regalo di gruppo"
       controls
-      muted
       playsInline
       preload="metadata"
       poster={`${base}${verticale ? "-9x16" : ""}.webp`}
