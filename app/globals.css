@@ -325,8 +325,8 @@
   .piede h2 { font-family: var(--f-display); font-size: 16px; line-height: 1.3; font-weight: 700; letter-spacing: 0; margin-bottom: var(--s2); color: var(--ink); }
   .piede a:not(.marchio) { display: flex; align-items: center; min-height: 44px; color: var(--muted); text-decoration: none; }
   .piede a:not(.marchio):hover { color: var(--green); text-decoration: underline; }
-  .piede-marchio { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--s4) var(--s8); padding-top: var(--s6); border-top: 1px solid var(--line); }
-  .piede-legali { display: flex; flex-wrap: wrap; justify-content: center; column-gap: var(--s6); }
+  .piede-marchio { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s4); padding-top: var(--s6); border-top: 1px solid var(--line); }
+  .piede-legali { display: flex; flex-wrap: wrap; column-gap: var(--s6); }
   @media (min-width: 768px) { .piede-in { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
   /* ---------- tessera prodotto ---------- */
