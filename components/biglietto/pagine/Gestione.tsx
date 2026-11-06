@@ -10,11 +10,14 @@ import {
   nomeOccasione,
   nomeRivelazione,
   OCCASIONI_EDITOR,
+  EFFETTI_APERTURA,
+  effettoDi,
+  FONT_TITOLO_PREDEFINITO,
+  fontTitoloValido,
   rivelazioneValida,
-  stileCartaDi,
-  STILI_CARTA,
+  testoSu,
 } from "@/lib/dominio/bacheca";
-import { messaggioInvitoBiglietto } from "@/lib/dominio/biglietti";
+import { fontPerId, messaggioInvitoBiglietto } from "@/lib/dominio/biglietti";
 import { firmeOrdinate } from "@/lib/dominio/biglietto";
 import { linkWhatsApp } from "@/lib/dominio/messaggi";
 import { VOCI_ACCOUNT } from "@/lib/navigazione";
@@ -27,18 +30,22 @@ import { SceltaMusica } from "../bacheca/SceltaMusica";
 import { Finestra } from "../comuni";
 import { StatoBozza } from "../StatoBozza";
 import { useBozza } from "../useBozza";
+import { NomeColore, SceltaAspetto, type ValoreAspetto } from "../crea/SceltaAspetto";
 
 const MIEI_BIGLIETTI = VOCI_ACCOUNT.find((v) => v.testo === "I miei biglietti")?.href ?? "/account";
 
-/** Il colore della miniatura di ogni stile, come nell'editor. */
-const TINTA_STILE: Record<string, string> = {
-  "carta-avorio": "var(--card-paper)",
-  "carta-menta": "var(--wall)",
-  "carta-pesca": "var(--peach)",
-  "carta-verde": "var(--green)",
-};
+type Modifica = "occasione" | "aspetto" | "rivelazione" | "musica" | "effetto";
 
-type Modifica = "occasione" | "stile" | "rivelazione" | "musica";
+/** «Colori e font» di un biglietto salvato; quelli di prima partono dai colori del loro stile. */
+function valoreAspetto(b: Biglietto): ValoreAspetto {
+  const a = aspettoDaBiglietto(b);
+  return {
+    sfondo: a.immagine ? "foto" : "colore",
+    coloreSfondo: a.colori.sfondo1,
+    fontTitolo: fontTitoloValido(b.copertina.fontTitolo) ?? FONT_TITOLO_PREDEFINITO,
+    coloreTitolo: b.copertina.coloreTitolo ?? (testoSu(a.colori.sfondo1) === "#FFFFFF" ? "#FFFFFF" : a.colori.accento),
+  };
+}
 
 /**
  * La gestione del biglietto (Gifty UX v2, design.md §5, prototipi/biglietto-gestisci.html): indietro verso «I miei
@@ -55,6 +62,9 @@ export function Gestione({ id }: { id: string }) {
   const [attesa, setAttesa] = useState(false);
   const [caricaMusica, setCaricaMusica] = useState(false);
   const [erroreMusica, setErroreMusica] = useState<string | null>(null);
+  // «Colori e font» si sceglie nel foglio e si salva con «Salva»; la foto è un dataUrl nuovo, l'indirizzo salvato o null
+  const [aspettoInModifica, setAspettoInModifica] = useState<ValoreAspetto | null>(null);
+  const [fotoInModifica, setFotoInModifica] = useState<string | null>(null);
 
   const caricaFirme = useCallback(() => {
     api<{ firme: Firma[] }>(`/api/biglietti/${id}/firme`, { bigliettoId: id })
@@ -100,6 +110,37 @@ export function Gestione({ id }: { id: string }) {
       setErroreMusica(e instanceof Error ? e.message : "Non siamo riusciti a caricare la musica. Riprova.");
     } finally {
       setCaricaMusica(false);
+    }
+  }
+
+  function apriAspetto() {
+    if (!b) return;
+    setAspettoInModifica(valoreAspetto(b));
+    setFotoInModifica(b.copertina.immagineUrl);
+    setModifica("aspetto");
+  }
+
+  /** Salva «Colori e font»: colori e titolo con la rotta del biglietto, la foto (nuova o tolta) con quella della copertina. */
+  async function salvaAspetto() {
+    if (!b || !aspettoInModifica) return;
+    const v = aspettoInModifica;
+    setAttesa(true);
+    try {
+      let r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}`, {
+        metodo: "PATCH",
+        bigliettoId: id,
+        corpo: { aspetto: { coloreSfondo: v.coloreSfondo, fontTitolo: v.fontTitolo, coloreTitolo: v.coloreTitolo } },
+      });
+      const foto = v.sfondo === "foto" ? fotoInModifica : null;
+      if (foto !== b.copertina.immagineUrl) {
+        r = await api<{ biglietto: Biglietto }>(`/api/biglietti/${id}/copertina`, { metodo: "POST", bigliettoId: id, corpo: { sfondo: true, dataUrl: foto } });
+      }
+      setB(r.biglietto);
+      setModifica(null);
+    } catch (e) {
+      setAvviso(e instanceof Error ? e.message : "Non siamo riusciti a salvare. Riprova.");
+    } finally {
+      setAttesa(false);
     }
   }
 
@@ -150,7 +191,8 @@ export function Gestione({ id }: { id: string }) {
   const aspetto = aspettoDaBiglietto(b);
   const modo = rivelazioneValida(b.rivelazione);
   const consegnato = b.stato === "consegnato";
-  const stile = stileCartaDi(b.copertina.modelloId);
+  const valore = valoreAspetto(b);
+  const effetto = effettoDi(b.effetto);
 
   return (
     <div className="gestione-b pagina">
@@ -172,7 +214,7 @@ export function Gestione({ id }: { id: string }) {
               ))}
             </CartaBiglietto>
             <Link href={`/b/${b.slug}`} className="btn btn-quieto">
-              {consegnato ? "Apri la sorpresa" : "Apri la bacheca"}
+              Apri il biglietto
             </Link>
           </div>
 
@@ -234,16 +276,19 @@ export function Gestione({ id }: { id: string }) {
                 {(
                   [
                     ["Occasione", nomeOccasione(b.occasione), "occasione", !consegnato, "Modifica l'occasione"],
-                    ["Stile", stile?.nome ?? "", "stile", !consegnato, "Modifica lo stile"],
+                    ["Sfondo", valore.sfondo === "foto" ? "Foto" : <NomeColore key="s" colore={valore.coloreSfondo} />, "aspetto", !consegnato, "Modifica colori e font"],
+                    ["Font del titolo", <span key="f" style={{ fontFamily: fontPerId(valore.fontTitolo).css }}>{fontPerId(valore.fontTitolo).nome}</span>, "aspetto", !consegnato, "Modifica colori e font"],
+                    ["Colore del titolo", <NomeColore key="c" colore={valore.coloreTitolo} />, "aspetto", !consegnato, "Modifica colori e font"],
                     ["Come lo scopre", nomeRivelazione(modo), "rivelazione", true, "Modifica come lo scopre"],
-                    ["Musica", b.musica?.nome ?? "", "musica", true, "Modifica la musica"],
+                    ["Musica", b.musica?.nome ?? "Nessuna", "musica", true, "Modifica la musica"],
+                    ["Effetto all’apertura", effetto.nome, "effetto", true, "Modifica l'effetto all'apertura"],
                   ] as const
                 ).map(([k, v, m, attiva, etichetta]) => (
                   <div key={k}>
                     <dt>{k}</dt>
                     <dd>{v || "–"}</dd>
                     {attiva ? (
-                      <button type="button" className="icona-btn" aria-label={etichetta} onClick={() => setModifica(m)}>
+                      <button type="button" className="icona-btn" aria-label={etichetta} onClick={() => (m === "aspetto" ? apriAspetto() : setModifica(m))}>
                         <IconaTratto nome="matita" />
                       </button>
                     ) : null}
@@ -267,12 +312,30 @@ export function Gestione({ id }: { id: string }) {
         </div>
       </Finestra>
 
-      <Finestra aperta={modifica === "stile"} onChiudi={() => setModifica(null)} titolo="Stile">
-        <div className="temi" role="radiogroup" aria-label="Stile">
-          {STILI_CARTA.map((st) => (
-            <button key={st.id} type="button" role="radio" aria-checked={stile?.id === st.id} disabled={attesa} onClick={() => void salva({ stile: st.id })}>
-              <i style={{ background: TINTA_STILE[st.id] }} />
-              {st.nome}
+      <Finestra aperta={modifica === "aspetto"} onChiudi={() => setModifica(null)} titolo="Colori e font">
+        {aspettoInModifica ? (
+          <div className="grid gap-5">
+            <SceltaAspetto
+              valore={aspettoInModifica}
+              onCambia={(v) => setAspettoInModifica((x) => (x ? { ...x, ...v } : x))}
+              foto={fotoInModifica}
+              onFoto={setFotoInModifica}
+              onTogliFoto={() => (setFotoInModifica(null), setAspettoInModifica((x) => (x ? { ...x, sfondo: "colore" } : x)))}
+              attesa={attesa}
+            />
+            <button type="button" className="btn btn-primario" disabled={attesa || (aspettoInModifica.sfondo === "foto" && !fotoInModifica)} aria-busy={attesa || undefined} onClick={() => void salvaAspetto()}>
+              Salva
+            </button>
+          </div>
+        ) : null}
+      </Finestra>
+
+      <Finestra aperta={modifica === "effetto"} onChiudi={() => setModifica(null)} titolo="Effetto all’apertura">
+        <div className="chips" role="radiogroup" aria-label="Effetto all’apertura">
+          {EFFETTI_APERTURA.map((e) => (
+            <button key={e.id} type="button" className="chip" role="radio" aria-checked={effetto.id === e.id} disabled={attesa} onClick={() => void salva({ effetto: e.id })}>
+              {e.emoji[0] ? <span aria-hidden="true">{e.emoji[0]}</span> : null}
+              {e.nome}
             </button>
           ))}
         </div>

@@ -285,6 +285,7 @@ export function vistaPubblica(b: Biglietto): BigliettoPubblico {
     stato: b.stato,
     nFirme: b.nFirme,
     rivelazione: b.rivelazione,
+    effetto: b.effetto,
     musica: b.musica ? { url: b.musica.url } : null,
   };
 }

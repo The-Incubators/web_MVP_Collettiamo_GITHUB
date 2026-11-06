@@ -169,3 +169,33 @@ describe("titolo dell'anteprima dell'editor", () => {
     expect(titoloAnteprima("altro", " ")).toBe("Auguri!");
   });
 });
+
+describe("colori e font, effetto all'apertura", () => {
+  it("accetta solo i caratteri del titolo in elenco", async () => {
+    const { fontTitoloValido, FONT_TITOLO } = await import("./bacheca");
+    for (const f of FONT_TITOLO) expect(fontTitoloValido(f)).toBe(f);
+    expect(fontTitoloValido("comic-sans")).toBeNull();
+    expect(fontTitoloValido(42)).toBeNull();
+  });
+
+  it("accetta qualsiasi colore #RRGGBB, in maiuscolo", async () => {
+    const { coloreValido } = await import("./bacheca");
+    expect(coloreValido("#2a9d8f")).toBe("#2A9D8F");
+    expect(coloreValido("red")).toBeNull();
+    expect(coloreValido("#fff")).toBeNull();
+  });
+
+  it("l'effetto sconosciuto o mancante torna ai coriandoli, come nei biglietti di prima", async () => {
+    const { effettoValido, effettoDi } = await import("./bacheca");
+    expect(effettoValido("palloncini")).toBe("palloncini");
+    expect(effettoValido(undefined)).toBe("coriandoli");
+    expect(effettoValido("fuochi")).toBe("coriandoli");
+    expect(effettoDi("nessuno").emoji).toEqual([]);
+    expect(effettoDi("palloncini").sale).toBe(true);
+  });
+
+  it("il modello su misura esiste, così la foto di sfondo si può caricare", async () => {
+    const { MODELLO_LIBERO } = await import("./bacheca");
+    expect(MODELLI_BIGLIETTO.some((m) => m.id === MODELLO_LIBERO)).toBe(true);
+  });
+});

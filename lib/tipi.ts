@@ -355,6 +355,10 @@ export interface CopertinaBiglietto {
   colori?: ColoriBacheca;
   /** wizard V2: quanto scurire l'immagine di sfondo (0–0,8) perché i testi si leggano */
   scurisci?: number;
+  /** «Colori e font»: il carattere del titolo (FONT_TITOLO); manca nei biglietti di prima, che usano quello del modello */
+  fontTitolo?: string;
+  /** «Colori e font»: il colore del titolo (#RRGGBB); manca nei biglietti di prima */
+  coloreTitolo?: string;
 }
 
 /** I colori della bacheca: gradiente dello sfondo (1 → 2) e accento (pulsanti, firme). */
@@ -374,6 +378,9 @@ export interface MusicaBiglietto {
 
 /** Come il festeggiato scopre i messaggi quando il biglietto viene consegnato. */
 export type ModoRivelazione = "griglia" | "storie" | "film" | "scorrimento";
+
+/** L'effetto che appare quando il festeggiato apre il biglietto (ritocchi finali). */
+export type EffettoApertura = "coriandoli" | "cuori" | "stelle" | "palloncini" | "nessuno";
 
 export interface Biglietto {
   id: string;
@@ -396,6 +403,8 @@ export interface Biglietto {
   dataEvento?: string;
   /** wizard V2: come si rivela il biglietto alla consegna */
   rivelazione?: ModoRivelazione;
+  /** l'effetto all'apertura; manca nei biglietti di prima (coriandoli) */
+  effetto?: EffettoApertura;
   /** facoltativa; manca nei biglietti che non l'hanno mai avuta */
   musica?: MusicaBiglietto | null;
   messaggioGruppo: string;
@@ -427,6 +436,8 @@ export interface BigliettoPubblico {
   nFirme: number;
   /** come si rivela alla consegna; manca nei biglietti creati prima della bacheca */
   rivelazione?: ModoRivelazione;
+  /** l'effetto all'apertura; manca nei biglietti di prima (coriandoli) */
+  effetto?: EffettoApertura;
   /** la musica della sorpresa (solo l'indirizzo: il nome del file resta a chi organizza) */
   musica?: { url: string } | null;
 }

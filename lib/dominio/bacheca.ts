@@ -2,8 +2,8 @@
 // Niente Firebase qui: le usano la rotta server, il wizard e i test.
 
 import { OCCASIONI_REGALO } from "../regalo/dati";
-import { OCCASIONI_BIGLIETTO, type ColoriBacheca, type ModelloBiglietto, type ModoRivelazione } from "../tipi";
-import { slugDaNome } from "./biglietti";
+import { OCCASIONI_BIGLIETTO, type ColoriBacheca, type EffettoApertura, type ModelloBiglietto, type ModoRivelazione } from "../tipi";
+import { FONT_BIGLIETTO, FONT_MANO, slugDaNome } from "./biglietti";
 
 // ---------- Occasioni ----------
 
@@ -115,6 +115,75 @@ export const STILE_PREDEFINITO_CARTA: StileCarta = STILI_CARTA[0];
 /** Lo stile della carta di un modello; null per i temi di prima (gradiente e motivo). */
 export function stileCartaDi(modelloId: string | null | undefined): StileCarta | null {
   return STILI_CARTA.find((s) => s.id === modelloId) ?? null;
+}
+
+// ---------- Colori e font (editor) ----------
+
+/** Il modello dei biglietti con sfondo, carattere e colore del titolo scelti da chi crea (lib/dati/modelli-biglietto.ts). */
+export const MODELLO_LIBERO = "carta-libera";
+
+/** I colori dello sfondo proposti (i quattro della carta per primi); con il selettore se ne sceglie qualsiasi altro. */
+export const COLORI_SFONDO = [
+  "#F7F0E6", "#E9F2EC", "#FFE9DE", "#033922",
+  "#FCE1E8", "#E8E1FA", "#DCEBFF", "#FFF4C2",
+  "#F4B9A8", "#1E2A52", "#7A2E4A", "#16241F",
+] as const;
+
+/** I colori del titolo proposti; con il selettore se ne sceglie qualsiasi altro. */
+export const COLORI_TITOLO = ["#033922", "#16241F", "#FFFFFF", "#E2582B", "#7A2E4A", "#1E3A66", "#8A5A1A", "#3E2E7A"] as const;
+
+/** I caratteri del titolo: quello a mano del sito per primo, poi una scelta dei caratteri dei biglietti. */
+export const FONT_TITOLO: readonly string[] = [
+  FONT_MANO.id,
+  "parisienne",
+  "amatic-sc",
+  "gloria-hallelujah",
+  "indie-flower",
+  "homemade-apple",
+  "playfair-display",
+  "cinzel",
+  "libre-baskerville",
+  "poppins",
+  "quicksand",
+  "lexend",
+  "special-elite",
+  "rock-salt",
+  "lacquer",
+];
+
+export const FONT_TITOLO_PREDEFINITO = FONT_MANO.id;
+
+/** Il carattere del titolo, se è uno di quelli ammessi; altrimenti null. */
+export function fontTitoloValido(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  return FONT_TITOLO.includes(v) && (v === FONT_MANO.id || FONT_BIGLIETTO.some((f) => f.id === v)) ? v : null;
+}
+
+/** Un colore #RRGGBB in maiuscolo, oppure null. */
+export function coloreValido(v: unknown): string | null {
+  return typeof v === "string" && COLORE_HEX.test(v) ? v.toUpperCase() : null;
+}
+
+// ---------- Effetto all'apertura ----------
+
+export const EFFETTI_APERTURA: { id: EffettoApertura; nome: string; emoji: string[]; sale?: boolean }[] = [
+  { id: "coriandoli", nome: "Coriandoli", emoji: ["🎉", "🎊", "✨", "⭐", "💖"] },
+  { id: "cuori", nome: "Cuori", emoji: ["❤️", "💖", "💕", "💗"] },
+  { id: "stelle", nome: "Stelle", emoji: ["⭐", "✨", "🌟"] },
+  { id: "palloncini", nome: "Palloncini", emoji: ["🎈", "🎈", "🎈", "🎉"], sale: true },
+  { id: "nessuno", nome: "Nessuno", emoji: [] },
+];
+
+/** I biglietti di prima avevano sempre i coriandoli. */
+export const EFFETTO_PREDEFINITO: EffettoApertura = "coriandoli";
+
+export function effettoValido(v: unknown): EffettoApertura {
+  return EFFETTI_APERTURA.some((e) => e.id === v) ? (v as EffettoApertura) : EFFETTO_PREDEFINITO;
+}
+
+export function effettoDi(v: unknown) {
+  const id = effettoValido(v);
+  return EFFETTI_APERTURA.find((e) => e.id === id)!;
 }
 
 // ---------- Colori ----------
