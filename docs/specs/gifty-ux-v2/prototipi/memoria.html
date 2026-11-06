@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visti di recente · prototipo</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  /* Visti di recente (Cri, 6 nov): una striscia in home sopra «Le nostre scelte», e basta. */
+  .hero-mini { background: var(--wall); padding: var(--s8) 0 var(--s10); }
+  .hero-mini .hero-sotto { margin-top: var(--s3); font-size: 18px; max-width: 32em; }
+  .hero-mini .nota-scena { margin-top: var(--s6); height: 120px; border-radius: var(--r-surface); border: 1.5px dashed var(--line-strong); display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+  @media (min-width: 768px) { .hero-mini .hero-sotto { font-size: 22px; } }
+
+  /* come .striscia in app/globals.css: scorre sul telefono, quattro in fila da tablet in su */
+  .striscia { display: flex; gap: var(--s3); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--s2); scrollbar-width: none; }
+  .striscia::-webkit-scrollbar { display: none; }
+  .striscia > * { scroll-snap-align: start; flex: 0 0 46%; }
+  @media (min-width: 768px) {
+    .striscia > * { flex: none; }
+    .striscia { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s6); overflow: visible; margin: 0; padding: 0; }
+  }
+
+  .proto-nota { max-width: var(--page-max); margin: var(--s6) auto 0; padding: 0 var(--gutter); }
+  .proto-nota p { padding: var(--s3) var(--s4); border-radius: 12px; background: #fff7e8; border: 1px solid #f3d9a4; font-size: 14px; }
+</style>
+</head>
+<body data-sezione="home">
+<main id="m"></main>
+<script src="comuni.js"></script>
+<script>
+  /* tessera come in components/TesseraProdotto.tsx */
+  const tessera = (id, pieno = false) => {
+    const p = PRODOTTI[id];
+    return `<article class="tessera">
+      <a class="lastra" href="prodotto.html" aria-hidden="true" tabindex="-1"><img src="${foto(id)}" alt="" loading="lazy"></a>
+      ${cuoreBtn(pieno, p.nome)}
+      <a class="nome" href="prodotto.html">${p.nome}</a>
+      <div class="riga-prezzo"><span class="prezzo">${euro(p.prezzo)}</span><span class="marca">${p.marca}</span></div>
+      <div class="azioni"><a class="btn btn-primario" href="#">Fai un regalo</a>
+        <a class="btn btn-quieto" href="#">${icona("esterno")}Guarda su Amazon</a></div></article>`;
+  };
+  const sezione = (titolo, ids) => `<section class="sezione"><div class="pagina">
+      <div class="testa-sezione"><h2 class="t-sezione">${titolo}</h2></div>
+      <div class="striscia">${ids.map((id, i) => tessera(id, titolo === "Visti di recente" && i === 1)).join("")}</div></div></section>`;
+
+  document.getElementById("m").innerHTML = `<section class="hero-mini"><div class="pagina">
+      <h1 class="t-hero">Chi trova Gifty trova il regalo</h1>
+      <p class="hero-sotto">Idee che piacciono, quote che tornano, auguri da tutti</p>
+      <div class="nota-scena">la scena e le tre porte restano come oggi</div></div></section>`
+    + sezione("Visti di recente", ["PRD-017", "PRD-058", "PRD-014", "PRD-044"])
+    + sezione("Le nostre scelte", ["PRD-094", "PRD-015", "PRD-083", "PRD-003"])
+    + `<div class="proto-nota"><p><b>Prototipo.</b> Gli ultimi quattro prodotti aperti, il più recente per primo. Restano su questo dispositivo. Chi non ha ancora guardato nulla non vede la striscia.</p></div>`;
+  document.querySelectorAll(".cuore").forEach((c) => { if (!c.querySelector(".vuoto-i")) c.innerHTML = icona("cuore", "vuoto-i") + icona("cuore-pieno", "pieno-i"); });
+</script>
+</body>
+</html>
