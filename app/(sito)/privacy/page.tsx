@@ -21,6 +21,12 @@ const BLOCCHI: { titolo: string; icona: NomeIcona; tinta: string; testi: string[
     testi: ["Per pubblicare un biglietto o un regalo di gruppo accedi con Google: conserviamo nome, email e i dati che inserisci (destinatario, data di consegna, messaggi)."],
   },
   {
+    titolo: "Chi guarda le idee regalo",
+    icona: "visibility",
+    tinta: "bg-cta-field text-cta-2",
+    testi: ["Gli ultimi quattro prodotti che apri restano solo su questo dispositivo, per ritrovarli in home in «Visti di recente». Non li riceviamo e non li usiamo per altro."],
+  },
+  {
     titolo: "Soldi",
     icona: "verified_user",
     tinta: "bg-gold-field text-gold",

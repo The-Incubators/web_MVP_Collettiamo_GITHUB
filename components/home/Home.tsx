@@ -6,10 +6,12 @@ import { Carta } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { SLUG_DEMO } from "@/lib/dati/demo";
 import { ScenaHero } from "./ScenaHero";
+import { VistiDiRecente } from "./VistiDiRecente";
 
 /**
  * L'unica home del sito (Gifty-spec-prodotto.md S-01; Gifty UX v2, docs/specs/gifty-ux-v2/prototipi/home.html):
- * la scena con il biglietto scritto e le tre porte sul bordo del tavolo, «Le nostre scelte» dal catalogo vero, poi
+ * la scena con il biglietto scritto e le tre porte sul bordo del tavolo, «Visti di recente» (solo se ce ne sono),
+ * «Le nostre scelte» dal catalogo vero, poi
  * «Come funziona il regalo di gruppo» con i cinque passi e un'azione sotto.
  */
 
@@ -80,6 +82,8 @@ export async function PaginaHome() {
         <ScenaHero />
         <Porte />
       </section>
+
+      <VistiDiRecente />
 
       {idee.length ? (
         <section className="sezione" aria-labelledby="titolo-idee">
