@@ -86,6 +86,7 @@ Una sola home. Tutto il resto si raggiunge da tre ingressi: Idee regalo, Regalo 
 | S-11 | Account | `/account` (nuovo; raccoglie `/le-mie-collette`, `/reminder`, `/preferiti`) | Regali di gruppo, biglietti, ricorrenze (D-17), preferiti, profilo, Esci |
 | S-12 | Accesso | `/accedi` | Ritorna sempre alla pagina da cui si è partiti |
 | S-13 | Privacy e dati | `/privacy` | Titolare (P-07), fornitori, conservazione, diritti |
+| S-14 | La psicologia del dono | `/psicologia-del-dono` | Cosa dicono gli studi su chi regala e chi riceve: testo breve e «Approfondisci» per capitolo, fonti in fondo. Voce di menu «Cosa rende un regalo davvero gradito?» |
 
 Navigazione: Home, Idee regalo, Regalo di gruppo, Preferiti (cuore con contatore), account. Sul telefono la barra in basso ha le stesse voci. La voce attiva si calcola sul segmento esatto dell'indirizzo, non sul prefisso.
 

@@ -11,15 +11,17 @@ import { Velo } from "./ui/Velo";
 
 /**
  * La cornice del sito di Gifty UX v2 (design.md §4, prototipi/comuni.js; Gifty-architettura-e-flussi.md §2).
- * Intestazione: logo · Idee regalo · Regalo di gruppo · Fai un biglietto personalizzato · cuore con il numero dei preferiti · tondo
- * dell'account; sul telefono logo e cuore. Barra in basso, solo sul telefono: Home · Idee regalo · Gruppo · Biglietto ·
+ * Intestazione: logo · Idee regalo · Regalo di gruppo · Fai un biglietto personalizzato · Cosa rende un regalo davvero
+ * gradito? · cuore con il numero dei preferiti · tondo dell'account; sul telefono logo e cuore. Barra in basso, solo sul telefono: Home · Idee regalo · Gruppo · Biglietto ·
  * Account. In home l'intestazione è trasparente sulla parete della scena.
  */
-const MENU: { href: string; testo: string; sezione: Sezione }[] = [
+const MENU: { href: string; testo: string; sezione: Sezione; classe?: string }[] = [
   { href: "/idee", testo: "Idee regalo", sezione: "idee" },
   { href: "/regalo-di-gruppo", testo: "Regalo di gruppo", sezione: "gruppo" },
   // nell'intestazione il nome intero (Cri, 6 nov); nella barra in basso resta «Biglietto», che ci sta
   { href: "/biglietto", testo: "Fai un biglietto personalizzato", sezione: "biglietto" },
+  // solo da 1024px in su (globals.css, .voce-lunga); la barra in basso ha già cinque voci, sul telefono è nel piè di pagina
+  { href: "/psicologia-del-dono", testo: "Cosa rende un regalo davvero gradito?", sezione: "dono", classe: "voce-lunga" },
 ];
 
 const BARRA: { href: string; testo: string; icona: NomeIconaTratto; sezione: Sezione; nomeIntero?: string }[] = [
@@ -60,7 +62,7 @@ export function Intestazione({ logo, account }: { logo: ReactNode; account: Reac
         </Link>
         <nav className="menu" aria-label="Servizi">
           {MENU.map((v) => (
-            <Link key={v.href} href={v.href} aria-current={attiva(percorso, v.sezione) ? "page" : undefined}>
+            <Link key={v.href} href={v.href} className={v.classe} aria-current={attiva(percorso, v.sezione) ? "page" : undefined}>
               {v.testo}
             </Link>
           ))}

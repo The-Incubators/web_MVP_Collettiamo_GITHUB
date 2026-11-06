@@ -284,6 +284,13 @@
   .menu a:hover { background: var(--green-field); color: var(--green); }
   .menu a[aria-current="page"] { color: var(--green); font-weight: 700; }
   .menu a[aria-current="page"]::after { content: ""; position: absolute; left: var(--s3); right: var(--s3); bottom: 4px; height: 3px; border-radius: 2px; background: var(--orange); }
+  /* «Cosa rende un regalo davvero gradito?» è lunga: sotto i 1024px non ci sta (resta nel piè di pagina), fino a 1180px
+     va su due righe */
+  .menu a.voce-lunga { display: none; }
+  @media (min-width: 1024px) {
+    .menu a.voce-lunga { display: inline-flex; white-space: normal; max-width: 190px; height: 56px; font-size: 15px; line-height: 1.15; }
+  }
+  @media (min-width: 1180px) { .menu a.voce-lunga { white-space: nowrap; max-width: none; height: 44px; font-size: 16px; } }
   .testa-azioni { margin-left: auto; }
   .testa-azioni { display: flex; align-items: center; gap: var(--s2); flex: none; }
   .cuore-testa {
@@ -474,6 +481,38 @@
   .partenza .ph img { width: 100%; height: 120px; object-fit: contain; mix-blend-mode: multiply; }
   @media (min-width: 768px) { .partenza .mano { font-size: 36px; } .partenza { padding: var(--s6); } }
   .esempio-blocco { display: flex; flex-wrap: wrap; gap: var(--s4); align-items: center; justify-content: space-between; padding: var(--s6); border-radius: var(--r-surface); background: var(--surface); border: 1px solid var(--line); margin-top: var(--s10); }
+
+  /* ---------- la psicologia del dono ---------- */
+  /* colonna di lettura: righe di 60-75 battute */
+  .dono-colonna { display: grid; gap: var(--s5); justify-items: start; max-width: calc(720px + 2 * var(--gutter)); }
+  .dono-colonna > * { max-width: 100%; }
+  .dono-colonna p, .dono-colonna li { font-size: 17px; line-height: 1.55; }
+  .dono-colonna strong { color: var(--green); }
+  .dono-motto .carta { padding: var(--s8) var(--s6); font-size: 34px; line-height: 1.15; text-align: center; transform: rotate(-2deg); max-width: 420px; margin: 0 auto; }
+  @media (min-width: 768px) { .dono-motto .carta { font-size: 44px; padding: var(--s12) var(--s10); } }
+  .dono-punti { display: grid; gap: var(--s3); }
+  .dono-punti li { position: relative; padding-left: var(--s8); }
+  .dono-punti li::before { content: ""; position: absolute; left: 6px; top: .6em; width: 10px; height: 10px; border-radius: 50%; background: var(--orange); }
+  .dono-capitolo { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s4); align-items: start; max-width: calc(720px + 56px + var(--s6) + 2 * var(--gutter)); }
+  @media (min-width: 768px) { .dono-capitolo { gap: var(--s6); } }
+  .dono-numero { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--green-field); color: var(--green); font-size: 20px; }
+  @media (min-width: 768px) { .dono-numero { width: 56px; height: 56px; font-size: 24px; } }
+  .dono-modi { display: grid; gap: var(--s3); counter-reset: modo; }
+  .dono-modi li { counter-increment: modo; position: relative; padding: var(--s4) var(--s5) var(--s4) calc(var(--s5) + 40px); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-surface); }
+  .dono-modi li::before { content: counter(modo); position: absolute; left: var(--s4); top: var(--s4); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--green); color: #fff; font-family: var(--f-display); font-weight: 700; font-size: 16px; line-height: 1; }
+  .dono-approfondisci { width: 100%; }
+  .dono-approfondisci > summary { list-style: none; width: fit-content; cursor: pointer; }
+  .dono-approfondisci > summary::-webkit-details-marker { display: none; }
+  .dono-approfondisci > summary svg { width: 18px; height: 18px; transform: rotate(90deg); transition: transform .2s ease; }
+  .dono-approfondisci[open] > summary svg { transform: rotate(-90deg); }
+  .dono-approfondisci .se-aperto, .dono-approfondisci[open] .se-chiuso { display: none; }
+  .dono-approfondisci[open] .se-aperto { display: inline; }
+  .dono-studi { display: grid; gap: var(--s4); margin-top: var(--s5); padding-left: var(--s5); border-left: 3px solid var(--green-field); }
+  .dono-chiusura .azioni { display: flex; flex-wrap: wrap; gap: var(--s3); }
+  .dono-fonti h3 { font-family: var(--f-display); font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: var(--s2); }
+  .dono-fonti ul { display: grid; gap: var(--s2); }
+  .dono-fonti li { font-size: 14px; line-height: 1.5; color: var(--muted); overflow-wrap: anywhere; }
+  .dono-fonti a { color: var(--green); font-weight: 600; text-decoration: underline; }
 }
 
 /*

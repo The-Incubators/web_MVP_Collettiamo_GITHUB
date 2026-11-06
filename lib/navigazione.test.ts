@@ -30,6 +30,10 @@ describe("sezione della navigazione", () => {
     for (const p of ["/biglietto", "/biglietto/nuovo", "/biglietto/abc/gestisci", "/biglietto/esempio"]) expect(sezioneDi(p)).toBe("biglietto");
   });
 
+  it("la psicologia del dono ha la sua voce", () => {
+    expect(sezioneDi("/psicologia-del-dono")).toBe("dono");
+  });
+
   it("un prefisso simile non basta", () => {
     for (const p of ["/regalone", "/catalogo-vecchio", "/cx", "/bigliettone", "/b/abc", "/privacy"]) expect(sezioneDi(p)).toBeNull();
   });

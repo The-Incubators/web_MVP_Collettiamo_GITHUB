@@ -5,7 +5,7 @@
  * «Trova regalo» come faceva il confronto con `startsWith("/regalo")` (UX-11).
  */
 
-export type Sezione = "home" | "idee" | "gruppo" | "biglietto" | "preferiti" | "account";
+export type Sezione = "home" | "idee" | "gruppo" | "biglietto" | "dono" | "preferiti" | "account";
 
 const SEZIONI: Record<string, Sezione> = {
   // Idee regalo raccoglie le domande e il catalogo (S-02…S-05)
@@ -20,6 +20,8 @@ const SEZIONI: Record<string, Sezione> = {
   c: "gruppo",
   // il biglietto è un servizio a sé (Gifty-architettura-e-flussi.md §2)
   biglietto: "biglietto",
+  // «Cosa rende un regalo davvero gradito?»
+  "psicologia-del-dono": "dono",
   preferiti: "preferiti",
   // le pagine che finiranno nell'account (S-11, S-12)
   account: "account",

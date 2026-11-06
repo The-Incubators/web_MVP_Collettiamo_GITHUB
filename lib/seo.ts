@@ -11,6 +11,7 @@ export const PAGINE_PUBBLICHE: { percorso: string; priorita: number }[] = [
   { percorso: "/catalogo", priorita: 0.9 },
   { percorso: "/regalo-di-gruppo", priorita: 0.8 },
   { percorso: "/biglietto", priorita: 0.8 },
+  { percorso: "/psicologia-del-dono", priorita: 0.7 },
   { percorso: "/privacy", priorita: 0.2 },
   { percorso: "/termini", priorita: 0.2 },
 ];

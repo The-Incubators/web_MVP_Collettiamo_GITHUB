@@ -13,6 +13,8 @@ const GRUPPI: { titolo: string; voci: { href: string; testo: string }[] }[] = [
     voci: [
       { href: "/regalo", testo: "Trova il regalo" },
       { href: "/catalogo", testo: "Catalogo" },
+      // sul telefono è l'unica via: la barra in basso ha già cinque voci
+      { href: "/psicologia-del-dono", testo: "Cosa rende un regalo davvero gradito?" },
     ],
   },
   {

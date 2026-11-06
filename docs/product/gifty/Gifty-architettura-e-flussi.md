@@ -14,9 +14,10 @@ _Proposta del 5 novembre 2026, da approvare prima di toccare la UX o aggiungere 
 | Dove | Voci |
 |---|---|
 | Intestazione, da tablet in su | logo (porta alla home) · Idee regalo · Regalo di gruppo · Biglietto · cuore dei Preferiti con il numero · tondo dell'account |
+| Intestazione, da 1024px in su | in più, dopo Biglietto: «Cosa rende un regalo davvero gradito?» (`/psicologia-del-dono`); è lunga, fino a 1180px va su due righe |
 | Barra in basso, telefono (massimo 5) | Home · Idee regalo · Gruppo · Biglietto · Account |
 
-Sul telefono i Preferiti si raggiungono dal cuore nell'intestazione e dall'account. **Cambia la specifica §5**: il biglietto diventa una voce di menu e non sta più sotto Idee regalo.
+Sul telefono i Preferiti si raggiungono dal cuore nell'intestazione e dall'account; «Cosa rende un regalo davvero gradito?» dal piè di pagina, sotto Idee regalo (la barra ha già cinque voci). **Cambia la specifica §5**: il biglietto diventa una voce di menu e non sta più sotto Idee regalo.
 
 ## 3. Mappa delle pagine
 
