@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { COLORI_NOTA } from "@/lib/dominio/bacheca";
 import { fontPerId } from "@/lib/dominio/biglietti";
 import type { ModoRivelazione } from "@/lib/tipi";
-import type { AspettoBacheca } from "../bacheca/AnteprimaBacheca";
+import { stileSfondo, testoSopra, type AspettoBacheca } from "../bacheca/AnteprimaBacheca";
 import { useFontBiglietto } from "../useFontBiglietto";
 
 /** I messaggi d'esempio del telefono: neutri, adatti a quasi ogni occasione. */
@@ -51,7 +51,9 @@ function Nota({ i, grande = false, className = "" }: { i: number; grande?: boole
 export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelazione; aspetto: AspettoBacheca; festeggiato: string }) {
   const { n, fermo } = useGiro(modo);
   useFontBiglietto([aspetto.fontTitolo]);
-  const font = { fontFamily: fontPerId(aspetto.fontTitolo).css };
+  // come la sorpresa vera: lo sfondo scelto, il titolo nel suo colore (il film resta sul suo verde)
+  const chiaro = testoSopra(aspetto) === "#FFFFFF";
+  const font = { fontFamily: fontPerId(aspetto.fontTitolo).css, color: aspetto.coloreTitolo ?? (chiaro ? "#FFFFFF" : undefined) };
   const nome = festeggiato.trim() || "Marta";
 
   let schermo;
@@ -79,7 +81,7 @@ export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelaz
         <div key={k} className="entra-s grid justify-items-center gap-3">
           {k === 0 ? (
             <>
-              <span className="mano" style={font}>
+              <span className="mano" style={{ fontFamily: font.fontFamily }}>
                 {nome}
               </span>
               <p>{aspetto.titolo}</p>
@@ -88,7 +90,7 @@ export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelaz
             <Nota i={k - 1} grande />
           ) : (
             <>
-              <span className="mano" style={font}>
+              <span className="mano" style={{ fontFamily: font.fontFamily }}>
                 {nome}
               </span>
               <p>{NOTE.map(([, c]) => c).join(", ")}</p>
@@ -134,7 +136,9 @@ export function TelefonoModo({ modo, aspetto, festeggiato }: { modo: ModoRivelaz
 
   return (
     <div className="telefono telefono-ed" aria-hidden="true">
-      <div className="schermo">{schermo}</div>
+      <div className={`schermo ${chiaro ? "scuro-s" : ""}`} style={modo === "film" ? undefined : stileSfondo(aspetto)}>
+        {schermo}
+      </div>
     </div>
   );
 }

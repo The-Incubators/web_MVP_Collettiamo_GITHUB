@@ -7,7 +7,7 @@ import { firmeOrdinate } from "@/lib/dominio/biglietto";
 import { fontPerId, testoDaHtml } from "@/lib/dominio/biglietti";
 import type { BigliettoPubblico, Firma, ModoRivelazione } from "@/lib/tipi";
 import { useFontBiglietto } from "../useFontBiglietto";
-import { aspettoDaBiglietto, type AspettoBacheca } from "./AnteprimaBacheca";
+import { aspettoDaBiglietto, stileSfondo, testoSopra, type AspettoBacheca } from "./AnteprimaBacheca";
 import { Coriandoli } from "./Coriandoli";
 import { NotaFirma, NotaGrande } from "./NotaFirma";
 
@@ -402,6 +402,17 @@ export function Rivelazione({
   const note = useMemo<Nota[]>(() => firmeOrdinate(firme, b.ordineFirme).map((f, i) => ({ f, colore: coloreDellaNota(f.coloreNota, i) })), [firme, b.ordineFirme]);
   const modo = rivelazioneValida(b.rivelazione);
   const effetto = effettoDi(b.effetto);
+  // i testi sopra lo sfondo: chiari su sfondi scuri e sulle foto (che si scuriscono), scuri sugli altri
+  const chiaro = testoSopra(aspetto) === "#FFFFFF";
+  const colori = {
+    "--riv-testo": chiaro ? "#FFFFFF" : "#16241F",
+    "--riv-tenue": chiaro ? "rgba(255,255,255,.82)" : "var(--muted)",
+    "--riv-traccia": chiaro ? "rgba(255,255,255,.3)" : "rgba(20,43,32,.18)",
+    "--riv-pieno": chiaro ? "#FFFFFF" : "var(--green)",
+    "--riv-titolo": aspetto.coloreTitolo ?? (chiaro ? "#FFFFFF" : aspetto.classeCarta === null ? aspetto.colori.accento : "var(--green)"),
+    "--riv-ombra": aspetto.immagine ? "0 1px 8px rgba(0,0,0,.45)" : "none",
+  };
+  const fondo = aspetto.immagine ? "rgba(0,0,0,.55)" : aspetto.colori.sfondo1;
   const [fase, setFase] = useState<Fase>("apertura");
   const [scatto, setScatto] = useState(0);
   const audio = useRef<HTMLAudioElement>(null);
@@ -437,7 +448,9 @@ export function Rivelazione({
   }, [vai]);
 
   return (
-    <div className="relative flex min-h-dvh flex-col bg-peach" style={altoComandi ? ({ "--riv-alto": `${altoComandi}px` } as CSSProperties) : undefined}>
+    <div className={`riv relative flex min-h-dvh flex-col ${chiaro ? "riv-scura" : ""}`} style={{ ...colori, ...(altoComandi ? { "--riv-alto": `${altoComandi}px` } : {}) } as CSSProperties}>
+      {/* lo sfondo scelto da chi ha creato il biglietto (colore o foto), lo stesso della bacheca */}
+      <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />
       {fase === "apertura" ? (
         <Apertura
           festeggiato={b.festeggiato}
@@ -476,7 +489,7 @@ export function Rivelazione({
       </div>
 
       {basso && (fase === "apertura" || fase === "griglia") ? (
-        <div className="fixed inset-x-0 bottom-0 z-20 bg-gradient-to-t from-peach via-peach/90 to-transparent pb-[max(1rem,env(safe-area-inset-bottom))] pt-8">
+        <div className="fixed inset-x-0 bottom-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8" style={{ backgroundImage: `linear-gradient(to top, ${fondo} 0%, ${fondo} 45%, transparent)` }}>
           <div className="mx-auto w-full max-w-[520px] px-4">{basso}</div>
         </div>
       ) : null}

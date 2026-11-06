@@ -1064,6 +1064,9 @@
   .telefono-ed .storia-s .grande, .telefono-ed .film-s .grande { font-size: 15px; }
   .telefono-ed .film-s .mano { font-size: 48px; }
   .tacche-s i.ora { background: var(--orange); }
+  .scuro-s .tacche-s i { background: rgba(255, 255, 255, .3); }
+  .scuro-s .tacche-s i.ok { background: #fff; }
+  .scuro-s .chi-s { color: rgba(255, 255, 255, .82); }
   .film-s { position: relative; }
   .film-s .barra-f i { transition: width .4s ease; }
   .entra-s { animation: entra-s .45s ease-out both; }
@@ -1139,6 +1142,17 @@
   .scena-riv .conta { text-align: center; font-size: 14px; color: var(--muted); }
   .scena-riv.film .conta { color: var(--card-paper); }
   .scena-riv.film .mano { color: #fff; }
+  /* la sorpresa sullo sfondo scelto (Rivelazione.tsx imposta le --riv-*): niente pesca fisso */
+  .riv .apertura-b, .riv .scena-riv:not(.film) { background: transparent; }
+  .riv .muro h1 { color: var(--riv-titolo); text-shadow: var(--riv-ombra); }
+  .riv .muro .da { color: var(--riv-testo); text-shadow: var(--riv-ombra); }
+  .riv .muro .righe-m { color: var(--riv-tenue); text-shadow: var(--riv-ombra); }
+  .riv .firma-g { color: var(--riv-tenue); }
+  .riv-scura .busta-scena .btn-primario { background: #fff; color: var(--green); }
+  .riv-scura .busta-scena .btn-primario:hover { background: var(--green-field); }
+  .riv .scena-riv:not(.film) .conta { color: var(--riv-tenue); }
+  .riv .scena-riv:not(.film) .tacche-r span { background: var(--riv-traccia); }
+  .riv .scena-riv:not(.film) .tacche-r span i { background: var(--riv-pieno); }
   .comandi-r { display: flex; align-items: center; justify-content: center; gap: var(--s3); padding: var(--s3) var(--s4) max(var(--s5), env(safe-area-inset-bottom, 0px)); }
   .tondo-r { width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--surface); color: var(--green); display: inline-grid; place-items: center; cursor: pointer; box-shadow: 0 1px 2px rgba(20, 43, 32, .14); }
   .tondo-r:hover { background: var(--green-field); }
