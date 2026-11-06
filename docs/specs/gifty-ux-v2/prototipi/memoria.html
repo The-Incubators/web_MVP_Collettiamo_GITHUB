@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gifty ricorda · prototipo</title>
+<link rel="stylesheet" href="sistema.css">
+<style>
+  /* Gifty ricorda (Gifty-ingressi-e-uscite.md §4.2, passo 1): visti, aperti su Amazon e presi, sul dispositivo. */
+
+  /* segno di stato sulla lastra della tessera e della scheda */
+  .lastra { position: relative; }
+  .stato { position: absolute; left: 10px; top: 10px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px;
+    border-radius: var(--r-pill); background: var(--surface); box-shadow: 0 1px 2px rgba(20,43,32,.12); font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap; max-width: calc(100% - 68px); overflow: hidden; text-overflow: ellipsis; }
+  .stato svg { width: 15px; height: 15px; flex: none; }
+  .stato .lungo { display: none; }
+  @media (min-width: 768px) { .stato .lungo { display: inline; } .stato .corto { display: none; } }
+  .stato.amazon svg { color: var(--orange); }
+  .stato.visto { color: var(--muted); font-weight: 600; }
+  .stato.preso { background: var(--green); color: #fff; }
+
+  /* la domanda al ritorno: sta dove la persona l'ha lasciata, non interrompe */
+  .ritorno { display: grid; gap: var(--s3); padding: var(--s4); border-radius: var(--r-surface); background: var(--surface); border: 1px solid var(--line); }
+  .ritorno .quando { display: flex; align-items: center; gap: var(--s2); font-size: 14px; color: var(--muted); }
+  .ritorno .quando svg { width: 18px; height: 18px; color: var(--orange); flex: none; }
+  .ritorno .domanda { font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--green); }
+  .ritorno .scelte { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .ritorno .scelte .btn { min-height: 44px; }
+  .ritorno.fatto { grid-template-columns: auto 1fr auto; align-items: center; background: var(--green-field); border-color: transparent; }
+  .ritorno.fatto .spunta-tonda { width: 32px; height: 32px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; }
+  .ritorno.fatto .spunta-tonda svg { width: 18px; height: 18px; }
+  .ritorno.fatto b { color: var(--green); font-family: var(--f-display); font-size: 18px; }
+  .ritorno.fatto .btn-quieto { background: transparent; }
+
+  /* versione compatta dentro la tessera */
+  .tessera .ritorno { padding: var(--s3); gap: var(--s2); margin-top: auto; }
+  .tessera .ritorno .domanda { font-size: 16px; }
+  .tessera .ritorno .scelte .btn { min-height: 40px; font-size: 15px; padding: 0 var(--s3); flex: 1; }
+
+  /* scheda prodotto (come oggi in /prodotto) */
+  .scheda { display: grid; gap: var(--s6); padding: var(--s4) 0 var(--s12); }
+  @media (min-width: 768px) { .scheda { grid-template-columns: 6fr 5fr; gap: var(--s12); align-items: start; padding-top: var(--s8); } }
+  .scheda .info { display: grid; gap: var(--s4); align-content: start; }
+  .scheda .prezzo-g { font-size: 32px; color: var(--green); }
+  .scheda .azioni { display: grid; gap: var(--s3); }
+  @media (min-width: 768px) { .scheda .azioni { justify-items: start; } }
+  .scheda .perche { padding-left: var(--s4); border-left: 3px solid var(--orange); }
+  .scheda .foto-g { position: relative; }
+
+  /* home: solo la testa, la scena resta come oggi */
+  .hero-mini { background: var(--wall); padding: var(--s8) 0 var(--s10); }
+  .hero-mini .hero-sotto { margin-top: var(--s3); font-size: 18px; max-width: 32em; }
+  .hero-mini .nota-scena { margin-top: var(--s6); height: 120px; border-radius: var(--r-surface); border: 1.5px dashed var(--line-strong); display: grid; place-items: center; color: var(--muted); font-size: 14px; }
+  @media (min-width: 768px) { .hero-mini .hero-sotto { font-size: 22px; } }
+
+  /* «Fai un regalo» (come oggi in /fai-un-regalo) */
+  .bivio { padding-top: var(--s8); padding-bottom: var(--s12); display: grid; gap: var(--s6); }
+  .bivio-regalo { display: grid; grid-template-columns: 72px 1fr; gap: var(--s3); align-items: center; padding: var(--s3); border-radius: var(--r-surface); background: var(--surface); text-decoration: none; color: var(--ink); max-width: 560px; }
+  .bivio-regalo .lastra { width: 72px; aspect-ratio: 1; }
+  .bivio-regalo > span { min-width: 0; }
+  .bivio-regalo .prezzo { font-family: var(--f-display); font-weight: 700; color: var(--green); }
+  .bivio-strade { display: grid; gap: var(--s4); }
+  @media (min-width: 768px) { .bivio-strade { grid-template-columns: 1fr 1fr; } }
+  .bivio-strade .porta { display: grid; gap: var(--s3); align-content: start; padding: var(--s6); border-radius: var(--r-surface); background: var(--surface); box-shadow: var(--ombra-carta); }
+  .bivio-strade .porta h2 { font-size: 22px; }
+  .bivio-strade .porta > .btn { justify-self: start; }
+
+  .proto-nota { max-width: var(--page-max); margin: var(--s6) auto 0; padding: 0 var(--gutter); }
+  .proto-nota p { padding: var(--s3) var(--s4); border-radius: 12px; background: #fff7e8; border: 1px solid #f3d9a4; font-size: 14px; }
+</style>
+</head>
+<body data-sezione="idee">
+<main id="m"></main>
+<script>if (new URLSearchParams(location.search).get("vista") === "home") document.body.dataset.sezione = "home";</script>
+<script src="comuni.js"></script>
+<script>
+  const vista = STATO.get("vista") || "scheda";
+  const ico = (n) => icona(n);
+  const P = PRODOTTI;
+
+  const segno = { amazon: () => `<span class="stato amazon">${ico("esterno")}<span class="lungo">Aperto su Amazon</span><span class="corto">Su Amazon</span></span>`,
+                  visto: (q) => `<span class="stato visto">${ico("orologio")}Visto ${q}</span>`,
+                  preso: () => `<span class="stato preso">${ico("spunta")}Preso</span>` };
+
+  const domanda = (quando, compatta) => `<div class="ritorno" role="group" aria-label="L'hai preso?">
+      ${compatta ? "" : `<p class="quando">${ico("esterno")}Aperto su Amazon ${quando}</p>`}
+      <p class="domanda">L'hai preso?</p>
+      <div class="scelte">
+        <a class="btn btn-contorno" href="?vista=scheda-preso">${ico("spunta")}${compatta ? "Sì" : "Sì, l'ho preso"}</a>
+        <button type="button" class="btn btn-quieto" onclick="this.closest('.ritorno').remove()">Non ancora</button>
+      </div></div>`;
+  const preso = (data) => `<div class="ritorno fatto" role="status"><span class="spunta-tonda">${ico("spunta")}</span>
+      <b>Preso il ${data}</b>
+      <a class="btn btn-quieto" href="?vista=scheda">Annulla</a></div>`;
+
+  /* tessera come in components/TesseraProdotto.tsx, con il segno di stato */
+  const tessera = (id, { stato = "", pieno = false, corpo = "" } = {}) => {
+    const p = P[id];
+    const az = corpo || `<div class="azioni"><a class="btn btn-primario" href="#">Fai un regalo</a>
+      <a class="btn btn-quieto" href="#">${ico("esterno")}Guarda su Amazon</a></div>`;
+    return `<article class="tessera">
+      <a class="lastra" href="?vista=scheda" aria-hidden="true" tabindex="-1">${stato}<img src="${foto(id)}" alt="" loading="lazy"></a>
+      ${cuoreBtn(pieno, p.nome)}
+      <a class="nome" href="?vista=scheda">${p.nome}</a>
+      <div class="riga-prezzo"><span class="prezzo">${euro(p.prezzo)}</span><span class="marca">${p.marca}</span></div>
+      ${az}</article>`;
+  };
+
+  const altre = `<section class="sezione"><div class="pagina"><div class="testa-sezione"><h2 class="t-sezione">Altre idee</h2></div>
+      <div class="griglia-prodotti">${tessera("PRD-011", { stato: segno.visto("ieri") })}${tessera("PRD-054")}${tessera("PRD-057")}${tessera("PRD-044")}</div></div></section>`;
+
+  const scheda = (fatto) => `<div class="pagina"><div class="scheda">
+      <div class="foto-g"><div class="lastra"><img src="${foto("PRD-017")}" alt="Speaker Bluetooth retrò verde"></div>
+        <button class="cuore" type="button" aria-pressed="false" aria-label="Salva nei preferiti" style="top:12px;right:12px">${ico("cuore")}</button></div>
+      <div class="info">
+        <p class="muted">Generico</p>
+        <h1 class="t-pagina">Speaker Bluetooth retrò verde</h1>
+        <p class="t-cifra prezzo-g">${euro(P["PRD-017"].prezzo)}</p>
+        ${fatto ? preso("6 novembre") : domanda("alle 18:42")}
+        <p>Mini altoparlante portatile dall'estetica radio vintage.</p>
+        <p class="perche">Tecnologia moderna con una silhouette nostalgica.</p>
+        <div class="azioni">
+          <a class="btn btn-primario btn-largo btn-largo-tel" href="?vista=fai">Fai un regalo</a>
+          <a class="btn btn-contorno btn-largo btn-largo-tel" href="#">Guarda su Amazon ${ico("esterno")}</a>
+        </div>
+      </div></div></div>${altre}`;
+
+  const fai = `<div class="pagina bivio">
+      <a class="bivio-regalo" href="?vista=scheda"><span class="lastra"><img src="${foto("PRD-017")}" alt=""></span><span><b>Speaker Bluetooth retrò verde</b><br><span class="prezzo">${euro(P["PRD-017"].prezzo)}</span></span></a>
+      <h1 class="t-pagina">Come lo vuoi regalare?</h1>
+      <div class="bivio-strade">
+        <article class="porta"><h2>Lo regalo io</h2>${domanda("alle 18:42")}
+          <a class="btn btn-quieto" href="#">${ico("esterno")}Riaprilo su Amazon</a></article>
+        <article class="porta"><h2>Lo regaliamo in gruppo</h2><p>Mandi il link nella chat, chi vuole aderisce e tu tieni il conto di chi ti ha dato la quota.</p>
+          <a class="btn btn-primario" href="#">Organizza un regalo di gruppo</a></article>
+      </div></div>`;
+
+  const home = `<section class="hero-mini"><div class="pagina">
+      <h1 class="t-hero">Chi trova Gifty trova il regalo</h1>
+      <p class="hero-sotto">Idee che piacciono, quote che tornano, auguri da tutti</p>
+      <div class="nota-scena">la scena e le tre porte restano come oggi</div></div></section>
+    <section class="sezione"><div class="pagina">
+      <div class="testa-sezione"><h2 class="t-sezione">Riprendi da qui</h2></div>
+      <div class="griglia-prodotti">
+        ${tessera("PRD-017", { stato: segno.amazon(), corpo: domanda("", true) })}
+        ${tessera("PRD-058", { stato: segno.visto("ieri"), pieno: true })}
+        ${tessera("PRD-014", { stato: segno.visto("lunedì") })}
+        ${tessera("PRD-044", { stato: segno.preso() })}
+      </div></div></section>
+    <section class="sezione"><div class="pagina"><div class="testa-sezione"><h2 class="t-sezione">Le nostre scelte</h2></div>
+      <div class="griglia-prodotti">${tessera("PRD-094")}${tessera("PRD-015")}${tessera("PRD-083")}${tessera("PRD-003")}</div></div></section>`;
+
+  const note = {
+    scheda: "Chi ha toccato «Guarda su Amazon» torna sulla scheda di Gifty rimasta aperta: la domanda è già lì, sopra la descrizione. «Non ancora» la chiude; resta il segno «Aperto su Amazon».",
+    "scheda-preso": "Dopo «Sì, l'ho preso»: il prodotto è segnato come preso, con la data. «Annulla» se ha toccato per sbaglio.",
+    fai: "La maggior parte dei clic verso Amazon parte da qui («Compralo su Amazon»): al ritorno la stessa domanda sta nella porta «Lo regalo io».",
+    home: "Alla visita dopo, in home (e in cima a Idee regalo): al massimo quattro tessere, prima l'ultimo aperto su Amazon con la domanda, poi i visti e i salvati. Non c'è nulla se la persona non ha ancora guardato niente.",
+  };
+  document.getElementById("m").innerHTML = (vista === "fai" ? fai : vista === "home" ? home : scheda(vista === "scheda-preso"))
+    + `<div class="proto-nota"><p><b>Prototipo.</b> ${note[vista] || note.scheda}</p></div>`;
+  document.querySelectorAll(".cuore").forEach((c) => { if (!c.querySelector(".vuoto-i")) c.innerHTML = icona("cuore", "vuoto-i") + icona("cuore-pieno", "pieno-i"); });
+  const VISTE = [["scheda", "Scheda al ritorno"], ["scheda-preso", "Scheda dopo «Sì»"], ["fai", "Fai un regalo al ritorno"], ["home", "Home alla visita dopo"]];
+  if (!STATO.get("scatto")) document.body.insertAdjacentHTML("beforeend", `<nav class="proto-stati" aria-label="Stati del prototipo">${VISTE.map(([v, t]) => `<a href="?vista=${v}"${v === vista ? ' aria-current="true"' : ""}>${t}</a>`).join("")}</nav>`);
+</script>
+</body>
+</html>
