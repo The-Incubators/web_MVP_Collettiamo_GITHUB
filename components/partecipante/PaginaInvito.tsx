@@ -174,7 +174,8 @@ export function PaginaInvito({
             ) : voto ? (
               <p style={{ marginTop: 8 }}>Il regalo lo scegliamo insieme, votando fra le proposte di {org}.</p>
             ) : null}
-            {deciso ? (
+            {/* nell'esempio niente riga del prodotto (Cri, 6 nov) */}
+            {deciso && !simulato ? (
               <div className="regalo">
                 <FotoLastra prodotto={c.prodotto} />
                 <span>
@@ -200,7 +201,8 @@ export function PaginaInvito({
             </p>
           ) : null}
 
-          {!aperto && (!dentroOra || c.stato === "chiusa") ? (
+          {/* nell'esempio niente «Le adesioni sono chiuse» (Cri, 6 nov) */}
+          {!simulato && !aperto && (!dentroOra || c.stato === "chiusa") ? (
             <div className="i-blocco i-sopra">
               <span className="stato neutro">Le adesioni sono chiuse</span>
               {consegnato(c) ? <p>Il regalo è stato consegnato.</p> : null}

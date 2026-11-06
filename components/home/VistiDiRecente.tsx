@@ -6,7 +6,7 @@ import { useVistiDiRecente } from "@/lib/vistiDiRecente";
 import type { Prodotto } from "@/lib/tipi";
 
 /**
- * «Visti di recente» in home, sopra «Le nostre scelte» (Cri, 6 nov; prototipi/memoria.html): gli ultimi quattro
+ * «Visti di recente» in home, sopra «Le nostre scelte», e in Idee regalo, sotto (Cri, 6 nov; prototipi/memoria.html): gli ultimi quattro
  * prodotti aperti su questo dispositivo, il più recente per primo. Senza visti la sezione non c'è.
  */
 export function VistiDiRecente() {

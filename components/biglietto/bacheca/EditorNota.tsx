@@ -91,7 +91,7 @@ export function EditorNota({
         onChange={(e) => imposta("testo", e.target.value)}
         placeholder="Scrivi qui i tuoi auguri…"
         rows={4}
-        className="min-h-28 w-full resize-none pr-10 bg-transparent text-[17px] leading-snug placeholder:text-[#16241F]/50 focus:outline-none"
+        className="testo-biglietto min-h-28 w-full resize-none pr-10 bg-transparent text-[17px] leading-snug placeholder:text-[#16241F]/50 focus:outline-none"
       />
       {caratteri > MAX_TESTO_MESSAGGIO * 0.8 ? (
         <p className={`-mt-2 text-right text-xs ${caratteri > MAX_TESTO_MESSAGGIO ? "font-semibold text-error" : "opacity-60"}`}>

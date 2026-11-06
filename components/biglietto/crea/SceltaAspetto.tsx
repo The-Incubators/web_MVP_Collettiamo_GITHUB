@@ -163,7 +163,7 @@ export function SceltaAspetto({
 
       <div className="campo">
         <span className="etichetta" id={idFont}>
-          Font del titolo
+          Font del biglietto
         </span>
         <div className="font-b" role="radiogroup" aria-labelledby={idFont}>
           {FONT_TITOLO.map((f) => {

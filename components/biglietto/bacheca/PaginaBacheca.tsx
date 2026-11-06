@@ -12,7 +12,7 @@ import type { BigliettoPubblico, Firma } from "@/lib/tipi";
 import { baseUrlClient } from "@/lib/url";
 import { Finestra } from "../comuni";
 import { immaginePerServer } from "../firma/bozza";
-import { aspettoDaBiglietto, stileSfondo, TestaBacheca, testoSopra } from "./AnteprimaBacheca";
+import { aspettoDaBiglietto, stileSfondo, TestaBacheca, testoSopra, varFontBiglietto } from "./AnteprimaBacheca";
 import { Avviso, condividiLink, useAvviso } from "./Avviso";
 import { Coriandoli } from "./Coriandoli";
 import { EditorNota, NOTA_VUOTA, type NotaInCorso } from "./EditorNota";
@@ -231,7 +231,7 @@ export function PaginaBacheca({ b, firme: iniziali }: { b: BigliettoPubblico; fi
   const visibili = nota && mia ? ordinate.filter((f) => f.id !== mia.id) : ordinate;
 
   return (
-    <div className="relative flex min-h-dvh flex-col">
+    <div className="relative flex min-h-dvh flex-col" style={varFontBiglietto(aspetto.fontTitolo)}>
       <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />
 
       <div className="relative z-10 mx-auto flex w-full max-w-[760px] flex-1 flex-col px-4 pb-36 pt-4">

@@ -7,7 +7,7 @@ import { firmeOrdinate } from "@/lib/dominio/biglietto";
 import { fontPerId, testoDaHtml } from "@/lib/dominio/biglietti";
 import type { BigliettoPubblico, Firma, ModoRivelazione } from "@/lib/tipi";
 import { useFontBiglietto } from "../useFontBiglietto";
-import { aspettoDaBiglietto, stileSfondo, testoSopra, type AspettoBacheca } from "./AnteprimaBacheca";
+import { aspettoDaBiglietto, stileSfondo, testoSopra, varFontBiglietto, type AspettoBacheca } from "./AnteprimaBacheca";
 import { Coriandoli } from "./Coriandoli";
 import { NotaFirma, NotaGrande } from "./NotaFirma";
 
@@ -451,7 +451,7 @@ export function Rivelazione({
   return (
     <div
       className={busta ? "relative flex min-h-dvh flex-col bg-peach" : `riv relative flex min-h-dvh flex-col ${chiaro ? "riv-scura" : ""}`}
-      style={{ ...(busta ? {} : colori), ...(altoComandi ? { "--riv-alto": `${altoComandi}px` } : {}) } as CSSProperties}
+      style={{ ...varFontBiglietto(aspetto.fontTitolo), ...(busta ? {} : colori), ...(altoComandi ? { "--riv-alto": `${altoComandi}px` } : {}) } as CSSProperties}
     >
       {/* la busta resta quella di Gifty; aperta, il biglietto ha lo sfondo scelto (colore o foto), lo stesso della bacheca */}
       {busta ? null : <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />}
