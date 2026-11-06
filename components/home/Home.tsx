@@ -75,7 +75,7 @@ export async function PaginaHome() {
           <h1 id="titolo-hero" className="t-hero">
             Chi trova Gifty trova il regalo
           </h1>
-          <p className="hero-sotto">Idee regalo, regali di gruppo e biglietti da firmare insieme</p>
+          <p className="hero-sotto">Idee che piacciono, quote che tornano, auguri da tutti</p>
         </div>
         <ScenaHero />
         <Porte />
