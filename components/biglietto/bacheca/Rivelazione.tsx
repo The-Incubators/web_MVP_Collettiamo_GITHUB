@@ -412,8 +412,9 @@ export function Rivelazione({
     "--riv-titolo": aspetto.coloreTitolo ?? (chiaro ? "#FFFFFF" : aspetto.classeCarta === null ? aspetto.colori.accento : "var(--green)"),
     "--riv-ombra": aspetto.immagine ? "0 1px 8px rgba(0,0,0,.45)" : "none",
   };
-  const fondo = aspetto.immagine ? "rgba(0,0,0,.55)" : aspetto.colori.sfondo1;
+  const fondo = (busta: boolean) => busta ? "var(--peach)" : aspetto.immagine ? "rgba(0,0,0,.55)" : aspetto.colori.sfondo1;
   const [fase, setFase] = useState<Fase>("apertura");
+  const busta = fase === "apertura";
   const [scatto, setScatto] = useState(0);
   const audio = useRef<HTMLAudioElement>(null);
   const [suona, setSuona] = useState(false);
@@ -448,9 +449,12 @@ export function Rivelazione({
   }, [vai]);
 
   return (
-    <div className={`riv relative flex min-h-dvh flex-col ${chiaro ? "riv-scura" : ""}`} style={{ ...colori, ...(altoComandi ? { "--riv-alto": `${altoComandi}px` } : {}) } as CSSProperties}>
-      {/* lo sfondo scelto da chi ha creato il biglietto (colore o foto), lo stesso della bacheca */}
-      <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />
+    <div
+      className={busta ? "relative flex min-h-dvh flex-col bg-peach" : `riv relative flex min-h-dvh flex-col ${chiaro ? "riv-scura" : ""}`}
+      style={{ ...(busta ? {} : colori), ...(altoComandi ? { "--riv-alto": `${altoComandi}px` } : {}) } as CSSProperties}
+    >
+      {/* la busta resta quella di Gifty; aperta, il biglietto ha lo sfondo scelto (colore o foto), lo stesso della bacheca */}
+      {busta ? null : <div aria-hidden="true" className="fixed inset-0 z-0" style={stileSfondo(aspetto)} />}
       {fase === "apertura" ? (
         <Apertura
           festeggiato={b.festeggiato}
@@ -489,7 +493,7 @@ export function Rivelazione({
       </div>
 
       {basso && (fase === "apertura" || fase === "griglia") ? (
-        <div className="fixed inset-x-0 bottom-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8" style={{ backgroundImage: `linear-gradient(to top, ${fondo} 0%, ${fondo} 45%, transparent)` }}>
+        <div className="fixed inset-x-0 bottom-0 z-20 pb-[max(1rem,env(safe-area-inset-bottom))] pt-8" style={{ backgroundImage: `linear-gradient(to top, ${fondo(busta)} 0%, ${fondo(busta)} 45%, transparent)` }}>
           <div className="mx-auto w-full max-w-[520px] px-4">{basso}</div>
         </div>
       ) : null}

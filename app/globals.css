@@ -1148,8 +1148,6 @@
   .riv .muro .da { color: var(--riv-testo); text-shadow: var(--riv-ombra); }
   .riv .muro .righe-m { color: var(--riv-tenue); text-shadow: var(--riv-ombra); }
   .riv .firma-g { color: var(--riv-tenue); }
-  .riv-scura .busta-scena .btn-primario { background: #fff; color: var(--green); }
-  .riv-scura .busta-scena .btn-primario:hover { background: var(--green-field); }
   .riv .scena-riv:not(.film) .conta { color: var(--riv-tenue); }
   .riv .scena-riv:not(.film) .tacche-r span { background: var(--riv-traccia); }
   .riv .scena-riv:not(.film) .tacche-r span i { background: var(--riv-pieno); }
