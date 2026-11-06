@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
+import { SegnaVisto } from "@/components/SegnaVisto";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { datiServer } from "@/lib/dati";
 import { altreIdee } from "@/lib/dominio/catalogoIdee";
@@ -33,6 +34,7 @@ export default async function PaginaProdotto({ params, searchParams }: Props) {
     <div className="fondo">
       <div className="pagina">
         <DettaglioProdotto p={p} gruppo={gruppo} />
+        <SegnaVisto slug={p.slug} />
       </div>
       {altre.length ? (
         <section className="sezione">

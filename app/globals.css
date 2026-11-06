@@ -449,7 +449,7 @@
   }
 
   /* idee: a scorrimento sul telefono, in griglia da 768 px */
-  .striscia { display: flex; gap: var(--s3); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--s2); scrollbar-width: none; }
+  .striscia { display: flex; gap: var(--s3); overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter); margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) var(--s2); scrollbar-width: none; }
   .striscia::-webkit-scrollbar { display: none; }
   .striscia > * { scroll-snap-align: start; flex: 0 0 46%; }
   @media (min-width: 768px) {
