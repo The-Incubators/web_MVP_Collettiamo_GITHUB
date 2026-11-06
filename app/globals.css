@@ -408,7 +408,9 @@
   .carta-foto .iniziali { width: 40px; height: 40px; font-size: 14px; }
   @media (min-width: 768px) {
     .hero-testo { padding-top: calc(var(--testa-h) + var(--s8)); }
-    .hero-foto { margin-top: -140px; max-height: 46vw; overflow: hidden; }
+    /* la foto sale sotto il titolo solo quanto basta: la scritta del biglietto sta a ~13,8vw dal bordo alto della foto,
+       così resta sempre ~56 px sotto il titolo a ogni larghezza (revisione di Cri, 6 nov) */
+    .hero-foto { margin-top: calc(56px - 13.8vw); max-height: 46vw; overflow: hidden; }
     .carta-foto { width: 640px; height: 520px; padding: 56px 60px 44px; }
     .carta-foto .mano { font-size: 64px; }
     .carta-foto .righe { font-size: 32px; margin-top: 28px; }
