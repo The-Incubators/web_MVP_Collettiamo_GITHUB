@@ -1050,8 +1050,23 @@
   /* ---------- apertura per il festeggiato ---------- */
   .apertura-b { position: relative; min-height: 100vh; min-height: 100dvh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: var(--peach); }
   .nastro-a { position: absolute; left: -5%; right: -5%; top: 120px; width: 110%; height: 200px; color: var(--orange); pointer-events: none; }
+  .tutorial-biglietto { display: grid; justify-items: start; gap: var(--s4); max-width: 980px; padding-block: var(--s6) var(--s10); }
+  .video-biglietto { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--wall); border-radius: var(--r-surface); }
+  @media (max-width: 767px) {
+    .video-biglietto { width: auto; max-width: 100%; height: min(60dvh, 160vw); aspect-ratio: 9 / 16; justify-self: center; }
+  }
+
   .busta-scena { display: grid; place-items: center; align-content: center; gap: var(--s8); padding: var(--s12) var(--s5); position: relative; z-index: 1; text-align: center; }
   .busta { width: min(320px, 80vw); aspect-ratio: 3 / 2; background: var(--card-paper); border-radius: var(--r-paper); box-shadow: var(--ombra-carta); display: grid; place-items: center; position: relative; overflow: hidden; }
+  .busta { perspective: 600px; }
+  .busta.aprendo { overflow: visible; }
+  .busta.aprendo::before { display: none; }
+  .busta-patta { display: none; }
+  .busta.aprendo .busta-patta {
+    display: block; position: absolute; inset: 0 0 auto; height: 56%;
+    background: #E9DCC3; clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top; animation: apri-patta 440ms ease-in-out forwards;
+  }
   .busta .mano { font-size: 40px; position: relative; overflow-wrap: anywhere; padding: 0 var(--s4); }
   .muro { padding: var(--s12) var(--s5) var(--s8); max-width: 1000px; width: 100%; margin: 0 auto; position: relative; z-index: 1; display: grid; gap: var(--s8); align-content: start; }
   .muro h1 { font-family: var(--f-hand); font-weight: 700; font-size: 56px; line-height: 1; text-align: center; color: var(--green); letter-spacing: 0; margin: 0; overflow-wrap: anywhere; }
@@ -1287,4 +1302,8 @@
   .i-opzione { display: grid; grid-template-columns: 24px 64px 1fr; gap: var(--s3); align-items: center; }
   .i-opzione .lastra { width: 64px; border-radius: 12px; }
   .i-opzione .n { font-weight: 700; line-height: 1.3; }
+}
+
+@keyframes apri-patta {
+  to { transform: rotateX(180deg); }
 }

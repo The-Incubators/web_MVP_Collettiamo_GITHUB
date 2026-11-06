@@ -107,7 +107,7 @@ export function ComeLoApre() {
         <p className="desc" aria-live="polite">
           {MODI[modo].desc}
         </p>
-        <Link className="btn btn-quieto" href="/biglietto/esempio">
+        <Link className="btn btn-quieto" href="/biglietto/esempio?apri=1">
           Apri il biglietto di esempio
         </Link>
       </div>

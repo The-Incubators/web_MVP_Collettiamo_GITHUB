@@ -27,7 +27,7 @@ export default function PaginaBiglietto() {
               <h1 id="t-big" className="t-pagina">
                 Biglietto
               </h1>
-              <ChipTutorial href="/biglietto/esempio" />
+              <ChipTutorial href="/biglietto/esempio" video />
             </div>
             <p className="riga-b">Lo firmano tutti dal link e lo mandi tu, su WhatsApp.</p>
             <Link className="btn btn-primario" href="/biglietto/nuovo">

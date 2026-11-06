@@ -102,15 +102,25 @@ const NASTRO = (
 
 // ---------- Apertura: la busta ----------
 
-function Apertura({ festeggiato, onApri }: { festeggiato: string; onApri: () => void }) {
+function Apertura({ festeggiato, onInizia, onApri }: { festeggiato: string; onInizia: () => void; onApri: () => void }) {
+  const [aprendo, setAprendo] = useState(false);
+
+  function apri() {
+    if (aprendo) return;
+    onInizia();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) onApri();
+    else setAprendo(true);
+  }
+
   return (
     <div className="apertura-b">
       {NASTRO}
       <div className="busta-scena">
-        <div className="busta">
+        <div className={aprendo ? "busta aprendo" : "busta"}>
+          {aprendo ? <span className="busta-patta" aria-hidden="true" onAnimationEnd={onApri} /> : null}
           <span className="mano">Per {festeggiato}</span>
         </div>
-        <button type="button" className="btn btn-primario" onClick={onApri} autoFocus>
+        <button type="button" className="btn btn-primario" onClick={apri} aria-disabled={aprendo || undefined} autoFocus>
           Apri il biglietto
         </button>
       </div>
@@ -440,8 +450,8 @@ export function Rivelazione({
       {fase === "apertura" ? (
         <Apertura
           festeggiato={b.festeggiato}
+          onInizia={suonaMusica}
           onApri={() => {
-            suonaMusica();
             vai(modo);
             setScatto(Date.now());
           }}
