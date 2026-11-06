@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import { DettaglioProdotto } from "@/components/DettaglioProdotto";
 import { SegnaVisto } from "@/components/SegnaVisto";
@@ -14,7 +15,9 @@ type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<s
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = await datiServer().prodotto(slug);
-  return p ? { title: p.nome, description: p.descrizione } : { title: "Prodotto non trovato" };
+  if (!p || !p.attivo) return { title: "Prodotto non trovato", robots: { index: false } };
+  // ?modo=gruppo è la stessa scheda: l'indirizzo canonico non ha parametri.
+  return metaPubblica({ titolo: p.nome, descrizione: p.descrizione, percorso: `/prodotto/${p.slug}` });
 }
 
 /**

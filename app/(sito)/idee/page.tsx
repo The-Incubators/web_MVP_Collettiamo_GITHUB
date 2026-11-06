@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import Link from "next/link";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
 import { IndicatorePassi } from "@/components/ui";
@@ -12,10 +13,11 @@ import { etichettaPer } from "@/lib/regalo/indirizzo";
  */
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Idee regalo",
-  description: "Trova un'idea regalo per qualcuno: rispondi a quattro domande o sfoglia il catalogo.",
-};
+export const metadata: Metadata = metaPubblica({
+  titolo: "Idee regalo",
+  descrizione: "Trova un'idea regalo per qualcuno: rispondi a quattro domande o sfoglia il catalogo.",
+  percorso: "/idee",
+});
 
 /** Due file da quattro su desktop. */
 const IDEE = 8;

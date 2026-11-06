@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NON_INDICIZZARE } from "@/lib/seo";
 import Link from "next/link";
 import { IconaTratto, ImmagineProdotto } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Fai un regalo",
   description: "Regalalo tu, oppure fallo insieme agli altri e dividete la spesa.",
+  robots: NON_INDICIZZARE,
 };
 
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };

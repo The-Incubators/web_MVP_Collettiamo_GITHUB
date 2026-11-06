@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NON_INDICIZZARE } from "@/lib/seo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
@@ -13,7 +14,7 @@ export const dynamic = "force-dynamic";
 type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  return { title: titoloRisultati(statoDaParametri(await searchParams).genere) };
+  return { title: titoloRisultati(statoDaParametri(await searchParams).genere), robots: NON_INDICIZZARE };
 }
 
 /** Quante idee si vedono all'inizio e a ogni «Mostra altre idee»: i risultati sono tutto il catalogo, ordinato. */

@@ -40,7 +40,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: { absolute: titolo },
     description: descrizione,
-    robots: c.sorpresa || slug === SLUG_DEMO ? { index: false, follow: false } : undefined,
+    // mai nei risultati di ricerca: ci sono i nomi delle persone. L'anteprima nelle chat non dipende da questo.
+    robots: { index: false, follow: false },
     openGraph: {
       type: "website",
       locale: "it_IT",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { NON_INDICIZZARE } from "@/lib/seo";
 import { redirect } from "next/navigation";
 import { TrovaRegalo } from "@/components/regalo/TrovaRegalo";
 import { datiServer } from "@/lib/dati";
@@ -11,6 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Trova il regalo",
   description: "Rispondi a quattro domande su chi riceve il regalo, quanti anni ha, l'occasione e che cosa gli piace: ti mostriamo le idee più adatte.",
+  robots: NON_INDICIZZARE,
 };
 
 /**
