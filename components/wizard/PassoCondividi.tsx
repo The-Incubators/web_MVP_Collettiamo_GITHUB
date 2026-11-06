@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/components/AppProvider";
-import { IconaTratto, SpuntaRiga } from "@/components/ui";
+import { IconaTratto, ImmagineProdotto } from "@/components/ui";
 import { dataBreve } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
-import { linkColletta, linkWhatsApp, messaggioChat } from "@/lib/dominio/messaggi";
+import { descrizionePubblica, linkColletta, linkWhatsApp, messaggioChat, titoloPubblico } from "@/lib/dominio/messaggi";
 import { quotaEffettiva } from "@/lib/dominio/quota";
 import { regaloDaScegliere } from "@/lib/dominio/regali";
 import { etichettaOccasione } from "@/lib/regalo/dati";
@@ -35,8 +35,9 @@ function testoMetodi(m: Metodi): string {
 }
 
 /**
- * «Condividi», dopo la creazione (prototipi/crea.html, passo 7): il gruppo è già creato e aperto (G-09). Il messaggio per la chat cambia subito con
- * «È una sorpresa» (G-08), che si salva sulla colletta; «Condividi su WhatsApp», «Copia il link», «Vai al regalo di gruppo».
+ * «Condividi», dopo la creazione (prototipi/crea.html, passo 7): il gruppo è già creato e aperto (G-09). Il messaggio
+ * appare come in WhatsApp, con l'anteprima del link sopra il testo; poi «Condividi su WhatsApp», «Copia il link» e
+ * «Vai al regalo di gruppo». «È una sorpresa» è tolto: il festeggiato non è nella chat (revisione di Cri, 6 nov).
  */
 export function PassoCondividi({ slug }: { slug: string }) {
   const { dati, utente, pronto } = useApp();
@@ -92,19 +93,9 @@ export function PassoCondividi({ slug }: { slug: string }) {
   const colletta = c;
   const url = linkColletta(baseUrlClient(), slug);
   const quota = colletta.votazione ? null : quotaEffettiva(colletta);
-  const messaggio = messaggioChat({ festeggiato: colletta.festeggiato, quotaCent: quota, scadenza: colletta.scadenza, url, sorpresa: colletta.sorpresa });
+  const messaggio = messaggioChat({ festeggiato: colletta.festeggiato, quotaCent: quota, scadenza: colletta.scadenza, url, sorpresa: false });
   const testoSenzaLink = messaggio.slice(0, messaggio.length - url.length);
 
-  async function cambiaSorpresa(sorpresa: boolean) {
-    setC({ ...colletta, sorpresa });
-    setProblema(null);
-    try {
-      await dati.aggiornaColletta(slug, { sorpresa });
-    } catch {
-      setC({ ...colletta, sorpresa: !sorpresa });
-      setProblema("Le modifiche non sono state salvate");
-    }
-  }
 
   async function copia() {
     try {
@@ -131,14 +122,27 @@ export function PassoCondividi({ slug }: { slug: string }) {
         <h1 ref={titolo} tabIndex={-1} className="t-pagina">
           Manda il link nella chat
         </h1>
-        <SpuntaRiga checked={colletta.sorpresa} onChange={(e) => void cambiaSorpresa(e.target.checked)}>
-          È una sorpresa: il messaggio non fa il nome di {colletta.festeggiato}
-        </SpuntaRiga>
         <div className="chat">
-          <p className="fumetto-wa" aria-live="polite">
-            {testoSenzaLink}
-            <b>{url.replace(/^https?:\/\//, "")}</b>
-          </p>
+          <div className="fumetto-wa">
+            <div className="wa-anteprima" aria-hidden="true">
+              {regali.length === 1 ? (
+                <ImmagineProdotto prodotto={regali[0]} alt="" className="wa-foto" />
+              ) : (
+                <div className="wa-foto wa-foto-vuota">
+                  <IconaTratto nome="regalo" />
+                </div>
+              )}
+              <div className="wa-testi">
+                <b>{titoloPubblico({ festeggiato: colletta.festeggiato, quotaCent: quota ?? 0, sorpresa: false, votazione: !!colletta.votazione })}</b>
+                <span>{descrizionePubblica({ prodottoNome: colletta.prodotto.nome, organizzatoreNome: colletta.organizzatoreNome, sorpresa: false, votazione: !!colletta.votazione })}</span>
+                <span className="wa-dominio">{new URL(url).host}</span>
+              </div>
+            </div>
+            <p aria-live="polite">
+              {testoSenzaLink}
+              <span className="wa-link">{url}</span>
+            </p>
+          </div>
         </div>
         <div className="azioni">
           <a className="btn btn-primario" href={linkWhatsApp(messaggio)} target="_blank" rel="noopener noreferrer">
@@ -149,7 +153,7 @@ export function PassoCondividi({ slug }: { slug: string }) {
             <IconaTratto nome="copia" />
             {copiato ? "Link copiato" : "Copia il link"}
           </button>
-          <Link className="btn btn-quieto" href={`/gestisci/${slug}`}>
+          <Link className="btn btn-contorno" href={`/gestisci/${slug}`}>
             Vai al regalo di gruppo
           </Link>
         </div>
@@ -163,7 +167,7 @@ export function PassoCondividi({ slug }: { slug: string }) {
         r={{
           festeggiato: colletta.festeggiato,
           quando: `${etichettaOccasione(colletta.occasione)}, ${dataBreve(colletta.dataRegalo)}`,
-          persone: { testo: `${chat} persone nella chat` },
+          persone: { testo: `${chat} persone invitate a partecipare` },
           cosa: regali.length ? regali : { testo: quota ? `${formattaEuro(quota)} a testa` : "Quota a testa", vuota: !quota },
           rimborsi: { testo: `Rimborsi con ${testoMetodi(colletta.metodi)}` },
           organizzatore: colletta.organizzatoreNome || null,

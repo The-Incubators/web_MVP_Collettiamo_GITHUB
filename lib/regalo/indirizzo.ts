@@ -1,5 +1,5 @@
-// Le risposte di «Trova il regalo» nell'indirizzo: /regalo?per=donna&eta=adulto&occasione=compleanno&passo=4 e
-// /regalo/risultati?per=donna&eta=adulto&occasione=compleanno&macro=casa&interessi=casa-luci. Così i risultati si aprono dal
+// Le risposte di «Trova il regalo» nell'indirizzo: /regalo?per=donna&eta=35-50&occasione=compleanno&passo=4 e
+// /regalo/risultati?per=donna&eta=35-50&occasione=compleanno&macro=casa&interessi=casa-luci. Così i risultati si aprono dal
 // server, si condividono, e i chip «Cambia» riportano alla domanda con le risposte già date. Funzioni pure.
 
 import { CATEGORIE_INTERESSI, FASCE_ETA_DOMANDA, INTERESSI } from "./dati";

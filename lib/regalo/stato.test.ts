@@ -20,7 +20,7 @@ import {
 /** Un percorso compilato fino alla tappa indicata. */
 function compilato(fino: number) {
   let s = scegliGenere(statoIniziale(), "donna");
-  if (fino >= 2) s = scegliEta(s, "adulto");
+  if (fino >= 2) s = scegliEta(s, "35-50");
   if (fino >= 3) s = scegliOccasione(s, "compleanno");
   if (fino >= 4) s = cambiaInteresse(cambiaMacro(s, "tecnologia"), "tech-audio");
   return s;
@@ -39,7 +39,7 @@ describe("tappe del percorso", () => {
     const s = compilato(1);
     expect(tappaCompleta(s, 2)).toBe(false);
     expect(scegliEta(s, "anziano")).toBe(s);
-    expect(tappaCompleta(scegliEta(s, "bambino"), 2)).toBe(true);
+    expect(tappaCompleta(scegliEta(s, "fino-12"), 2)).toBe(true);
   });
 
   it("la quarta tappa vuole almeno una passione; le micro sono facoltative", () => {
@@ -132,7 +132,7 @@ describe("ripresa dalla sessione", () => {
   });
 
   it("un percorso salvato con i vecchi interessi torna alla domanda sugli interessi", () => {
-    const vecchio = { genere: "donna", eta: "adulto", occasione: "natale", interessi: ["musica", "viaggi", "caffe"], tappa: 5 };
+    const vecchio = { genere: "donna", eta: "35-50", occasione: "natale", interessi: ["musica", "viaggi", "caffe"], tappa: 5 };
     const s = ripulisci(vecchio);
     expect(s.interessi).toEqual([]);
     expect(s.tappa).toBe(4);

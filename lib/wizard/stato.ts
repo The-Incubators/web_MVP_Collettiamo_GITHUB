@@ -329,6 +329,9 @@ export function erroriPasso(s: StatoWizard, passo: Passo, adesso: number): Error
   if (passo === 2) {
     if (!Number.isInteger(s.chat) || s.chat < MIN_PERSONE || s.chat > MAX_PERSONE) e.chat = "Servono almeno due persone";
     if (s.daProdotto && s.regali.length !== 1) e.regali = "Scegli il regalo";
+    const scadenza = scadenzaDaStato(s, adesso);
+    if (scadenza === null) e.limite = "Scegli la data e l'ora";
+    else if (scadenza <= adesso) e.limite = "La data limite è già passata";
   }
   if (passo === 3 && !s.partenza) e.partenza = "Scegli da dove vuoi iniziare";
   if (passo === 4) {

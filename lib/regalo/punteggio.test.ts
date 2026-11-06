@@ -165,21 +165,25 @@ describe("fascia d'età", () => {
   const tutti = prodotto({ slug: "tutti", id: "PRD-002" });
   const daLink = prodotto({ slug: "da-link" });
 
-  it("le fasce della domanda sono quelle del catalogo", () => {
-    expect(FASCE_ETA_DOMANDA.map((f) => f.id)).toEqual(FASCE_ETA.map((f) => f.id));
+  it("le fasce della domanda sono le cinque di Cri e puntano a fasce vere del catalogo", () => {
+    expect(FASCE_ETA_DOMANDA.map((f) => f.etichetta)).toEqual(["Fino a 12 anni", "Da 13 a 20 anni", "Da 21 a 34 anni", "Da 35 a 50 anni", "Oltre 50 anni"]);
+    const delCatalogo = FASCE_ETA.map((f) => f.id as string);
+    for (const f of FASCE_ETA_DOMANDA) for (const c of f.catalogo) expect(delCatalogo).toContain(c);
   });
 
   it("tiene i prodotti della fascia scelta e quelli senza età; senza fascia tiene tutto", () => {
-    expect(adattoAllEta(bimbo, "bambino")).toBe(true);
-    expect(adattoAllEta(adulto, "bambino")).toBe(false);
-    expect(adattoAllEta(tutti, "bambino")).toBe(true);
-    expect(adattoAllEta(daLink, "bambino")).toBe(true);
+    expect(adattoAllEta(bimbo, "fino-12")).toBe(true);
+    expect(adattoAllEta(adulto, "fino-12")).toBe(false);
+    expect(adattoAllEta(tutti, "fino-12")).toBe(true);
+    expect(adattoAllEta(daLink, "fino-12")).toBe(true);
     expect(adattoAllEta(adulto, null)).toBe(true);
-    expect(perEta([bimbo, adulto, tutti, daLink], "adulto").map((p) => p.slug)).toEqual(["adulto", "tutti", "da-link"]);
+    expect(adattoAllEta(adulto, "21-34")).toBe(true);
+    expect(adattoAllEta(bimbo, "13-20")).toBe(false);
+    expect(perEta([bimbo, adulto, tutti, daLink], "oltre-50").map((p) => p.slug)).toEqual(["adulto", "tutti", "da-link"]);
   });
 
   it("i risultati escludono i prodotti di un'altra età", () => {
-    const s = scegliEta(conScelte(["casa"]), "bambino");
+    const s = scegliEta(conScelte(["casa"]), "fino-12");
     expect(ordinaProdotti([adulto, bimbo, tutti], s).map((p) => p.slug).sort()).toEqual(["bimbo", "tutti"]);
     expect(ordinaProdotti([adulto, bimbo, tutti], conScelte(["casa"]))).toHaveLength(3);
   });
@@ -189,7 +193,7 @@ describe("fascia d'età", () => {
       const s = scegliEta(conScelte(["giochi"]), f.id);
       const risultati = ordinaProdotti(CATALOGO, s);
       expect(risultati.length).toBeGreaterThan(0);
-      for (const p of risultati) expect(fasceEta(p).length === 0 || fasceEta(p).includes(f.id)).toBe(true);
+      for (const p of risultati) expect(fasceEta(p).length === 0 || fasceEta(p).some((x) => (f.catalogo as readonly string[]).includes(x))).toBe(true);
     }
   });
 });
