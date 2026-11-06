@@ -9,7 +9,7 @@ import { conModo } from "@/lib/ux";
 /**
  * La tessera prodotto di Gifty UX v2 (design.md §4): lastra quadrata color parete con la foto in `multiply` (il fondo
  * bianco delle foto Amazon sparisce nella parete), cuore in alto a destra, nome su due righe, prezzo e marca,
- * «Guarda su Amazon» e «Fai un regalo», tutti e due pieni (Cri, 6 nov); «Fai un regalo» porta al bivio fra regalo personale e di gruppo (/fai-un-regalo).
+ * «Fai un regalo» pieno e «Guarda su Amazon» quieto (Cri, 6 nov); «Fai un regalo» porta al bivio fra regalo personale e di gruppo (/fai-un-regalo).
  * La nota sui prezzi non sta qui: la mette la pagina, una volta sola.
  *
  * `gruppo`: il catalogo aperto dal wizard del regalo di gruppo (`?modo=gruppo`, G-04). Le azioni diventano «Scegli
@@ -47,12 +47,13 @@ export function TesseraProdotto({ prodotto: p, gruppo = false }: { prodotto: Pro
         </div>
       ) : (
       <div className="azioni">
-        <a className="btn btn-primario" href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
-          Guarda su Amazon<span className="sr-only"> (si apre in una nuova scheda)</span>
-        </a>
         <Link className="btn btn-primario" href={`/fai-un-regalo?prodotto=${encodeURIComponent(p.slug)}`}>
           Fai un regalo
         </Link>
+        <a className="btn btn-quieto" href={urlPerAcquisto(p.urlEsterno)} target="_blank" rel={REL_LINK_PRODOTTO}>
+          <IconaTratto nome="esterno" />
+          Guarda su Amazon<span className="sr-only"> (si apre in una nuova scheda)</span>
+        </a>
       </div>
       )}
     </article>
