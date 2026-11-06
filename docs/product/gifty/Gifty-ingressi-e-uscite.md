@@ -50,7 +50,7 @@ Da dove arriva una persona, dove atterra e che cosa succede. «OK» = provato e 
 
 ## 2. Uscite
 
-Dove una persona lascia Gifty, se torna e che cosa resta. **Amazon è l'uscita che vogliamo**: è lì che Gifty guadagna la commissione di affiliazione. Il lavoro non è trattenere chi esce, ma far sì che quando torna Gifty ricordi che cosa ha fatto.
+Dove una persona lascia Gifty, se torna e che cosa resta. **Amazon è l'uscita che vogliamo**: è lì che Gifty guadagna la commissione di affiliazione. Il lavoro non è trattenere chi esce, ma far sì che quando torna ritrovi quello che ha guardato.
 
 | Uscita | Da dove | Torna? | Che cosa ricorda Gifty quando torna |
 |---|---|---|---|
@@ -66,11 +66,11 @@ Dove una persona lascia Gifty, se torna e che cosa resta. **Amazon è l'uscita c
 
 ## 3. Dove manca la memoria
 
-1. **Il ritorno da Amazon.** È la strada «Lo regalo io», quella del catalogo che piace di più. Chi torna non trova traccia di quello che ha aperto né di quello che ha comprato.
+1. **Il ritorno da Amazon.** È la strada «Lo regalo io», quella del catalogo che piace di più. Chi torna non ritrova i prodotti che ha guardato.
 2. **Il festeggiato e chi firma.** Vedono Gifty senza averlo cercato e la pagina finisce senza una porta.
 3. **Chi non ha pagato.** Senza email il solo richiamo è il messaggio che chi organizza inoltra a mano.
 
-## 4. Il ritorno da Amazon: Gifty ricorda
+## 4. Il ritorno da Amazon
 
 ### 4.1 Che cosa possiamo sapere (regole Amazon.it)
 
@@ -82,43 +82,25 @@ Fonte: [Requisiti del programma](https://programma-affiliazione.amazon.it/help/o
 - Link Amazon nelle email solo se l'email l'ha chiesta la persona (Requisiti 4), come un promemoria che ha chiesto lei.
 - **Da sistemare prima del lancio**: i prezzi si possono mostrare solo se arrivano da Creators API o PA-API (2(b)) e le immagini dei prodotti non si possono salvare (Licenza 2(h)). Gifty mostra prezzi fotografati dalle playlist e tiene 517 foto in `public/foto-prodotti/` (da verificare con Stefano se sono foto Amazon). La soluzione è l'API Creators.
 
-### 4.2 La memoria: «I tuoi regali»
+### 4.2 Visti di recente (scelta di Cri, 6 novembre)
 
-Gifty tiene, per ogni persona che lo usa, la storia delle sue idee in quattro stati, sul dispositivo e, se accede, nell'account (come oggi Preferiti e Ricorrenze):
+Una striscia **«Visti di recente»** in home, sopra «Le nostre scelte», e basta: gli ultimi quattro prodotti aperti, il più recente per primo, con le stesse tessere del catalogo («Fai un regalo», «Guarda su Amazon», cuore). Restano sul dispositivo. Chi non ha ancora guardato nulla non vede la striscia. Prototipo: `docs/specs/gifty-ux-v2/prototipi/memoria.html`.
 
-| Stato | Quando entra | Esempio |
-|---|---|---|
-| **Visto** | apre una scheda prodotto | «Cuffie Sony, viste ieri» |
-| **Salvato** | tocca il cuore | già oggi nei Preferiti |
-| **Aperto su Amazon** | tocca «Compralo su Amazon», con data, prezzo di quel momento e, se l'ha detto, per chi | «Aperto su Amazon il 6 nov, per Marta» |
-| **Regalato** | dice «L'ho preso» | «Regalato a Marta, compleanno 2026» |
+Scartato da Cri il 6 novembre perché troppo complicato: la domanda «L'hai preso?» sulla scheda e in «Fai un regalo», i segni di stato sulle tessere, la pagina «I tuoi regali» e i regali per persona.
 
-Dove si vede, al ritorno:
-
-| # | Dove | Che cosa mostra |
-|---|---|---|
-| M1 | **Sulla stessa scheda**, quando la persona torna su Gifty dopo il clic (la scheda era rimasta aperta) | Sulla tessera o sulla scheda del prodotto: «Aperto su Amazon poco fa · L'hai preso?». Un tocco su **«L'ho preso»** lo segna come regalato. Nessun riquadro che interrompe: è un'etichetta sulla cosa che ha guardato. |
-| M2 | **In home e in Idee regalo**, alla visita dopo | Una fila «Riprendi da qui»: l'ultimo aperto su Amazon con «L'hai preso?», poi i visti di recente e i salvati. |
-| M3 | **Nella pagina «I tuoi regali»** (nel menu dell'account, accanto a Preferiti) | Tutto per stato e per persona: «Per Marta: viste 3 idee, regalate le cuffie (compleanno 2026)». |
-| M4 | **Nella ricorrenza di quella persona** | L'anno dopo: «L'anno scorso le hai regalato le cuffie Sony», con idee nuove e non la stessa. |
-| M5 | **Dopo «L'ho preso»**, solo se c'entra | Se la data è vicina: «Vuoi anche un biglietto da far firmare?». Se manca la ricorrenza: «Ti ricordiamo il compleanno di Marta l'anno prossimo?». |
-
-**«Per chi è?»** (facoltativo, in `/fai-un-regalo` sotto «Lo regalo io»: nome e data) è quello che lega il regalo a una persona e fa funzionare M3, M4 e M5. Senza, la memoria funziona lo stesso, per prodotto.
+Da correggere insieme: sul telefono la striscia di «Le nostre scelte» si ferma con la prima tessera attaccata al bordo dello schermo (manca `scroll-padding-inline` in `.striscia`).
 
 ### 4.3 Cookie e consenso
 
-- La memoria sul dispositivo, mostrata come funzione e mai mandata ad analisi o pubblicità, per il Garante è uno strumento tecnico: basta l'informativa, niente banner ([Provv. 231/2021](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)).
-- Nell'account è parte del servizio che la persona usa da connessa: si scrive nell'informativa e si cancella con l'account.
+- «Visti di recente» sul dispositivo, mostrato come funzione e mai mandata ad analisi o pubblicità, per il Garante è uno strumento tecnico: basta l'informativa, niente banner ([Provv. 231/2021](https://www.garanteprivacy.it/home/docweb/-/docweb-display/docweb/9677876)).
 - Contare i clic su Amazon nelle analisi (Firebase, con Stefano a fine lavoro) è un'altra cosa e chiede il consenso al banner.
 - Promemoria via email o notifica sul telefono: consenso esplicito; il soft opt-in non vale perché Gifty non vende nulla ([art. 130 c. 4](https://www.osborneclarke.com/it/insights/soft-spam-italia-stiamo-correttamente-applicando-la-norma)).
 
 ### 4.4 Ordine proposto
 
-1. **La memoria sul dispositivo e M1, M2**: visti, aperti su Amazon, «L'ho preso». Nessuna email, nessun account.
-2. **«Per chi è?», M3, M4, M5**, sopra Ricorrenze e Preferiti che esistono già; con l'accesso la memoria passa nell'account.
-3. **ID di monitoraggio per sezione**, da creare nel pannello Amazon di Stefano.
-4. **Promemoria via email e notifica** quando c'è il servizio email (serve anche al Reminder del regalo di gruppo).
-5. **API Creators** per prezzi e foto, prima del lancio.
+1. **Visti di recente** in home.
+2. **ID di monitoraggio per sezione**, da creare nel pannello Amazon di Stefano.
+3. **API Creators** per prezzi e foto, prima del lancio.
 
 ## 5. Le altre uscite
 
