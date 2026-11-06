@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import Link from "next/link";
 import { FiltriCatalogo } from "@/components/FiltriCatalogo";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
@@ -8,10 +9,11 @@ import { modoCatalogo } from "@/lib/ux";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Catalogo",
-  description: "Le nostre idee regalo, per tema e per prezzo.",
-};
+export const metadata: Metadata = metaPubblica({
+  titolo: "Catalogo di idee regalo",
+  descrizione: "Le nostre idee regalo, per tema e per prezzo.",
+  percorso: "/catalogo",
+});
 
 /** Quante idee si mostrano all'inizio e a ogni «Mostra altre idee». */
 const PER_PAGINA = 24;

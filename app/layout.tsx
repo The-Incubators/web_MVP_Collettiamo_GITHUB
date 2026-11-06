@@ -4,6 +4,7 @@ import { AppProvider } from "@/components/AppProvider";
 import { PreferitiProvider } from "@/components/PreferitiProvider";
 import { URL_FONT_ICONE } from "@/components/ui";
 import { baseUrl, modalitaDati } from "@/lib/config";
+import { IMMAGINE_CONDIVISIONE } from "@/lib/seo";
 import "./globals.css";
 
 // Gifty UX v2 (docs/specs/gifty-ux-v2/design.md §3.2): tre famiglie con licenza OFL, servite dal sito (app/fonts, con
@@ -35,6 +36,8 @@ export const metadata: Metadata = {
   description:
     "Trova un’idea regalo, organizza un regalo di gruppo con un solo link e crea un biglietto di auguri da firmare insieme. I soldi arrivano direttamente a chi organizza.",
   applicationName: "Gifty",
+  openGraph: { type: "website", locale: "it_IT", siteName: "Gifty", images: [IMMAGINE_CONDIVISIONE] },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import { Icona, type NomeIcona } from "@/components/ui";
 
-export const metadata: Metadata = { title: "Come trattiamo i dati" };
+export const metadata: Metadata = metaPubblica({ titolo: "Come trattiamo i dati", descrizione: "Che cosa conserva Gifty e perché.", percorso: "/privacy" });
 
 // Testo informativo del prototipo: descrive ciò che l'applicazione conserva davvero. Da far rivedere prima del lancio.
 const BLOCCHI: { titolo: string; icona: NomeIcona; tinta: string; testi: string[] }[] = [

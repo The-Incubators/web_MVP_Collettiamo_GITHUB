@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import Link from "next/link";
 import { ChipTutorial } from "@/components/ChipTutorial";
 import { ComeLoApre } from "@/components/biglietto/pagina/ComeLoApre";
@@ -10,8 +11,11 @@ import { Carta } from "@/components/ui";
  * Da solo o collegato a un regalo di gruppo (D-03, D-19).
  */
 export const metadata: Metadata = {
-  title: "Biglietto di auguri",
-  description: "Un biglietto di auguri che firmano tutti, con dediche e foto, da mandare con un link.",
+  ...metaPubblica({
+    titolo: "Biglietto di auguri",
+    descrizione: "Un biglietto di auguri che firmano tutti, con dediche e foto, da mandare con un link.",
+    percorso: "/biglietto",
+  }),
   robots: { index: true, follow: true },
 };
 

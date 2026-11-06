@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { metaPubblica } from "@/lib/seo";
 import Link from "next/link";
 import { DICHIARAZIONE_AFFILIATO_AMAZON, NOTA_PREZZI } from "@/lib/dominio/amazon";
 
-export const metadata: Metadata = { title: "Termini e condizioni" };
+export const metadata: Metadata = metaPubblica({ titolo: "Termini e condizioni", descrizione: "Le condizioni d’uso di Gifty e l’affiliazione Amazon.", percorso: "/termini" });
 
 /**
  * Termini e condizioni (revisione di Cri, 5 novembre 2026): qui sta la dichiarazione di affiliazione Amazon, tolta dal
