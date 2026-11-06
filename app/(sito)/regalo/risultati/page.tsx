@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { TesseraProdotto } from "@/components/TesseraProdotto";
-import { ChipLink } from "@/components/ui";
+import { ChipLink, IconaTratto } from "@/components/ui";
 import { datiServer } from "@/lib/dati";
 import { OCCASIONI_REGALO } from "@/lib/regalo/dati";
 import { etichettaEta, etichettaPer, hrefDomande, hrefRisultati, risposteComplete, statoDaParametri, testiInteressi, titoloRisultati } from "@/lib/regalo/indirizzo";
@@ -38,7 +38,14 @@ export default async function Risultati({ searchParams }: Props) {
   return (
     <div className="pagina fondo">
       <div className="testa-elenco">
-        <h1 className="t-pagina">{titoloRisultati(stato.genere)}</h1>
+        <div className="testa-sezione testa-risultati">
+          <h1 className="t-pagina">{titoloRisultati(stato.genere)}</h1>
+          {/* rifà le domande con le risposte già date (revisione di Cri, 6 nov) */}
+          <Link className="btn btn-contorno" href={hrefDomande(stato, 2)}>
+            <IconaTratto nome="matita" />
+            Cambia filtri
+          </Link>
+        </div>
         <div className="chips" role="group" aria-label="Le tue risposte">
           <ChipLink href="/idee" etichetta={`Cambia: ${per}`}>
             {per}

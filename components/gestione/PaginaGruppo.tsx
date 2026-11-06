@@ -99,7 +99,7 @@ export function PaginaGruppo({ slug, catalogo, biglietto }: { slug: string; cata
 
   async function consegnaOra() {
     try {
-      await scrivi(consegna(c!, Date.now()));
+      await scrivi(consegna(c!, g.righe, Date.now()));
     } catch (e) {
       g.setAvviso(e instanceof ErroreDominio ? e.message : "Adesso non si può fare.");
     }

@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { Input } from "@/components/ui";
-import { dataBreve, giornoDaIso, giornoInIso, giornoRoma, ilGiorno, istanteRoma } from "@/lib/dominio/date";
+import type { ReactNode } from "react";
+import { dataBreve, giornoDaIso, ilGiorno, istanteRoma } from "@/lib/dominio/date";
 import { formattaEuro } from "@/lib/dominio/importi";
 import { etichettaOccasione } from "@/lib/regalo/dati";
-import { budgetPrevisto, fineVotoDaStato, limite, oraDi, quotaDaStato, scadenzaDaStato, testoMetodi, type Passo } from "@/lib/wizard/stato";
+import { budgetPrevisto, fineVotoDaStato, oraDi, quotaDaStato, scadenzaDaStato, testoMetodi, type Passo } from "@/lib/wizard/stato";
 import { Errore } from "./PassiDati";
 import type { PropsPasso } from "./tipi";
 
@@ -40,12 +39,9 @@ function Riga({ dt, dd, nome, onCambia, children }: { dt: string; dd?: ReactNode
 
 /**
  * Passo 6 (design.md §10.1, decisione 10; GOV.UK «Check answers»): una riga per risposta con «Cambia», che porta al
- * passo e poi torna qui. La data limite delle adesioni è proposta e si cambia qui, sul posto (decisione 7).
+ * passo e poi torna qui. La data limite delle adesioni si sceglie al passo 2, con le persone (revisione di Cri, 6 nov).
  */
-export function PassoRiepilogo({ s, cambia, errori, adesso, onCambia }: PropsPasso & { onCambia: (p: Passo) => void }) {
-  const [modificaLimite, setModificaLimite] = useState(!!errori.limite);
-  const l = limite(s, adesso);
-  const persone = `${s.chat}${s.partecipo ? ", partecipi anche tu" : ""}`;
+export function PassoRiepilogo({ s, errori, adesso, onCambia }: PropsPasso & { onCambia: (p: Passo) => void }) {
   const centro =
     s.partenza === "adesioni" ? (
       <Riga
@@ -70,37 +66,11 @@ export function PassoRiepilogo({ s, cambia, errori, adesso, onCambia }: PropsPas
   return (
     <dl className="riep">
       <Riga dt="Per chi" dd={testoPerChi(s)} nome="per chi" onCambia={() => onCambia(1)} />
-      <Riga dt="Persone nella chat" dd={persone} nome="le persone" onCambia={() => onCambia(2)} />
+      <Riga dt="Persone invitate a partecipare" dd={String(s.chat)} nome="le persone" onCambia={() => onCambia(2)} />
       {centro}
-      {modificaLimite ? (
-        <Riga dt="Si aderisce fino al" nome="la data limite per aderire">
-          <div className="modifica">
-            <Input
-              type="date"
-              larghezza="data"
-              aria-label="Data in cui si chiudono le adesioni"
-              min={giornoInIso(giornoRoma(adesso))}
-              value={l.data}
-              onChange={(e) => cambia({ limiteData: e.target.value, limiteOra: l.ora })}
-              errore={!!errori.limite}
-              aria-describedby={errori.limite ? "limite-errore" : undefined}
-            />
-            <Input
-              type="time"
-              larghezza="ora"
-              aria-label="Ora in cui si chiudono le adesioni"
-              value={l.ora}
-              onChange={(e) => cambia({ limiteData: l.data, limiteOra: e.target.value })}
-              errore={!!errori.limite}
-              aria-describedby={errori.limite ? "limite-errore" : undefined}
-            />
-            <Errore id="limite-errore" testo={errori.limite} />
-          </div>
-        </Riga>
-      ) : (
-        <Riga dt="Si aderisce fino al" dd={dataOra(scadenzaDaStato(s, adesso))} nome="la data limite per aderire" onCambia={() => setModificaLimite(true)} />
-      )}
-      <Riga dt="Come ti rimborsano" dd={testoMetodi(s) ? testoMetodi(s).charAt(0).toUpperCase() + testoMetodi(s).slice(1) : "–"} nome="i rimborsi" onCambia={() => onCambia(5)} />
+      <Riga dt="Si aderisce fino al" dd={dataOra(scadenzaDaStato(s, adesso))} nome="la data limite per aderire" onCambia={() => onCambia(2)} />
+      <Errore id="limite-errore" testo={errori.limite} />
+      <Riga dt="Metodo di rimborso" dd={testoMetodi(s) ? testoMetodi(s).charAt(0).toUpperCase() + testoMetodi(s).slice(1) : "–"} nome="i rimborsi" onCambia={() => onCambia(5)} />
     </dl>
   );
 }

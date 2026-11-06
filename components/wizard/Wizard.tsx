@@ -77,13 +77,13 @@ function titolo(s: StatoWizard): React.ReactNode {
     case 1:
       return "Per chi è il regalo?";
     case 2:
-      return "Quante persone ci sono nella chat?";
+      return "Quante persone inviti a partecipare?";
     case 3:
       return "Da dove vuoi iniziare?";
     case 4:
       return s.partenza === "adesioni" ? <label htmlFor="quota">Quanto chiedi a testa?</label> : s.partenza === "voto" ? "I regali da votare" : "Quale regalo?";
     case 5:
-      return "Come ti rimborsano?";
+      return "Metodo di rimborso";
     default:
       return "Controlla e crea il regalo di gruppo";
   }
@@ -99,7 +99,7 @@ function righe(s: StatoWizard, organizzatore: string | null): RigheAnteprima {
   return {
     festeggiato: s.festeggiato,
     quando: giorno ? `${occasione}, ${dataBreve(istanteRoma(giorno, 12))}` : occasione,
-    persone: fatto(2) ? { testo: `${s.chat} persone nella chat` } : { testo: "Persone nella chat", vuota: true },
+    persone: fatto(2) ? { testo: `${s.chat} persone invitate a partecipare` } : { testo: "Persone invitate a partecipare", vuota: true },
     cosa:
       s.partenza === "adesioni"
         ? s.passo >= 4 && quota
@@ -112,7 +112,7 @@ function righe(s: StatoWizard, organizzatore: string | null): RigheAnteprima {
           : s.partenza === "regalo" && s.regali.length
             ? s.regali
             : { testo: "Regalo o quota", vuota: true },
-    rimborsi: fatto(5) && testoMetodi(s) ? { testo: `Rimborsi con ${testoMetodi(s)}` } : { testo: "Come ti rimborsano", vuota: true },
+    rimborsi: fatto(5) && testoMetodi(s) ? { testo: `Rimborsi con ${testoMetodi(s)}` } : { testo: "Metodo di rimborso", vuota: true },
     organizzatore,
   };
 }

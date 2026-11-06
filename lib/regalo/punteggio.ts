@@ -8,6 +8,7 @@
 // seconda domanda (un filtro, perché un regalo per un bambino non può essere un vino) e il filtro di prezzo.
 
 import { fasceEta, type FasciaEta } from "../dati/eta-prodotti";
+import { FASCE_ETA_DOMANDA } from "./dati";
 import { microDiCatalogo } from "../dati/microcategorie-prodotti";
 import { INTERESSI } from "./dati";
 import type { StatoRicerca } from "./stato";
@@ -84,7 +85,10 @@ export function punteggio(p: Prodotto, s: StatoRicerca, testo?: string): number 
 export function adattoAllEta(p: Pick<Prodotto, "id">, eta: string | null): boolean {
   if (!eta) return true;
   const sue = fasceEta(p);
-  return sue.length === 0 || sue.includes(eta as FasciaEta);
+  if (sue.length === 0) return true;
+  // una fascia della domanda vale le fasce del catalogo con cui si sovrappone; un id del catalogo vale sé stesso
+  const ammesse: readonly string[] = FASCE_ETA_DOMANDA.find((f) => f.id === eta)?.catalogo ?? [eta];
+  return sue.some((f) => ammesse.includes(f as FasciaEta));
 }
 
 /** Solo i prodotti adatti alla fascia d'età scelta (vedi `adattoAllEta`). */

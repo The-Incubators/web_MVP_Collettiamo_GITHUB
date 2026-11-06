@@ -59,7 +59,8 @@ describe("registro di chi organizza", () => {
 describe("Regalo consegnato", () => {
   it("chiude le adesioni, ferma la quota e registra l'acquisto al prezzo del regalo", () => {
     const c = collettaDiProva({ modoQuota: "divisa", previsti: 10, nAderenti: 8, prodotto: { ...collettaDiProva().prodotto, prezzoCent: 16564 } });
-    expect(consegna(c, ORA)).toEqual({
+    const otto = Array.from({ length: 8 }, (_, i) => r(`p${i}`, `P${i}`, { stato: "aderito" }, i));
+    expect(consegna(c, otto, ORA)).toEqual({
       consegnatoIl: ORA,
       listaAperta: false,
       quotaCongelata: true,
@@ -68,15 +69,24 @@ describe("Regalo consegnato", () => {
       aggiornatoIl: ORA,
     });
   });
+  it("divide il prezzo fra tutte le persone del registro, comprese quelle aggiunte a mano (revisione di Cri, 6 nov)", () => {
+    // Cristina ha aderito con l'account, Francesca è aggiunta a mano: il contatore delle adesioni dice 1, il registro 2
+    const c = collettaDiProva({ modoQuota: "divisa", previsti: 10, nAderenti: 1, prodotto: { ...collettaDiProva().prodotto, prezzoCent: 11900 } });
+    const righe = [r("cr", "Cristina", { stato: "aderito" }, 0), r("fr", "Francesca", { uidAnonimo: null, stato: "invitato" }, 1)];
+    const dopo = { ...c, ...consegna(c, righe, ORA) };
+    expect(dopo.quotaCent).toBe(5950);
+    expect(registro(dopo, righe).map((x) => x.saldoCent)).toEqual([5950, 5950]);
+    expect(totali(registro(dopo, righe)).budgetCent).toBe(11900);
+  });
   it("senza regalo scelto l'acquisto non ha una spesa; una seconda volta non cambia nulla", () => {
     const c = collettaDiProva({ prodotto: REGALO_DA_SCEGLIERE });
-    expect(consegna(c, ORA).acquisto).toMatchObject({ speseCent: null });
-    expect(consegna({ ...c, consegnatoIl: ORA }, ORA + 1)).toEqual({});
+    expect(consegna(c, [], ORA).acquisto).toMatchObject({ speseCent: null });
+    expect(consegna({ ...c, consegnatoIl: ORA }, [], ORA + 1)).toEqual({});
   });
   it("non si consegna mentre si vota né un gruppo chiuso", () => {
     const voto = collettaDiProva({ votazione: { ...votazioneIniziale(24, true), apertaIl: ORA, scade: ORA + 1 } });
-    expect(() => consegna(voto, ORA)).toThrow(ErroreDominio);
-    expect(() => consegna(collettaDiProva({ stato: "chiusa" }), ORA)).toThrow(ErroreDominio);
+    expect(() => consegna(voto, [], ORA)).toThrow(ErroreDominio);
+    expect(() => consegna(collettaDiProva({ stato: "chiusa" }), [], ORA)).toThrow(ErroreDominio);
   });
   it("dopo la consegna il server rifiuta nuove adesioni, anche a mano (AC-14), ma i pagamenti continuano", () => {
     const c = collettaDiProva({ consegnatoIl: ORA, listaAperta: false });

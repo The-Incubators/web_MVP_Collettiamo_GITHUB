@@ -8,11 +8,11 @@ export interface RigheAnteprima {
   festeggiato: string;
   /** "Compleanno, 14 dicembre" */
   quando: string;
-  /** "10 persone nella chat", o vuota «Persone nella chat» */
+  /** "10 persone invitate a partecipare", o vuota «Persone invitate a partecipare» */
   persone: RigaCarta;
   /** la quota, oppure le miniature del regalo o dei regali da votare */
   cosa: RigaCarta | ProdottoColletta[];
-  /** "Rimborsi con PayPal", o vuota «Come ti rimborsano» */
+  /** "Rimborsi con PayPal", o vuota «Metodo di rimborso» */
   rimborsi: RigaCarta;
   /** il nome di chi organizza, se ha già un account */
   organizzatore: string | null;

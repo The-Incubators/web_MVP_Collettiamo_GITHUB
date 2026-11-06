@@ -110,10 +110,12 @@ export function ricevutoDopoPagamento(r: Partecipante, cent: number): number {
 }
 
 /**
- * «Regalo consegnato» (spec §7.6): chiude le adesioni e ferma la quota (in «divisa», il prezzo diviso fra chi ha davvero
- * aderito); l'acquisto prende il prezzo del regalo, se c'è. Durante il voto non si consegna: prima si sceglie il regalo.
+ * «Regalo consegnato» (spec §7.6): chiude le adesioni e ferma la quota (in «divisa», il prezzo diviso fra le persone del
+ * registro, comprese quelle aggiunte a mano: il contatore `nAderenti` conta solo chi ha l'account, e con lui ognuno
+ * pagava il regalo intero; revisione di Cri, 6 nov); l'acquisto prende il prezzo del regalo, se c'è. Durante il voto non
+ * si consegna: prima si sceglie il regalo.
  */
-export function consegna(c: Colletta, ora: number): Partial<Colletta> {
+export function consegna(c: Colletta, righe: Partecipante[], ora: number): Partial<Colletta> {
   if (c.stato !== "aperta") throw new ErroreDominio("Il gruppo non è aperto.");
   if (votazioneInCorso(c)) throw new ErroreDominio("Prima si chiude la votazione.");
   if (consegnato(c)) return {};
@@ -122,7 +124,7 @@ export function consegna(c: Colletta, ora: number): Partial<Colletta> {
     consegnatoIl: ora,
     listaAperta: false,
     quotaCongelata: true,
-    quotaCent: quotaAllaChiusuraAdesioni(c),
+    quotaCent: quotaAllaChiusuraAdesioni({ ...c, nAderenti: Math.max(righeInDivisione(righe).length, 1) }),
     acquisto: c.acquisto ?? { fatto: true, speseCent, ricevutaUrl: null, destinazioneAvanzo: null },
     aggiornatoIl: ora,
   };

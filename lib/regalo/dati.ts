@@ -23,14 +23,17 @@ export const TAPPE = [
 ] as const;
 
 /**
- * Le fasce d'età della seconda domanda (revisione di Cri, 5 novembre 2026): sono le quattro del catalogo
- * (lib/dati/eta-prodotti.ts, B, A, R, D), che ha prodotti per ognuna. Gli id sono quelli di `FASCE_ETA`.
+ * Le fasce d'età della seconda domanda (revisione di Cri, 6 novembre 2026: fino a 12, 13–20, 21–34, 35–50, oltre 50).
+ * Il catalogo è classificato in quattro fasce diverse (lib/dati/eta-prodotti.ts: 0–12, 13–17, 18–29, 30+), quindi
+ * ogni fascia della domanda tiene i prodotti delle fasce del catalogo con cui si sovrappone (`catalogo`). Finché il
+ * catalogo non si riclassifica, «Da 35 a 50» e «Oltre 50» danno le stesse idee.
  */
 export const FASCE_ETA_DOMANDA = [
-  { id: "bambino", etichetta: "Fino a 12 anni" },
-  { id: "adolescente", etichetta: "Da 13 a 17 anni" },
-  { id: "ragazzo", etichetta: "Da 18 a 29 anni" },
-  { id: "adulto", etichetta: "Dai 30 anni in su" },
+  { id: "fino-12", etichetta: "Fino a 12 anni", catalogo: ["bambino"] },
+  { id: "13-20", etichetta: "Da 13 a 20 anni", catalogo: ["adolescente", "ragazzo"] },
+  { id: "21-34", etichetta: "Da 21 a 34 anni", catalogo: ["ragazzo", "adulto"] },
+  { id: "35-50", etichetta: "Da 35 a 50 anni", catalogo: ["adulto"] },
+  { id: "oltre-50", etichetta: "Oltre 50 anni", catalogo: ["adulto"] },
 ] as const;
 
 /** I valori corrispondono ai nostri `destinatari` ("donna", "uomo"). */

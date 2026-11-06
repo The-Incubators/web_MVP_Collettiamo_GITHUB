@@ -9,7 +9,7 @@ import { aggiungiGiorni, giornoInIso, giornoRoma } from "@/lib/dominio/date";
 import { formattaEuro, leggiEuro } from "@/lib/dominio/importi";
 import { OCCASIONI_REGALO } from "@/lib/regalo/dati";
 import type { ProdottoColletta } from "@/lib/tipi";
-import { budgetPrevisto, fineVoto, MAX_PERSONE, MAX_REGALI, MIN_PERSONE, personeDivisione, quotaDaStato, senzaRegalo, type Partenza } from "@/lib/wizard/stato";
+import { budgetPrevisto, fineVoto, limite, MAX_PERSONE, MAX_REGALI, MIN_PERSONE, personeDivisione, quotaDaStato, senzaRegalo, type Partenza } from "@/lib/wizard/stato";
 import { FotoRegalo } from "./Anteprima";
 import type { PropsPasso } from "./tipi";
 
@@ -83,7 +83,7 @@ export function PassoPerChi({ s, cambia, errori, adesso }: PropsPasso) {
 }
 
 /** Passo 2: il contatore con il numero scrivibile, «Partecipo anch'io» (D-16) e, dal prodotto, il regalo con la quota. */
-export function PassoPersone({ s, cambia, errori, idTitolo, onCambiaRegalo }: PropsPasso & { idTitolo: string; onCambiaRegalo: () => void }) {
+export function PassoPersone({ s, cambia, errori, adesso, idTitolo, onCambiaRegalo }: PropsPasso & { idTitolo: string; onCambiaRegalo: () => void }) {
   const [testo, setTesto] = useState(String(s.chat));
   const imposta = (n: number) => {
     setTesto(String(n));
@@ -91,6 +91,7 @@ export function PassoPersone({ s, cambia, errori, idTitolo, onCambiaRegalo }: Pr
   };
   const regalo = s.daProdotto ? s.regali[0] : null;
   const quota = quotaDaStato(s);
+  const l = limite(s, adesso);
   return (
     <>
       {regalo ? (
@@ -110,7 +111,7 @@ export function PassoPersone({ s, cambia, errori, idTitolo, onCambiaRegalo }: Pr
           <input
             inputMode="numeric"
             value={testo}
-            aria-label="Persone nella chat"
+            aria-label="Persone invitate a partecipare"
             aria-invalid={errori.chat ? true : undefined}
             aria-describedby={errori.chat ? "chat-errore" : undefined}
             onChange={(e) => {
@@ -134,6 +135,34 @@ export function PassoPersone({ s, cambia, errori, idTitolo, onCambiaRegalo }: Pr
           <span className="t-cifra">{formattaEuro(quota)}</span>
         </div>
       ) : null}
+      {/* la data limite delle adesioni si sceglie qui, non solo nel riepilogo (revisione di Cri, 6 nov) */}
+      <div className="campo">
+        <span className="etichetta" id="l-limite">
+          Si può aderire fino al
+        </span>
+        <div className="riga" role="group" aria-labelledby="l-limite">
+          <Input
+            type="date"
+            larghezza="data"
+            aria-label="Data in cui si chiudono le adesioni"
+            min={giornoInIso(giornoRoma(adesso))}
+            value={l.data}
+            onChange={(e) => cambia({ limiteData: e.target.value, limiteOra: l.ora })}
+            errore={!!errori.limite}
+            aria-describedby={errori.limite ? "limite-errore" : undefined}
+          />
+          <Input
+            type="time"
+            larghezza="ora"
+            aria-label="Ora in cui si chiudono le adesioni"
+            value={l.ora}
+            onChange={(e) => cambia({ limiteData: l.data, limiteOra: e.target.value })}
+            errore={!!errori.limite}
+            aria-describedby={errori.limite ? "limite-errore" : undefined}
+          />
+        </div>
+        <Errore id="limite-errore" testo={errori.limite} />
+      </div>
     </>
   );
 }
@@ -343,8 +372,12 @@ export function PassoRimborsi({ s, cambia, errori }: PropsPasso) {
         </SpuntaRiga>
         {s.paypalAttivo ? (
           <>
+            <label className="etichetta-metodo" htmlFor="r-paypal">
+              Nome utente PayPal o link paypal.me
+            </label>
             <Input
-              aria-label="Il tuo link PayPal"
+              id="r-paypal"
+              placeholder="paypal.me/nome"
               value={s.paypal}
               onChange={(e) => cambia({ paypal: e.target.value })}
               errore={!!errori.paypal}
@@ -363,10 +396,14 @@ export function PassoRimborsi({ s, cambia, errori }: PropsPasso) {
         </SpuntaRiga>
         {s.satispayAttivo ? (
           <>
+            <label className="etichetta-metodo" htmlFor="r-satispay">
+              Numero di telefono collegato a Satispay
+            </label>
             <Input
               type="tel"
               inputMode="tel"
-              aria-label="Numero di telefono Satispay"
+              id="r-satispay"
+              placeholder="333 123 4567"
               value={s.satispay}
               onChange={(e) => cambia({ satispay: e.target.value })}
               errore={!!errori.satispay}
@@ -383,8 +420,12 @@ export function PassoRimborsi({ s, cambia, errori }: PropsPasso) {
         </SpuntaRiga>
         {s.bonificoAttivo ? (
           <>
+            <label className="etichetta-metodo" htmlFor="r-iban">
+              IBAN
+            </label>
             <Input
-              aria-label="IBAN"
+              id="r-iban"
+              placeholder="IT60 X054 2811 1010 0000 0123 456"
               value={s.iban}
               onChange={(e) => cambia({ iban: e.target.value.toUpperCase() })}
               errore={!!errori.iban}
@@ -394,8 +435,12 @@ export function PassoRimborsi({ s, cambia, errori }: PropsPasso) {
               spellCheck={false}
             />
             <Errore id="iban-errore" testo={errori.iban} />
+            <label className="etichetta-metodo" htmlFor="r-intestatario">
+              Intestatario del conto
+            </label>
             <Input
-              aria-label="Intestatario del conto"
+              id="r-intestatario"
+              placeholder="Nome e cognome"
               value={s.intestatario}
               onChange={(e) => cambia({ intestatario: e.target.value })}
               errore={!!errori.intestatario}
